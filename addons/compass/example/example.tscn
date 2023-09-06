@@ -1,0 +1,97 @@
+[gd_scene load_steps=15 format=3 uid="uid://nuvklwq21yyo"]
+
+[ext_resource type="Script" path="res://addons/compass/entities/compass3d.gd" id="1_8htyy"]
+[ext_resource type="Script" path="res://addons/compass/example/camera3d.gd" id="1_hcv1h"]
+[ext_resource type="Script" path="res://addons/compass/entities/compass2d.gd" id="4_trp6u"]
+[ext_resource type="Texture2D" uid="uid://dwfilxc0fnhmr" path="res://icon.svg" id="5_7s0cs"]
+[ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="5_h3uew"]
+[ext_resource type="Texture2D" uid="uid://bg5fxjgjk8nfg" path="res://addons/compass/resources/compassbar.png" id="5_lbo08"]
+[ext_resource type="Script" path="res://addons/compass/entities/compassbar.gd" id="6_ikwdp"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0s3kp"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_6g6qb"]
+sky_material = SubResource("ProceduralSkyMaterial_0s3kp")
+
+[sub_resource type="Environment" id="Environment_kog4p"]
+background_mode = 2
+sky = SubResource("Sky_6g6qb")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_estev"]
+albedo_color = Color(0.376471, 0.376471, 0.376471, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_i7qa4"]
+material = SubResource("StandardMaterial3D_estev")
+size = Vector3(5, 0.1, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ovxtk"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_volsi"]
+material = SubResource("StandardMaterial3D_ovxtk")
+size = Vector3(0.1, 1, 0.1)
+
+[node name="example" type="Node3D"]
+
+[node name="DirectionalLight3d" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kog4p")
+
+[node name="Camera3d" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.777217, 1.236)
+current = true
+script = ExtResource("1_hcv1h")
+
+[node name="Compass3D" type="Node3D" parent="Camera3d" node_paths=PackedStringArray("parent")]
+transform = Transform3D(0.941011, 0.323137, 0.100405, -0.252039, 0.867328, -0.429207, -0.225777, 0.378582, 0.897608, -0.551569, -0.455428, -1.04613)
+script = ExtResource("1_8htyy")
+parent = NodePath("..")
+
+[node name="Compass2D" type="Node2D" parent="Camera3d" node_paths=PackedStringArray("parent")]
+texture_filter = 1
+position = Vector2(998, 503)
+scale = Vector2(2, 2)
+script = ExtResource("4_trp6u")
+parent = NodePath("..")
+
+[node name="CenterContainer" type="CenterContainer" parent="Camera3d"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -87.0
+offset_top = 58.0
+offset_right = 9.0
+offset_bottom = 66.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
+
+[node name="TextureRect" type="Sprite2D" parent="Camera3d/CenterContainer"]
+modulate = Color(0.0784314, 0.0784314, 0.0784314, 1)
+position = Vector2(48.5, -3)
+texture = ExtResource("5_7s0cs")
+region_enabled = true
+region_rect = Rect2(63.9976, 72.1607, 1.00239, 4.83927)
+
+[node name="CompassBar" type="TextureRect" parent="Camera3d/CenterContainer" node_paths=PackedStringArray("parent")]
+texture_filter = 1
+texture_repeat = 2
+material = ExtResource("5_h3uew")
+layout_mode = 2
+texture = ExtResource("5_lbo08")
+stretch_mode = 3
+script = ExtResource("6_ikwdp")
+parent = NodePath("../..")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_i7qa4")
+
+[node name="NorthPole" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.534477, -2.46763)
+mesh = SubResource("BoxMesh_volsi")

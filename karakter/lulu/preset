@@ -1,0 +1,19 @@
+[Default]
+body_height 		= 0		: 160 cm
+body_chest_size 	= 0.00
+hairstyle_sets 		= 26
+eyeliner			= 13
+eyelashes			= 9
+irises			= 9
+eyebrows			= 15
+dresses			= 1
+shoes			= 20
+
+[preset_1]
+hairstyle_sets		= 1
+eyeliner			= 1
+eyelashes			= 1
+irises			= 1
+eyebrows			= 1
+
+shoes			=

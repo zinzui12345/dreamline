@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c5kjppv2oebby"
+path="res://.godot/imported/Animal Crossing Kirara Magic Remix.mp3-755d5014959ef57e549df14c5f89ac08.mp3str"
+
+[deps]
+
+source_file="res://audio/soundtrack/Animal Crossing Kirara Magic Remix.mp3"
+dest_files=["res://.godot/imported/Animal Crossing Kirara Magic Remix.mp3-755d5014959ef57e549df14c5f89ac08.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,138 @@
+[gd_scene load_steps=7 format=3 uid="uid://e1weq8imn0mb"]
+
+[ext_resource type="Texture2D" uid="uid://kynepa64ngq2" path="res://ui/ikon/ikon_pemain_cewek.svg" id="1_5gjhk"]
+[ext_resource type="Texture2D" uid="uid://bespnn02lkeed" path="res://ui/ikon/ikon_os_linux.svg" id="2_kuco4"]
+[ext_resource type="FontFile" uid="uid://h5iny2xu510v" path="res://ui/fonta/Seven Segment.ttf" id="3"]
+[ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xgu5t"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="GDScript" id="GDScript_rm17g"]
+script/source = "#@tool
+extends Panel
+
+@export var nama = \"Nanaaaaaaaaaaaaaaaaaaaaaa\" :
+	set(namanya):
+		if get_node_or_null(\"nama\") != null:
+			get_node(\"nama\").text = namanya
+		nama = namanya
+@export var id = \"aff4casdfdfe800\" :
+	set(idnya):
+		if get_node_or_null(\"id\") != null:
+			get_node(\"id\").text = idnya
+		id = idnya
+@export var sistem = \"Linux\" :
+	set(sistemnya):
+		if get_node_or_null(\"ikon_os\") != null:
+			match sistemnya:
+				\"Android\":
+					$ikon_os.texture = load(\"res://ui/ikon/ikon_os_android.svg\")
+				\"Arch Linux\", \"Arch\":
+					$ikon_os.texture = load(\"res://ui/ikon/ikon_os_arch.svg\")
+				\"Linux\", \"FreeBSD\", \"NetBSD\", \"OpenBSD\", \"BSD\", \"X11\":
+					$ikon_os.texture = load(\"res://ui/ikon/ikon_os_linux.svg\")
+				\"Ubuntu\":
+					$ikon_os.texture = load(\"res://ui/ikon/ikon_os_ubuntu.svg\")
+				\"UWP\":
+					$ikon_os.texture = load(\"res://ui/ikon/ikon_os_windows.svg\")
+				\"Windows\":
+					$ikon_os.texture = load(\"res://ui/ikon/ikon_os_windows-11.svg\")
+			#    \"macOS\":
+			#        print(\"macOS\")
+			#    \"iOS\":
+			#        print(\"iOS\")
+			#    \"Web\":
+			#        print(\"Web\")
+		sistem = sistemnya
+@export var karakter = \"cewek\" :
+	set(karakternya):
+		if get_node_or_null(\"ikon\") != null:
+			match karakternya:
+				\"cewek\":
+					$ikon.texture = load(\"res://ui/ikon/ikon_gender_cewek.svg\")
+		karakter = karakternya
+"
+
+[node name="pemain" type="Panel"]
+clip_contents = true
+custom_minimum_size = Vector2(0, 80)
+anchors_preset = -1
+anchor_top = -0.000333328
+anchor_right = 1.0
+offset_top = -39.8
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xgu5t")
+script = SubResource("GDScript_rm17g")
+nama = "Nanaaaaaaaaaaaaaaaaaaaaaaa"
+
+[node name="ikon" type="Sprite2D" parent="."]
+position = Vector2(40, 40)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_5gjhk")
+region_rect = Rect2(50, 100, 200, 200)
+
+[node name="ikon_os" type="Sprite2D" parent="."]
+position = Vector2(89, 40)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_kuco4")
+centered = false
+region_rect = Rect2(0, 0, 48, 48)
+
+[node name="nama" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 0.859
+anchor_bottom = 0.5
+offset_left = 88.0
+offset_top = -40.0
+offset_right = 0.383972
+offset_bottom = 8.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("6")
+theme_override_font_sizes/font_size = 32
+text = "Nanaaaaaaaaaaaaaaaaaaaaaaaaaa"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="id" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 0.859
+anchor_bottom = 0.5
+offset_left = 128.0
+offset_right = 0.383972
+offset_bottom = 35.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.129412, 0.121569, 0.2, 1)
+theme_override_font_sizes/font_size = 23
+text = "aff4casdfdfe800"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="ping" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -136.0
+offset_top = -40.0
+offset_right = -24.0
+offset_bottom = 40.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.164706, 0.164706, 0.164706, 1)
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 2
+vertical_alignment = 1

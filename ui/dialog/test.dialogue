@@ -1,0 +1,24 @@
+~ this_is_a_node_title
+
+ProgrammerIndonesia44: [[Hi|Halo|Hai]], ini game buatanku.
+ProgrammerIndonesia44: ini adalah game Role-Play dimana kamu memainkan peran (role) tertentu
+ProgrammerIndonesia44: setiap peran memiliki tugasnya masing-masing
+
+~ pilih_peran
+ProgrammerIndonesia44: silahkan pilih peran kamu:
+- Nelayan
+	ProgrammerIndonesia44: Kamu bisa memancing dan berenang atau mengumpulkan sumber daya dari laut.
+	ProgrammerIndonesia44: hasil sumber daya yang didapatkan bisa dijual atau kamu gunakan
+- Arsitek
+	ProgrammerIndonesia44: Tugasmu adalah membangun pulau agar layak ditinggali.
+	ProgrammerIndonesia44: Untuk membangun sesuatu, kamu memerlukan sumber daya
+	ProgrammerIndonesia44: kamu bisa membeli sumber daya dari pedagang ataupun nelayan
+	ProgrammerIndonesia44: selain itu kamu juga dapat mencari sumber daya sendiri
+ProgrammerIndonesia44: kamu telah memilih peranmu, kamu bisa memulai permainan atau mengubah peran.
+- Mulai Permainan
+- Ubah Peran => pilih_peran
+
+ProgrammerIndonesia44: Bila kamu bosan dengan peranmu, kamu dapat mengubahnya melalui Statistik
+ProgrammerIndonesia44: Mengubah peran akan me-reset pencapaian kamu..
+
+=> END

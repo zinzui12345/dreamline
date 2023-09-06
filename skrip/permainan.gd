@@ -1,0 +1,745 @@
+extends Control
+
+class_name Permainan
+
+## ChangeLog ##
+# 07 Jul 2023 - Implementasi LAN Server berbasis Cross-Play
+# 04 Agu 2023 - Implementasi Timeline
+# 09 Agu 2023 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 11 Agu 2023 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 14 Agu 2023 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 15 Agu 2023 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+
+const versi = "Dreamline beta v1.4.2 rev 14/08/23 devtest"
+const karakter_cewek = preload("res://karakter/lulu/lulu.scn")
+
+var data = {
+	"nama":			"rulu",
+	"gender": 		"P",
+	"alis":			0,
+	"garis_mata":	0,
+	"mata":			0,
+	"rambut":		0,
+	"warna_rambut":	Color("252525"),
+	"baju":			0,
+	"warna_baju":	Color("4e3531"),
+	"warna_celana":	Color.WHITE,
+	"sepatu":		0,
+	"warna_sepatu":	Color.LIGHT_BLUE,
+	"posisi":		Vector3.ZERO,
+	"sistem":		OS.get_distribution_name()
+}
+var karakter : CharacterBody3D
+var dunia = null
+var map = null
+var thread = Thread.new()
+var koneksi = MODE_KONEKSI.CLIENT
+var jeda = false
+var _posisi_tab_koneksi = "LAN" # | "Internet"
+var _rotasi_tampilan_karakter : Vector3
+var _arah_gestur_tampilan_karakter : Vector2
+var _touchpad_disentuh = false
+var _arah_sentuhan_touchpad : Vector2
+var _timer_kirim_suara = Timer.new()
+
+enum MODE_KONEKSI {
+	SERVER,
+	CLIENT
+}
+enum PERAN_KARAKTER {
+	Arsitek,
+	Pedagang,
+	Penjelajah,
+	Nelayan
+}
+
+func _ready():
+	if dunia == null:
+		dunia = await load("res://skena/dunia.scn").instantiate()
+		get_tree().get_root().call_deferred("add_child", dunia)
+	# INFO : (1) non-aktifkan proses untuk placeholder karakter
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.set_physics_process(false)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.set_process(false)
+	$hud.visible = false
+	$kontrol_sentuh.visible = false
+	# setup timer berbicara
+	add_child(_timer_kirim_suara)
+	_timer_kirim_suara.wait_time = 2.0
+	_timer_kirim_suara.connect("timeout", Callable(self, "_kirim_suara"))
+	# setup timeline
+	server.set_process(false)
+	server.process_mode = Node.PROCESS_MODE_ALWAYS
+	# INFO : (2) muat data konfigurasi atau terapkan konfigurasi default
+	if OS.get_distribution_name() == "Android": Konfigurasi.mode_kontrol_sentuh = true # aktifkan otomatis kontrol sentuh di android
+	# INFO : (3) tampilkan menu utama
+	$menu_utama/animasi.play("tampilkan")
+	$menu_utama/menu/Panel/buat_server.grab_focus()
+	$latar/animasi.play("tampilkan")
+	await get_tree().create_timer(1.0).timeout
+	$latar/animasi.play("animasi1")
+	_mainkan_musik_latar()
+
+func _process(delta):
+	# tampilan karakter di setelan karakter
+	_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -360:
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 360
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 360:
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 360
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y <= -180:
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 90 * 4
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y >= 180:
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 90 * 4
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= _rotasi_tampilan_karakter.y
+	
+	# pemutar musik
+	if $pemutar_musik.visible:
+		$pemutar_musik/posisi_durasi.value = $pemutar_musik/AudioStreamPlayer.get_playback_position()
+		$pemutar_musik/durasi.text = "%s/%s" % [
+			detikKeMenit($pemutar_musik/posisi_durasi.value), 
+			detikKeMenit($pemutar_musik/posisi_durasi.max_value)
+		]
+	
+	# frekuensi mikrofon
+	if $hud/frekuensi_mic.visible:
+		var idx = AudioServer.get_bus_index("Suara Pemain")
+		var effect = AudioServer.get_bus_effect_instance(idx, 1)
+		var magnitude : float = effect.get_magnitude_for_frequency_range(1, 11050.0 / 4).length()
+		var energy = clamp((60 + linear_to_db(magnitude)) / 60, 0, 1)
+		$hud/frekuensi_mic/posisi/persentasi.value = energy * 100
+	
+	# input
+	if is_instance_valid(karakter): # ketika dalam permainan
+		if Input.is_action_just_pressed("ui_cancel"):
+			if !jeda: _jeda()
+			else: _lanjutkan()
+		if Input.is_action_pressed("berbicara"): _berbicara(true)
+		if Input.is_action_just_pressed("daftar_pemain"): $hud/daftar_pemain/animasi.play("tampilkan")
+		
+		if Input.is_action_just_released("berbicara"): _berbicara(false)
+		if Input.is_action_just_released("daftar_pemain"): $hud/daftar_pemain/animasi.play_backwards("tampilkan")
+	
+	if Input.is_action_just_pressed("ui_cancel"): _kembali()
+	if Input.is_action_just_pressed("modelayar_penuh"):
+		if Konfigurasi.mode_layar_penuh:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			Konfigurasi.mode_layar_penuh = false
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+			Konfigurasi.mode_layar_penuh = true
+	
+	# informasi
+	var info_mode_koneksi = ""
+	match koneksi:
+		0: info_mode_koneksi = "server"
+		1: info_mode_koneksi = "client"
+	$versi.text = "%s\n\
+					%s Mem\n\
+					%s VRAM\n\
+					%s Draw\n\
+					%sVert\n\
+					%sfps\n\
+					%s\n\
+					server frame: %s" % \
+					[
+						versi,
+						String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage()),
+						String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED)),
+						RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+						str(get_tree().get_root().get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME)),
+						str(Engine.get_frames_per_second()),
+						info_mode_koneksi,
+						server.timeline["data"]["frame"]
+					]
+
+# core
+func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO):
+	if $pemutar_musik.visible:
+		$pemutar_musik/animasi.play("sembunyikan")
+	if $daftar_server.visible:
+		$daftar_server/animasi.play("animasi_panel/tutup")
+		_reset_daftar_server_lan()
+	if $karakter.visible:
+		$karakter/animasi.play("animasi_panel/tutup")
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible:
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = false
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") != null:
+		var tmp_p = $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node("pencahayaan_karakter")
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport.remove_child(tmp_p)
+		tmp_p.queue_free()
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
+	if $proses_koneksi.visible:
+		_sembunyikan_proses_koneksi()
+	$menu_utama/animasi.play("sembunyikan")
+	$proses_memuat/panel_bawah/animasi.play("tampilkan")
+	$proses_memuat/panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
+	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
+	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
+	await get_tree().create_timer(1.0).timeout
+	data["posisi"] = posisi
+	var tmp_perintah = Callable(self, "_muat_map")
+	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
+func _muat_map(file_map):
+	# INFO : (4) muat map
+	map = await load("res://map/%s.tscn" % [file_map]).instantiate()
+	map.name = "lingkungan"
+	call_deferred("_atur_persentase_memuat", 70)
+	dunia.call_deferred("add_child", map)
+	# TODO : Proses entitas
+	if koneksi == MODE_KONEKSI.SERVER:
+		# INFO : (5a) buat server
+		server.call_deferred("buat_koneksi")
+		if !server.headless:
+			call_deferred("_tambahkan_pemain", 1, data)
+			server.pemain_terhubung = 1
+	elif koneksi == MODE_KONEKSI.CLIENT:
+		# INFO : (5b1) kirim data pemain ke server
+		server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
+		#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
+	thread.call_deferred("wait_to_finish")
+func _tambahkan_pemain(id: int, data_pemain):
+	var pemain
+	var sumber = "" # ini jalur resource pemain, fungsinya untuk disimpan di timeline
+	if is_instance_valid(dunia) and koneksi == MODE_KONEKSI.SERVER:
+		match data_pemain["gender"]:
+			"L": pass
+			"P": pemain = karakter_cewek.instantiate(); sumber = karakter_cewek.resource_path
+		if !is_instance_valid(pemain): print("tidak dapat menambahkan pemain "+str(id)); return
+		
+		# INFO : (6) terapkan data pemain ke model pemain
+		pemain.id_pemain = id
+		pemain.name = str(id)
+		pemain.nama = data_pemain["nama"]
+		pemain.platform_pemain 		= data_pemain["sistem"]
+		pemain.model["alis"] 		= data_pemain["alis"]
+		pemain.model["garis_mata"] 	= data_pemain["garis_mata"]
+		pemain.model["mata"] 		= data_pemain["mata"]
+		pemain.model["rambut"] 		= data_pemain["rambut"]
+		pemain.warna["rambut"] 		= data_pemain["warna_rambut"]
+		pemain.model["baju"] 		= data_pemain["baju"]
+		pemain.warna["baju"] 		= data_pemain["warna_baju"]
+		pemain.warna["celana"] 		= data_pemain["warna_celana"]
+		pemain.model["sepatu"] 		= data_pemain["sepatu"]
+		pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
+		
+		# INFO : (7) tambahkan pemain ke dunia
+		dunia.get_node("pemain").add_child(pemain, true)
+		
+		# terapkan posisi
+		pemain.position = data_pemain["posisi"]
+		
+		# Timeline : spawn pemain
+		server.timeline[server.timeline["data"]["frame"]] = {
+			id: {
+				"tipe": 		"spawn",
+				"tipe_entitas": "pemain",
+				"sumber": 		sumber,
+				"data": 		data_pemain
+			}
+		}
+		
+		# server
+		if id == 1:
+			# INFO : (8a) mulai permainan
+			karakter = pemain
+			pemain._kendalikan(true)
+			_tampilkan_permainan()
+		
+	else: print("tidak dapat menambahkan pemain sebelum memuat dunia!")
+func _berbicara(fungsi : bool):
+	var idx = AudioServer.get_bus_index("Suara Pemain")
+	var effect = AudioServer.get_bus_effect(idx, 0)
+	if is_instance_valid(karakter): # hanya berfungsi dalam permainan
+		if fungsi and !$suara_pemain.playing:
+			_timer_kirim_suara.start() # Mulai timer untuk memicu _kirim_suara setiap 2 detik
+			effect.set_recording_active(true)
+			$hud/frekuensi_mic/animasi.play("tampilkan")
+			$suara_pemain.play()
+		elif !fungsi and $suara_pemain.playing:
+			_timer_kirim_suara.stop()
+			_kirim_suara()
+			$hud/frekuensi_mic/animasi.play_backwards("tampilkan")
+			await $hud/frekuensi_mic/animasi.animation_finished
+			$hud/frekuensi_mic.visible = false
+			$suara_pemain.stop()
+func _kirim_suara():
+	if $suara_pemain.playing:
+		var idx = AudioServer.get_bus_index("Suara Pemain")
+		var effect = AudioServer.get_bus_effect(idx, 0)
+		var tmp_suara = effect.get_recording()
+		var tmp_ukuran_buffer_suara = 0
+		if tmp_suara != null:
+			# INFO : kompresi data audio
+			# BUG : suara menjadi lambat
+			# cek : tanpa kompresi = sama saja, artinya bukan diakibatkan oleh kompresi
+			# fix : atur pitch_scale suara pada pemain menjadi 2, gatau kenapa apa hasil rekamannya yang lambat atau buffer stream-nya!
+			var tmp_data_suara : PackedByteArray = tmp_suara.data
+			tmp_ukuran_buffer_suara = tmp_data_suara.size()
+			client.data_suara = tmp_data_suara.compress(FileAccess.COMPRESSION_ZSTD)
+		effect.set_recording_active(false)
+		if client.data_suara.size() == 0: pass
+		else: server.rpc("_terima_suara_pemain", client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara)#; server._terima_suara_pemain(client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara) # testing
+		effect.set_recording_active(true)
+		print("kirim suara...")
+
+# koneksi
+func buat_server(headless = false):
+	koneksi = MODE_KONEKSI.SERVER
+	server.headless = headless
+	if $daftar_server.visible:
+		client.hentikan_pencarian_server()
+		$daftar_server/animasi.play("animasi_panel/tutup")
+	_mulai_permainan(server.map)
+func gabung_server():
+	koneksi = MODE_KONEKSI.CLIENT
+	var ip = $daftar_server/panel/panel_input/input_ip.text
+	if not ip.is_valid_ip_address():
+		if ip == "": 	_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
+		else:			_tampilkan_popup_informasi("%iptakvalid", $daftar_server/panel/panel_input/input_ip)
+		return
+	$daftar_server/panel/panel_input/input_ip.grab_focus()
+	$proses_koneksi/animasi.play("tampilkan")
+	$proses_koneksi/panel/animasi.play("proses")
+	client.hentikan_pencarian_server()
+	client.sambungkan_server(ip)
+func cari_server(): 		client.cari_server()
+func cek_koneksi_server(): 	client.cek_koneksi()
+func putuskan_server(paksa = false):
+	if is_instance_valid(dunia):
+		if koneksi == MODE_KONEKSI.SERVER:
+			if server.pemain_terhubung > 1 and !paksa:
+				var tmp_f_putuskan = Callable(self, "putuskan_server")
+				tmp_f_putuskan = tmp_f_putuskan.bind(true)
+				_tampilkan_popup_konfirmasi($menu_utama/menu/Panel/buat_server, tmp_f_putuskan, "%putuskan_server")
+				return
+			else:
+				server.putuskan()
+				$menu_utama/menu/Panel/buat_server.grab_focus()
+		elif koneksi == MODE_KONEKSI.CLIENT:
+			client.putuskan_server()
+			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
+			$menu_utama/menu/Panel/gabung_server.grab_focus()
+		
+		$hud/kompas.set_physics_process(false)
+		$hud/kompas.parent = null
+		$hud.visible = false
+		$kontrol_sentuh.visible = false
+		$kontrol_sentuh/menu.visible = true
+		# INFO : (9) tampilkan kembali menu utama
+		$menu_jeda/menu/animasi.play("sembunyikan")
+		$menu_utama/animasi.play("tampilkan")
+		
+		koneksi = MODE_KONEKSI.CLIENT
+		karakter = null
+		dunia.hapus_map()
+		dunia.hapus_instance_pemain()
+		
+		$latar/animasi.play("tampilkan")
+		await get_tree().create_timer(1.0).timeout
+		$latar/animasi.play("animasi1")
+		_mainkan_musik_latar()
+
+# kontrol
+func _ketika_mulai_mengontrol_arah_pandangan(): _touchpad_disentuh = true
+func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
+	if is_instance_valid(karakter): # ketika dalam permainan
+		if _touchpad_disentuh:
+			if _arah_sentuhan_touchpad.x == 0:
+				karakter.arah_pandangan.x = 0
+				_arah_sentuhan_touchpad.x = arah.x
+			else:
+				if arah.x < _arah_sentuhan_touchpad.x:
+					karakter.arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
+					_arah_sentuhan_touchpad.x = arah.x
+				else:
+					karakter.arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
+					_arah_sentuhan_touchpad.x = arah.x
+			
+			if _arah_sentuhan_touchpad.y == 0:
+				karakter.arah_pandangan.y = 0
+				_arah_sentuhan_touchpad.y = arah.y
+			else:
+				if arah.y < _arah_sentuhan_touchpad.y:
+					karakter.arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
+					_arah_sentuhan_touchpad.y = arah.y
+				else:
+					karakter.arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
+					_arah_sentuhan_touchpad.y = arah.y
+			
+			karakter.arah_pandangan.x =  karakter.arah_pandangan.x * 100
+			karakter.arah_pandangan.x = ceil(karakter.arah_pandangan.x)
+			karakter.arah_pandangan.y = -karakter.arah_pandangan.y * 100
+			karakter.arah_pandangan.y = ceil(karakter.arah_pandangan.y)
+func _ketika_berhenti_mengontrol_arah_pandangan():
+	_touchpad_disentuh = false
+	if is_instance_valid(karakter): # ketika dalam permainan
+		_arah_sentuhan_touchpad = Vector2.ZERO
+		karakter.arah_pandangan = Vector2.ZERO
+func _ketika_mengontrol_arah_gerak(arah, _analog):
+	if is_instance_valid(karakter): # ketika dalam permainan
+		if arah.y > 0.1 and arah.y <= 1.0:
+			#maju
+			Input.action_press("maju")
+		elif arah.y < -0.1 and arah.y >= -1.0:
+			#mundur
+			Input.action_press("mundur")
+		else:
+			Input.action_release("maju")
+			Input.action_release("mundur")
+		
+		if arah.x > 0.1 and arah.x <= 1.0:
+			Input.action_press("kanan")
+		elif arah.x < -0.1 and arah.x >= -1.0:
+			Input.action_press("kiri")
+		else:
+			Input.action_release("kiri")
+			Input.action_release("kanan")
+func _ketika_mulai_melompat():		Input.action_press("lompat")
+func _ketika_berhenti_melompat():	Input.action_release("lompat")
+
+# UI
+func _atur_persentase_memuat(nilai):
+	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.get_animation("proses").track_set_key_value(0, 1, nilai)
+	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.play("proses")
+	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = str(nilai)+"%"
+func _tampilkan_permainan():
+	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
+	$latar/animasi.play("sembunyikan")
+	_hentikan_musik_latar()
+	$hud/kompas.parent = karakter
+	$hud/kompas.set_physics_process(true)
+	$hud.visible = true
+	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
+func _tampilkan_pemutar_musik():
+	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
+	else: $pemutar_musik/animasi.play("tampilkan")
+func _tampilkan_daftar_server():
+	if $daftar_server.visible: _sembunyikan_daftar_server()
+	else:
+		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
+		client.cari_server()
+		if $karakter.visible: $karakter/animasi.play("tampilkan_server")
+		else: $daftar_server/animasi.play("animasi_panel/tampilkan")
+		$daftar_server/panel/panel_input/batal.grab_focus()
+func _sembunyikan_daftar_server():
+	client.hentikan_pencarian_server()
+	_reset_daftar_server_lan()
+	$daftar_server/animasi.play("animasi_panel/sembunyikan")
+	$menu_utama/menu/Panel/gabung_server.grab_focus()
+func _tambah_server_lan(ip, sys, nama, nama_map, jml_pemain, max_pemain):
+	var server_lan = load("res://ui/server.tscn").instantiate()
+	server_lan.name = ip.replace('.', '_');
+	server_lan.atur(ip, sys, nama, nama_map, jml_pemain, max_pemain)
+	server_lan.button_group = client.pilih_server
+	$daftar_server/panel/daftar_lan/layout.add_child(server_lan)
+func _pilih_server_lan(ip):
+	$daftar_server/panel/panel_input/input_ip.text = ip
+	$daftar_server/panel/panel_input/sambungkan.grab_focus()
+func _hapus_server_lan(ip):
+	$daftar_server/panel/daftar_lan/layout.get_node(ip.replace('.', '_')).queue_free()
+func _reset_daftar_server_lan():
+	var jumlah_koneksi_lan = $daftar_server/panel/daftar_lan/layout.get_child_count()
+	for k in jumlah_koneksi_lan:
+		$daftar_server/panel/daftar_lan/layout.get_child(jumlah_koneksi_lan - (k + 1)).queue_free()
+func _pilih_tab_server_lan():
+	if _posisi_tab_koneksi != "LAN":
+		$daftar_server/panel/internet.button_pressed = false
+		$daftar_server/panel/animasi_tab.play("lan")
+		_posisi_tab_koneksi = "LAN"
+func _pilih_tab_server_internet():
+	if _posisi_tab_koneksi != "Internet":
+		$daftar_server/panel/lan.button_pressed = false
+		$daftar_server/panel/animasi_tab.play("internet")
+		_posisi_tab_koneksi = "Internet"
+func _sembunyikan_proses_koneksi():
+	$proses_koneksi/animasi.play("sembunyikan")
+	$proses_koneksi/panel/animasi.stop()
+func _tampilkan_setelan_karakter():
+	if $karakter.visible: _sembunyikan_setelan_karakter()
+	else:
+		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
+		if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") == null:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport.add_child(
+				load("res://pencahayaan_karakter.scn").instantiate()
+			)
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = false
+		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible == false:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = true
+			match data["gender"]: # INFO : aktifkan visibilitas placeholder karakter berdasarkan data
+				"P": $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.visible = true
+				"L": pass
+		if $daftar_server.visible:
+			$daftar_server/animasi.play("tampilkan_karakter")
+			client.hentikan_pencarian_server()
+			_reset_daftar_server_lan()
+		else: $karakter/animasi.play("tampilkan")
+		$karakter/panel/batal.grab_focus()
+func _sembunyikan_setelan_karakter():
+	_pilih_tab_personalitas_karakter()
+	$karakter/animasi.play("animasi_panel/sembunyikan")
+	$menu_utama/menu/Panel/karakter.grab_focus()
+func _ketika_ukuran_tampilan_karakter_diubah():
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport.size = $karakter/panel/tampilan.size
+func _ketika_mengubah_arah_tampilan_karakter(arah, _touchpad):
+	_arah_gestur_tampilan_karakter = arah
+func _reset_pilihan_tab_karakter():
+	$karakter/panel/pilih_tab_personalitas.button_pressed = false
+	$karakter/panel/pilih_tab_wajah.button_pressed = false
+	$karakter/panel/pilih_tab_rambut.button_pressed = false
+	$karakter/panel/pilih_tab_baju.button_pressed = false
+	$karakter/panel/pilih_tab_celana.button_pressed = false
+	$karakter/panel/pilih_tab_sepatu.button_pressed = false
+func _pilih_tab_personalitas_karakter():
+	_reset_pilihan_tab_karakter()
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_badan").track_set_key_value(
+		0,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_badan").track_set_key_value(
+		1,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_badan")
+	$karakter/panel/tab.current_tab = 0
+	$karakter/panel/pilih_tab_personalitas.button_pressed = true
+func _pilih_tab_wajah_karakter():
+	_reset_pilihan_tab_karakter()
+	$karakter/panel/tab.current_tab = 1
+	$karakter/panel/pilih_tab_wajah.button_pressed = true
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_wajah").track_set_key_value(
+		0,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_wajah").track_set_key_value(
+		1,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_wajah")
+	# tween putaran pengamat ke <= 60
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 60:
+		var tween_arah_pengamat = get_tree().create_tween()
+		tween_arah_pengamat.tween_property(
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat,
+			"rotation_degrees",
+			Vector3(0, 40, 0),
+			0.5
+		)
+		tween_arah_pengamat.play()
+	elif $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -60:
+		var tween_arah_pengamat = get_tree().create_tween()
+		tween_arah_pengamat.tween_property(
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat,
+			"rotation_degrees",
+			Vector3(0, -40, 0),
+			0.5
+		)
+		tween_arah_pengamat.play()
+	# TODO : clamp putaran pengamat ke <= 60
+func _pilih_tab_rambut_karakter():
+	_reset_pilihan_tab_karakter()
+	$karakter/panel/tab.current_tab = 2
+	$karakter/panel/pilih_tab_rambut.button_pressed = true
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_rambut").track_set_key_value(
+		0,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_rambut").track_set_key_value(
+		1,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_rambut")
+func _pilih_tab_baju_karakter():
+	_reset_pilihan_tab_karakter()
+	$karakter/panel/tab.current_tab = 3
+	$karakter/panel/pilih_tab_baju.button_pressed = true
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
+		0,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
+		1,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_baju")
+func _pilih_tab_celana_karakter():
+	_reset_pilihan_tab_karakter()
+	$karakter/panel/tab.current_tab = 4
+	$karakter/panel/pilih_tab_celana.button_pressed = true
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_celana").track_set_key_value(
+		0,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_celana").track_set_key_value(
+		1,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_celana")
+func _pilih_tab_sepatu_karakter():
+	_reset_pilihan_tab_karakter()
+	$karakter/panel/tab.current_tab = 5
+	$karakter/panel/pilih_tab_sepatu.button_pressed = true
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_sepatu").track_set_key_value(
+		0,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_sepatu").track_set_key_value(
+		1,
+		0,
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
+	)
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
+func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
+	$popup_informasi.target_fokus_setelah = fokus_setelah
+	$popup_informasi/panel/teks.text = teks_informasi
+	$popup_informasi/animasi.play_backwards("tutup")
+	$popup_informasi/panel/tutup.grab_focus()
+func _tutup_popup_informasi():
+	$popup_informasi/animasi.play("tutup")
+	$popup_informasi/panel/teks.text = ""+str(randf())
+	$popup_informasi.target_fokus_setelah.grab_focus()
+func _tampilkan_popup_konfirmasi(tombol_penampil : Button, fungsi : Callable, teks):
+	$popup_konfirmasi.penampil = tombol_penampil
+	$popup_konfirmasi.fungsi = fungsi
+	$popup_konfirmasi/panel/teks.text = teks
+	$popup_konfirmasi/animasi.play("tampilkan")
+	$popup_konfirmasi/panel/batal.grab_focus()
+func _ketika_konfirmasi_popup_konfirmasi():
+	$popup_konfirmasi/animasi.play_backwards("tampilkan")
+	$popup_konfirmasi.fungsi.call()
+	$popup_konfirmasi.penampil.grab_focus()
+func _tutup_popup_konfirmasi():
+	$popup_konfirmasi/animasi.play("tutup")
+	$popup_konfirmasi.penampil.grab_focus()
+func _mainkan_musik_latar():
+	if $pemutar_musik/AudioStreamPlayer.stream != null:
+		$pemutar_musik/AudioStreamPlayer.play()
+		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+func _ketika_musik_latar_selesai_dimainkan():
+	await get_tree().create_timer(10.0).timeout
+	_mainkan_musik_latar()
+func _hentikan_musik_latar():
+	$pemutar_musik/AudioStreamPlayer.stop()
+func _tambah_daftar_pemain(id_pemain, data_pemain):
+	var pemain = load("res://ui/pemain.tscn").instantiate()
+	# INFO : tambahkan info pemain ke daftar pemain
+	#print("just a little more~")
+	$hud/daftar_pemain/panel/gulir/baris.add_child(pemain)
+	pemain.sistem	= data_pemain["sistem"]
+	pemain.nama		= data_pemain["nama"]
+	pemain.karakter	= data_pemain["gender"]
+	pemain.name = str(id_pemain)
+func _tampilkan_setelan_permainan():
+	Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()")
+
+# karakter
+func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama
+func _ketika_mengubah_gender_karakter(gender):
+	match gender:
+		0: data["gender"] = "P"
+		1: data["gender"] = "L"
+func _ketika_mengubah_alis_karakter(id_alis):
+	data["alis"] = id_alis
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["alis"] = id_alis
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+func _ketika_mengubah_bentuk_bulu_mata_karakter(id_model):
+	data["garis_mata"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["garis_mata"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+func _ketika_mengubah_bentuk_mata_karakter(id_model):
+	data["mata"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["mata"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+func _ketika_mengubah_rambut_karakter(id_model):
+	data["rambut"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["rambut"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+func _ketika_mengubah_warna_rambut_karakter(warna):
+	data["warna_rambut"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["rambut"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+func _ketika_mengubah_baju_karakter(id_model):
+	data["baju"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["baju"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+func _ketika_mengubah_warna_baju_karakter(warna):
+	data["warna_baju"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["baju"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+func _ketika_mengubah_warna_celana_karakter(warna):
+	data["warna_celana"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["celana"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+func _ketika_mengubah_sepatu_karakter(id_model):
+	data["sepatu"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["sepatu"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+func _ketika_mengubah_warna_sepatu_karakter(warna):
+	data["warna_sepatu"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["sepatu"] = warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+
+# menu
+func _jeda():
+	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
+		karakter._atur_kendali(false)
+		$kontrol_sentuh/menu.visible = false
+		$menu_jeda/menu/animasi.play("tampilkan")
+		$menu_jeda/menu/kontrol/Panel/lanjutkan.grab_focus()
+		jeda = true
+func _lanjutkan():
+	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
+		karakter._atur_kendali(true)
+		$kontrol_sentuh/menu.visible = true
+		$menu_jeda/menu/animasi.play("sembunyikan")
+		$menu_jeda/menu/kontrol/Panel/lanjutkan.release_focus()
+		jeda = false
+func _kembali():
+	if $popup_informasi.visible:
+		_tutup_popup_informasi()
+	elif $popup_konfirmasi.visible:
+		_tutup_popup_konfirmasi()
+	elif $proses_koneksi.visible:
+		pass # TODO : batalkan koneksi server
+	elif $daftar_server.visible:
+		_sembunyikan_daftar_server()
+	elif $karakter.visible:
+		_sembunyikan_setelan_karakter()
+	elif !is_instance_valid(karakter):
+		_keluar()
+func _putuskan():
+	putuskan_server()
+func _keluar():
+	_tampilkan_popup_konfirmasi($menu_utama/keluar, Callable(get_tree(), "quit"), "%keluar%")
+
+# fungsi lain
+func detikKeMenit(detik: int) -> String:
+	var menit = ceil(detik) / 60
+	var detik_tersisa = detik % 60
+
+	var menit_terformat = str(menit)
+	var detik_terformat = str(detik_tersisa)
+
+	# Menambahkan nol di depan jika menit atau detik kurang dari 10
+	if menit < 10:
+		menit_terformat = "0" + menit_terformat
+
+	if detik_tersisa < 10:
+		detik_terformat = "0" + detik_terformat
+
+	return menit_terformat + ":" + detik_terformat
+
+# bantuan pada console
+const _HELP_cek_koneksi_server	:= "Cek status koneksi dengan server"
+const _HELP_putuskan_server 	:= "Hentikan/Putuskan server [fungsi ini dipanggil secara otomatis!] * memanggilnya secara manual akan membiarkan kursor mouse dalam kondisi capture"
+const _HELP_PERAN_KARAKTER		:= "Tipe-tipe peran yang dapat diperankan karakter/pemain" # gak work!

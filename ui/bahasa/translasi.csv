@@ -1,0 +1,90 @@
+keys,id,en
+## menu utama,,
+BERMAIN,Petualangan,Adventure
+%buat_server,  Buat Server,  Create Server
+%gabung_server,  Gabung Server,  Join to Server
+%karakter,  Karakter,  Character
+PENGATURAN,Pengaturan,Settings
+KELUAR,Keluar,Exit
+,,
+# tombol,,
+%oke,  Oke,  Ok
+%batal,  Batal,  Cancel
+%sambungkan,  Sambungkan,  Connect
+%simpan,  Simpan,  Save
+%tutup,Tutup,Close
+%konfirmasi,Konfirmasi,Confirm
+,,
+# koneksi,,
+%internet,  Internet,  Internet
+%lan,  Jaringan Lokal,  LAN
+%menghubungkan, Menghubungkan, Connecting
+,,
+# karakter,,
+%nama,Nama,Name
+%gender,Gender,Sex
+%cewek,  Cewek,  Female
+%cowok,  Cowok,  Male
+%alis,Alis,Eyebrows
+%bulu_mata,Bulu mata,Eyelashes
+%bola_mata,Bola mata,Eyeball
+%gaya,Gaya,Style
+%warna,Warna,Color
+%baju,Baju,Dress
+%celana,Celana,Pants
+%sepatu,Sepatu,Shoes
+,,
+# konfigurasi,,
+%setelan,Setelan,Settings
+TAMPILAN,Tampilan,Appearance
+INPUT,Masukan,Input
+MODEANALOG,Kontrol Gerakan,Movement Control
+SUARA,Suara,Sound
+GRAFIK,Grafik,Graphics
+bahasa,Bahasa,Language
+VOLUME,Volume Permainan,Game Volume
+VOLUMEMUSIK,Volume Musik,Music Volume
+BALIKBAYANGAN,Balikkan render bayangan,Invert shadow
+MODEVR,Mode Virtual Reality,VR Mode
+SKALARESOLUSI,Skala Resolusi,Resolution Scale
+%setelan_umum,Setelan Umum,General Settings
+%mode_layar_penuh,Mode Layar Penuh,Toggle Fullscreen
+%laporkan_bug,Laporkan Bug,Report Bugs
+%sarankan_fitur,Request/Sarankan Fitur,Suggest Features
+%tampilkan_log,Tampilkan Log,Show Log
+,,
+# menu jeda,,
+%lanjutkan,  Lanjutkan,  Resume
+%statistik,  Statistik,  Statistics
+%putuskan,  Putuskan,  Disconnect
+,,
+# notifikasi,,
+%buatkoneksi,Membuat peladen dengan map `%s` pada %s,Host a server with map `%s` at %s
+KONEKSISUKSES,Koneksi terhubung dengan peladen,Connected to
+%koneksigagal,Tidak dapat terhubung dengan peladen,Unable to connect the server
+%koneksiputus,Koneksi peladen telah terputus,Server disconnected
+%ipkosong,Alamat IP tidak boleh kosong!,IP Address cannot empty!
+%iptakvalid,Alamat IP tidak valid!,Invalid IP Address!
+LOGINFORMASI,INFORMASI,INFO
+LOGPERINGATAN,PERINGATAN,WARNING
+LOGKESALAHAN,KESALAHAN,ERROR
+PERINTAHSALAH,Perintah `%s` tidak ditemukan.,Command `%s` not found.
+%spawnpemain,spawn pemain,spawning player
+%putuskanserver,Menghentikan peladen,Stopping server
+,,
+# output debug,,
+FPS,Frame/detik,FPS
+VERTEKS,Sudut,Vertices
+OBJEK,Objek,Objects
+ARAH,Arah,Direction
+,,
+# input,,
+INPUTSPASI,spasi,space
+INPUTHAPUS,hapus,delete
+%inputperintah%,Masukkan perintah disini...,Input expression here...
+,,
+# konfirmasi,,
+%keluar%,Keluar Permainan?,Exit Game?
+%putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
+%belum_tersedia,Fitur ini belum tersedia untuk saat ini,This feature not available yet
+%informasi_tidak_tersedia%,Tidak ada informasi yang tersedia.,No help information provided.

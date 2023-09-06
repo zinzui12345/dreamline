@@ -1,0 +1,142 @@
+[gd_scene load_steps=7 format=3 uid="uid://cyxi85pr8q8yb"]
+
+[sub_resource type="GDScript" id="GDScript_vqr5r"]
+script/source = "extends Control
+
+# skala sama dengan ukuran y viewport / ukuran y default (600)
+# posisi vertikal sama dengan tinggi gambar parallax / 8
+
+func _ready():
+	get_parent().connect(\"resized\", Callable(self, \"_ketika_ukuran_diubah\"))
+	$animasi.play(\"animasi1\")
+
+func _ketika_ukuran_diubah():
+	$latar_parallax.scale = Vector2(
+		get_parent().get_rect().size.y / 600,
+		get_parent().get_rect().size.y / 600
+	)
+	for latar in $latar_parallax/ParallaxLayer.get_children():
+		if latar.get(\"texture\") != null:
+			latar.position.y = -( latar.texture.get_height() / 8 )
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vx7d7"]
+bg_color = Color(0, 0, 0, 0.313726)
+
+[sub_resource type="Animation" id="Animation_nw4wg"]
+resource_name = "animasi1"
+length = 30.0
+loop_mode = 1
+step = 1.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("latar_parallax:offset:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 15, 30),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5),
+"update": 0,
+"values": [0.0, 100.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_khvls"]
+resource_name = "sembunyikan"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("latar_parallax/ParallaxLayer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_j2wvp"]
+resource_name = "tampilkan"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("latar_parallax/ParallaxLayer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1bm3d"]
+_data = {
+"animasi1": SubResource("Animation_nw4wg"),
+"sembunyikan": SubResource("Animation_khvls"),
+"tampilkan": SubResource("Animation_j2wvp")
+}
+
+[node name="latar" type="Control"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_vqr5r")
+
+[node name="latar_parallax" type="ParallaxBackground" parent="."]
+scroll_limit_end = Vector2(0, -245)
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="latar_parallax"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(-214.182, 0)
+motion_mirroring = Vector2(1713.46, 0)
+
+[node name="349564939485128229" type="Sprite2D" parent="latar_parallax/ParallaxLayer"]
+position = Vector2(0, -162)
+scale = Vector2(0.656825, 0.656825)
+centered = false
+
+[node name="dim" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vx7d7")
+
+[node name="animasi" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1bm3d")
+}
