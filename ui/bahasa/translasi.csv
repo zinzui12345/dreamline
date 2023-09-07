@@ -37,7 +37,8 @@ KELUAR,Keluar,Exit
 # konfigurasi,,
 %setelan,Setelan,Settings
 TAMPILAN,Tampilan,Appearance
-INPUT,Masukan,Input
+%input,Masukan,Input
+sensitivitas_gestur,Sensitivitas Gestur,Gesture Sensitivity
 MODEANALOG,Kontrol Gerakan,Movement Control
 SUARA,Suara,Sound
 GRAFIK,Grafik,Graphics
@@ -87,4 +88,3 @@ INPUTHAPUS,hapus,delete
 %keluar%,Keluar Permainan?,Exit Game?
 %putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
 %belum_tersedia,Fitur ini belum tersedia untuk saat ini,This feature not available yet
-%informasi_tidak_tersedia%,Tidak ada informasi yang tersedia.,No help information provided.

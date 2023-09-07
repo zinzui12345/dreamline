@@ -37,6 +37,7 @@ func atur_pengendali(id):
 	if kendali:
 		Panku.gd_exprenv.register_env("pemain", self)
 		Panku.notify("%spawnpemain")
+		server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 		client.permainan.karakter = karakter
 		client.permainan._tampilkan_permainan()
 
@@ -172,6 +173,7 @@ func _process(delta):
 					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
 					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
 					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 5, true)
+					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
 					karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 					karakter.arah.y = 150 * delta
 					lompat = true

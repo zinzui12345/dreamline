@@ -1,5 +1,6 @@
 extends Resource
 
+# ----------------------------------------------------------------
 @export_group("%setelan_umum")
 
 @export var bahasa := Konfigurasi.bahasa.auto : 
@@ -30,3 +31,11 @@ func laporkan_bug():
 func sarankan_fitur():
 	#OS.shell_open("https://github.com/Ark2000/PankuConsole/issues")
 	print_debug("testt!")
+
+# ----------------------------------------------------------------
+@export_group("%input")
+
+@export_range(1.0, 80.0) var sensitivitas_gestur := Konfigurasi.sensitivitasPandangan : 
+	set(ubah):
+		Konfigurasi.sensitivitasPandangan = ubah
+		sensitivitas_gestur = ubah

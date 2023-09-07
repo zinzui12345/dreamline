@@ -10,7 +10,7 @@ class_name Permainan
 # 14 Agu 2023 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 
-const versi = "Dreamline beta v1.4.2 rev 14/08/23 devtest"
+const versi = "Dreamline beta v1.4.2 rev 06/09/23 alpha"
 const karakter_cewek = preload("res://karakter/lulu/lulu.scn")
 
 var data = {
@@ -32,6 +32,7 @@ var data = {
 var karakter : CharacterBody3D
 var dunia = null
 var map = null
+var permukaan # Permukaan (Terrain)
 var thread = Thread.new()
 var koneksi = MODE_KONEKSI.CLIENT
 var jeda = false

@@ -20,17 +20,20 @@ extends Node3D
 @export var titik_offset = 0.5
 @export var pengamat : Camera3D :
 	set(kamera):
-		posisi_terakhir = kamera.global_transform.origin
-		rotasi_terakhir = kamera.global_rotation_degrees
-		pengamat = kamera
-@export var arah_target_pengamat : Node3D
+		if is_instance_valid(kamera):
+			posisi_terakhir = kamera.global_transform.origin
+			rotasi_terakhir = kamera.global_rotation_degrees
+			arah_target_pengamat.reparent(kamera, false)
+			pengamat = kamera
 @export var frekuensi_vegetasi = 0.5
 @export var tekstur : Image
 @export var potongan = []
 @export var vegetasi = []
 @export var perbarui = false :
 	set(nilai):
-		if nilai: hasilkan_terrain()
+		if nilai:
+			print("menghasilkan permukaan...")
+			hasilkan_terrain()
 		perbarui = false
 @export var simpan = false :
 	set(nilai):
@@ -83,13 +86,20 @@ var batu = [
 var fisik : StaticBody3D
 var posisi_terakhir : Vector3
 var rotasi_terakhir : Vector3
+var arah_target_pengamat : Marker3D
 
 @onready var scenario = get_world_3d().scenario
 
+func _enter_tree():
+	arah_target_pengamat = Marker3D.new()
+	add_child(arah_target_pengamat)
 func _ready():
-	if Engine.is_editor_hint(): set_process(debug_culling)
+	if Engine.is_editor_hint():
+		set_process(debug_culling)
+	else:
+		# INFO : set ref permukaan permainan
+		get_tree().get_root().get_node("Dreamline").permukaan = self
 	muat_terrain()
-	# FIXME : set pengamat permukaan ke pemain utama
 func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
@@ -116,17 +126,17 @@ func _process(_delta):
 				# cek pengamat mengarah kemana?, potongan mana saja yang harus visible dan invisible?
 				if get_node_or_null("bentuk_" + potongan[pt]["indeks"]) != null and gunakan_frustum_culling:
 					# kalo pengamat berada pada potongan, render potongan tersebut
-					if pengamat.position.x >= posisi.x and pengamat.position.x <= (posisi.x + batas.x) and \
-						pengamat.position.z >= posisi.y and pengamat.position.z <= (posisi.y + batas.y):
+					if pengamat.global_position.x >= posisi.x and pengamat.global_position.x <= (posisi.x + batas.x) and \
+						pengamat.global_position.z >= posisi.y and pengamat.global_position.z <= (posisi.y + batas.y):
 						
 						get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
 						get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
 						
-						get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
-							potongan[pt]["pusat_x"],
-							0,
-							potongan[pt]["pusat_y"]
-						)
+						#get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
+						#	potongan[pt]["pusat_x"],
+						#	0,
+						#	potongan[pt]["pusat_y"]
+						#)
 					
 					# hanya render potongan yang terlihat di pandangan pengamat
 					else:
@@ -151,10 +161,10 @@ func _process(_delta):
 							0,
 							potongan[pt]["pusat_y"]
 						)
-						#get_parent().get_node("debug_pos_chunk").transform.origin = potongan_tengah
+						#get_parent().get_node("debug_pos_chunk").transform.origin = potongan_tengah # ini gak ngaruh karena proses loop cepet banget
 						
 						# menghitung jarak antara kamera dan potongan
-						var jarak_render = pengamat.transform.origin.distance_to(potongan_tengah)
+						var jarak_render = pengamat.global_transform.origin.distance_to(potongan_tengah) * 0.6
 						
 						# mengarahkan arah_target_pengamat dari kamera ke potongan
 						if arah_target_pengamat != null:
@@ -173,15 +183,16 @@ func _process(_delta):
 						if arah_target_pengamat != null:
 							var sudut = abs(arah_target_pengamat.rotation_degrees.y)
 							var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"]) / 0.405453467695
-							#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
-							#											+str(sudut)+" <= 175"
+							#if potongan_node.name == "bentuk_3_1":
+							#	get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
+							#												+str(sudut)+" <= 175"
 							if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
 								if !potongan_node.visible:
 									potongan_node.visible = true
 									potongan_fisik.disabled = false
 									if gunakan_object_culling:
 										atur_visibilitas_potongan_vegetasi(pt, true)
-							elif jarak_render <= jarak and sudut <= 175:
+							elif jarak_render <= jarak or sudut <= 175:
 								if !potongan_node.visible:
 									potongan_node.visible = true
 									potongan_fisik.disabled = false
@@ -217,7 +228,7 @@ func hasilkan_terrain():
 	print("membuat noise dari gambar")
 	var gambar_tekstur = ImageTexture.create_from_image(tekstur)
 	var gambar_noise : Image = gambar_tekstur.get_image()
-	var noise_data = []
+	#var noise_data = []
 	
 	# buat vertex
 	print("menghasilkan vertex dari pixel")
@@ -427,17 +438,17 @@ func slice_terrain(gambar_noise, material):
 	var slice_res_y = floor(gambar_res_y / slices_y)
 
 	# Menghitung panjang dan lebar slice dalam koordinat dunia
-	var world_slice_size_x = ukuran / slices_x
-	var world_slice_size_y = ukuran / slices_y
+	#var world_slice_size_x = ukuran / slices_x
+	#var world_slice_size_y = ukuran / slices_y
 
 	# Loop untuk membuat setiap slice
 	for y in range(slices_y):
 		for x in range(slices_x):
-			var potongan = str(y+1)+'_'+str(x+1)
+			var bagian_potongan = str(y+1)+'_'+str(x+1)
 			print("menghasilkan bentuk potongan [%s][%s]" % [str(y+1), str(x+1)])
-			var new_mesh = _buat_bagian_potongan(terrain_surface, x * slice_res_x, y * slice_res_y, slice_res_x, slice_res_y, potongan, gambar_noise)
+			var new_mesh = _buat_bagian_potongan(terrain_surface, x * slice_res_x, y * slice_res_y, slice_res_x, slice_res_y, bagian_potongan, gambar_noise)
 			var new_instance = MeshInstance3D.new()
-			new_instance.name = "bentuk_" + potongan
+			new_instance.name = "bentuk_" + bagian_potongan
 			new_instance.mesh = new_mesh
 			new_instance.material_override = material
 			new_instance.lod_bias = 0.5
@@ -459,13 +470,13 @@ func slice_terrain(gambar_noise, material):
 				print("menambahkan fisik potongan [%s][%s]" % [str(y+1), str(x+1)])
 				fisik.add_child(tmp_m_fisik)
 				tmp_fisik.queue_free()
-func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, potongan, gambar_noise):
+func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, bagian, gambar_noise):
 	var slice_mesh = ArrayMesh.new()
 	var surftool = SurfaceTool.new()
 	var data_potongan = {}
 
 	surftool.begin(Mesh.PRIMITIVE_TRIANGLES)
-	data_potongan["indeks"]  = potongan
+	data_potongan["indeks"]  = bagian
 	data_potongan["start_x"] = start_x
 	data_potongan["start_y"] = start_y
 	data_potongan["lebar_x"] = res_x
@@ -473,7 +484,7 @@ func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, poto
 	data_potongan["pusat_x"] = (start_x + (res_x / 2)) * (ukuran * 0.25) #2.48088235295
 	data_potongan["pusat_y"] = (start_y + (res_y / 2)) * (ukuran * 0.25) #2.48088235295
 	data_potongan["vegetasi"]= {}
-	self.potongan.append(data_potongan)
+	potongan.append(data_potongan)
 	for z in range(start_y, start_y + res_y + 1):
 		for x in range(start_x, start_x + res_x + 1):
 			var vertex_index = z * (gambar_noise.get_width() + 1) + x
@@ -517,7 +528,7 @@ func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, poto
 
 func tempatkan_vegetasi(posisi : Vector3):
 	var tipe_vegetasi = randi() % 3  # Pohon, Semak, Batu
-	var model_vegetasi = null
+	#var model_vegetasi = null
 	var array_model = []
 	var data_vegetasi = {}
 
