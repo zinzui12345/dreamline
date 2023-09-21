@@ -30,6 +30,7 @@ KELUAR,Keluar,Exit
 %bola_mata,Bola mata,Eyeball
 %gaya,Gaya,Style
 %warna,Warna,Color
+%warna_mata,Warna Mata,Eyeball Color
 %baju,Baju,Dress
 %celana,Celana,Pants
 %sepatu,Sepatu,Shoes
@@ -87,4 +88,3 @@ INPUTHAPUS,hapus,delete
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
 %putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
-%belum_tersedia,Fitur ini belum tersedia untuk saat ini,This feature not available yet

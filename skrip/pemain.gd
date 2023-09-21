@@ -40,6 +40,14 @@ func atur_pengendali(id):
 		server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 		client.permainan.karakter = karakter
 		client.permainan._tampilkan_permainan()
+	else:
+		# INFO : atur layer visibilitas model
+		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
 
 func _ready():
 	set_process(false)
@@ -169,12 +177,13 @@ func _process(delta):
 						karakter.arah.y = 200 * delta
 						lompat = true
 				elif karakter.is_on_floor():
-					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
-					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
-					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
-					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 5, true)
-					karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
-					karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+					# FIXME : melompat
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 5, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
+					#karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 					karakter.arah.y = 150 * delta
 					lompat = true
 		if Input.is_action_just_pressed("jongkok"):

@@ -53,16 +53,16 @@ func aktifkan(nilai = true, vr = false):
 	
 	if nilai:
 		_karakter.get_node("nama").visible = false
-		for md in _karakter.get_node("model/Root/Skeleton3D").get_child_count():
-			if _karakter.get_node("model/Root/Skeleton3D").get_child(md) is MeshInstance3D:
-				_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(1, false)
-				_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(2, true)
+		#for md in _karakter.get_node("model/Root/Skeleton3D").get_child_count():
+		#	if _karakter.get_node("model/Root/Skeleton3D").get_child(md) is MeshInstance3D:
+		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(1, false)
+		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(2, true)
 	else:
 		_karakter.get_node("nama").visible = true
-		for md in _karakter.get_node("model/Root/Skeleton3D").get_child_count():
-			if _karakter.get_node("model/Root/Skeleton3D").get_child(md) is MeshInstance3D:
-				_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(1, true)
-				_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(2, false)
+		#for md in _karakter.get_node("model/Root/Skeleton3D").get_child_count():
+		#	if _karakter.get_node("model/Root/Skeleton3D").get_child(md) is MeshInstance3D:
+		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(1, true)
+		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(2, false)
 
 func atur_mode(nilai):
 	mode_kontrol = 0 # nonaktifkan kontrol

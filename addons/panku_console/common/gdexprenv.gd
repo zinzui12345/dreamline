@@ -65,7 +65,7 @@ func register_env(env_name:String, env:Object):
 		env.tree_exiting.connect(
 			func(): remove_env(env_name)
 		)
-	if env.get_script():
+	if env != null and env.get_script():
 		var env_info = extract_info_from_script(env.get_script())
 		for k in env_info:
 			var keyword = "%s.%s" % [env_name, k]

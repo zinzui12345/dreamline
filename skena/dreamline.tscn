@@ -1,4 +1,4 @@
-[gd_scene load_steps=168 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=170 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -30,7 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://dfqc0jobjauax" path="res://ui/ikon/ikon_tombol_musik.svg" id="11_lbgy5"]
 [ext_resource type="Texture2D" uid="uid://b2j2r1e7relta" path="res://ui/ikon/ikon_tombol_simpan.svg" id="11_rwow7"]
 [ext_resource type="Texture2D" uid="uid://cewkaq0sv2sge" path="res://ui/ikon/ikon_tombol_keluar.svg" id="12_evk18"]
-[ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/lulu/lulu.scn" id="12_mhmg0"]
+[ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/rulu/rulu.scn" id="12_mhmg0"]
 [ext_resource type="PackedScene" uid="uid://dts7rxn5r6xqp" path="res://pencahayaan_karakter.scn" id="13_gvw0j"]
 [ext_resource type="Texture2D" uid="uid://fqepvioy3jkr" path="res://ui/ikon/ikon_gender_cewek.svg" id="13_yyl5t"]
 [ext_resource type="Texture2D" uid="uid://c3taco8pqoduy" path="res://ui/ikon/ikon_gender_cowok.svg" id="14_oalbb"]
@@ -47,6 +47,7 @@
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
+[ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_60lyf"]
@@ -185,6 +186,9 @@ tracks/1/keys = {
 _data = {
 "tampilkan": SubResource("Animation_rhu7g")
 }
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2jlpn"]
+radius = 35.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovj3w"]
 bg_color = Color(1, 1, 1, 0.0392157)
@@ -662,7 +666,7 @@ _data = {
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_acxcj"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.8, 0.8, 0.8, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 corner_radius_bottom_right = 7
@@ -2272,6 +2276,11 @@ texture_normal = ExtResource("15_5l3bk")
 texture_pressed = ExtResource("16_t7mcc")
 metadata/_edit_use_anchors_ = true
 
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lompat"]
+position = Vector2(40, 40)
+shape = SubResource("CircleShape2D_2jlpn")
+action = "lompat"
+
 [node name="menu" type="Button" parent="kontrol_sentuh"]
 layout_mode = 1
 offset_left = 16.0
@@ -2701,15 +2710,19 @@ size = Vector2i(232, 496)
 render_target_update_mode = 0
 
 [node name="karakter" type="Node3D" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport"]
+unique_name_in_owner = true
 
 [node name="lulu" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter" instance=ExtResource("12_mhmg0")]
+
+[node name="reno" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter" instance=ExtResource("28_djtbr")]
+visible = false
 
 [node name="pengamat" type="Node3D" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport"]
 transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, 0, 0, 0)
 
 [node name="kamera" type="Camera3D" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 1.3)
-cull_mask = 3
+cull_mask = 5
 projection = 1
 current = true
 size = 2.0
@@ -2884,44 +2897,46 @@ popup/item_0/id = 0
 popup/item_1/text = "%cowok"
 popup/item_1/icon = ExtResource("14_oalbb")
 popup/item_1/id = 1
-popup/item_1/disabled = true
 
 [node name="tab_wajah" type="Panel" parent="karakter/panel/tab"]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
 
-[node name="label_alis" type="Label" parent="karakter/panel/tab/tab_wajah"]
+[node name="ScrollContainer" type="ScrollContainer" parent="karakter/panel/tab/tab_wajah"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.051
-anchor_top = 0.095
-anchor_right = 0.339
-anchor_bottom = 0.262
-offset_left = -0.0723152
-offset_top = 0.079998
-offset_right = -0.00828552
-offset_bottom = -0.0319901
+anchor_left = 0.0338983
+anchor_top = 0.0238095
+anchor_right = 0.966102
+anchor_bottom = 0.97619
+grow_horizontal = 2
+grow_vertical = 2
+follow_focus = true
+scroll_vertical_custom_step = 5.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Control" type="VBoxContainer" parent="karakter/panel/tab/tab_wajah/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="label_alis" type="Label" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_font_sizes/font_size = 32
 text = "%alis"
 vertical_alignment = 1
 
-[node name="pilih_alis" type="OptionButton" parent="karakter/panel/tab/tab_wajah"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.373
-anchor_top = 0.095
-anchor_right = 0.949
-anchor_bottom = 0.262
-offset_left = -0.0565643
-offset_top = 0.079998
-offset_right = 0.0716553
-offset_bottom = -0.0319901
-grow_horizontal = 2
-grow_vertical = 2
-focus_neighbor_left = NodePath("../../../batal")
-focus_neighbor_right = NodePath("../../../simpan")
+[node name="pilih_alis" type="OptionButton" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../../../batal")
+focus_neighbor_right = NodePath("../../../../../simpan")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
@@ -2933,38 +2948,20 @@ popup/item_0/id = 0
 popup/item_1/text = "%alis1"
 popup/item_1/id = 1
 
-[node name="label_bulu_mata" type="Label" parent="karakter/panel/tab/tab_wajah"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.051
-anchor_top = 0.404524
-anchor_right = 0.339
-anchor_bottom = 0.571524
-offset_left = -0.0723152
-offset_top = 0.079998
-offset_right = -0.00828552
-offset_bottom = -0.0319901
+[node name="label_bulu_mata" type="Label" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_font_sizes/font_size = 32
 text = "%bulu_mata"
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="pilih_bulu_mata" type="OptionButton" parent="karakter/panel/tab/tab_wajah"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.491645
-anchor_top = 0.404524
-anchor_right = 0.949001
-anchor_bottom = 0.571524
-offset_left = -0.0565643
-offset_top = 0.079998
-offset_right = 0.0716553
-offset_bottom = -0.0319901
-grow_horizontal = 2
-grow_vertical = 2
-focus_neighbor_left = NodePath("../../../batal")
-focus_neighbor_right = NodePath("../../../simpan")
+[node name="pilih_bulu_mata" type="OptionButton" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../../../batal")
+focus_neighbor_right = NodePath("../../../../../simpan")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
@@ -2977,38 +2974,19 @@ popup/item_1/text = "%model1"
 popup/item_1/id = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="label_bola_mata" type="Label" parent="karakter/panel/tab/tab_wajah"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.051
-anchor_top = 0.714048
-anchor_right = 0.459763
-anchor_bottom = 0.881048
-offset_left = -0.0723152
-offset_top = 0.079998
-offset_right = -0.00828552
-offset_bottom = -0.0319901
+[node name="label_bola_mata" type="Label" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
 theme_override_colors/font_color = Color(0.101961, 0.101961, 0.101961, 1)
 theme_override_font_sizes/font_size = 32
 text = "%bola_mata"
 vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="pilih_bola_mata" type="OptionButton" parent="karakter/panel/tab/tab_wajah"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.491645
-anchor_top = 0.714048
-anchor_right = 0.949001
-anchor_bottom = 0.881048
-offset_left = -0.0565643
-offset_top = 0.079998
-offset_right = 0.0716553
-offset_bottom = -0.0319901
-grow_horizontal = 2
-grow_vertical = 2
-focus_neighbor_left = NodePath("../../../batal")
-focus_neighbor_right = NodePath("../../../simpan")
+[node name="pilih_bola_mata" type="OptionButton" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../../../batal")
+focus_neighbor_right = NodePath("../../../../../simpan")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
@@ -3019,7 +2997,18 @@ popup/item_0/text = "%model0"
 popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
-metadata/_edit_use_anchors_ = true
+
+[node name="label_warna_mata" type="Label" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.101961, 0.101961, 0.101961, 1)
+theme_override_font_sizes/font_size = 32
+text = "%warna_mata"
+vertical_alignment = 1
+
+[node name="pemilih_warna" parent="karakter/panel/tab/tab_wajah/ScrollContainer/Control" instance=ExtResource("18_3fc46")]
+custom_minimum_size = Vector2(0, 232)
+layout_mode = 2
 
 [node name="tab_rambut" type="Panel" parent="karakter/panel/tab"]
 visible = false
@@ -3290,6 +3279,7 @@ popup/item_1/text = "%sepatu1"
 popup/item_1/id = 1
 
 [node name="label_warna_sepatu" type="Label" parent="karakter/panel/tab/tab_sepatu"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0510001
@@ -3306,6 +3296,7 @@ text = "%warna"
 vertical_alignment = 1
 
 [node name="pemilih_warna" parent="karakter/panel/tab/tab_sepatu" instance=ExtResource("18_3fc46")]
+visible = false
 layout_mode = 1
 anchor_left = 0.0508481
 anchor_top = 0.452381
@@ -3735,7 +3726,7 @@ offset_bottom = -35.2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 21
-text = "wish"
+text = "Holding Hands"
 metadata/_edit_use_anchors_ = true
 
 [node name="artis" type="Label" parent="pemutar_musik"]
@@ -4207,9 +4198,10 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="karakter/panel/batal" to="." method="_sembunyikan_setelan_karakter"]
 [connection signal="text_changed" from="karakter/panel/tab/tab_personalitas/input_nama" to="." method="_ketika_mengubah_nama_karakter"]
 [connection signal="item_selected" from="karakter/panel/tab/tab_personalitas/pilih_gender" to="." method="_ketika_mengubah_gender_karakter"]
-[connection signal="item_selected" from="karakter/panel/tab/tab_wajah/pilih_alis" to="." method="_ketika_mengubah_alis_karakter"]
-[connection signal="item_selected" from="karakter/panel/tab/tab_wajah/pilih_bulu_mata" to="." method="_ketika_mengubah_bentuk_bulu_mata_karakter"]
-[connection signal="item_selected" from="karakter/panel/tab/tab_wajah/pilih_bola_mata" to="." method="_ketika_mengubah_bentuk_mata_karakter"]
+[connection signal="item_selected" from="karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_alis" to="." method="_ketika_mengubah_alis_karakter"]
+[connection signal="item_selected" from="karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_bulu_mata" to="." method="_ketika_mengubah_bentuk_bulu_mata_karakter"]
+[connection signal="item_selected" from="karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_bola_mata" to="." method="_ketika_mengubah_bentuk_mata_karakter"]
+[connection signal="warna_dipilih" from="karakter/panel/tab/tab_wajah/ScrollContainer/Control/pemilih_warna" to="." method="_ketika_mengubah_warna_mata_karakter"]
 [connection signal="item_selected" from="karakter/panel/tab/tab_rambut/pilih_rambut" to="." method="_ketika_mengubah_rambut_karakter"]
 [connection signal="warna_dipilih" from="karakter/panel/tab/tab_rambut/pemilih_warna" to="." method="_ketika_mengubah_warna_rambut_karakter"]
 [connection signal="item_selected" from="karakter/panel/tab/tab_baju/pilih_baju" to="." method="_ketika_mengubah_baju_karakter"]

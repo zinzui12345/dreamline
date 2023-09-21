@@ -28,5 +28,7 @@ func setup_scene_root_tracker():
 	).set_delay(0.1)
 
 func get_scene_root() -> Node:
-	#return core.get_tree().root.get_child(core.get_tree().root.get_child_count() - 1)
-	return core.get_tree().root.get_node("Dreamline")
+	if core.get_tree().root.get_node_or_null("Dreamline") == null:
+		return core.get_tree().root.get_child(core.get_tree().root.get_child_count() - 1)
+	else:
+		return core.get_tree().root.get_node("Dreamline")

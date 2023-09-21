@@ -10,8 +10,9 @@ class_name Permainan
 # 14 Agu 2023 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 
-const versi = "Dreamline beta v1.4.2 rev 06/09/23 alpha"
-const karakter_cewek = preload("res://karakter/lulu/lulu.scn")
+const versi = "Dreamline beta v1.4.3 rev 20/09/23 alpha"
+const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
+const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
 var data = {
 	"nama":			"rulu",
@@ -19,13 +20,14 @@ var data = {
 	"alis":			0,
 	"garis_mata":	0,
 	"mata":			0,
+	"warna_mata":	Color("252525"),
 	"rambut":		0,
 	"warna_rambut":	Color("252525"),
 	"baju":			0,
 	"warna_baju":	Color("4e3531"),
 	"warna_celana":	Color.WHITE,
 	"sepatu":		0,
-	"warna_sepatu":	Color.LIGHT_BLUE,
+	"warna_sepatu":	Color.WHITE,
 	"posisi":		Vector3.ZERO,
 	"sistem":		OS.get_distribution_name()
 }
@@ -59,8 +61,34 @@ func _ready():
 		dunia = await load("res://skena/dunia.scn").instantiate()
 		get_tree().get_root().call_deferred("add_child", dunia)
 	# INFO : (1) non-aktifkan proses untuk placeholder karakter
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.set_physics_process(false)
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.set_process(false)
+	get_node("%karakter/lulu").set_process(false)
+	get_node("%karakter/lulu").set_physics_process(false)
+	get_node("%karakter/lulu").model["alis"] 		= data["alis"]
+	get_node("%karakter/lulu").model["garis_mata"] 	= data["garis_mata"]
+	get_node("%karakter/lulu").model["mata"] 		= data["mata"]
+	get_node("%karakter/lulu").warna["mata"] 		= data["warna_mata"]
+	get_node("%karakter/lulu").model["rambut"] 		= data["rambut"]
+	get_node("%karakter/lulu").warna["rambut"] 		= data["warna_rambut"]
+	get_node("%karakter/lulu").model["baju"] 		= data["baju"]
+	get_node("%karakter/lulu").warna["baju"] 		= data["warna_baju"]
+	get_node("%karakter/lulu").warna["celana"] 		= data["warna_celana"]
+	get_node("%karakter/lulu").model["sepatu"] 		= data["sepatu"]
+	get_node("%karakter/lulu").warna["sepatu"] 		= data["warna_sepatu"]
+	get_node("%karakter/lulu").atur_warna()
+	get_node("%karakter/reno").set_process(false)
+	get_node("%karakter/reno").set_physics_process(false)
+	get_node("%karakter/reno").model["alis"] 		= data["alis"]
+	get_node("%karakter/reno").model["garis_mata"] 	= data["garis_mata"]
+	get_node("%karakter/reno").model["mata"] 		= data["mata"]
+	get_node("%karakter/reno").warna["mata"] 		= data["warna_mata"]
+	get_node("%karakter/reno").model["rambut"] 		= data["rambut"]
+	get_node("%karakter/reno").warna["rambut"] 		= data["warna_rambut"]
+	get_node("%karakter/reno").model["baju"] 		= data["baju"]
+	get_node("%karakter/reno").warna["baju"] 		= data["warna_baju"]
+	get_node("%karakter/reno").warna["celana"] 		= data["warna_celana"]
+	get_node("%karakter/reno").model["sepatu"] 		= data["sepatu"]
+	get_node("%karakter/reno").warna["sepatu"] 		= data["warna_sepatu"]
+	get_node("%karakter/reno").atur_warna()
 	$hud.visible = false
 	$kontrol_sentuh.visible = false
 	# setup timer berbicara
@@ -203,7 +231,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 	var sumber = "" # ini jalur resource pemain, fungsinya untuk disimpan di timeline
 	if is_instance_valid(dunia) and koneksi == MODE_KONEKSI.SERVER:
 		match data_pemain["gender"]:
-			"L": pass
+			"L": pemain = karakter_cowok.instantiate(); sumber = karakter_cowok.resource_path
 			"P": pemain = karakter_cewek.instantiate(); sumber = karakter_cewek.resource_path
 		if !is_instance_valid(pemain): print("tidak dapat menambahkan pemain "+str(id)); return
 		
@@ -215,13 +243,14 @@ func _tambahkan_pemain(id: int, data_pemain):
 		pemain.model["alis"] 		= data_pemain["alis"]
 		pemain.model["garis_mata"] 	= data_pemain["garis_mata"]
 		pemain.model["mata"] 		= data_pemain["mata"]
+		pemain.warna["mata"] 		= data_pemain["warna_mata"]
 		pemain.model["rambut"] 		= data_pemain["rambut"]
 		pemain.warna["rambut"] 		= data_pemain["warna_rambut"]
 		pemain.model["baju"] 		= data_pemain["baju"]
 		pemain.warna["baju"] 		= data_pemain["warna_baju"]
 		pemain.warna["celana"] 		= data_pemain["warna_celana"]
 		pemain.model["sepatu"] 		= data_pemain["sepatu"]
-		pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
+		#pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
 		
 		# INFO : (7) tambahkan pemain ke dunia
 		dunia.get_node("pemain").add_child(pemain, true)
@@ -467,8 +496,8 @@ func _tampilkan_setelan_karakter():
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible == false:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = true
 			match data["gender"]: # INFO : aktifkan visibilitas placeholder karakter berdasarkan data
-				"P": $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.visible = true
-				"L": pass
+				"P": get_node("%karakter/lulu").visible = true
+				"L": get_node("%karakter/reno").visible = true
 		if $daftar_server.visible:
 			$daftar_server/animasi.play("tampilkan_karakter")
 			client.hentikan_pencarian_server()
@@ -646,49 +675,79 @@ func _tampilkan_setelan_permainan():
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama
 func _ketika_mengubah_gender_karakter(gender):
+	get_node("%karakter/lulu").visible = false
+	get_node("%karakter/reno").visible = false
 	match gender:
-		0: data["gender"] = "P"
-		1: data["gender"] = "L"
+		0: data["gender"] = "P"; get_node("%karakter/lulu").visible = true
+		1: data["gender"] = "L"; get_node("%karakter/reno").visible = true
 func _ketika_mengubah_alis_karakter(id_alis):
 	data["alis"] = id_alis
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["alis"] = id_alis
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+	get_node("%karakter/lulu").model["alis"] = id_alis
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/reno").model["alis"] = id_alis
+	get_node("%karakter/reno").atur_model()
 func _ketika_mengubah_bentuk_bulu_mata_karakter(id_model):
 	data["garis_mata"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["garis_mata"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+	get_node("%karakter/lulu").model["garis_mata"] = id_model
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/reno").model["garis_mata"] = id_model
+	get_node("%karakter/reno").atur_model()
 func _ketika_mengubah_bentuk_mata_karakter(id_model):
 	data["mata"] = id_model
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["mata"] = id_model
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/reno.model["mata"] = id_model
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/reno.atur_model()
+func _ketika_mengubah_warna_mata_karakter(warna):
+	var tmp_warna : Color = Color(str(warna))
+	data["warna_mata"] = tmp_warna
+	get_node("%karakter/lulu").warna["mata"] = tmp_warna
+	get_node("%karakter/lulu").atur_warna()
+	get_node("%karakter/reno").warna["mata"] = tmp_warna
+	get_node("%karakter/reno").atur_warna()
 func _ketika_mengubah_rambut_karakter(id_model):
 	data["rambut"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["rambut"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+	get_node("%karakter/lulu").model["rambut"] = id_model
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/reno").model["rambut"] = id_model
+	get_node("%karakter/reno").atur_model()
 func _ketika_mengubah_warna_rambut_karakter(warna):
-	data["warna_rambut"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["rambut"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+	var tmp_warna : Color = Color(str(warna))
+	data["warna_rambut"] = tmp_warna
+	get_node("%karakter/lulu").warna["rambut"] = tmp_warna
+	get_node("%karakter/lulu").atur_warna()
+	get_node("%karakter/reno").warna["rambut"] = tmp_warna
+	get_node("%karakter/reno").atur_warna()
 func _ketika_mengubah_baju_karakter(id_model):
 	data["baju"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["baju"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+	get_node("%karakter/lulu").model["baju"] = id_model
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/reno").model["baju"] = id_model
+	get_node("%karakter/reno").atur_model()
 func _ketika_mengubah_warna_baju_karakter(warna):
-	data["warna_baju"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["baju"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+	var tmp_warna : Color = Color(str(warna))
+	data["warna_baju"] = tmp_warna
+	get_node("%karakter/lulu").warna["baju"] = tmp_warna
+	get_node("%karakter/lulu").atur_warna()
+	get_node("%karakter/reno").warna["baju"] = tmp_warna
+	get_node("%karakter/reno").atur_warna()
 func _ketika_mengubah_warna_celana_karakter(warna):
 	data["warna_celana"] = warna
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["celana"] = warna
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
 func _ketika_mengubah_sepatu_karakter(id_model):
 	data["sepatu"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.model["sepatu"] = id_model
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_model()
+	get_node("%karakter/lulu").model["sepatu"] = id_model
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/reno").model["sepatu"] = id_model
+	get_node("%karakter/reno").atur_model()
 func _ketika_mengubah_warna_sepatu_karakter(warna):
+	var tmp_warna : Color = Color(str(warna))
 	data["warna_sepatu"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["sepatu"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+	get_node("%karakter/lulu").warna["sepatu"] = tmp_warna
+	get_node("%karakter/lulu").atur_warna()
+	get_node("%karakter/reno").warna["sepatu"] = tmp_warna
+	get_node("%karakter/reno").atur_warna()
 
 # menu
 func _jeda():

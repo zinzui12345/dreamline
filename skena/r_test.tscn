@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://co2i5xyl402ox"]
 
 [ext_resource type="Script" path="res://skena/r_test.gd" id="1_pc7ul"]
-[ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/lulu/lulu.scn" id="2_o3nfk"]
+[ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/rulu/rulu.scn" id="2_o3nfk"]
 
 [sub_resource type="Animation" id="Animation_encrj"]
 length = 0.001
