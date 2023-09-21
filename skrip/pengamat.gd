@@ -22,8 +22,9 @@ func _process(delta):
 		if _karakter.get("arah_pandangan") != null: gerakan = _karakter.arah_pandangan
 		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitasPandangan * delta
 		
-		if _karakter.get_node_or_null("model/Root/Skeleton3D/dada") != null:
-			global_position.y = _karakter.get_node_or_null("model/Root/Skeleton3D/dada").global_position.y
+		# pindah ke karakter.gd process()
+		#if _karakter.get_node_or_null("model/Root/Skeleton3D/dada") != null:
+		#	global_position.y = _karakter.get_node_or_null("model/Root/Skeleton3D/dada").global_position.y
 		
 		match mode_kontrol:
 			1:
@@ -33,6 +34,11 @@ func _process(delta):
 				_karakter.rotation_degrees.y -= rotasi.y
 				gerakan = Vector2.ZERO
 				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
+				if _karakter.get("arah_p_pandangan") != null:
+					if get_node("%pandangan").rotation_degrees.x > 0:
+						_karakter.arah_p_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
+					elif get_node("%pandangan").rotation_degrees.x < 0:
+						_karakter.arah_p_pandangan.y = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
 			3:
 				$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
 				$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
@@ -44,6 +50,7 @@ func _process(delta):
 				else: rotation_degrees.y -= rotasi.y
 				gerakan = Vector2.ZERO
 				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
+				if _karakter.get("arah_p_pandangan") != null: _karakter.arah_p_pandangan = Vector2.ZERO # TODO : arah x
 
 func aktifkan(nilai = true, vr = false):
 	if vr:	pass

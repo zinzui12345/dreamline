@@ -5,7 +5,8 @@ class_name Karakter
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
-var arah_pandangan : Vector2
+var arah_pandangan : Vector2 	# ini arah input / event relative
+var arah_p_pandangan : Vector2 	# ini arah pose
 var _menabrak = false
 var _debug = false
 
@@ -247,4 +248,9 @@ func _process(_delta):
 	arah_gerakan = get_real_velocity() * transform.basis
 	
 	# atur posisi pengamat
+	#$pengamat/kamera.position.x = get_node("%kepala").position.x # FIXME : attach ke leher ? gak usah
+	$pengamat.position.y = get_node("%mata_kiri").position.y
 	$pengamat/kamera.position.z = get_node("%kepala").position.z
+	
+	# atur arah pose
+	$pose.set("parameters/arah_y_pandangan/blend_position", arah_p_pandangan.y)
