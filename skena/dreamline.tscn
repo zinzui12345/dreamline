@@ -1,4 +1,4 @@
-[gd_scene load_steps=170 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=171 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -47,6 +47,7 @@
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
+[ext_resource type="Script" path="res://skrip/Dragpad.gd" id="27_h56tf"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
 
@@ -2690,6 +2691,7 @@ anchor_bottom = 0.92
 offset_top = 0.199997
 offset_right = -0.0723267
 theme_override_styles/panel = SubResource("StyleBoxFlat_acxcj")
+script = ExtResource("27_h56tf")
 metadata/_edit_lock_ = true
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="karakter/panel/tampilan"]
@@ -4193,6 +4195,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="daftar_server/panel/panel_input/sambungkan" to="." method="gabung_server"]
 [connection signal="pressed" from="daftar_server/panel/lan" to="." method="_pilih_tab_server_lan"]
 [connection signal="pressed" from="daftar_server/panel/internet" to="." method="_pilih_tab_server_internet"]
+[connection signal="gerakan" from="karakter/panel/tampilan" to="." method="_ketika_mengubah_arah_tampilan_karakter"]
 [connection signal="resized" from="karakter/panel/tampilan" to="." method="_ketika_ukuran_tampilan_karakter_diubah"]
 [connection signal="touch_move" from="karakter/panel/tampilan/Touchpad" to="." method="_ketika_mengubah_arah_tampilan_karakter"]
 [connection signal="pressed" from="karakter/panel/batal" to="." method="_sembunyikan_setelan_karakter"]

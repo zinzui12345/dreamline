@@ -1,0 +1,131 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=25 format=3 uid="uid://biebpppindc77"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_82mvo"]
+animation = &"animasi/berjalan maju"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4xsrm"]
+animation = &"animasi/berlari maju"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cjqxl"]
+animation = &"animasi/berlari maju"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1hyaf"]
+animation = &"animasi/berjalan mundur"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o6214"]
+animation = &"animasi/berjalan mundur"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5r0ql"]
+animation = &"animasi/berdiri_1"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_iuh3a"]
+animation = &"animasi/berjalan mundur"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_vn3q5"]
+animation = &"animasi/berlari mundur"
+play_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8k1co"]
+animation = &"animasi/berjalan kekanan"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bhfbk"]
+animation = &"animasi/berjalan kekiri"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tkxui"]
+animation = &"animasi/berjalan maju"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ygb2y"]
+animation = &"animasi/berjalan maju"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6k2so"]
+animation = &"animasi/berlari maju"
+
+[sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_sttqg"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_82mvo")
+blend_point_0/pos = Vector2(0, 0.5)
+blend_point_1/node = SubResource("AnimationNodeAnimation_4xsrm")
+blend_point_1/pos = Vector2(0, 1)
+blend_point_2/node = SubResource("AnimationNodeAnimation_5r0ql")
+blend_point_2/pos = Vector2(0, 0)
+blend_point_3/node = SubResource("AnimationNodeAnimation_iuh3a")
+blend_point_3/pos = Vector2(0, -0.5)
+blend_point_4/node = SubResource("AnimationNodeAnimation_vn3q5")
+blend_point_4/pos = Vector2(0, -1)
+blend_point_5/node = SubResource("AnimationNodeAnimation_8k1co")
+blend_point_5/pos = Vector2(0.5, 0)
+blend_point_6/node = SubResource("AnimationNodeAnimation_bhfbk")
+blend_point_6/pos = Vector2(-0.5, 0)
+blend_point_7/node = SubResource("AnimationNodeAnimation_tkxui")
+blend_point_7/pos = Vector2(-0.5, 0.5)
+blend_point_8/node = SubResource("AnimationNodeAnimation_ygb2y")
+blend_point_8/pos = Vector2(0.5, 0.5)
+blend_point_9/node = SubResource("AnimationNodeAnimation_6k2so")
+blend_point_9/pos = Vector2(-0.5, 1)
+blend_point_10/node = SubResource("AnimationNodeAnimation_cjqxl")
+blend_point_10/pos = Vector2(0.5, 1)
+blend_point_11/node = SubResource("AnimationNodeAnimation_1hyaf")
+blend_point_11/pos = Vector2(0.5, -0.5)
+blend_point_12/node = SubResource("AnimationNodeAnimation_o6214")
+blend_point_12/pos = Vector2(-0.5, -0.5)
+blend_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_asfuq"]
+animation = &"animasi/jongkok"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_e423v"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_asfuq")
+blend_point_0/pos = 0.0
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_dgu0a"]
+filter_enabled = true
+filters = ["Root_/GeneralSkeleton:Chest", "Root_/GeneralSkeleton:Head", "Root_/GeneralSkeleton:Neck", "Root_/GeneralSkeleton:Spine"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4rsse"]
+animation = &"animasi/melihat_kedepan"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_du260"]
+animation = &"animasi/melihat_kebawah"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_u5laf"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_4rsse")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_du260")
+blend_point_1/pos = -1.0
+
+[sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_3dhkw"]
+input_0/name = "berdiri"
+input_0/auto_advance = false
+input_0/reset = true
+input_1/name = "duduk"
+input_1/auto_advance = false
+input_1/reset = true
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_06nhi"]
+filter_enabled = true
+filters = ["../Root", "../Root/Skeleton3D:J_Bip_L_Foot", "../Root/Skeleton3D:J_Bip_L_LowerArm", "../Root/Skeleton3D:J_Bip_L_LowerLeg", "../Root/Skeleton3D:J_Bip_L_Shoulder", "../Root/Skeleton3D:J_Bip_L_ToeBase", "../Root/Skeleton3D:J_Bip_L_UpperLeg", "../Root/Skeleton3D:J_Bip_R_Foot", "../Root/Skeleton3D:J_Bip_R_LowerArm", "../Root/Skeleton3D:J_Bip_R_LowerLeg", "../Root/Skeleton3D:J_Bip_R_Shoulder", "../Root/Skeleton3D:J_Bip_R_ToeBase", "../Root/Skeleton3D:J_Bip_R_UpperLeg", "../Root/Skeleton3D:J_Sec_L_SkirtBack", "../Root/Skeleton3D:J_Sec_L_SkirtBack0", "../Root/Skeleton3D:J_Sec_L_SkirtFront", "../Root/Skeleton3D:J_Sec_L_SkirtFront2", "../Root/Skeleton3D:J_Sec_L_SkirtSide", "../Root/Skeleton3D:J_Sec_R_SkirtBack", "../Root/Skeleton3D:J_Sec_R_SkirtBack0", "../Root/Skeleton3D:J_Sec_R_SkirtFront", "../Root/Skeleton3D:J_Sec_R_SkirtFront2", "../Root/Skeleton3D:J_Sec_R_SkirtSide", "../Root/Skeleton3D:J_Sec_R_SkirtSide0"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pj3ma"]
+animation = &"animasi/melompat"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_8svk4"]
+
+[resource]
+graph_offset = Vector2(-78.6667, 232)
+nodes/arah_gerakan/node = SubResource("AnimationNodeBlendSpace2D_sttqg")
+nodes/arah_gerakan/position = Vector2(-266.667, 133.333)
+nodes/arah_jongkok/node = SubResource("AnimationNodeBlendSpace1D_e423v")
+nodes/arah_jongkok/position = Vector2(-80, 373.333)
+nodes/arah_pandangan/node = SubResource("AnimationNodeBlend2_dgu0a")
+nodes/arah_pandangan/position = Vector2(293.333, 133.333)
+nodes/arah_y_pandangan/node = SubResource("AnimationNodeBlendSpace1D_u5laf")
+nodes/arah_y_pandangan/position = Vector2(106.667, 373.333)
+nodes/gestur/node = SubResource("AnimationNodeTransition_3dhkw")
+nodes/gestur/position = Vector2(480, 133.333)
+nodes/jongkok/node = SubResource("AnimationNodeBlend2_06nhi")
+nodes/jongkok/position = Vector2(106.667, 133.333)
+nodes/lompat/node = SubResource("AnimationNodeAnimation_pj3ma")
+nodes/lompat/position = Vector2(-266.667, 320)
+nodes/melompat/node = SubResource("AnimationNodeOneShot_8svk4")
+nodes/melompat/position = Vector2(-80, 133.333)
+nodes/output/position = Vector2(666.667, 160)
+node_connections = [&"output", 0, &"gestur", &"arah_pandangan", 0, &"jongkok", &"arah_pandangan", 1, &"arah_y_pandangan", &"gestur", 0, &"arah_pandangan", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat"]

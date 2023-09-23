@@ -3,19 +3,23 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 - Implementasi Timeline
-# 09 Agu 2023 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 07 Jul 2023 | 1.4.1 - Implementasi LAN Server berbasis Cross-Play
+# 04 Agu 2023 | 1.4.1 - Implementasi Timeline
+# 09 Agu 2023 | 1.4.1 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 11 Agu 2023 | 1.4.2 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 14 Agu 2023 | 1.4.2 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 15 Agu 2023 | 1.4.2 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 06 Sep 2023 | 1.4.3 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 18 Sep 2023 | 1.4.3 - Implementasi shader karakter menggunakan MToon
+# 21 Sep 2023 | 1.4.3 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
 
-const versi = "Dreamline beta v1.4.3 rev 20/09/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 23/09/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
 var data = {
-	"nama":			"rulu",
+	"nama":			"",
 	"gender": 		"P",
 	"alis":			0,
 	"garis_mata":	0,
@@ -29,6 +33,7 @@ var data = {
 	"sepatu":		0,
 	"warna_sepatu":	Color.WHITE,
 	"posisi":		Vector3.ZERO,
+	"rotasi":		Vector3.ZERO,
 	"sistem":		OS.get_distribution_name()
 }
 var karakter : CharacterBody3D
@@ -182,7 +187,7 @@ func _process(delta):
 					]
 
 # core
-func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO):
+func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 	if $daftar_server.visible:
@@ -206,12 +211,16 @@ func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO):
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
 	await get_tree().create_timer(1.0).timeout
 	data["posisi"] = posisi
+	data["rotasi"] = rotasi
 	var tmp_perintah = Callable(self, "_muat_map")
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 func _muat_map(file_map):
 	# INFO : (4) muat map
 	map = await load("res://map/%s.tscn" % [file_map]).instantiate()
 	map.name = "lingkungan"
+	if map.get_node_or_null("posisi_spawn") != null:
+		data["posisi"] = map.get_node("posisi_spawn").position
+		data["rotasi"] = map.get_node("posisi_spawn").rotation
 	call_deferred("_atur_persentase_memuat", 70)
 	dunia.call_deferred("add_child", map)
 	# TODO : Proses entitas
@@ -252,11 +261,12 @@ func _tambahkan_pemain(id: int, data_pemain):
 		pemain.model["sepatu"] 		= data_pemain["sepatu"]
 		#pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
 		
+		# terapkan kondisi | note : ini harus sebelum pemain ditambahin ke dunia supaya sync dengan ServerSynchronizer
+		pemain.position = data_pemain["posisi"]
+		pemain.rotation = data_pemain["rotasi"]
+		
 		# INFO : (7) tambahkan pemain ke dunia
 		dunia.get_node("pemain").add_child(pemain, true)
-		
-		# terapkan posisi
-		pemain.position = data_pemain["posisi"]
 		
 		# Timeline : spawn pemain
 		server.timeline[server.timeline["data"]["frame"]] = {
@@ -543,6 +553,20 @@ func _pilih_tab_wajah_karakter():
 		0,
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
 	)
+	match data["gender"]:
+		"P":
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_wajah").track_set_key_value(
+				0,
+				1,
+				0.5
+			)
+		"L":
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_wajah").track_set_key_value(
+				0,
+				1,
+				0.635
+			)
+		# note : posisi tinggi cowok = 127% tinggi cewek / posisi tinggi cowok = posisi tinggi cewek * 1.27
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_wajah").track_set_key_value(
 		1,
 		0,
@@ -578,6 +602,19 @@ func _pilih_tab_rambut_karakter():
 		0,
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
 	)
+	match data["gender"]:
+		"P":
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_rambut").track_set_key_value(
+				0,
+				1,
+				0.59
+			)
+		"L":
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_rambut").track_set_key_value(
+				0,
+				1,
+				0.7493
+			)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_rambut").track_set_key_value(
 		1,
 		0,
@@ -593,6 +630,19 @@ func _pilih_tab_baju_karakter():
 		0,
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.position.y
 	)
+	match data["gender"]:
+		"P":
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
+				0,
+				1,
+				0
+			)
+		"L":
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
+				0,
+				1,
+				0.25
+			)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
 		1,
 		0,

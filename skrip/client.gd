@@ -74,10 +74,10 @@ func tambah_pemain(pemain):
 		})
 	print("spawn pemain "+str(pemain))
 
-@rpc func gabung_ke_server(nama_map, posisi):
+@rpc func gabung_ke_server(nama_map, posisi, rotasi):
 	print("telah terhubung ke server")
 	id_koneksi = interface.get_unique_id()
-	permainan._mulai_permainan(nama_map, posisi)
+	permainan._mulai_permainan(nama_map, posisi, rotasi)
 @rpc func tambahkan_pemain(daftar : Dictionary):
 	var data = daftar.keys()
 	for p in data.size(): permainan._tambahkan_pemain(int(data[p]), daftar[data[p]])

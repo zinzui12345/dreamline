@@ -80,28 +80,37 @@ func putuskan():
 	Panku.gd_exprenv.remove_env("server")
 
 func _pemain_bergabung(id_pemain):
-	# disini kirim rpc data map ke client terus tentuin posisi random spawn client
-	var pos := Vector2.from_angle(randf() * 2 * PI)
+	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client
+	var pos := Vector2.from_angle(randf() * 2 * PI);
 	var posisi = Vector3(
 		pos.x * POSISI_SPAWN_RANDOM * randf(), 
 		2, 
 		pos.y * POSISI_SPAWN_RANDOM * randf()
 	)
+	var rotasi = Vector3.ZERO
+	# cek data pemain, kalo pemain ada di data; pake posisi dan rotasi dari data tersebut
+	# kalo pemain gak ada di data, pake posisi dan rotasi dari posisi_spawn
+	# kalo posisi_spawn gak ada, pake posisi saat ini (posisi acak) dan rotasi 0
+	if permainan.dunia.get_node_or_null("posisi_spawn") != null: # HACK : kesalahan class akan menimbulkan softlock pada client ketika tetputus pada proses koneksi
+		posisi = permainan.dunia.get_node("posisi_spawn").position
+		rotasi = permainan.dunia.get_node("posisi_spawn").rotation
 	client.rpc_id(
 		id_pemain, 
 		"gabung_ke_server", 
 		map, 
-		posisi
+		posisi,
+		rotasi
 	)
 	print("%s => pemain [%s] telah bergabung" % [Time.get_ticks_msec(), id_pemain])
 	pemain_terhubung += 1
 
 func _pemain_terputus(id_pemain):
-	# simpan posisi terakhir berdasarkan id client kemudian hapus
+	# simpan kondisi terakhir berdasarkan id client kemudian hapus
 	if permainan.dunia.get_node_or_null("pemain/"+str(id_pemain)) != null:
 		for idx_pemain in pemain.keys():
 			if pemain[idx_pemain]["id_client"] == id_pemain:
 				pemain[idx_pemain]["posisi"] = permainan.dunia.get_node("pemain/"+str(id_pemain)).position
+				pemain[idx_pemain]["rotasi"] = permainan.dunia.get_node("pemain/"+str(id_pemain)).rotation
 		permainan.dunia.get_node("pemain/"+str(id_pemain))._hapus()
 		print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 		pemain_terhubung -= 1
@@ -112,10 +121,12 @@ func _pemain_terputus(id_pemain):
 		if pemain.has(id_koneksi):
 			pemain[id_koneksi]["id_client"] = id_pemain
 			data_pemain["posisi"] = pemain[id_koneksi]["posisi"]
+			data_pemain["rotasi"] = pemain[id_koneksi]["rotasi"]
 		else:
 			pemain[id_koneksi] = {
 				"id_client": id_pemain,
-				"posisi": data_pemain["posisi"]
+				"posisi": data_pemain["posisi"],
+				"rotasi": data_pemain["rotasi"]
 			}
 		permainan._tambahkan_pemain(id_pemain, data_pemain)
 		print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
