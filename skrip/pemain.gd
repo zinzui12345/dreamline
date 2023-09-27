@@ -37,7 +37,8 @@ func atur_pengendali(id):
 	if kendali:
 		Panku.gd_exprenv.register_env("pemain", self)
 		Panku.notify("%spawnpemain")
-		server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
+		if server.permainan.permukaan != null:
+			server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 		client.permainan.karakter = karakter
 		client.permainan._tampilkan_permainan()
 	else:
@@ -64,15 +65,16 @@ func _process(delta):
 		pos_target = _raycast_pemain.get_collision_point()
 		match karakter.peran:
 			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
-				var tmp_pos = server.permainan.dunia.get_child(4).get_node("%peta").map_to_local(pos_target)
-				server.permainan.dunia.get_child(4).get_node("%pos_debug").global_position = Vector3(
-					tmp_pos.x,
-					server.permainan.dunia.get_child(4).get_node("%peta").global_position.y + 0.5,
-					tmp_pos.z
-				)
-				server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = true
-	elif server.permainan.dunia.get_child(4).get_node("%pos_debug").visible:
-		server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = false
+				#var tmp_pos = server.permainan.dunia.get_child(4).get_node("%peta").map_to_local(pos_target)
+				#server.permainan.dunia.get_child(4).get_node("%pos_debug").global_position = Vector3(
+				#	tmp_pos.x,
+				#	server.permainan.dunia.get_child(4).get_node("%peta").global_position.y + 0.5,
+				#	tmp_pos.z
+				#)
+				#server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = true
+				pass
+	#elif server.permainan.dunia.get_child(4).get_node("%pos_debug").visible: # debug permukaan
+	#	server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = false
 	
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
@@ -152,40 +154,43 @@ func _process(delta):
 				match karakter.peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
 						# set_cell_item(position: Vector3i, item: int, orientation: int = 0)
-						server.permainan.dunia.get_child(4).get_node("%peta").set_cell_item(
-							Vector3i(pos_target.x, 0, pos_target.z), 
-							0, 	# item
-							0	# orientasi
-						)
+						#server.permainan.dunia.get_child(4).get_node("%peta").set_cell_item(
+						#	Vector3i(pos_target.x, 0, pos_target.z), 
+						#	0, 	# item
+						#	0	# orientasi
+						#)
 						#print_debug(target_pemain)
-		if Input.is_action_just_pressed("aksi2"):
-			if _target_pemain:
-				match karakter.peran:
-					Permainan.PERAN_KARAKTER.Arsitek:
-						server.permainan.dunia.get_child(4).get_node("%peta").set_cell_item(
-							Vector3i(pos_target.x, 0, pos_target.z), 
-							-1, 	# item
-							0	# orientasi
-						)
-		if Input.is_action_just_pressed("lompat"):
-			if !lompat:
-				if Input.is_action_pressed("berlari") and karakter.arah.z > 1.0:
-					if karakter.is_on_floor():
-						karakter.arah.y = 180 * delta
-						lompat = true
-					elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"): # ini fitur btw >u<
-						karakter.arah.y = 200 * delta
-						lompat = true
-				elif karakter.is_on_floor():
-					# FIXME : melompat
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 5, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
-					#karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-					karakter.arah.y = 150 * delta
-					lompat = true
+						
+						if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+							server._tambahkan_entitas(
+								"res://model/placeholder_entitas.tscn",
+								Vector3i(pos_target.x, pos_target.y, pos_target.z),
+								Vector3.ZERO,
+								[
+									["modulate", Color(randf(), randf(), randf(), 1)]
+								]
+							)
+						else:
+							server.rpc_id(
+								1,
+								"_tambahkan_entitas",
+								"res://model/placeholder_entitas.tscn",
+								Vector3i(pos_target.x, pos_target.y, pos_target.z),
+								Vector3.ZERO,
+								[
+									["modulate", Color(randf(), randf(), randf(), 1)]
+								]
+							)
+		#if Input.is_action_just_pressed("aksi2"):
+		#	if _target_pemain:
+		#		match karakter.peran:
+		#			Permainan.PERAN_KARAKTER.Arsitek:
+		#				server.permainan.dunia.get_child(4).get_node("%peta").set_cell_item(
+		#					Vector3i(pos_target.x, 0, pos_target.z), 
+		#					-1, 	# item
+		#					0	# orientasi
+		#				)
+		
 		if Input.is_action_just_pressed("jongkok"):
 			if karakter.arah.x == 0.0 and karakter.arah.z == 0.0:
 				if !jongkok:
@@ -279,6 +284,28 @@ func _process(delta):
 		# reset delay
 		_delay_timeline = _interval_timeline
 	elif karakter.id_pemain > 0: _delay_timeline -= delta
+func _physics_process(delta):
+	# kendalikan pemain dengan input
+	if karakter.kontrol:
+		if Input.is_action_pressed("lompat"):
+			if !lompat:
+				if Input.is_action_pressed("berlari") and karakter.arah.z > 1.0:
+					if karakter.is_on_floor():
+						karakter.arah.y = 180 * delta
+						lompat = true
+					elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"): # ini fitur btw >u<
+						karakter.arah.y = 200 * delta
+						lompat = true
+				elif karakter.is_on_floor():
+					# FIXME : melompat
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 5, true)
+					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
+					#karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+					karakter.arah.y = 150 * delta
+					lompat = true
 
 # debug
 const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"

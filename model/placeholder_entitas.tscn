@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://dviq5876p1xp8"]
+
+[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_fc4mg"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_48fir"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = false
+properties/0/watch = false
+properties/1/path = NodePath(".:modulate")
+properties/1/spawn = true
+properties/1/sync = false
+properties/1/watch = false
+
+[node name="placeholder_entitas" type="Sprite3D"]
+billboard = 2
+double_sided = false
+texture = ExtResource("1_fc4mg")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_48fir")

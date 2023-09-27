@@ -40,7 +40,7 @@ KELUAR,Keluar,Exit
 TAMPILAN,Tampilan,Appearance
 %input,Masukan,Input
 sensitivitas_gestur,Sensitivitas Gestur,Gesture Sensitivity
-MODEANALOG,Kontrol Gerakan,Movement Control
+kontrol_gerak,Kontrol Gerakan,Movement Control
 SUARA,Suara,Sound
 GRAFIK,Grafik,Graphics
 bahasa,Bahasa,Language
@@ -54,6 +54,7 @@ SKALARESOLUSI,Skala Resolusi,Resolution Scale
 %laporkan_bug,Laporkan Bug,Report Bugs
 %sarankan_fitur,Request/Sarankan Fitur,Suggest Features
 %tampilkan_log,Tampilkan Log,Show Log
+%tampilkan_konsol,Tampilkan Konsol Debug,Show Debug Console
 ,,
 # menu jeda,,
 %lanjutkan,  Lanjutkan,  Resume
@@ -75,9 +76,12 @@ PERINTAHSALAH,Perintah `%s` tidak ditemukan.,Command `%s` not found.
 %putuskanserver,Menghentikan peladen,Stopping server
 ,,
 # output debug,,
+informasi_performa,Informasi Performa,Performance Info
 FPS,Frame/detik,FPS
 VERTEKS,Sudut,Vertices
+DRAW,Penggambaran,Draw Calls
 OBJEK,Objek,Objects
+ENTITAS,Entitas,Entities
 ARAH,Arah,Direction
 ,,
 # input,,
@@ -88,3 +92,10 @@ INPUTHAPUS,hapus,delete
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
 %putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
+,,
+# placeholder,,
+@author,ProgrammerIndonesia44,ProgrammerIndonesia44
+@beta_tester,Muh Farel Ilyas,Muh Farel Ilyas
+@chara_design,Asami Hikaru あさミ ひかる,Asami Hikaru あさミ ひかる
+@level_design,rulu,rulu
+@soundtrack,Couple N,Couple N

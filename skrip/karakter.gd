@@ -8,14 +8,15 @@ var arah : Vector3
 var arah_pandangan : Vector2 	# ini arah input / event relative
 var arah_p_pandangan : Vector2 	# ini arah pose
 var _menabrak = false
-var _debug = false
+#var _debug = false
 
 @export var kontrol = false
 @export var nama := ""+OS.get_model_name() :
 	set(namaa):
 		if get_node_or_null("nama") != null:
 			$nama.text = namaa
-		nama = namaa
+		if namaa != "":
+			nama = namaa
 @export var peran = Permainan.PERAN_KARAKTER.Arsitek
 @export var platform_pemain := "Linux"
 @export var id_pemain := -44 :
@@ -62,20 +63,20 @@ var _debug = false
 		warna["sepatu"] = warna_baru["sepatu"]
 		atur_warna()
 
-func _input(_event):
-	if Input.is_action_just_pressed("debug"):
-		if not _debug:
-			print_debug("thefak")
-			get_node("%GeneralSkeleton").physical_bones_start_simulation([
-				"HairJoint-42e3c90b-142e-4348-83a2-8ad7f22661e9",
-				"HairJoint-e9327431-fe35-4a5b-902c-528ff7c3e014_end",
-				"HairJoint-4db0cf52-4216-43e0-8c2c-77b29cb83ca5_end",
-				"HairJoint-e546e4f6-f6a6-42f5-838b-d09071115117_end"
-			])
-			_debug = true
-		else:
-			get_node("%GeneralSkeleton").physical_bones_stop_simulation()
-			_debug = false
+#func _input(_event):
+#	if Input.is_action_just_pressed("debug"):
+#		if not _debug:
+#			print_debug("thefak")
+#			get_node("%GeneralSkeleton").physical_bones_start_simulation([
+#				"HairJoint-42e3c90b-142e-4348-83a2-8ad7f22661e9",
+#				"HairJoint-e9327431-fe35-4a5b-902c-528ff7c3e014_end",
+#				"HairJoint-4db0cf52-4216-43e0-8c2c-77b29cb83ca5_end",
+#				"HairJoint-e546e4f6-f6a6-42f5-838b-d09071115117_end"
+#			])
+#			_debug = true
+#		else:
+#			get_node("%GeneralSkeleton").physical_bones_stop_simulation()
+#			_debug = false
 
 # penampilan
 func atur_model():
@@ -237,7 +238,7 @@ func _physics_process(_delta):
 	_menabrak = move_and_slide()
 	
 	# terapkan gerakan
-	$pose.set("parameters/arah_gerakan/blend_position", Vector2(-arah_gerakan.x, arah_gerakan.z / 2))
+	$pose.set("parameters/arah_gerakan/blend_position", Vector2(-arah_gerakan.x, arah_gerakan.z / 2)) # TODO : clamp arah gerak z > 0.25
 	$pose.set("parameters/arah_jongkok/blend_position", arah_gerakan.z)
 func _process(_delta):
 	# kalkulasi gerakan
@@ -249,8 +250,8 @@ func _process(_delta):
 	
 	# atur posisi pengamat
 	#$pengamat/kamera.position.x = get_node("%kepala").position.x # FIXME : attach ke leher ? gak usah
-	$pengamat.position.y = get_node("%mata_kiri").position.y
-	$pengamat/kamera.position.z = get_node("%kepala").position.z
+	$pengamat.position.y 		= get_node("%mata_kiri").position.y
+	$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
 	
 	# atur arah pose
 	$pose.set("parameters/arah_y_pandangan/blend_position", arah_p_pandangan.y)

@@ -10,7 +10,7 @@ var broadcast : ServerAdvertiser
 var headless = false
 var jumlah_pemain = 32
 var pemain_terhubung = 0
-var map = "showcase"
+var map = "empty"
 var pemain : Dictionary
 var timeline : Dictionary = {
 	"data": {
@@ -91,7 +91,10 @@ func _pemain_bergabung(id_pemain):
 	# cek data pemain, kalo pemain ada di data; pake posisi dan rotasi dari data tersebut
 	# kalo pemain gak ada di data, pake posisi dan rotasi dari posisi_spawn
 	# kalo posisi_spawn gak ada, pake posisi saat ini (posisi acak) dan rotasi 0
-	if permainan.dunia.get_node_or_null("posisi_spawn") != null: # HACK : kesalahan class akan menimbulkan softlock pada client ketika tetputus pada proses koneksi
+	if permainan.dunia.get_node_or_null("posisi_spawn") != null:
+		# HACK : kesalahan class akan menimbulkan softlock pada client ketika tetputus pada proses koneksi
+		# [mis. permainan.dunia.map.get_node_or_null]
+		# ini bisa dipake untuk testing client
 		posisi = permainan.dunia.get_node("posisi_spawn").position
 		rotasi = permainan.dunia.get_node("posisi_spawn").rotation
 	client.rpc_id(
@@ -138,3 +141,42 @@ func _pemain_terputus(id_pemain):
 	permainan.dunia.get_node("pemain/"+str(id_pemain)+"/suara").array_suara.append(tmp_data_suara)
 	# mainkan suara *
 	permainan.dunia.get_node("pemain/"+str(id_pemain)+"/suara").bicara()
+@rpc("any_peer") func _terima_pesan_pemain(id_pemain : int, pesan : String):
+	# [14:42:58] [color="ff00aa"]uswa[/color] : aku sayang banget sama kamu >u<
+	var waktu = Time.get_datetime_dict_from_system() # { "year": 2023, "month": 9, "day": 25, "weekday": 1, "hour": 11, "minute": 28, "second": 57, "dst": false }
+	var jam   = str(waktu["hour"]);
+	var menit = str(waktu["minute"]);
+	var detik = str(waktu["second"])
+	if waktu["hour"] 	< 10: jam 	= "0"+str(waktu["hour"])
+	if waktu["minute"]	< 10: menit = "0"+str(waktu["minute"])
+	if waktu["second"] 	< 10: detik = "0"+str(waktu["second"])
+	# TODO : warna nama pemain berdasarkan warna pemain
+	var teks = "[%s:%s:%s] [color=\"%s\"]%s[/color] : %s" % [
+		jam, menit, detik,
+		"ff80ff",
+		permainan.dunia.get_node("pemain/"+str(id_pemain)).nama,
+		pesan
+	]
+	#print_debug(teks)
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: rpc("_terima_pesan_pemain", id_pemain, pesan)
+	permainan._tampilkan_pesan(teks)
+@rpc("any_peer") func _tambahkan_entitas(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# FIXME : invalid resource di client | solusi : resource harus di preload()
+		if FileAccess.file_exists(jalur_skena):
+			var tmp_objek : Node3D = load(jalur_skena).instantiate()
+			var tmp_nama = tmp_objek.name
+			tmp_objek.name = "entitas_"+str(permainan.dunia.get_node("entitas").get_child_count()+1)
+			# properti : Array = [
+			#	["modulate", "#ff8080"],
+			#	["terkunci", true]
+			# ]
+			for p in properti.size():
+				if tmp_objek.get(properti[p][0]) != null: tmp_objek.set(properti[p][0], properti[p][1])
+				else: print("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti[p][0]+"]")
+			tmp_objek.position = posisi
+			tmp_objek.rotation = rotasi
+			permainan.dunia.get_node("entitas").add_child(tmp_objek, true)
+			print_debug("menambahkan %s [%s]" % [tmp_objek.name, tmp_nama])
+		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
+	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")

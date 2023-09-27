@@ -1,4 +1,4 @@
-[gd_scene load_steps=171 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=178 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -42,6 +42,7 @@
 [ext_resource type="Texture2D" uid="uid://dyekolvrmm25g" path="res://ui/tombol/lompat_tekan.svg" id="16_t7mcc"]
 [ext_resource type="PackedScene" uid="uid://caj1xl4dg83kl" path="res://ui/pemilih_warna.scn" id="18_3fc46"]
 [ext_resource type="Texture2D" uid="uid://qv0gcb22v67d" path="res://ui/slider_grabber.svg" id="18_ex6as"]
+[ext_resource type="Texture2D" uid="uid://dwwsncx7t4g2a" path="res://ui/ikon/ikon_tombol_pesan.svg" id="18_m6a3h"]
 [ext_resource type="Texture2D" uid="uid://dbngqyysbphw6" path="res://ui/ikon/ikon_tab_rambut.svg" id="20_x7tnp"]
 [ext_resource type="Texture2D" uid="uid://bkbtjgpe4ucul" path="res://ui/spinner_menghubungkan.svg" id="21_lgrqm"]
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
@@ -50,6 +51,124 @@
 [ext_resource type="Script" path="res://skrip/Dragpad.gd" id="27_h56tf"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
+bg_color = Color(0.8, 0.8, 0.8, 1)
+border_width_left = 5
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6tox"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="Animation" id="Animation_kfwqj"]
+resource_name = "sembunyikan"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("input_pesan:anchor_bottom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("input_pesan:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_phfil"]
+resource_name = "tampilkan"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("input_pesan:anchor_bottom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("input_pesan:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_v0gts"]
+_data = {
+"sembunyikan": SubResource("Animation_kfwqj"),
+"tampilkan": SubResource("Animation_phfil")
+}
+
+[sub_resource type="Animation" id="Animation_6qw4d"]
+resource_name = "sembunyikan"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_548c5"]
+resource_name = "tampilkan"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6geu8"]
+_data = {
+"sembunyikan": SubResource("Animation_6qw4d"),
+"tampilkan": SubResource("Animation_548c5")
+}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_60lyf"]
 bg_color = Color(0, 0, 0, 0.647059)
@@ -861,26 +980,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
-bg_color = Color(0.8, 0.8, 0.8, 1)
-border_width_left = 5
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6tox"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7vfyb"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -2037,6 +2136,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="kompas" type="TextureRect" parent="hud"]
 texture_repeat = 2
@@ -2057,12 +2157,70 @@ texture = ExtResource("3_ctamh")
 stretch_mode = 3
 script = ExtResource("4_qrdv8")
 
+[node name="pesan" type="Control" parent="hud"]
+layout_mode = 1
+anchor_left = 0.016
+anchor_top = 0.32
+anchor_right = 0.625
+anchor_bottom = 0.413
+offset_left = -0.384001
+offset_top = -1.52588e-05
+offset_bottom = 0.199997
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="input_pesan" type="LineEdit" parent="hud/pesan"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_neighbor_left = NodePath("../../../batal")
+focus_neighbor_right = NodePath("../../../simpan")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
+theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
+theme_override_styles/focus = SubResource("StyleBoxFlat_c6tox")
+caret_blink = true
+
+[node name="animasi" type="AnimationPlayer" parent="hud/pesan"]
+libraries = {
+"": SubResource("AnimationLibrary_v0gts")
+}
+
+[node name="daftar_pesan" type="RichTextLabel" parent="hud"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.016
+anchor_top = 0.027
+anchor_right = 0.625
+anchor_bottom = 0.307
+offset_left = -0.384001
+offset_top = -0.200001
+offset_bottom = -0.200012
+mouse_filter = 1
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+bbcode_enabled = true
+scroll_active = false
+scroll_following = true
+
+[node name="animasi" type="AnimationPlayer" parent="hud/daftar_pesan"]
+libraries = {
+"": SubResource("AnimationLibrary_6geu8")
+}
+
 [node name="daftar_pemain" type="Control" parent="hud"]
 layout_mode = 1
 anchor_right = 0.281188
 anchor_bottom = 1.00033
 offset_right = 0.0639992
 offset_bottom = -0.200001
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="panel" type="Panel" parent="hud/daftar_pemain"]
@@ -2211,6 +2369,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 metadata/_edit_lock_ = true
 
 [node name="kontrol_pandangan" type="Control" parent="kontrol_sentuh"]
@@ -2284,16 +2443,38 @@ action = "lompat"
 
 [node name="menu" type="Button" parent="kontrol_sentuh"]
 layout_mode = 1
-offset_left = 16.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
 offset_top = 16.0
-offset_right = 78.0
+offset_right = -16.0
 offset_bottom = 78.0
+grow_horizontal = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
 theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 button_mask = 5
 icon = ExtResource("8_gqe5w")
+icon_alignment = 1
+
+[node name="chat" type="Button" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -158.0
+offset_top = 18.0
+offset_right = -98.0
+offset_bottom = 76.0
+grow_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+button_mask = 5
+icon = ExtResource("18_m6a3h")
 icon_alignment = 1
 
 [node name="menu_jeda" type="Control" parent="."]
@@ -3959,6 +4140,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_6os86")
+metadata/_edit_lock_ = true
 
 [node name="panel" type="Panel" parent="popup_informasi"]
 visible = false
@@ -3968,10 +4150,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -312.0
-offset_top = -140.0
-offset_right = 312.0
-offset_bottom = 140.0
+offset_left = -336.0
+offset_top = -132.0
+offset_right = 336.0
+offset_bottom = 132.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_705t2")
 
 [node name="teks" type="Label" parent="popup_informasi/panel"]
@@ -3984,7 +4166,8 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 32
-text = "kamu diblokir selama 730 hari. untuk kembali bermain, hubungi developer"
+text = "Tidak dapat terhubung dengan peladen
+kamu diblokir selama 730 hari. untuk kembali bermain, hubungi developer"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -4155,22 +4338,42 @@ libraries = {
 "": SubResource("AnimationLibrary_mmswf")
 }
 
-[node name="versi" type="Label" parent="."]
+[node name="performa" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -280.0
-offset_top = 8.0
-offset_right = -11.0
-offset_bottom = 60.0
+anchor_bottom = 1.0
+offset_left = -448.0
+offset_top = -52.0
+offset_right = -8.0
+offset_bottom = -32.0
 grow_horizontal = 0
+grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
-text = "Dreamline beta v1.4.2 rev 14/07/23 devtest
-77MiB
-60fps"
+text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB"
+horizontal_alignment = 2
+
+[node name="versi" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -448.0
+offset_top = -28.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+text = "Dreamline alpha v1.4.4 rev 24/09/23 devtest | 512MiB | 100fps | server"
 horizontal_alignment = 2
 metadata/_edit_lock_ = true
 
@@ -4188,6 +4391,7 @@ bus = &"Suara Pemain"
 [connection signal="button_down" from="kontrol_sentuh/lompat" to="." method="_ketika_mulai_melompat"]
 [connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]
+[connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/lanjutkan" to="." method="_lanjutkan"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/putuskan" to="." method="_putuskan"]
 [connection signal="pressed" from="menu_jeda/setelan" to="." method="_tampilkan_setelan_permainan"]

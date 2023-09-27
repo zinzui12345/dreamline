@@ -61,8 +61,13 @@ func _ketika_gagal_menghubungkan_server():
 func _ketika_terputus_dari_server():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	permainan.putuskan_server()
-	permainan._tampilkan_popup_informasi("%koneksiputus", permainan.get_node("menu_utama/menu/Panel/gabung_server"))
-	print("koneksi server terputus.")
+	if permainan.get_node("proses_koneksi").visible:
+		if permainan.get_node("daftar_server").visible:
+			permainan._sembunyikan_daftar_server()
+		_ketika_gagal_menghubungkan_server()
+	else:
+		permainan._tampilkan_popup_informasi("%koneksiputus", permainan.get_node("menu_utama/menu/Panel/gabung_server"))
+		print("koneksi server terputus.")
 
 func tambah_pemain(pemain):
 	if pemain.id_pemain != id_koneksi:

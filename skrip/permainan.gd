@@ -13,8 +13,9 @@ class_name Permainan
 # 18 Sep 2023 | 1.4.3 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.4.3 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
+# 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
 
-const versi = "Dreamline beta v1.4.4 rev 23/09/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 27/09/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -43,12 +44,14 @@ var permukaan # Permukaan (Terrain)
 var thread = Thread.new()
 var koneksi = MODE_KONEKSI.CLIENT
 var jeda = false
+var pesan = false # ketika input pesan ditampilkan
 var _posisi_tab_koneksi = "LAN" # | "Internet"
 var _rotasi_tampilan_karakter : Vector3
 var _arah_gestur_tampilan_karakter : Vector2
 var _touchpad_disentuh = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara = Timer.new()
+var _timer_tampilkan_pesan = Timer.new()
 
 enum MODE_KONEKSI {
 	SERVER,
@@ -100,6 +103,10 @@ func _ready():
 	add_child(_timer_kirim_suara)
 	_timer_kirim_suara.wait_time = 2.0
 	_timer_kirim_suara.connect("timeout", Callable(self, "_kirim_suara"))
+	# setup timer pesan
+	add_child(_timer_tampilkan_pesan)
+	_timer_tampilkan_pesan.wait_time = 2.0
+	_timer_tampilkan_pesan.connect("timeout", Callable(self, "_sembunyikan_pesan"))
 	# setup timeline
 	server.set_process(false)
 	server.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -145,10 +152,13 @@ func _process(delta):
 	# input
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if Input.is_action_just_pressed("ui_cancel"):
-			if !jeda: _jeda()
+			if pesan: _tampilkan_input_pesan()
+			elif !jeda: _jeda()
 			else: _lanjutkan()
-		if Input.is_action_pressed("berbicara"): _berbicara(true)
+		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
 		if Input.is_action_just_pressed("daftar_pemain"): $hud/daftar_pemain/animasi.play("tampilkan")
+		if Input.is_action_just_pressed("tampilkan_pesan") and !jeda: _tampilkan_input_pesan()
+		if Input.is_action_just_pressed("ui_text_completion_accept") and pesan: _kirim_pesan()
 		
 		if Input.is_action_just_released("berbicara"): _berbicara(false)
 		if Input.is_action_just_released("daftar_pemain"): $hud/daftar_pemain/animasi.play_backwards("tampilkan")
@@ -161,30 +171,26 @@ func _process(delta):
 		else:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 			Konfigurasi.mode_layar_penuh = true
+		Panku.notify("modelayar_penuh : "+str(Konfigurasi.mode_layar_penuh))
 	
 	# informasi
 	var info_mode_koneksi = ""
 	match koneksi:
 		0: info_mode_koneksi = "server"
 		1: info_mode_koneksi = "client"
-	$versi.text = "%s\n\
-					%s Mem\n\
-					%s VRAM\n\
-					%s Draw\n\
-					%sVert\n\
-					%sfps\n\
-					%s\n\
-					server frame: %s" % \
-					[
-						versi,
-						String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage()),
-						String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED)),
-						RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
-						str(get_tree().get_root().get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME)),
-						str(Engine.get_frames_per_second()),
-						info_mode_koneksi,
-						server.timeline["data"]["frame"]
-					]
+	if $performa.visible:
+		var info_jumlah_entitas = 0
+		if is_instance_valid(dunia): info_jumlah_entitas = dunia.get_node("entitas").get_child_count()
+		$performa.text = "%s : %s | %s : %s  | %s : %s | VRAM : %s" % [
+			TranslationServer.translate("VERTEKS"),
+			str(get_tree().get_root().get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME)),
+			TranslationServer.translate("ENTITAS"),
+			info_jumlah_entitas,
+			TranslationServer.translate("DRAW"),
+			RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+			String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED))
+		]
+	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps | "+info_mode_koneksi
 
 # core
 func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
@@ -321,6 +327,13 @@ func _kirim_suara():
 		else: server.rpc("_terima_suara_pemain", client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara)#; server._terima_suara_pemain(client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara) # testing
 		effect.set_recording_active(true)
 		print("kirim suara...")
+func _kirim_pesan():
+	if $hud/pesan/input_pesan.text != "":
+		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(1, $hud/pesan/input_pesan.text)
+		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_koneksi, $hud/pesan/input_pesan.text)
+		$hud/pesan/input_pesan.text = ""
+	$hud/pesan/input_pesan.release_focus()
+	$hud/pesan/input_pesan.grab_focus()
 
 # koneksi
 func buat_server(headless = false):
@@ -415,6 +428,12 @@ func _ketika_berhenti_mengontrol_arah_pandangan():
 	if is_instance_valid(karakter): # ketika dalam permainan
 		_arah_sentuhan_touchpad = Vector2.ZERO
 		karakter.arah_pandangan = Vector2.ZERO
+func _ketika_mengubah_mode_kontrol_gerak(mode):
+	$kontrol_sentuh/kontrol_gerakan/analog.visible = false
+	$"kontrol_sentuh/kontrol_gerakan/d-pad".visible = false
+	match mode:
+		0: $kontrol_sentuh/kontrol_gerakan/analog.visible = true;	Konfigurasi.mode_kontrol_gerak = "analog"
+		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true;	Konfigurasi.mode_kontrol_gerak = "dpad"
 func _ketika_mengontrol_arah_gerak(arah, _analog):
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if arah.y > 0.1 and arah.y <= 1.0:
@@ -721,6 +740,35 @@ func _tambah_daftar_pemain(id_pemain, data_pemain):
 	pemain.name = str(id_pemain)
 func _tampilkan_setelan_permainan():
 	Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()")
+func _tampilkan_input_pesan():
+	$kontrol_sentuh/chat.release_focus()
+	if pesan:
+		$kontrol_sentuh/mic.visible = true
+		$hud/pesan/input_pesan.release_focus()
+		$hud/daftar_pesan/animasi.play("sembunyikan")
+		$hud/pesan/animasi.play("sembunyikan")
+		karakter._atur_kendali(true)
+		pesan = false
+	else:
+		$hud/daftar_pesan/animasi.play("tampilkan")
+		$hud/pesan/animasi.play("tampilkan")
+		$hud/pesan/input_pesan.grab_focus()  
+		$kontrol_sentuh/mic.visible = false
+		karakter._atur_kendali(false)
+		pesan = true
+func _tampilkan_pesan(teks : String):
+	$hud/daftar_pesan/animasi.play("tampilkan")
+	$hud/daftar_pesan.append_text("\n"+teks)
+	if !pesan:
+		# 15 karakter = 3 detik
+		# jadi 5 karakter = 1 detik
+		# dan 1 karakter = 0.2 detik
+		_timer_tampilkan_pesan.wait_time = 0.2 * teks.length()
+		_timer_tampilkan_pesan.start()
+func _sembunyikan_pesan():
+	if !pesan:
+		$hud/daftar_pesan/animasi.play("sembunyikan")
+		_timer_tampilkan_pesan.stop()
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama
@@ -804,6 +852,7 @@ func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		karakter._atur_kendali(false)
 		$kontrol_sentuh/menu.visible = false
+		$kontrol_sentuh/chat.visible = false
 		$menu_jeda/menu/animasi.play("tampilkan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.grab_focus()
 		jeda = true
@@ -811,6 +860,7 @@ func _lanjutkan():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		karakter._atur_kendali(true)
 		$kontrol_sentuh/menu.visible = true
+		$kontrol_sentuh/chat.visible = true
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.release_focus()
 		jeda = false

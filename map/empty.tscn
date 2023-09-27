@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://ihafed1x1w4f"]
+
+[ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fu78a"]
+albedo_texture = ExtResource("1_xfa6m")
+uv1_scale = Vector3(250, 250, 250)
+point_size = 128.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_56wji"]
+material = SubResource("StandardMaterial3D_fu78a")
+size = Vector2(100, 100)
+orientation = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oj1l1"]
+size = Vector3(100, 1, 100)
+
+[node name="lingkungan" type="Node3D"]
+
+[node name="posisi_spawn" type="Marker3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="lantai" type="StaticBody3D" parent="."]
+
+[node name="m_lantai" type="MeshInstance3D" parent="lantai"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("QuadMesh_56wji")
+skeleton = NodePath("../..")
+
+[node name="f_lantai" type="CollisionShape3D" parent="lantai"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_oj1l1")

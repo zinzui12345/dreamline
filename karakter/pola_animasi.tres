@@ -1,4 +1,4 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=25 format=3 uid="uid://biebpppindc77"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=28 format=3 uid="uid://biebpppindc77"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_82mvo"]
 animation = &"animasi/berjalan maju"
@@ -86,11 +86,26 @@ animation = &"animasi/melihat_kedepan"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_du260"]
 animation = &"animasi/melihat_kebawah"
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_r0du5"]
+animation = &"animasi/melihat_kebawah_depan"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mn4eu"]
+animation = &"animasi/melihat_keatas_depan"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rnc0o"]
+animation = &"animasi/melihat_keatas"
+
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_u5laf"]
 blend_point_0/node = SubResource("AnimationNodeAnimation_4rsse")
 blend_point_0/pos = 0.0
 blend_point_1/node = SubResource("AnimationNodeAnimation_du260")
 blend_point_1/pos = -1.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_r0du5")
+blend_point_2/pos = -0.5
+blend_point_3/node = SubResource("AnimationNodeAnimation_mn4eu")
+blend_point_3/pos = 0.5
+blend_point_4/node = SubResource("AnimationNodeAnimation_rnc0o")
+blend_point_4/pos = 1.0
 
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_3dhkw"]
 input_0/name = "berdiri"
@@ -110,7 +125,7 @@ animation = &"animasi/melompat"
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_8svk4"]
 
 [resource]
-graph_offset = Vector2(-78.6667, 232)
+graph_offset = Vector2(-292, 314.667)
 nodes/arah_gerakan/node = SubResource("AnimationNodeBlendSpace2D_sttqg")
 nodes/arah_gerakan/position = Vector2(-266.667, 133.333)
 nodes/arah_jongkok/node = SubResource("AnimationNodeBlendSpace1D_e423v")
