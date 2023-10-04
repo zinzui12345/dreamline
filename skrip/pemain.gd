@@ -16,8 +16,9 @@ var _interval_timeline	= 0.05
 var _delay_timeline 	= _interval_timeline
 var _frame_timeline_sb	= 0 # frame sebelumnya
 
-var _raycast_pemain
+var _raycast_pemain : RayCast3D
 var _target_pemain # kondisi target raycast (true|false)
+var objek_target : Node3D
 var pos_target : Vector3 # posisi raycast
 
 func atur_pengendali(id):
@@ -36,7 +37,7 @@ func atur_pengendali(id):
 	# INFO : (8b) mulai permainan
 	if kendali:
 		Panku.gd_exprenv.register_env("pemain", self)
-		Panku.notify("%spawnpemain")
+		Panku.notify(TranslationServer.translate("%spawnpemain"))
 		if server.permainan.permukaan != null:
 			server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 		client.permainan.karakter = karakter
@@ -63,6 +64,7 @@ func _process(delta):
 	_target_pemain = _raycast_pemain.is_colliding()
 	if _target_pemain:
 		pos_target = _raycast_pemain.get_collision_point()
+		objek_target = _raycast_pemain.get_collider()
 		match karakter.peran:
 			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
 				#var tmp_pos = server.permainan.dunia.get_child(4).get_node("%peta").map_to_local(pos_target)
@@ -75,6 +77,7 @@ func _process(delta):
 				pass
 	#elif server.permainan.dunia.get_child(4).get_node("%pos_debug").visible: # debug permukaan
 	#	server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = false
+	elif is_instance_valid(objek_target): objek_target = null
 	
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
@@ -163,7 +166,7 @@ func _process(delta):
 						
 						if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 							server._tambahkan_entitas(
-								"res://model/placeholder_entitas.tscn",
+								"res://skena/entitas/placeholder_entitas.tscn",
 								Vector3i(pos_target.x, pos_target.y, pos_target.z),
 								Vector3.ZERO,
 								[
@@ -174,22 +177,19 @@ func _process(delta):
 							server.rpc_id(
 								1,
 								"_tambahkan_entitas",
-								"res://model/placeholder_entitas.tscn",
+								"res://skena/entitas/placeholder_entitas.tscn",
 								Vector3i(pos_target.x, pos_target.y, pos_target.z),
 								Vector3.ZERO,
 								[
 									["modulate", Color(randf(), randf(), randf(), 1)]
 								]
 							)
-		#if Input.is_action_just_pressed("aksi2"):
-		#	if _target_pemain:
-		#		match karakter.peran:
-		#			Permainan.PERAN_KARAKTER.Arsitek:
-		#				server.permainan.dunia.get_child(4).get_node("%peta").set_cell_item(
-		#					Vector3i(pos_target.x, 0, pos_target.z), 
-		#					-1, 	# item
-		#					0	# orientasi
-		#				)
+		if Input.is_action_just_pressed("aksi2"):
+			if _target_pemain:
+				if objek_target.has_method("gunakan"): objek_target.gunakan(get_multiplayer_authority())
+				elif objek_target.name == "bidang_raycast" and \
+				 objek_target.get_parent().has_method("gunakan"):
+					objek_target.get_parent().gunakan(get_multiplayer_authority())
 		
 		if Input.is_action_just_pressed("jongkok"):
 			if karakter.arah.x == 0.0 and karakter.arah.z == 0.0:

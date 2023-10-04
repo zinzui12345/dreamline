@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6o3t5meckrn"]
 
-[ext_resource type="Script" path="res://skrip/Touchpad.gd" id="1"]
+[ext_resource type="Script" path="res://skrip/antarmuka/Touchpad.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bgx8s8lt2o2bv" path="res://ui/tombol/touch_bg_circle.svg" id="2"]
 
 [sub_resource type="Animation" id="1"]

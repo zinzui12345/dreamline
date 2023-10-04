@@ -2,13 +2,14 @@ extends CharacterBody3D
 
 class_name Karakter
 
+# FIXME : sikronisasi melompat, pose_duduk
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
 var arah_pandangan : Vector2 	# ini arah input / event relative
 var arah_p_pandangan : Vector2 	# ini arah pose
 var _menabrak = false
-#var _debug = false
+var tekstur
 
 @export var kontrol = false
 @export var nama := ""+OS.get_model_name() :
@@ -23,6 +24,11 @@ var _menabrak = false
 	set(id):
 		$PlayerInput.call_deferred("atur_pengendali", id)
 		id_pemain = id
+@export var gestur = "berdiri":
+	set(ubah):
+		if ubah != $pose.get("parameters/gestur/current_state"):
+			$pose.set("parameters/gestur/transition_request", ubah)
+			gestur = ubah
 @export var arah_gerakan : Vector3
 @export var model = {
 	"alis"		: 0,
@@ -65,63 +71,41 @@ var _menabrak = false
 
 #func _input(_event):
 #	if Input.is_action_just_pressed("debug"):
-#		if not _debug:
-#			print_debug("thefak")
-#			get_node("%GeneralSkeleton").physical_bones_start_simulation([
-#				"HairJoint-42e3c90b-142e-4348-83a2-8ad7f22661e9",
-#				"HairJoint-e9327431-fe35-4a5b-902c-528ff7c3e014_end",
-#				"HairJoint-4db0cf52-4216-43e0-8c2c-77b29cb83ca5_end",
-#				"HairJoint-e546e4f6-f6a6-42f5-838b-d09071115117_end"
-#			])
-#			_debug = true
-#		else:
-#			get_node("%GeneralSkeleton").physical_bones_stop_simulation()
-#			_debug = false
+#		Panku.notify("work!")
 
 # penampilan
 func atur_model():
 	# alis | FaceBrow
-	if model["alis"] != 0:
-		var tmp_mtl = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/alis.material")
-		get_node("%GeneralSkeleton/wajah").set_surface_override_material(material["alis"]["id_material"][0], tmp_mtl)
+	var tmp_alis
+	if Konfigurasi.shader_karakter:
+		tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/shader/alis.material")
 	else:
-		var tmp_mtl = load("res://karakter/"+$model.get_child(0).name+"/material/alis.material")
-		get_node("%GeneralSkeleton/wajah").set_surface_override_material(material["alis"]["id_material"][0], tmp_mtl)
+		tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/normal/alis.material")
+	get_node("%GeneralSkeleton/wajah").set_surface_override_material(material["alis"]["id_material"][0], tmp_alis)
 	
 	# mata | EyeIris
-	if model["mata"] != 0:
-		var tmp_mtl = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/mata.material")
-		get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][0], tmp_mtl)
+	var tmp_mata
+	if Konfigurasi.shader_karakter:
+		tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/shader/mata.material")
 	else:
-		var tmp_mtl = load("res://karakter/"+$model.get_child(0).name+"/material/mata.material")
-		get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][0], tmp_mtl)
+		tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/normal/mata.material")
+	get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][0], tmp_mata)
 	
 	# garis_mata | FaceEyeline | bulu_mata_a
-	if model["garis_mata"] != 0:
-		var tmp_mtl = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/bulu_mata_a.material")
-		get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][1], tmp_mtl)
+	var tmp_bulu_mata_a
+	if Konfigurasi.shader_karakter:
+		tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/shader/bulu_mata_a.material")
 	else:
-		var tmp_mtl = load("res://karakter/"+$model.get_child(0).name+"/material/bulu_mata_a.material")
-		get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][1], tmp_mtl)
+		tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/normal/bulu_mata_a.material")
+	get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][1], tmp_bulu_mata_a)
 	
-	if model["rambut"] != 0:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["rambut"])+"/rambut.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
-		tmp_skin.name = "rambut"
-		tmp_s_skin.set_name("b_rambut")
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate(8))
-		tmp_skin.queue_free()
-		#tmp_skin = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
-		tmp_s_skin.queue_free()
-	else:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/rambut.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
-		tmp_s_skin.set_name("b_rambut")
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate(8))
-		tmp_skin.queue_free()
-		#tmp_skin = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
-		tmp_skin.skeleton = NodePath(get_node("%GeneralSkeleton").get_path())
-		tmp_s_skin.queue_free()
+	# rambut
+	var src_mdl_rambut = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
+	var tmp_mdl_rambut = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["rambut"])+"/rambut.scn").instantiate()
+	src_mdl_rambut.set_name("b_rambut")
+	tmp_mdl_rambut.set_name("rambut")
+	get_node("%GeneralSkeleton").add_child(tmp_mdl_rambut)
+	src_mdl_rambut.queue_free()
 	
 	if model["baju"] != 0:
 		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
@@ -137,6 +121,23 @@ func atur_model():
 		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
 		tmp_s_skin.name = "b_baju"
 		#tmp_skin.layers = tmp_s_skin.layers
+		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
+		tmp_skin.queue_free()
+		tmp_skin.skeleton = NodePath(get_node("%GeneralSkeleton").get_path())
+		tmp_s_skin.queue_free()
+	
+	if model["celana"] != 0:
+		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
+		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
+		tmp_skin.name = "celana"
+		tmp_s_skin.name = "b_celana"
+		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
+		tmp_skin.queue_free()
+		tmp_s_skin.queue_free()
+	else:
+		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/celana.scn").instantiate()
+		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
+		tmp_s_skin.name = "b_celana"
 		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
 		tmp_skin.queue_free()
 		tmp_skin.skeleton = NodePath(get_node("%GeneralSkeleton").get_path())
@@ -173,44 +174,52 @@ func atur_warna():
 				 and id_mtl[mtl] < get_node("%GeneralSkeleton/"+jlr_mtl).mesh.get_surface_count():
 					var tmp_mtl = get_node("%GeneralSkeleton/"+jlr_mtl).get_surface_override_material(id_mtl[mtl])
 					if tmp_mtl == null:
-						#print_debug("lavender mist")
 						var src_mtl = get_node("%GeneralSkeleton/"+jlr_mtl).mesh.surface_get_material(id_mtl[mtl])
-						tmp_mtl = ShaderMaterial.new()
-						tmp_mtl.shader = src_mtl.shader
-						tmp_mtl.set_shader_parameter("_AlphaCutoutEnable", src_mtl.get_shader_parameter("_AlphaCutoutEnable"))
-						tmp_mtl.set_shader_parameter("_Cutoff", src_mtl.get_shader_parameter("_Cutoff"))
-						tmp_mtl.set_shader_parameter("_ShadeColor", src_mtl.get_shader_parameter("_ShadeColor"))
-						tmp_mtl.set_shader_parameter("_MainTex_ST", src_mtl.get_shader_parameter("_MainTex_ST"))
-						tmp_mtl.set_shader_parameter("_BumpScale", src_mtl.get_shader_parameter("_BumpScale"))
-						tmp_mtl.set_shader_parameter("_ShadingGradeRate", src_mtl.get_shader_parameter("_ShadingGradeRate"))
-						tmp_mtl.set_shader_parameter("_ShadingGradeRate", src_mtl.get_shader_parameter("_ShadingGradeRate"))
-						tmp_mtl.set_shader_parameter("_ShadeShift", src_mtl.get_shader_parameter("_ShadeShift"))
-						tmp_mtl.set_shader_parameter("_ShadeToony", src_mtl.get_shader_parameter("_ShadeToony"))
-						tmp_mtl.set_shader_parameter("_LightColorAttenuation", src_mtl.get_shader_parameter("_LightColorAttenuation"))
-						tmp_mtl.set_shader_parameter("_IndirectLightIntensity", src_mtl.get_shader_parameter("_IndirectLightIntensity"))
-						tmp_mtl.set_shader_parameter("_RimColor", src_mtl.get_shader_parameter("_RimColor"))
-						tmp_mtl.set_shader_parameter("_RimLightingMix", src_mtl.get_shader_parameter("_RimLightingMix"))
-						tmp_mtl.set_shader_parameter("_RimFresnelPower", src_mtl.get_shader_parameter("_RimFresnelPower"))
-						tmp_mtl.set_shader_parameter("_RimLift", src_mtl.get_shader_parameter("_RimLift"))
-						tmp_mtl.set_shader_parameter("_MatcapColor", src_mtl.get_shader_parameter("_MatcapColor"))
-						tmp_mtl.set_shader_parameter("_EmissionColor", src_mtl.get_shader_parameter("_EmissionColor"))
-						tmp_mtl.set_shader_parameter("_EmissionMultiplier", src_mtl.get_shader_parameter("_EmissionMultiplier"))
-						tmp_mtl.set_shader_parameter("_OutlineWidthMode", src_mtl.get_shader_parameter("_OutlineWidthMode"))
-						tmp_mtl.set_shader_parameter("_OutlineWidth", src_mtl.get_shader_parameter("_OutlineWidth"))
-						tmp_mtl.set_shader_parameter("_OutlineScaledMaxDistance", src_mtl.get_shader_parameter("_OutlineScaledMaxDistance"))
-						tmp_mtl.set_shader_parameter("_OutlineColorMode", src_mtl.get_shader_parameter("_OutlineColorMode"))
-						tmp_mtl.set_shader_parameter("_OutlineColor", src_mtl.get_shader_parameter("_OutlineColor"))
-						tmp_mtl.set_shader_parameter("_OutlineLightingMix", src_mtl.get_shader_parameter("_OutlineLightingMix"))
-						tmp_mtl.set_shader_parameter("_MainTex", src_mtl.get_shader_parameter("_MainTex"))
-						tmp_mtl.set_shader_parameter("_ShadeTexture", src_mtl.get_shader_parameter("_ShadeTexture"))
-						tmp_mtl.set_shader_parameter("_BumpMap", src_mtl.get_shader_parameter("_BumpMap"))
-						tmp_mtl.set_shader_parameter("_SphereAdd", src_mtl.get_shader_parameter("_SphereAdd"))
-						tmp_mtl.set_shader_parameter("_EmissionMap", src_mtl.get_shader_parameter("_EmissionMap"))
+						if Konfigurasi.shader_karakter or src_mtl is ShaderMaterial:
+							tmp_mtl = ShaderMaterial.new()
+							tmp_mtl.shader = src_mtl.shader
+							tmp_mtl.set_shader_parameter("_AlphaCutoutEnable", src_mtl.get_shader_parameter("_AlphaCutoutEnable"))
+							tmp_mtl.set_shader_parameter("_Cutoff", src_mtl.get_shader_parameter("_Cutoff"))
+							tmp_mtl.set_shader_parameter("_ShadeColor", src_mtl.get_shader_parameter("_ShadeColor"))
+							tmp_mtl.set_shader_parameter("_MainTex_ST", src_mtl.get_shader_parameter("_MainTex_ST"))
+							tmp_mtl.set_shader_parameter("_BumpScale", src_mtl.get_shader_parameter("_BumpScale"))
+							tmp_mtl.set_shader_parameter("_ShadingGradeRate", src_mtl.get_shader_parameter("_ShadingGradeRate"))
+							tmp_mtl.set_shader_parameter("_ShadingGradeRate", src_mtl.get_shader_parameter("_ShadingGradeRate"))
+							tmp_mtl.set_shader_parameter("_ShadeShift", src_mtl.get_shader_parameter("_ShadeShift"))
+							tmp_mtl.set_shader_parameter("_ShadeToony", src_mtl.get_shader_parameter("_ShadeToony"))
+							tmp_mtl.set_shader_parameter("_LightColorAttenuation", src_mtl.get_shader_parameter("_LightColorAttenuation"))
+							tmp_mtl.set_shader_parameter("_IndirectLightIntensity", src_mtl.get_shader_parameter("_IndirectLightIntensity"))
+							tmp_mtl.set_shader_parameter("_RimColor", src_mtl.get_shader_parameter("_RimColor"))
+							tmp_mtl.set_shader_parameter("_RimLightingMix", src_mtl.get_shader_parameter("_RimLightingMix"))
+							tmp_mtl.set_shader_parameter("_RimFresnelPower", src_mtl.get_shader_parameter("_RimFresnelPower"))
+							tmp_mtl.set_shader_parameter("_RimLift", src_mtl.get_shader_parameter("_RimLift"))
+							tmp_mtl.set_shader_parameter("_MatcapColor", src_mtl.get_shader_parameter("_MatcapColor"))
+							tmp_mtl.set_shader_parameter("_EmissionColor", src_mtl.get_shader_parameter("_EmissionColor"))
+							tmp_mtl.set_shader_parameter("_EmissionMultiplier", src_mtl.get_shader_parameter("_EmissionMultiplier"))
+							tmp_mtl.set_shader_parameter("_OutlineWidthMode", src_mtl.get_shader_parameter("_OutlineWidthMode"))
+							tmp_mtl.set_shader_parameter("_OutlineWidth", src_mtl.get_shader_parameter("_OutlineWidth"))
+							tmp_mtl.set_shader_parameter("_OutlineScaledMaxDistance", src_mtl.get_shader_parameter("_OutlineScaledMaxDistance"))
+							tmp_mtl.set_shader_parameter("_OutlineColorMode", src_mtl.get_shader_parameter("_OutlineColorMode"))
+							tmp_mtl.set_shader_parameter("_OutlineColor", src_mtl.get_shader_parameter("_OutlineColor"))
+							tmp_mtl.set_shader_parameter("_OutlineLightingMix", src_mtl.get_shader_parameter("_OutlineLightingMix"))
+							tmp_mtl.set_shader_parameter("_MainTex", src_mtl.get_shader_parameter("_MainTex"))
+							tmp_mtl.set_shader_parameter("_ShadeTexture", src_mtl.get_shader_parameter("_ShadeTexture"))
+							tmp_mtl.set_shader_parameter("_BumpMap", src_mtl.get_shader_parameter("_BumpMap"))
+							tmp_mtl.set_shader_parameter("_SphereAdd", src_mtl.get_shader_parameter("_SphereAdd"))
+							tmp_mtl.set_shader_parameter("_EmissionMap", src_mtl.get_shader_parameter("_EmissionMap"))
+						else:
+							tmp_mtl = StandardMaterial3D.new()
+							#print_debug("lavender mist")
+							tmp_mtl.albedo_texture 	= src_mtl.albedo_texture
+							tmp_mtl.albedo_color	= src_mtl.albedo_color
+							tmp_mtl.transparency	= src_mtl.transparency
 						get_node("%GeneralSkeleton/"+jlr_mtl).set_surface_override_material(id_mtl[mtl], tmp_mtl)
 						if get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f") != null\
 						 and id_mtl[mtl] < get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").mesh.get_surface_count():
 							get_node("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").set_surface_override_material(id_mtl[mtl], tmp_mtl)
-					tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
+					if Konfigurasi.shader_karakter or tmp_mtl is ShaderMaterial:
+						tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
+					else: tmp_mtl.albedo_color = warna[indeks_material[mt]]
 func atur_ragdoll(nilai):
 	if nilai:	$model/Root/Skeleton3D.physical_bones_start_simulation()
 	else:		$model/Root/Skeleton3D.physical_bones_stop_simulation()
@@ -225,6 +234,7 @@ func _kendalikan(nilai):
 		kontrol = nilai
 func _atur_kendali(nilai): 
 	$pengamat.fungsikan(nilai)
+	$PlayerInput.arah_gerakan = Vector2.ZERO
 	kontrol = nilai
 func _hapus():
 	set_physics_process(false)
@@ -234,6 +244,7 @@ func _hapus():
 func _physics_process(_delta):
 	# terapkan arah gerak
 	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
+	elif is_on_floor() and arah.y < 0: arah.y = 0
 	velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
 	_menabrak = move_and_slide()
 	

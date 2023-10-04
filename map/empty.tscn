@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://ihafed1x1w4f"]
+[gd_scene load_steps=6 format=3 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
+[ext_resource type="PackedScene" uid="uid://bodq1gcamen6h" path="res://skena/entitas/selis.tscn" id="2_u08w8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fu78a"]
 albedo_texture = ExtResource("1_xfa6m")
@@ -30,3 +31,6 @@ skeleton = NodePath("../..")
 [node name="f_lantai" type="CollisionShape3D" parent="lantai"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_oj1l1")
+
+[node name="selis" parent="." instance=ExtResource("2_u08w8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -8)

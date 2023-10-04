@@ -15,7 +15,7 @@ class_name Permainan
 # 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
 
-const versi = "Dreamline beta v1.4.4 rev 27/09/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 04/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -30,6 +30,7 @@ var data = {
 	"warna_rambut":	Color("252525"),
 	"baju":			0,
 	"warna_baju":	Color("4e3531"),
+	"celana":		0,
 	"warna_celana":	Color.WHITE,
 	"sepatu":		0,
 	"warna_sepatu":	Color.WHITE,
@@ -97,6 +98,9 @@ func _ready():
 	get_node("%karakter/reno").model["sepatu"] 		= data["sepatu"]
 	get_node("%karakter/reno").warna["sepatu"] 		= data["warna_sepatu"]
 	get_node("%karakter/reno").atur_warna()
+	match data["gender"]: # di dunia ini cuman ada 2 gender!
+		'P': $karakter/panel/tab/tab_personalitas/pilih_gender.select(0); _ketika_mengubah_gender_karakter(0)
+		'L': $karakter/panel/tab/tab_personalitas/pilih_gender.select(1); _ketika_mengubah_gender_karakter(1)
 	$hud.visible = false
 	$kontrol_sentuh.visible = false
 	# setup timer berbicara
@@ -207,6 +211,7 @@ func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vec
 		var tmp_p = $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node("pencahayaan_karakter")
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport.remove_child(tmp_p)
 		tmp_p.queue_free()
+		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
 	if $proses_koneksi.visible:
 		_sembunyikan_proses_koneksi()
@@ -263,6 +268,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 		pemain.warna["rambut"] 		= data_pemain["warna_rambut"]
 		pemain.model["baju"] 		= data_pemain["baju"]
 		pemain.warna["baju"] 		= data_pemain["warna_baju"]
+		pemain.model["celana"] 		= data_pemain["celana"]
 		pemain.warna["celana"] 		= data_pemain["warna_celana"]
 		pemain.model["sepatu"] 		= data_pemain["sepatu"]
 		#pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
@@ -381,6 +387,40 @@ func putuskan_server(paksa = false):
 		# INFO : (9) tampilkan kembali menu utama
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_utama/animasi.play("tampilkan")
+		
+		get_node("%karakter").add_child(karakter_cewek.instantiate())
+		get_node("%karakter/lulu").model["alis"] 		= data["alis"]
+		get_node("%karakter/lulu").model["garis_mata"] 	= data["garis_mata"]
+		get_node("%karakter/lulu").model["mata"] 		= data["mata"]
+		get_node("%karakter/lulu").warna["mata"] 		= data["warna_mata"]
+		get_node("%karakter/lulu").model["rambut"] 		= data["rambut"]
+		get_node("%karakter/lulu").warna["rambut"] 		= data["warna_rambut"]
+		get_node("%karakter/lulu").model["baju"] 		= data["baju"]
+		get_node("%karakter/lulu").warna["baju"] 		= data["warna_baju"]
+		get_node("%karakter/lulu").warna["celana"] 		= data["warna_celana"]
+		get_node("%karakter/lulu").model["sepatu"] 		= data["sepatu"]
+		get_node("%karakter/lulu").warna["sepatu"] 		= data["warna_sepatu"]
+		get_node("%karakter/lulu").atur_warna()
+		get_node("%karakter/lulu").set_process(false)
+		get_node("%karakter/lulu").set_physics_process(false)
+		get_node("%karakter").add_child(karakter_cowok.instantiate())
+		get_node("%karakter/reno").model["alis"] 		= data["alis"]
+		get_node("%karakter/reno").model["garis_mata"] 	= data["garis_mata"]
+		get_node("%karakter/reno").model["mata"] 		= data["mata"]
+		get_node("%karakter/reno").warna["mata"] 		= data["warna_mata"]
+		get_node("%karakter/reno").model["rambut"] 		= data["rambut"]
+		get_node("%karakter/reno").warna["rambut"] 		= data["warna_rambut"]
+		get_node("%karakter/reno").model["baju"] 		= data["baju"]
+		get_node("%karakter/reno").warna["baju"] 		= data["warna_baju"]
+		get_node("%karakter/reno").warna["celana"] 		= data["warna_celana"]
+		get_node("%karakter/reno").model["sepatu"] 		= data["sepatu"]
+		get_node("%karakter/reno").warna["sepatu"] 		= data["warna_sepatu"]
+		get_node("%karakter/reno").atur_warna()
+		get_node("%karakter/reno").set_process(false)
+		get_node("%karakter/reno").set_physics_process(false)
+		match data["gender"]: # di dunia ini cuman ada 2 gender!
+			'P': $karakter/panel/tab/tab_personalitas/pilih_gender.select(0); _ketika_mengubah_gender_karakter(0)
+			'L': $karakter/panel/tab/tab_personalitas/pilih_gender.select(1); _ketika_mengubah_gender_karakter(1)
 		
 		koneksi = MODE_KONEKSI.CLIENT
 		karakter = null
@@ -829,10 +869,19 @@ func _ketika_mengubah_warna_baju_karakter(warna):
 	get_node("%karakter/lulu").atur_warna()
 	get_node("%karakter/reno").warna["baju"] = tmp_warna
 	get_node("%karakter/reno").atur_warna()
+func _ketika_mengubah_celana_karakter(id_model):
+	data["celana"] = id_model
+	get_node("%karakter/lulu").model["celana"] = id_model
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/reno").model["celana"] = id_model
+	get_node("%karakter/reno").atur_model()
 func _ketika_mengubah_warna_celana_karakter(warna):
-	data["warna_celana"] = warna
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["celana"] = warna
+	var tmp_warna : Color = Color(str(warna))
+	data["warna_celana"] = tmp_warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.warna["celana"] = tmp_warna
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/lulu.atur_warna()
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/reno.warna["celana"] = tmp_warna
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter/reno.atur_warna()
 func _ketika_mengubah_sepatu_karakter(id_model):
 	data["sepatu"] = id_model
 	get_node("%karakter/lulu").model["sepatu"] = id_model
