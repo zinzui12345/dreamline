@@ -33,9 +33,11 @@ func _setup():
 				position,
 				rotation,
 				[
-					["warna_2", Color(randf(), randf(), randf(), 1)]
+					["warna_2", Color(randf(), randf(), randf(), 1)],
+					["kursi", kursi]
 				]
 			)
+		#$MultiplayerSynchronizer.visibility_update_mode = MultiplayerSynchronizer.VISIBILITY_PROCESS_NONE gak guna
 		queue_free()
 func _dummy_visibility_changed(peer : int): print_debug(peer)
 
@@ -67,6 +69,9 @@ func _physics_process(delta):
 	if kursi["pengemudi"] != -1:
 		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
 		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
+	if kursi["penumpang"][0] != -1:
+		server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
+		server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
 
 func _input(_event):
 	if client.id_koneksi == kursi["pengemudi"]:
@@ -78,15 +83,30 @@ func _input(_event):
 		elif Input.is_action_pressed("kanan"):	arah_stir.x = -1;	axis_lock_angular_z = false
 		else: arah_stir.x = 0;				  if rotation.z == 0:	axis_lock_angular_z = true
 		
-		#if Input.is_action_just_pressed("aksi2"): gunakan(kursi["pengemudi"]) # jitter
+		if Input.is_action_pressed("lompat"):	brake = Input.get_action_strength("lompat")
+		else: brake = 0
 
 func gunakan(id_pemain):
-	if kursi["pengemudi"] == -1:			# naik sebagai pengemudi
-		server._gunakan_entitas(name, id_pemain, "_kemudikan")
-	elif kursi["pengemudi"] == id_pemain:	# pengemudi turun
-		server._gunakan_entitas(name, id_pemain, "_berhenti_mengemudi")
+	if kursi["pengemudi"] == id_pemain:		# pengemudi turun
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			server._gunakan_entitas(name, id_pemain, "_berhenti_mengemudi")
+		else:
+			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_berhenti_mengemudi")
+	elif kursi["penumpang"][0] == id_pemain:# penumpang turun
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			server._gunakan_entitas(name, id_pemain, "_berhenti_menumpang")
+		else:
+			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_berhenti_menumpang")
+	elif kursi["pengemudi"] == -1:			# naik sebagai pengemudi
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			server._gunakan_entitas(name, id_pemain, "_kemudikan")
+		else:
+			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_kemudikan")
 	elif kursi["penumpang"][0] == -1:		# naik sebagai penumpang
-		server._gunakan_entitas(name, id_pemain, "_menumpang")
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			server._gunakan_entitas(name, id_pemain, "_menumpang")
+		else:
+			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_menumpang")
 
 func _kemudikan(id_pengemudi):
 	#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = true
@@ -96,6 +116,7 @@ func _kemudikan(id_pengemudi):
 	brake = 0
 	kursi["pengemudi"] = id_pengemudi
 	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengemudi)
+	#Panku.notify("id_akses = "+str($MultiplayerSynchronizer.get_multiplayer_authority())+" <> id koneksi = "+str(multiplayer.get_unique_id())+" : "+str($MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()))
 func _berhenti_mengemudi(id_pengemudi):
 	arah_stir = Vector2.ZERO
 	brake = 0.25
@@ -111,3 +132,9 @@ func _menumpang(id_penumpang):
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "duduk")
 	#server.permainan.dunia.get_node("pemain/"+str(id_penumpang)+"/pose").set("parameters/pose_duduk/transition_request", "mengendara")
 	kursi["penumpang"][0] = id_penumpang
+func _berhenti_menumpang(id_penumpang):
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "berdiri")
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, true)
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).rotation.x = 0
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).rotation.z = 0
+	kursi["penumpang"][0] = -1

@@ -312,3 +312,4 @@ const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"
 func teleportasi(posisi_x, posisi_y, posisi_z):
 	if get_multiplayer_authority() == multiplayer.get_unique_id():
 		karakter.position = Vector3(posisi_x, posisi_y, posisi_z)
+		# TODO : teleportasi kendaraan

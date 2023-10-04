@@ -186,3 +186,6 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 		if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
+		#	var str_debug = nama_entitas+" => "+fungsi+"("+str(id_pengguna)+")"
+		#	print_debug(str_debug)
+		#	Panku.notify(str_debug)
