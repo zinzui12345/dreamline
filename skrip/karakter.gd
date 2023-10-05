@@ -107,24 +107,14 @@ func atur_model():
 	get_node("%GeneralSkeleton").add_child(tmp_mdl_rambut)
 	src_mdl_rambut.queue_free()
 	
-	if model["baju"] != 0:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
-		tmp_skin.name = "baju"
-		tmp_s_skin.name = "b_baju"
-		#tmp_skin.layers = tmp_s_skin.layers
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
-		tmp_skin.queue_free()
-		tmp_s_skin.queue_free()
-	else:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/baju.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
-		tmp_s_skin.name = "b_baju"
-		#tmp_skin.layers = tmp_s_skin.layers
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
-		tmp_skin.queue_free()
-		tmp_skin.skeleton = NodePath(get_node("%GeneralSkeleton").get_path())
-		tmp_s_skin.queue_free()
+	# baju
+	var tmp_mdl_baju = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
+	var src_mdl_baju = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
+	tmp_mdl_baju.name = "baju"
+	src_mdl_baju.name = "b_baju"
+	get_node("%GeneralSkeleton").add_child(tmp_mdl_baju.duplicate())
+	tmp_mdl_baju.queue_free()
+	src_mdl_baju.queue_free()
 	
 	if model["celana"] != 0:
 		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()

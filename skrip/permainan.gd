@@ -103,6 +103,7 @@ func _ready():
 		'L': $karakter/panel/tab/tab_personalitas/pilih_gender.select(1); _ketika_mengubah_gender_karakter(1)
 	$hud.visible = false
 	$kontrol_sentuh.visible = false
+	$kontrol_sentuh/aksi_2.visible = false
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
 	_timer_kirim_suara.wait_time = 2.0
@@ -495,6 +496,8 @@ func _ketika_mengontrol_arah_gerak(arah, _analog):
 			Input.action_release("kanan")
 func _ketika_mulai_melompat():		Input.action_press("lompat")
 func _ketika_berhenti_melompat():	Input.action_release("lompat")
+func _aksi_2_tekan(): 	Input.action_press("aksi2")
+func _aksi_2_lepas(): 	Input.action_release("aksi2")
 
 # UI
 func _atur_persentase_memuat(nilai):

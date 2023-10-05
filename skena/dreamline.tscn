@@ -1,4 +1,4 @@
-[gd_scene load_steps=179 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=180 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -40,6 +40,7 @@
 [ext_resource type="Texture2D" uid="uid://324iylkyvged" path="res://ui/ikon/ikon_tab_karakter.svg" id="15_y2ds0"]
 [ext_resource type="Texture2D" uid="uid://yueol7tljubx" path="res://ui/ikon/ikon_tab_wajah.svg" id="16_623mo"]
 [ext_resource type="Texture2D" uid="uid://dyekolvrmm25g" path="res://ui/tombol/lompat_tekan.svg" id="16_t7mcc"]
+[ext_resource type="Texture2D" uid="uid://dljhfba3xdtdn" path="res://ui/tombol/naik_sepeda.svg" id="17_m871s"]
 [ext_resource type="PackedScene" uid="uid://caj1xl4dg83kl" path="res://ui/pemilih_warna.scn" id="18_3fc46"]
 [ext_resource type="Texture2D" uid="uid://qv0gcb22v67d" path="res://ui/slider_grabber.svg" id="18_ex6as"]
 [ext_resource type="Texture2D" uid="uid://dwwsncx7t4g2a" path="res://ui/ikon/ikon_tombol_pesan.svg" id="18_m6a3h"]
@@ -2442,6 +2443,24 @@ position = Vector2(40, 40)
 shape = SubResource("CircleShape2D_2jlpn")
 action = "lompat"
 
+[node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.824219
+anchor_top = 0.306667
+anchor_right = 0.902407
+anchor_bottom = 0.44
+offset_right = -0.064003
+offset_bottom = -3.05176e-05
+action_mode = 0
+texture_normal = ExtResource("17_m871s")
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2"]
+position = Vector2(40, 40)
+shape = SubResource("CircleShape2D_2jlpn")
+action = "aksi2"
+
 [node name="menu" type="Button" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = 1
@@ -4392,6 +4411,8 @@ bus = &"Suara Pemain"
 [connection signal="toggled" from="kontrol_sentuh/mic" to="." method="_berbicara"]
 [connection signal="button_down" from="kontrol_sentuh/lompat" to="." method="_ketika_mulai_melompat"]
 [connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
+[connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]
+[connection signal="button_up" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]
 [connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/lanjutkan" to="." method="_lanjutkan"]

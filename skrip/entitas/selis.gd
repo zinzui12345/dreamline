@@ -117,6 +117,7 @@ func _kemudikan(id_pengemudi):
 	kursi["pengemudi"] = id_pengemudi
 	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengemudi)
 	#Panku.notify("id_akses = "+str($MultiplayerSynchronizer.get_multiplayer_authority())+" <> id koneksi = "+str(multiplayer.get_unique_id())+" : "+str($MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()))
+	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = self
 func _berhenti_mengemudi(id_pengemudi):
 	arah_stir = Vector2.ZERO
 	brake = 0.25
@@ -126,11 +127,12 @@ func _berhenti_mengemudi(id_pengemudi):
 	server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.x = 0
 	server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.z = 0
 	kursi["pengemudi"] = -1
+	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
 	$MultiplayerSynchronizer.set_multiplayer_authority(1)
 func _menumpang(id_penumpang):
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, false)
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "duduk")
-	#server.permainan.dunia.get_node("pemain/"+str(id_penumpang)+"/pose").set("parameters/pose_duduk/transition_request", "mengendara")
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)+"/pose").set("parameters/pose_duduk/transition_request", "dibonceng_1")
 	kursi["penumpang"][0] = id_penumpang
 func _berhenti_menumpang(id_penumpang):
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "berdiri")

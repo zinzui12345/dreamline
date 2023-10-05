@@ -1,6 +1,7 @@
 extends MultiplayerSynchronizer
 
 var karakter : Karakter
+var kendaraan : VehicleBody3D
 var jongkok = false
 var lompat 	= false
 
@@ -60,25 +61,6 @@ func _input(event):
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		karakter.arah_pandangan = event.relative
 func _process(delta):
-	# fungsi raycast
-	_target_pemain = _raycast_pemain.is_colliding()
-	if _target_pemain:
-		pos_target = _raycast_pemain.get_collision_point()
-		objek_target = _raycast_pemain.get_collider()
-		match karakter.peran:
-			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
-				#var tmp_pos = server.permainan.dunia.get_child(4).get_node("%peta").map_to_local(pos_target)
-				#server.permainan.dunia.get_child(4).get_node("%pos_debug").global_position = Vector3(
-				#	tmp_pos.x,
-				#	server.permainan.dunia.get_child(4).get_node("%peta").global_position.y + 0.5,
-				#	tmp_pos.z
-				#)
-				#server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = true
-				pass
-	#elif server.permainan.dunia.get_child(4).get_node("%pos_debug").visible: # debug permukaan
-	#	server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = false
-	elif is_instance_valid(objek_target): objek_target = null
-	
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
 		if Input.is_action_pressed("maju"):
@@ -285,6 +267,32 @@ func _process(delta):
 		_delay_timeline = _interval_timeline
 	elif karakter.id_pemain > 0: _delay_timeline -= delta
 func _physics_process(delta):
+	# fungsi raycast
+	_target_pemain = _raycast_pemain.is_colliding()
+	if _target_pemain:
+		pos_target = _raycast_pemain.get_collision_point()
+		objek_target = _raycast_pemain.get_collider()
+		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+		else:
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+		match karakter.peran:
+			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
+				#var tmp_pos = server.permainan.dunia.get_child(4).get_node("%peta").map_to_local(pos_target)
+				#server.permainan.dunia.get_child(4).get_node("%pos_debug").global_position = Vector3(
+				#	tmp_pos.x,
+				#	server.permainan.dunia.get_child(4).get_node("%peta").global_position.y + 0.5,
+				#	tmp_pos.z
+				#)
+				#server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = true
+				pass
+	#elif server.permainan.dunia.get_child(4).get_node("%pos_debug").visible: # debug permukaan
+	#	server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = false
+	elif is_instance_valid(objek_target):
+		objek_target = null
+		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+	
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
 		if Input.is_action_pressed("lompat"):
@@ -311,5 +319,5 @@ func _physics_process(delta):
 const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"
 func teleportasi(posisi_x, posisi_y, posisi_z):
 	if get_multiplayer_authority() == multiplayer.get_unique_id():
-		karakter.position = Vector3(posisi_x, posisi_y, posisi_z)
-		# TODO : teleportasi kendaraan
+		karakter.global_position = Vector3(posisi_x, posisi_y, posisi_z)
+		if is_instance_valid(kendaraan): kendaraan.global_position = Vector3(posisi_x, posisi_y, posisi_z)
