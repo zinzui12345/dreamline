@@ -67,11 +67,15 @@ func _physics_process(delta):
 	$setir/rotasi_stir.rotation_degrees.y = steering * 50
 	
 	if kursi["pengemudi"] != -1:
-		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
-		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
+		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
+			server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
+			server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
+		else: server.gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
 	if kursi["penumpang"][0] != -1:
-		server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
-		server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
+		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0]))):
+			server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
+			server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
+		else: server.gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
 
 func _input(_event):
 	if client.id_koneksi == kursi["pengemudi"]:
@@ -88,31 +92,19 @@ func _input(_event):
 
 func gunakan(id_pemain):
 	if kursi["pengemudi"] == id_pemain:		# pengemudi turun
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			server._gunakan_entitas(name, id_pemain, "_berhenti_mengemudi")
-		else:
-			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_berhenti_mengemudi")
+		server.gunakan_entitas(name, id_pemain, "_berhenti_mengemudi")
 	elif kursi["penumpang"][0] == id_pemain:# penumpang turun
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			server._gunakan_entitas(name, id_pemain, "_berhenti_menumpang")
-		else:
-			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_berhenti_menumpang")
+		server.gunakan_entitas(name, id_pemain, "_berhenti_menumpang")
 	elif kursi["pengemudi"] == -1:			# naik sebagai pengemudi
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			server._gunakan_entitas(name, id_pemain, "_kemudikan")
-		else:
-			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_kemudikan")
+		server.gunakan_entitas(name, id_pemain, "_kemudikan")
 	elif kursi["penumpang"][0] == -1:		# naik sebagai penumpang
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			server._gunakan_entitas(name, id_pemain, "_menumpang")
-		else:
-			server.rpc_id(1, "_gunakan_entitas", name, id_pemain, "_menumpang")
+		server.gunakan_entitas(name, id_pemain, "_menumpang")
 
 func _kemudikan(id_pengemudi):
 	#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = true
 	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, false)
 	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "duduk")
-	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/pose").set("parameters/pose_duduk/transition_request", "mengendara")
+	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("pose_duduk", "mengendara")
 	brake = 0
 	kursi["pengemudi"] = id_pengemudi
 	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengemudi)
@@ -121,22 +113,27 @@ func _kemudikan(id_pengemudi):
 func _berhenti_mengemudi(id_pengemudi):
 	arah_stir = Vector2.ZERO
 	brake = 0.25
-	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "berdiri")
-	#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = false
-	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, true)
-	server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.x = 0
-	server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.z = 0
+	if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(id_pengemudi))):
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "berdiri")
+		#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = false
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, true)
+		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.x = 0
+		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.z = 0
 	kursi["pengemudi"] = -1
 	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
-	$MultiplayerSynchronizer.set_multiplayer_authority(1)
+	$MultiplayerSynchronizer.set_multiplayer_authority(1) 
+	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority(1) # FIXME : penumpang turun menaikkan pengemudi
 func _menumpang(id_penumpang):
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, false)
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "duduk")
-	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)+"/pose").set("parameters/pose_duduk/transition_request", "dibonceng_1")
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("pose_duduk", "dibonceng_1")
+	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)+"/PlayerInput").set_multiplayer_authority($MultiplayerSynchronizer.get_multiplayer_authority())
 	kursi["penumpang"][0] = id_penumpang
 func _berhenti_menumpang(id_penumpang):
-	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "berdiri")
-	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, true)
-	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).rotation.x = 0
-	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).rotation.z = 0
+	if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(id_penumpang))):
+		server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "berdiri")
+		server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, true)
+		server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).rotation.x = 0
+		server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).rotation.z = 0
+		server.permainan.dunia.get_node("pemain/"+str(id_penumpang)+"/PlayerInput").set_multiplayer_authority(id_penumpang)
 	kursi["penumpang"][0] = -1

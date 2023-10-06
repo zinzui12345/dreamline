@@ -119,6 +119,8 @@ func update_rows():
 		if !row.visible: continue
 		if row.is_active(): continue
 		
+		if !is_instance_valid(obj): continue
+		
 		row.update_ui(obj.get(prop_name))
 
 func init_data():

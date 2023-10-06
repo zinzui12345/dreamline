@@ -15,7 +15,7 @@ class_name Permainan
 # 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
 
-const versi = "Dreamline beta v1.4.4 rev 04/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 06/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -512,6 +512,7 @@ func _tampilkan_permainan():
 	$hud/kompas.set_physics_process(true)
 	$hud.visible = true
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
+	$kontrol_sentuh/chat.visible = true
 func _tampilkan_pemutar_musik():
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	else: $pemutar_musik/animasi.play("tampilkan")

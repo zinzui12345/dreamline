@@ -2,12 +2,15 @@ extends CharacterBody3D
 
 class_name Karakter
 
-# FIXME : sikronisasi melompat, pose_duduk
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
 var arah_pandangan : Vector2 	# ini arah input / event relative
-var arah_p_pandangan : Vector2 	# ini arah pose
+var arah_p_pandangan : Vector2 :# ini arah pose
+	set(nilai):
+		$pose.set("parameters/arah_x_pandangan/blend_position", nilai.x)
+		$pose.set("parameters/arah_y_pandangan/blend_position", nilai.y)
+		arah_p_pandangan = nilai
 var _menabrak = false
 var tekstur
 
@@ -28,7 +31,19 @@ var tekstur
 	set(ubah):
 		if ubah != $pose.get("parameters/gestur/current_state"):
 			$pose.set("parameters/gestur/transition_request", ubah)
+			match ubah:
+				"berdiri":
+					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 1)
+					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 0)
+				"duduk":
+					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 0)
+					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 1)
 			gestur = ubah
+@export var pose_duduk = "normal":
+	set(ubah):
+		if ubah != $pose.get("parameters/pose_duduk/current_state"):
+			$pose.set("parameters/pose_duduk/transition_request", ubah)
+			pose_duduk = ubah
 @export var arah_gerakan : Vector3
 @export var model = {
 	"alis"		: 0,
@@ -47,7 +62,10 @@ var tekstur
 	"sepatu"	: false
 }
 @export var material = {
+	"badan"		: { "jalur_node": "badan", "id_material": [0] },
+	"wajah"		: { "jalur_node": "wajah", "id_material": [7] },
 	"mata"		: { "jalur_node": "wajah", "id_material": [5, 2] },
+	"telinga"	: { "jalur_node": "telinga", "id_material": [0] },
 	"alis"		: { "jalur_node": "", "id_material": [4] },
 	"rambut"	: { "jalur_node": "rambut", "id_material": [1, 2, 3] },
 	"baju"		: { "jalur_node": "baju", "id_material": [0] },
@@ -55,7 +73,10 @@ var tekstur
 	"sepatu"	: { "jalur_node": "sepatu", "id_material": [0] }
 }
 @export var warna = {
+	"badan"		: Color.WHITE,
+	"wajah"		: Color.WHITE,
 	"mata" 		: Color.DARK_RED,
+	"telinga"	: Color.WHITE,
 	"rambut"	: Color.BLUE_VIOLET,
 	"baju"		: Color.AQUAMARINE,
 	"celana"	: Color.WHITE,
@@ -116,22 +137,14 @@ func atur_model():
 	tmp_mdl_baju.queue_free()
 	src_mdl_baju.queue_free()
 	
-	if model["celana"] != 0:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
-		tmp_skin.name = "celana"
-		tmp_s_skin.name = "b_celana"
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
-		tmp_skin.queue_free()
-		tmp_s_skin.queue_free()
-	else:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/celana.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
-		tmp_s_skin.name = "b_celana"
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
-		tmp_skin.queue_free()
-		tmp_skin.skeleton = NodePath(get_node("%GeneralSkeleton").get_path())
-		tmp_s_skin.queue_free()
+	# celana
+	var tmp_mdl_celana = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
+	var src_mdl_celana = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
+	tmp_mdl_celana.name = "celana"
+	src_mdl_celana.name = "b_celana"
+	get_node("%GeneralSkeleton").add_child(tmp_mdl_celana.duplicate())
+	tmp_mdl_celana.queue_free()
+	src_mdl_celana.queue_free()
 	
 	if model["sepatu"] != 0:
 		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
@@ -253,6 +266,3 @@ func _process(_delta):
 	#$pengamat/kamera.position.x = get_node("%kepala").position.x # FIXME : attach ke leher ? gak usah
 	$pengamat.position.y 		= get_node("%mata_kiri").position.y
 	$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
-	
-	# atur arah pose
-	$pose.set("parameters/arah_y_pandangan/blend_position", arah_p_pandangan.y)

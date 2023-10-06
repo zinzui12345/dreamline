@@ -35,7 +35,7 @@ func _process(delta):
 				gerakan = Vector2.ZERO
 				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
 				if _karakter.get("arah_p_pandangan") != null:
-					# FIXME : leher terlihat ketika delay
+					# FIXME : leher terlihat ketika delay | coba kurangi presisi?
 					if get_node("%pandangan").rotation_degrees.x > 0:
 						_karakter.arah_p_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
 					elif get_node("%pandangan").rotation_degrees.x < 0:

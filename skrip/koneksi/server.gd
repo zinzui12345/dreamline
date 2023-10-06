@@ -10,7 +10,7 @@ var broadcast : ServerAdvertiser
 var headless = false
 var jumlah_pemain = 32
 var pemain_terhubung = 0
-var map = "showcase"
+var map = "empty"
 var pemain : Dictionary
 var timeline : Dictionary = {
 	"data": {
@@ -79,6 +79,12 @@ func putuskan():
 	timeline["data"]["frame"] = 0
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
+
+func gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		_gunakan_entitas(nama_entitas, id_pengguna, fungsi)
+	else:
+		rpc_id(1, "_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client

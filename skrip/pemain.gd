@@ -168,10 +168,10 @@ func _process(delta):
 							)
 		if Input.is_action_just_pressed("aksi2"):
 			if _target_pemain:
-				if objek_target.has_method("gunakan"): objek_target.gunakan(get_multiplayer_authority())
+				if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
 				elif objek_target.name == "bidang_raycast" and \
 				 objek_target.get_parent().has_method("gunakan"):
-					objek_target.get_parent().gunakan(get_multiplayer_authority())
+					objek_target.get_parent().gunakan(multiplayer.get_unique_id())
 		
 		if Input.is_action_just_pressed("jongkok"):
 			if karakter.arah.x == 0.0 and karakter.arah.z == 0.0:
