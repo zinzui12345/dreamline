@@ -19,9 +19,9 @@ extends VehicleBody3D
 
 var arah_stir : Vector2
 var arah_belok : float
-var batas_putaran_stir = 0.5 # persentase sudut
-var kecepatan_maju = 10	# gaya kg|m/s^2 (Newton)
-var kecepatan_mundur = 5
+var batas_putaran_stir = 0.5	# persentase sudut
+var kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
+var kecepatan_mundur = 10
 var kecepatan_laju : Vector3
 
 func _ready(): call_deferred("_setup")
@@ -30,7 +30,7 @@ func _setup():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			server._tambahkan_entitas(
 				"res://skena/entitas/selis.tscn",
-				position,
+				global_transform.origin,
 				rotation,
 				[
 					["warna_2", Color(randf(), randf(), randf(), 1)],
@@ -42,40 +42,50 @@ func _setup():
 func _dummy_visibility_changed(peer : int): print_debug(peer)
 
 @onready var torsi_kemiringan = $roda_belakang.wheel_roll_influence
+@onready var posisi_awal = global_transform.origin
+@onready var rotasi_awal = rotation
 
 func _physics_process(delta):
-	if arah_stir.y > 0:	  engine_force = kecepatan_maju * arah_stir.y
-	elif arah_stir.y < 0: engine_force = kecepatan_mundur * arah_stir.y
-	else: engine_force = arah_stir.y
-	
-	kecepatan_laju = linear_velocity * transform.basis
-	
-	if arah_stir.x != 0:
-		arah_belok = arah_stir.x * batas_putaran_stir
-		$roda_depan.wheel_roll_influence	= torsi_kemiringan
-		$roda_belakang.wheel_roll_influence = torsi_kemiringan
-	else:
-		arah_belok = 0
-		$roda_depan.wheel_roll_influence = 0
-		$roda_belakang.wheel_roll_influence = 0
+	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
+		if arah_stir.y > 0:	  engine_force = kecepatan_maju * arah_stir.y
+		elif arah_stir.y < 0: engine_force = kecepatan_mundur * arah_stir.y
+		else: engine_force = arah_stir.y
 		
-	#if kecepatan_laju > 5:
-	#	if Input.is_action_pressed("maju") or Input.is_action_pressed("berlari-maju"):
-	#		$kursi/pengemudi/rotasi_pandangan.rotation.y = lerp_angle($kursi/pengemudi/rotasi_pandangan.rotation.y, 0, 0.65*delta)
-	
-	steering = move_toward(steering, arah_belok, 1.5 * delta)
-	$setir/rotasi_stir.rotation_degrees.y = steering * 50
-	
-	if kursi["pengemudi"] != -1:
-		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
-			server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
-			server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
-		else: server.gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
-	if kursi["penumpang"][0] != -1:
-		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0]))):
-			server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
-			server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
-		else: server.gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
+		kecepatan_laju = linear_velocity * transform.basis
+		
+		if arah_stir.x != 0:
+			arah_belok = arah_stir.x * batas_putaran_stir
+			$roda_depan.wheel_roll_influence	= torsi_kemiringan
+			$roda_belakang.wheel_roll_influence = torsi_kemiringan
+		else:
+			arah_belok = 0
+			$roda_depan.wheel_roll_influence = 0
+			$roda_belakang.wheel_roll_influence = 0
+		
+		steering = move_toward(steering, arah_belok, 1.5 * delta)
+		$setir/rotasi_stir.rotation_degrees.y = steering * 50
+		
+		if kursi["pengemudi"] != -1:
+			if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
+				server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
+				server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
+			elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+				server._gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
+		if kursi["penumpang"][0] != -1:
+			if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0]))):
+				server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
+				server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
+			elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+				server._gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
+		
+		if global_position.y < server.permainan.batas_bawah:
+			freeze = true
+			angular_velocity = Vector3.ZERO
+			linear_velocity  = Vector3.ZERO
+			global_transform.origin = posisi_awal
+			rotation		 		= rotasi_awal
+			Panku.notify("re-spawn "+name)
+			freeze = false
 
 func _input(_event):
 	if client.id_koneksi == kursi["pengemudi"]:
@@ -92,13 +102,13 @@ func _input(_event):
 
 func gunakan(id_pemain):
 	if kursi["pengemudi"] == id_pemain:		# pengemudi turun
-		server.gunakan_entitas(name, id_pemain, "_berhenti_mengemudi")
+		server.gunakan_entitas(name, "_berhenti_mengemudi")
 	elif kursi["penumpang"][0] == id_pemain:# penumpang turun
-		server.gunakan_entitas(name, id_pemain, "_berhenti_menumpang")
+		server.gunakan_entitas(name, "_berhenti_menumpang")
 	elif kursi["pengemudi"] == -1:			# naik sebagai pengemudi
-		server.gunakan_entitas(name, id_pemain, "_kemudikan")
+		server.gunakan_entitas(name, "_kemudikan")
 	elif kursi["penumpang"][0] == -1:		# naik sebagai penumpang
-		server.gunakan_entitas(name, id_pemain, "_menumpang")
+		server.gunakan_entitas(name, "_menumpang")
 
 func _kemudikan(id_pengemudi):
 	#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = true

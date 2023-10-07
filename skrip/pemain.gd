@@ -1,12 +1,15 @@
 extends MultiplayerSynchronizer
 
-var karakter : Karakter
 var kendaraan : VehicleBody3D
 var jongkok = false
 var lompat 	= false
 
 @export var arah_gerakan := Vector2()
 @export var arah_pandangan := 0.0
+
+@onready var karakter : Karakter = get_parent()
+@onready var posisi_awal = karakter.global_transform.origin
+@onready var rotasi_awal = karakter.rotation
 
 var _hentikan_waktu = false
 var _frame_saat_ini = 0 # frame ketika backward ataupun forward
@@ -54,7 +57,6 @@ func atur_pengendali(id):
 
 func _ready():
 	set_process(false)
-	karakter = get_parent()
 	_raycast_pemain = karakter.get_node("pengamat/%target")
 
 func _input(event):
@@ -173,6 +175,8 @@ func _process(delta):
 				 objek_target.get_parent().has_method("gunakan"):
 					objek_target.get_parent().gunakan(multiplayer.get_unique_id())
 		
+		if Input.is_action_just_pressed("mode_pandangan"): karakter.get_node("pengamat").ubah_mode()
+		
 		if Input.is_action_just_pressed("jongkok"):
 			if karakter.arah.x == 0.0 and karakter.arah.z == 0.0:
 				if !jongkok:
@@ -242,6 +246,12 @@ func _process(delta):
 	
 	# atur ulang fungsi melompat ketika berada di floor
 	if karakter.is_on_floor() and lompat: lompat = false
+	
+	# atur ulang posisi kalau terjatuh dari dunia
+	if karakter.global_position.y < server.permainan.batas_bawah:
+		karakter.global_transform.origin = posisi_awal
+		karakter.rotation		 		= rotasi_awal
+		Panku.notify("re-spawn")
 	
 	# Timeline : sinkronkan pemain (rekam)
 	if _delay_timeline <= 0.0:

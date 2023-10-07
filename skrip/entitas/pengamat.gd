@@ -13,10 +13,6 @@ func  _ready():
 	if get_parent() is Karakter: _karakter = get_parent()
 	else: _karakter = $posisi_mata
 
-func _input(_event):
-	if kontrol:
-		if Input.is_action_just_pressed("mode_pandangan"): ubah_mode() # HACK : ini mending dipindah ke pemain.gd!
-
 func _process(delta):
 	if kontrol:
 		if _karakter.get("arah_pandangan") != null: gerakan = _karakter.arah_pandangan
@@ -40,6 +36,28 @@ func _process(delta):
 						_karakter.arah_p_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
 					elif get_node("%pandangan").rotation_degrees.x < 0:
 						_karakter.arah_p_pandangan.y = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
+			2:
+				get_node("%pandangan").rotation_degrees.x -= rotasi.x
+				get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -38, putaranMaxVertikalPandangan)
+				get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
+				if _karakter.gestur == "berdiri" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
+					_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
+					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
+					_karakter.rotation_degrees.y -= rotasi.y
+				elif _karakter.get_node("PlayerInput").arah_gerakan.y == 1:
+					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.005 * delta)
+				else:
+					$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y
+					$kamera/rotasi_vertikal.rotation_degrees.y = clamp($kamera/rotasi_vertikal.rotation_degrees.y, -70, 70)
+				gerakan = Vector2.ZERO
+				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
+				if _karakter.get("arah_p_pandangan") != null:
+					if $kamera/rotasi_vertikal.rotation_degrees.y > 0:
+						_karakter.arah_p_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
+					elif $kamera/rotasi_vertikal.rotation_degrees.y < 0:
+						_karakter.arah_p_pandangan.x = $kamera/rotasi_vertikal.rotation_degrees.y / -70
+					else:
+						_karakter.arah_p_pandangan.x = 0
 			3:
 				$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
 				$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
@@ -59,18 +77,8 @@ func aktifkan(nilai = true, vr = false):
 		get_node("%pandangan").current = nilai
 		get_node("%target").enabled = nilai
 	
-	if nilai:
-		_karakter.get_node("nama").visible = false
-		#for md in _karakter.get_node("model/Root/Skeleton3D").get_child_count():
-		#	if _karakter.get_node("model/Root/Skeleton3D").get_child(md) is MeshInstance3D:
-		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(1, false)
-		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(2, true)
-	else:
-		_karakter.get_node("nama").visible = true
-		#for md in _karakter.get_node("model/Root/Skeleton3D").get_child_count():
-		#	if _karakter.get_node("model/Root/Skeleton3D").get_child(md) is MeshInstance3D:
-		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(1, true)
-		#		_karakter.get_node("model/Root/Skeleton3D").get_child(md).set_layer_mask_value(2, false)
+	if 	nilai:	_karakter.get_node("nama").visible = false
+	else:		_karakter.get_node("nama").visible = true
 
 func atur_mode(nilai):
 	mode_kontrol = 0 # nonaktifkan kontrol

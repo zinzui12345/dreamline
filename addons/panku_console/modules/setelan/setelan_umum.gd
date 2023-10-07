@@ -31,6 +31,16 @@ func laporkan_bug(): OS.shell_open("https://github.com/zinzui12345/dreamline/iss
 func sarankan_fitur(): OS.shell_open("https://t.me/cinta_buatan")
 
 # ----------------------------------------------------------------
+@export_group("%audio")
+
+@export_range(-10.0, 10.0) var musik_latar := Konfigurasi.volume_musik_latar : 
+	get:
+		return Konfigurasi.volume_musik_latar
+	set(ubah):
+		Konfigurasi.volume_musik_latar = ubah
+		musik_latar = ubah
+
+# ----------------------------------------------------------------
 @export_group("%input")
 
 @export var kontrol_gerak := Konfigurasi.kontrol_gerak.analog : 

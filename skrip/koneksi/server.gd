@@ -10,7 +10,7 @@ var broadcast : ServerAdvertiser
 var headless = false
 var jumlah_pemain = 32
 var pemain_terhubung = 0
-var map = "empty"
+var map = "pulau"
 var pemain : Dictionary
 var timeline : Dictionary = {
 	"data": {
@@ -80,11 +80,11 @@ func putuskan():
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
 
-func gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
+func gunakan_entitas(nama_entitas : String, fungsi : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		_gunakan_entitas(nama_entitas, id_pengguna, fungsi)
+		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
 	else:
-		rpc_id(1, "_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
+		rpc_id(1, "_gunakan_entitas", nama_entitas, multiplayer.get_unique_id(), fungsi)
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client
@@ -180,7 +180,7 @@ func _pemain_terputus(id_pemain):
 			for p in properti.size():
 				if tmp_objek.get(properti[p][0]) != null: tmp_objek.set(properti[p][0], properti[p][1])
 				else: print("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti[p][0]+"]")
-			tmp_objek.position = posisi
+			tmp_objek.global_transform.origin = posisi
 			tmp_objek.rotation = rotasi
 			permainan.dunia.get_node("entitas").add_child(tmp_objek, true)
 			print_debug("menambahkan %s [%s]" % [tmp_objek.name, tmp_nama])

@@ -63,9 +63,10 @@ var tekstur
 }
 @export var material = {
 	"badan"		: { "jalur_node": "badan", "id_material": [0] },
-	"wajah"		: { "jalur_node": "wajah", "id_material": [7] },
+	"wajah"		: { "jalur_node": "wajah", "id_material": [0, 1, 6, 7] },
 	"mata"		: { "jalur_node": "wajah", "id_material": [5, 2] },
 	"telinga"	: { "jalur_node": "telinga", "id_material": [0] },
+	"tangan"	: { "jalur_node": "rambut", "id_material": [0] },
 	"alis"		: { "jalur_node": "", "id_material": [4] },
 	"rambut"	: { "jalur_node": "rambut", "id_material": [1, 2, 3] },
 	"baju"		: { "jalur_node": "baju", "id_material": [0] },
@@ -77,6 +78,7 @@ var tekstur
 	"wajah"		: Color.WHITE,
 	"mata" 		: Color.DARK_RED,
 	"telinga"	: Color.WHITE,
+	"tangan"	: Color.WHITE,
 	"rambut"	: Color.BLUE_VIOLET,
 	"baju"		: Color.AQUAMARINE,
 	"celana"	: Color.WHITE,
@@ -146,23 +148,14 @@ func atur_model():
 	tmp_mdl_celana.queue_free()
 	src_mdl_celana.queue_free()
 	
-	if model["sepatu"] != 0:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
-		tmp_skin.name = "sepatu"
-		tmp_s_skin.name = "b_sepatu"
-		#tmp_skin.layers = tmp_s_skin.layers
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
-		tmp_skin.queue_free()
-		tmp_s_skin.queue_free()
-	else:
-		var tmp_skin = load("res://karakter/"+$model.get_child(0).name+"/sepatu.scn").instantiate()
-		var tmp_s_skin = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
-		tmp_s_skin.name = "b_sepatu"
-		tmp_skin.layers = tmp_s_skin.layers
-		get_node("%GeneralSkeleton").add_child(tmp_skin.duplicate())
-		tmp_skin.queue_free()
-		tmp_s_skin.queue_free()
+	# sepatu
+	var tmp_mdl_sepatu = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
+	var src_mdl_sepatu = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
+	tmp_mdl_sepatu.name = "sepatu"
+	src_mdl_sepatu.name = "b_sepatu"
+	get_node("%GeneralSkeleton").add_child(tmp_mdl_sepatu.duplicate())
+	tmp_mdl_sepatu.queue_free()
+	src_mdl_sepatu.queue_free()
 	
 	atur_warna() # set ulang warna
 func atur_warna():
@@ -213,6 +206,7 @@ func atur_warna():
 						else:
 							tmp_mtl = StandardMaterial3D.new()
 							#print_debug("lavender mist")
+							tmp_mtl.cull_mode = BaseMaterial3D.CULL_BACK
 							tmp_mtl.albedo_texture 	= src_mtl.albedo_texture
 							tmp_mtl.albedo_color	= src_mtl.albedo_color
 							tmp_mtl.transparency	= src_mtl.transparency

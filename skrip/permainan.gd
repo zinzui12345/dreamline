@@ -15,7 +15,7 @@ class_name Permainan
 # 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
 
-const versi = "Dreamline beta v1.4.4 rev 06/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 07/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -41,11 +41,12 @@ var data = {
 var karakter : CharacterBody3D
 var dunia = null
 var map = null
-var permukaan # Permukaan (Terrain)
+var permukaan					# Permukaan (Terrain)
+var batas_bawah = -4000			# batas area untuk re-spawn
 var thread = Thread.new()
 var koneksi = MODE_KONEKSI.CLIENT
 var jeda = false
-var pesan = false # ketika input pesan ditampilkan
+var pesan = false				# ketika input pesan ditampilkan
 var _posisi_tab_koneksi = "LAN" # | "Internet"
 var _rotasi_tampilan_karakter : Vector3
 var _arah_gestur_tampilan_karakter : Vector2
@@ -233,6 +234,8 @@ func _muat_map(file_map):
 	if map.get_node_or_null("posisi_spawn") != null:
 		data["posisi"] = map.get_node("posisi_spawn").position
 		data["rotasi"] = map.get_node("posisi_spawn").rotation
+	if map.get_node_or_null("batas_bawah") != null:
+		batas_bawah = map.get_node("batas_bawah").position.y
 	call_deferred("_atur_persentase_memuat", 70)
 	dunia.call_deferred("add_child", map)
 	# TODO : Proses entitas
