@@ -1,4 +1,4 @@
-[gd_scene load_steps=180 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=183 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -52,7 +52,6 @@
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Script" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
-[ext_resource type="AudioStream" uid="uid://b58ugbvgevm82" path="res://audio/soundtrack/Holding Hands.mp3" id="48_tjvkl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
@@ -2115,6 +2114,40 @@ border_width_left = 85
 border_width_right = 85
 border_color = Color(0.8, 0.8, 0.8, 0)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1o77"]
+bg_color = Color(0, 0, 0, 0.588235)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jbecv"]
+bg_color = Color(1, 1, 0.976471, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8da81"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+border_width_left = 15
+border_width_top = 10
+border_width_right = 15
+border_width_bottom = 10
+border_color = Color(0.2, 0.2, 0.2, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffx2c"]
+bg_color = Color(0.815686, 0.815686, 0.815686, 1)
+border_width_left = 32
+border_width_right = 8
+border_color = Color(0.803922, 0.803922, 0.803922, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_skxpm"]
 
 [node name="Dreamline" type="Control"]
@@ -3970,7 +4003,6 @@ libraries = {
 }
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="pemutar_musik"]
-stream = ExtResource("48_tjvkl")
 volume_db = -5.0
 bus = &"Musik Latar"
 
@@ -4359,6 +4391,176 @@ libraries = {
 "": SubResource("AnimationLibrary_mmswf")
 }
 
+[node name="informasi" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_arhgf")
+metadata/_edit_lock_ = true
+
+[node name="latar" type="Panel" parent="informasi"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j1o77")
+
+[node name="panel" type="Panel" parent="informasi"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.228
+anchor_top = 0.067
+anchor_right = 0.774
+anchor_bottom = 0.947
+offset_left = -0.472015
+offset_top = -0.200001
+offset_right = 0.42395
+offset_bottom = -0.200012
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jbecv")
+
+[node name="panel_atas" type="Panel" parent="informasi/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.121
+offset_bottom = 0.111996
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_8da81")
+
+[node name="Label" type="Label" parent="informasi/panel/panel_atas"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 28
+text = "%tentang%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="tentang" type="RichTextLabel" parent="informasi/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0428571
+anchor_top = 0.166667
+anchor_right = 0.942857
+anchor_bottom = 0.575758
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
+theme_override_fonts/normal_font = ExtResource("3_c2goa")
+theme_override_fonts/italics_font = ExtResource("3_2ugog")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_italics_font_size = 17
+bbcode_enabled = true
+text = "Dreamline adalah [color=\"373737\"]permainan multi-platform revolusioner yang memungkinkan kita mengekspresikan kreatifitas dan imajinasi secara bebas[/color], game ini dapat dimainkan oleh segala usia dan kalangan.
+
+Buatlah komunitas atau temukan teman baru dan buat dunia impian tanpa batasan keterampilan!"
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="author" type="RichTextLabel" parent="informasi/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.457143
+anchor_top = 0.628788
+anchor_right = 0.942857
+anchor_bottom = 0.719697
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
+theme_override_fonts/normal_font = ExtResource("3_c2goa")
+theme_override_fonts/italics_font = ExtResource("3_2ugog")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_italics_font_size = 17
+bbcode_enabled = true
+text = "author : ProgrammerIndonesia44
+beta tester:"
+scroll_active = false
+autowrap_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="beta_tester" type="RichTextLabel" parent="informasi/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.457143
+anchor_top = 0.719697
+anchor_right = 0.942857
+anchor_bottom = 0.848485
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
+theme_override_fonts/normal_font = ExtResource("3_c2goa")
+theme_override_fonts/italics_font = ExtResource("3_2ugog")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_italics_font_size = 17
+bbcode_enabled = true
+text = "Muhammad Farel Ilyas
+Ahmad Hanif"
+autowrap_mode = 2
+text_direction = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="link" type="RichTextLabel" parent="informasi/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0428571
+anchor_top = 0.628788
+anchor_right = 0.4125
+anchor_bottom = 0.848485
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.270588, 0.270588, 0.996078, 1)
+theme_override_fonts/normal_font = ExtResource("3_c2goa")
+theme_override_fonts/italics_font = ExtResource("3_2ugog")
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_italics_font_size = 18
+bbcode_enabled = true
+text = "[color=\"808000\"]☀️[/color] [url=\"\"]Panduan Bermain[/url]
+[color=\"fe2afe\"]😇️[/color] [url=\"https://t.me/cinta_buatan\"]Komunitas[/url]
+[color=\"0a850a\"]⭐[/color]️ [url=\"https://github.com/zinzui12345/dreamline\"]Source Code[/url]
+[color=\"ff0000\"]❤[/color]️ [url=\"\"]Dukung Dreamline[/url]"
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="oke" type="Button" parent="informasi/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.894
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.0320435
+grow_horizontal = 2
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+theme_override_colors/font_color = Color(0.164706, 0.207843, 0.180392, 1)
+theme_override_colors/icon_normal_color = Color(0.188235, 0.231373, 0.203922, 1)
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_ffx2c")
+text = "%oke"
+icon = ExtResource("28_s2n4g")
+alignment = 0
+
+[node name="animasi" type="AnimationPlayer" parent="informasi"]
+libraries = {
+"": SubResource("AnimationLibrary_mmswf")
+}
+
 [node name="performa" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -4449,6 +4651,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="menu_utama/menu/Panel/buat_server" to="." method="buat_server"]
 [connection signal="pressed" from="menu_utama/menu/Panel/gabung_server" to="." method="_tampilkan_daftar_server"]
 [connection signal="pressed" from="menu_utama/menu/Panel/karakter" to="." method="_tampilkan_setelan_karakter"]
+[connection signal="pressed" from="menu_utama/info" to="." method="_tampilkan_panel_informasi"]
 [connection signal="pressed" from="menu_utama/musik" to="." method="_tampilkan_pemutar_musik"]
 [connection signal="pressed" from="menu_utama/setelan" to="." method="_tampilkan_setelan_permainan"]
 [connection signal="pressed" from="menu_utama/keluar" to="." method="_keluar"]
@@ -4456,3 +4659,5 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/oke" to="." method="_ketika_konfirmasi_popup_konfirmasi"]
+[connection signal="meta_clicked" from="informasi/panel/link" to="." method="_ketika_menekan_link_informasi"]
+[connection signal="pressed" from="informasi/panel/oke" to="." method="_sembunyikan_panel_informasi"]

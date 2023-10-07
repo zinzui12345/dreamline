@@ -816,6 +816,18 @@ func _sembunyikan_pesan():
 	if !pesan:
 		$hud/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
+func _tampilkan_panel_informasi():
+	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
+	if $daftar_server.visible: _sembunyikan_daftar_server()
+	if $karakter.visible: _sembunyikan_setelan_karakter()
+	await get_tree().create_timer(0.4).timeout
+	$menu_utama/animasi.play("sembunyikan")
+	$informasi/animasi.play("tampilkan")
+func _sembunyikan_panel_informasi():
+	$informasi/animasi.play("tutup")
+	$menu_utama/animasi.play("tampilkan")
+func _ketika_menekan_link_informasi(tautan):
+	Panku.notify(tautan)
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama

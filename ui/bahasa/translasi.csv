@@ -41,11 +41,11 @@ TAMPILAN,Tampilan,Appearance
 %input,Masukan,Input
 sensitivitas_gestur,Sensitivitas Gestur,Gesture Sensitivity
 kontrol_gerak,Kontrol Gerakan,Movement Control
-SUARA,Suara,Sound
+%audio,Suara,Sound
 GRAFIK,Grafik,Graphics
 bahasa,Bahasa,Language
 VOLUME,Volume Permainan,Game Volume
-VOLUMEMUSIK,Volume Musik,Music Volume
+musik_latar,Volume Musik,Music Volume
 BALIKBAYANGAN,Balikkan render bayangan,Invert shadow
 MODEVR,Mode Virtual Reality,VR Mode
 SKALARESOLUSI,Skala Resolusi,Resolution Scale
@@ -74,6 +74,7 @@ LOGKESALAHAN,KESALAHAN,ERROR
 PERINTAHSALAH,Perintah `%s` tidak ditemukan.,Command `%s` not found.
 %spawnpemain,spawn pemain,spawning player
 %putuskanserver,Menghentikan peladen,Stopping server
+%belum_tersedia,Fitur ini belum tersedia.,Not available yet.
 ,,
 # output debug,,
 informasi_performa,Informasi Performa,Performance Info
@@ -98,4 +99,3 @@ INPUTHAPUS,hapus,delete
 @beta_tester,Muh Farel Ilyas,Muh Farel Ilyas
 @chara_design,Asami Hikaru あさミ ひかる,Asami Hikaru あさミ ひかる
 @level_design,rulu,rulu
-@soundtrack,Couple N,Couple N
