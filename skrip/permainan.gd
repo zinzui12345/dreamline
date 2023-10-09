@@ -14,8 +14,9 @@ class_name Permainan
 # 21 Sep 2023 | 1.4.3 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
+# 09 Okt 2023 | 1.4.4 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 
-const versi = "Dreamline beta v1.4.4 rev 07/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 09/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -66,6 +67,8 @@ enum PERAN_KARAKTER {
 	Nelayan
 }
 
+func _enter_tree():
+	get_tree().get_root().set("min_size", Vector2(980, 600))
 func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
@@ -123,7 +126,7 @@ func _ready():
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 	$latar/animasi.play("tampilkan")
 	await get_tree().create_timer(1.0).timeout
-	$latar/animasi.play("animasi1")
+	$latar/animasi.play("animasi2")
 	_mainkan_musik_latar()
 
 func _process(delta):
@@ -433,7 +436,7 @@ func putuskan_server(paksa = false):
 		
 		$latar/animasi.play("tampilkan")
 		await get_tree().create_timer(1.0).timeout
-		$latar/animasi.play("animasi1")
+		$latar/animasi.play("animasi2")
 		_mainkan_musik_latar()
 
 # kontrol
@@ -826,6 +829,7 @@ func _tampilkan_panel_informasi():
 func _sembunyikan_panel_informasi():
 	$informasi/animasi.play("tutup")
 	$menu_utama/animasi.play("tampilkan")
+	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _ketika_menekan_link_informasi(tautan):
 	Panku.notify(tautan)
 

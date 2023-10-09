@@ -23,6 +23,7 @@ var batas_putaran_stir = 0.5	# persentase sudut
 var kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
 var kecepatan_mundur = 10
 var kecepatan_laju : Vector3
+var gerakan_pandangan : Vector2 # input
 
 func _ready(): call_deferred("_setup")
 func _setup():
@@ -47,13 +48,16 @@ func _dummy_visibility_changed(peer : int): print_debug(peer)
 
 func _physics_process(delta):
 	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
+		if kursi["pengemudi"] != -1 and is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
+			gerakan_pandangan = server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).arah_pandangan / 5
+		
 		if arah_stir.y > 0:	  engine_force = kecepatan_maju * arah_stir.y
 		elif arah_stir.y < 0: engine_force = kecepatan_mundur * arah_stir.y
 		else: engine_force = arah_stir.y
 		
 		kecepatan_laju = linear_velocity * transform.basis
 		
-		if arah_stir.x != 0:
+		if steering < 0.25 or steering > -0.25:
 			arah_belok = arah_stir.x * batas_putaran_stir
 			$roda_depan.wheel_roll_influence	= torsi_kemiringan
 			$roda_belakang.wheel_roll_influence = torsi_kemiringan
@@ -93,9 +97,14 @@ func _input(_event):
 		elif Input.is_action_pressed("mundur"): arah_stir.y = -1
 		else: arah_stir.y = 0
 		
-		if Input.is_action_pressed("kiri"): 	arah_stir.x = 1;	axis_lock_angular_z = false
-		elif Input.is_action_pressed("kanan"):	arah_stir.x = -1;	axis_lock_angular_z = false
-		else: arah_stir.x = 0;				  if rotation.z == 0:	axis_lock_angular_z = true
+		if Input.is_action_pressed("maju") or Input.is_action_pressed("lompat"):
+			if gerakan_pandangan.x < -1 or gerakan_pandangan.x > 1:
+				arah_stir.x = clamp(-gerakan_pandangan.x, -1, 1);		axis_lock_angular_z = false
+			else: arah_stir.x = 0;				  if rotation.z == 0:	axis_lock_angular_z = true
+		else:
+			if Input.is_action_pressed("kiri"): 	arah_stir.x = 1;	axis_lock_angular_z = false
+			elif Input.is_action_pressed("kanan"):	arah_stir.x = -1;	axis_lock_angular_z = false
+			else: arah_stir.x = 0;				  if rotation.z == 0:	axis_lock_angular_z = true
 		
 		if Input.is_action_pressed("lompat"):	brake = Input.get_action_strength("lompat")
 		else: brake = 0
@@ -115,6 +124,7 @@ func _kemudikan(id_pengemudi):
 	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, false)
 	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "duduk")
 	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("pose_duduk", "mengendara")
+	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").atur_mode(2)
 	brake = 0
 	kursi["pengemudi"] = id_pengemudi
 	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengemudi)
@@ -129,6 +139,7 @@ func _berhenti_mengemudi(id_pengemudi):
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, true)
 		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.x = 0
 		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.z = 0
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").mode_kontrol = 1
 	kursi["pengemudi"] = -1
 	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
 	$MultiplayerSynchronizer.set_multiplayer_authority(1) 
