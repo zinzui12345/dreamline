@@ -49,7 +49,7 @@ func _dummy_visibility_changed(peer : int): print_debug(peer)
 func _physics_process(delta):
 	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
 		if kursi["pengemudi"] != -1 and is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
-			gerakan_pandangan = server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).arah_pandangan / 5
+			gerakan_pandangan = server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).arah_pandangan
 		
 		if arah_stir.y > 0:	  engine_force = kecepatan_maju * arah_stir.y
 		elif arah_stir.y < 0: engine_force = kecepatan_mundur * arah_stir.y
@@ -57,11 +57,13 @@ func _physics_process(delta):
 		
 		kecepatan_laju = linear_velocity * transform.basis
 		
-		if steering < 0.25 or steering > -0.25:
+		if arah_stir.x != 0:
 			arah_belok = arah_stir.x * batas_putaran_stir
 			$roda_depan.wheel_roll_influence	= torsi_kemiringan
 			$roda_belakang.wheel_roll_influence = torsi_kemiringan
 		else:
+			if arah_stir.y != 0 and rotation.z != 0:
+				rotation.z = lerp(rotation.z, 0.0, 2.0 * delta)
 			arah_belok = 0
 			$roda_depan.wheel_roll_influence = 0
 			$roda_belakang.wheel_roll_influence = 0
@@ -91,14 +93,14 @@ func _physics_process(delta):
 			Panku.notify("re-spawn "+name)
 			freeze = false
 
-func _input(_event):
+func _process(delta):
 	if client.id_koneksi == kursi["pengemudi"]:
 		if Input.is_action_pressed("maju"): 	arah_stir.y = 1
 		elif Input.is_action_pressed("mundur"): arah_stir.y = -1
 		else: arah_stir.y = 0
 		
 		if Input.is_action_pressed("maju") or Input.is_action_pressed("lompat"):
-			if gerakan_pandangan.x < -1 or gerakan_pandangan.x > 1:
+			if gerakan_pandangan.x <= -1 or gerakan_pandangan.x >= 1:
 				arah_stir.x = clamp(-gerakan_pandangan.x, -1, 1);		axis_lock_angular_z = false
 			else: arah_stir.x = 0;				  if rotation.z == 0:	axis_lock_angular_z = true
 		else:
@@ -128,7 +130,7 @@ func _kemudikan(id_pengemudi):
 	brake = 0
 	kursi["pengemudi"] = id_pengemudi
 	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengemudi)
-	#Panku.notify("id_akses = "+str($MultiplayerSynchronizer.get_multiplayer_authority())+" <> id koneksi = "+str(multiplayer.get_unique_id())+" : "+str($MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()))
+	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority($MultiplayerSynchronizer.get_multiplayer_authority())
 	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = self
 func _berhenti_mengemudi(id_pengemudi):
 	arah_stir = Vector2.ZERO
@@ -139,11 +141,11 @@ func _berhenti_mengemudi(id_pengemudi):
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, true)
 		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.x = 0
 		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.z = 0
-		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").mode_kontrol = 1
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").atur_mode(1)
 	kursi["pengemudi"] = -1
 	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
 	$MultiplayerSynchronizer.set_multiplayer_authority(1) 
-	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority(1) # FIXME : penumpang turun menaikkan pengemudi
+	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority(1)
 func _menumpang(id_penumpang):
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, false)
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "duduk")

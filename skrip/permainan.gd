@@ -16,7 +16,7 @@ class_name Permainan
 # 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.4 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 
-const versi = "Dreamline beta v1.4.4 rev 09/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 10/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -124,9 +124,7 @@ func _ready():
 	# INFO : (3) tampilkan menu utama
 	$menu_utama/animasi.play("tampilkan")
 	$menu_utama/menu/Panel/buat_server.grab_focus()
-	$latar/animasi.play("tampilkan")
-	await get_tree().create_timer(1.0).timeout
-	$latar/animasi.play("animasi2")
+	$latar.tampilkan()
 	_mainkan_musik_latar()
 
 func _process(delta):
@@ -434,9 +432,7 @@ func putuskan_server(paksa = false):
 		dunia.hapus_map()
 		dunia.hapus_instance_pemain()
 		
-		$latar/animasi.play("tampilkan")
-		await get_tree().create_timer(1.0).timeout
-		$latar/animasi.play("animasi2")
+		$latar.tampilkan()
 		_mainkan_musik_latar()
 
 # kontrol
@@ -481,6 +477,9 @@ func _ketika_mengubah_mode_kontrol_gerak(mode):
 	match mode:
 		0: $kontrol_sentuh/kontrol_gerakan/analog.visible = true;	Konfigurasi.mode_kontrol_gerak = "analog"
 		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true;	Konfigurasi.mode_kontrol_gerak = "dpad"
+func _ketika_mengubah_jarak_render(jarak):
+	if is_instance_valid(dunia) and dunia.get_node_or_null("lingkungan") != null:
+		dunia.get_node("pemain/"+str(multiplayer.get_unique_id())+"/%pandangan").set("far", jarak)
 func _ketika_mengontrol_arah_gerak(arah, _analog):
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if arah.y > 0.1 and arah.y <= 1.0:
@@ -512,7 +511,7 @@ func _atur_persentase_memuat(nilai):
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = str(nilai)+"%"
 func _tampilkan_permainan():
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
-	$latar/animasi.play("sembunyikan")
+	$latar.sembunyikan()
 	_hentikan_musik_latar()
 	$hud/kompas.parent = karakter
 	$hud/kompas.set_physics_process(true)

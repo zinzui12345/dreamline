@@ -31,6 +31,18 @@ func laporkan_bug(): OS.shell_open("https://github.com/zinzui12345/dreamline/iss
 func sarankan_fitur(): OS.shell_open("https://t.me/cinta_buatan")
 
 # ----------------------------------------------------------------
+@export_group("%performa")
+
+@export_range(100, 1000) var jarak_render := Konfigurasi.jarak_render : 
+	get:
+		server.permainan._ketika_mengubah_jarak_render(Konfigurasi.jarak_render)
+		return Konfigurasi.jarak_render
+	set(jarak):
+		server.permainan._ketika_mengubah_jarak_render(jarak)
+		Konfigurasi.jarak_render = jarak
+		jarak_render = jarak
+
+# ----------------------------------------------------------------# ----------------------------------------------------------------
 @export_group("%audio")
 
 @export_range(-10.0, 10.0) var musik_latar := Konfigurasi.volume_musik_latar : 

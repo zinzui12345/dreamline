@@ -11,3 +11,4 @@ func hapus_instance_pemain():
 	for p in jumlah_pemain:
 		#print_debug("menghapus pemain [%s/%s]" % [jumlah_pemain-p, jumlah_pemain])
 		$pemain.get_child(jumlah_pemain - (p + 1)).queue_free()
+

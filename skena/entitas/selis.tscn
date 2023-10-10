@@ -621,7 +621,7 @@ use_as_steering = true
 wheel_roll_influence = 0.15
 wheel_radius = 0.21
 wheel_rest_length = 0.05
-wheel_friction_slip = 1.0
+wheel_friction_slip = 5.0
 suspension_stiffness = 100.0
 suspension_max_force = 300.0
 
@@ -650,7 +650,7 @@ use_as_traction = true
 wheel_roll_influence = 0.15
 wheel_radius = 0.21
 wheel_rest_length = 0.05
-wheel_friction_slip = 0.9
+wheel_friction_slip = 8.7
 suspension_stiffness = 100.0
 suspension_max_force = 300.0
 
@@ -799,6 +799,7 @@ replication_config = SubResource("SceneReplicationConfig_0oqvj")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_c4xs6")
+visibility_update_mode = 1
 
 [connection signal="body_entered" from="." to="." method="_ketika_menabrak_sesuatu"]
 [connection signal="finished" from="AudioMesin" to="." method="_on_AudioMesin_finished"]

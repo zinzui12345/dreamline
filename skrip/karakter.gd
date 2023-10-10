@@ -214,6 +214,10 @@ func atur_warna():
 						if get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f") != null\
 						 and id_mtl[mtl] < get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").mesh.get_surface_count():
 							get_node("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").set_surface_override_material(id_mtl[mtl], tmp_mtl)
+							#if get_parent().get_path() == server.permainan.dunia.get_node("pemain").get_path():
+							#	get_node("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").mesh.surface_set_material(id_mtl[mtl], null)
+						#if get_parent().get_path() == server.permainan.dunia.get_node("pemain").get_path():
+							#get_node("%GeneralSkeleton/"+jlr_mtl).mesh.surface_set_material(id_mtl[mtl], null)
 					if Konfigurasi.shader_karakter or tmp_mtl is ShaderMaterial:
 						tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
 					else: tmp_mtl.albedo_color = warna[indeks_material[mt]]

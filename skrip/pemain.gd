@@ -310,10 +310,10 @@ func _physics_process(delta):
 				if Input.is_action_pressed("berlari") and karakter.arah.z > 1.0:
 					if karakter.is_on_floor():
 						karakter.arah.y = 180 * delta
-						lompat = true
+						#lompat = true
 					elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"): # ini fitur btw >u<
 						karakter.arah.y = 200 * delta
-						lompat = true
+						#lompat = true
 				elif karakter.is_on_floor():
 					# FIXME : melompat
 					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
@@ -323,7 +323,7 @@ func _physics_process(delta):
 					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
 					#karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 					karakter.arah.y = 150 * delta
-					lompat = true
+				lompat = true
 
 # debug
 const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"

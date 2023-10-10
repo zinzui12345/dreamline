@@ -9,6 +9,7 @@ script/source = "extends Control
 # posisi vertikal sama dengan tinggi gambar parallax / 8
 
 func _ready():
+	_ketika_ukuran_diubah()
 	get_parent().connect(\"resized\", Callable(self, \"_ketika_ukuran_diubah\"))
 	$animasi.play(\"animasi2\")
 
@@ -20,6 +21,16 @@ func _ketika_ukuran_diubah():
 	#for latar in $latar_parallax/ParallaxLayer.get_children():
 	#	if latar.get(\"texture\") != null:
 	#		latar.position.y = -( latar.texture.get_height() / 8 )
+
+func tampilkan():
+	if $latar_parallax/ParallaxLayer/Cute4.texture == null:
+		$latar_parallax/ParallaxLayer/Cute4.texture = load(\"res://material/wp/cute4.png\")
+	$animasi.play(\"tampilkan\")
+	$animasi.queue(\"animasi2\")
+func sembunyikan():
+	$animasi.play(\"sembunyikan\")
+	await get_tree().create_timer(1.0).timeout
+	$latar_parallax/ParallaxLayer/Cute4.texture = null
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vx7d7"]
@@ -41,6 +52,36 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
 "values": [0.0, 100.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_5jum6"]
+resource_name = "animasi2"
+length = 40.0
+loop_mode = 1
+step = 1.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("latar_parallax:offset:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 15, 20, 40),
+"transitions": PackedFloat32Array(0.5, 0.5, 0.5, 0.5),
+"update": 0,
+"values": [0.0, -40.0, -50.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("latar_parallax/ParallaxLayer:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 20, 40),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.25, 0.25), Vector2(0.263, 0.263), Vector2(0.25, 0.25)]
 }
 
 [sub_resource type="Animation" id="Animation_khvls"]
@@ -121,36 +162,6 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
-}
-
-[sub_resource type="Animation" id="Animation_5jum6"]
-resource_name = "animasi2"
-length = 40.0
-loop_mode = 1
-step = 1.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("latar_parallax:offset:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 15, 20, 40),
-"transitions": PackedFloat32Array(0.5, 0.5, 0.5, 0.5),
-"update": 0,
-"values": [0.0, -40.0, -50.0, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("latar_parallax/ParallaxLayer:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 20, 40),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0.25, 0.25), Vector2(0.263, 0.263), Vector2(0.25, 0.25)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1bm3d"]

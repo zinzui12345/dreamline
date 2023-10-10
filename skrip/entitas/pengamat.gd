@@ -10,7 +10,7 @@ var putaranMaxVertikalPandangan : float = 90.0
 var _karakter
 
 func  _ready():
-	if get_parent() is Karakter: _karakter = get_parent()
+	if get_parent() is Karakter: _karakter = get_parent(); get_node("%pandangan").set("far", Konfigurasi.jarak_render)
 	else: _karakter = $posisi_mata
 
 func _process(delta):
@@ -44,7 +44,7 @@ func _process(delta):
 					_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
 					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
 					_karakter.rotation_degrees.y -= rotasi.y
-				elif _karakter.get_node("PlayerInput").arah_gerakan.y == 1:
+				elif _karakter.get_node("PlayerInput").arah_gerakan.y == 1 or _karakter.get_node("PlayerInput").lompat:
 					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.005 * delta)
 				else:
 					$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y
@@ -82,7 +82,7 @@ func aktifkan(nilai = true, vr = false):
 
 func atur_mode(nilai):
 	if mode_kontrol == 2: mode_kontrol = 1
-	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2
+	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2 # naik kendaraan / mulai duduk
 	var ubah = (mode_kontrol != nilai)
 	mode_kontrol = 0 # nonaktifkan kontrol
 	var tween_pandangan_1a = get_tree().create_tween()

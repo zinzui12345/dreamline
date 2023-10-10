@@ -10,6 +10,7 @@ var volume_musik_latar : float = -3.2 :
 	set(volume):
 		AudioServer.set_bus_volume_db(1, volume)
 		volume_musik_latar = volume
+var jarak_render : int = 400
 
 enum bahasa {
 	auto,
