@@ -1,4 +1,4 @@
-[gd_scene load_steps=184 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=183 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -52,7 +52,6 @@
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Script" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
-[ext_resource type="AudioStream" uid="uid://b58ugbvgevm82" path="res://audio/soundtrack/Holding Hands.mp3" id="49_hnqo8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
@@ -3963,7 +3962,7 @@ offset_bottom = -35.2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 21
-text = "Holding Hands"
+text = "-"
 metadata/_edit_use_anchors_ = true
 
 [node name="artis" type="Label" parent="pemutar_musik"]
@@ -3979,7 +3978,7 @@ offset_bottom = -7.19999
 theme_override_colors/font_color = Color(0.192157, 0.192157, 0.192157, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 19
-text = "Couple N"
+text = "-"
 
 [node name="durasi" type="Label" parent="pemutar_musik"]
 layout_mode = 1
@@ -4004,7 +4003,6 @@ libraries = {
 }
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="pemutar_musik"]
-stream = ExtResource("49_hnqo8")
 volume_db = -5.0
 bus = &"Musik Latar"
 

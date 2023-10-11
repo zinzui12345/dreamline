@@ -1,6 +1,5 @@
-[gd_scene load_steps=26 format=3 uid="uid://s88loppa6gja"]
+[gd_scene load_steps=25 format=3 uid="uid://s88loppa6gja"]
 
-[ext_resource type="Material" uid="uid://dyipeqsa8lcpc" path="res://addons/panku_console/common/lynx_window2/lynx_window_shader_material.tres" id="1_tvp6i"]
 [ext_resource type="Script" path="res://addons/panku_console/common/lynx_window2/lynx_window_2.gd" id="2_1ul5o"]
 [ext_resource type="FontVariation" uid="uid://d2b8bo6ytpt2i" path="res://addons/panku_console/res/font/default_bold.tres" id="3_oes5e"]
 [ext_resource type="Texture2D" uid="uid://dosm26riekruh" path="res://addons/panku_console/res/icons2/menu.svg" id="4_4dlyn"]
@@ -107,9 +106,9 @@ border_width_bottom = 4
 border_color = Color(1, 1, 1, 1)
 
 [node name="LynxWindow2" type="ColorRect" node_paths=PackedStringArray("_window_title_container", "_title_btn", "_close_btn", "_options_btn", "_resize_btn", "_shadow_focus", "_shadow", "_container", "_pop_btn")]
-material = ExtResource("1_tvp6i")
 offset_right = 413.0
 offset_bottom = 305.0
+color = Color(0, 0, 0, 0.913725)
 script = ExtResource("2_1ul5o")
 _window_title_container = NodePath("VBoxContainer/Up")
 _title_btn = NodePath("VBoxContainer/Up/Button")

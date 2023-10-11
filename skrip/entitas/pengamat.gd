@@ -44,7 +44,7 @@ func _process(delta):
 					_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
 					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
 					_karakter.rotation_degrees.y -= rotasi.y
-				elif _karakter.get_node("PlayerInput").arah_gerakan.y == 1 or _karakter.get_node("PlayerInput").lompat:
+				elif _karakter.arah.z != 2:
 					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.005 * delta)
 				else:
 					$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y

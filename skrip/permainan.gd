@@ -3,18 +3,19 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 | 1.4.1 - Implementasi LAN Server berbasis Cross-Play
+# 07 Jul 2023 | 1.4.0 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.4.1 - Implementasi Timeline
 # 09 Agu 2023 | 1.4.1 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 | 1.4.2 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 11 Agu 2023 | 1.4.1 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.4.2 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.4.2 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
-# 06 Sep 2023 | 1.4.3 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 06 Sep 2023 | 1.4.2 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.4.3 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.4.3 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 1.4.4 - Penambahan entity posisi spawn pemain
+# 23 Sep 2023 | 1.4.3 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.4 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 10 Okt 2023 | 1.4.4 - Penambahan senjata Bola salju raksasa
 
 const versi = "Dreamline beta v1.4.4 rev 10/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
@@ -239,7 +240,6 @@ func _muat_map(file_map):
 		batas_bawah = map.get_node("batas_bawah").position.y
 	call_deferred("_atur_persentase_memuat", 70)
 	dunia.call_deferred("add_child", map)
-	# TODO : Proses entitas
 	if koneksi == MODE_KONEKSI.SERVER:
 		# INFO : (5a) buat server
 		server.call_deferred("buat_koneksi")
@@ -770,7 +770,15 @@ func _tutup_popup_konfirmasi():
 	$popup_konfirmasi/animasi.play("tutup")
 	$popup_konfirmasi.penampil.grab_focus()
 func _mainkan_musik_latar():
-	if $pemutar_musik/AudioStreamPlayer.stream != null:
+	if $pemutar_musik/AudioStreamPlayer.stream == null:
+		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
+		if musik != null:
+			$pemutar_musik/AudioStreamPlayer.stream = musik
+			$pemutar_musik/AudioStreamPlayer.play()
+			$pemutar_musik/judul.text = "Holding Hands"
+			$pemutar_musik/artis.text = "Couple N"
+			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	else:
 		$pemutar_musik/AudioStreamPlayer.play()
 		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
 func _ketika_musik_latar_selesai_dimainkan():
@@ -778,6 +786,7 @@ func _ketika_musik_latar_selesai_dimainkan():
 	_mainkan_musik_latar()
 func _hentikan_musik_latar():
 	$pemutar_musik/AudioStreamPlayer.stop()
+	$pemutar_musik/AudioStreamPlayer.stream = null
 func _tambah_daftar_pemain(id_pemain, data_pemain):
 	var pemain = load("res://ui/pemain.tscn").instantiate()
 	# INFO : tambahkan info pemain ke daftar pemain
@@ -941,7 +950,8 @@ func _kembali():
 	elif $popup_konfirmasi.visible:
 		_tutup_popup_konfirmasi()
 	elif $proses_koneksi.visible:
-		pass # TODO : batalkan koneksi server
+		client.putuskan_server()
+		$proses_koneksi/animasi.play("sembunyikan")
 	elif $daftar_server.visible:
 		_sembunyikan_daftar_server()
 	elif $karakter.visible:

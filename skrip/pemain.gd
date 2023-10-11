@@ -65,12 +65,14 @@ func _input(event):
 func _process(delta):
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
-		if Input.is_action_pressed("maju"):
-			if Input.is_action_pressed("berlari"): arah_gerakan.y = Input.get_action_strength("berlari") * 2
-			else: arah_gerakan.y = Input.get_action_strength("maju")
+		if Input.is_action_pressed("berlari"):
+			arah_gerakan.y = Input.get_action_strength("berlari") * 2
+			if Input.is_action_pressed("mundur"):
+				arah_gerakan.y = -Input.get_action_strength("berlari") * 2
+		elif Input.is_action_pressed("maju"):
+			arah_gerakan.y = Input.get_action_strength("maju")
 		elif Input.is_action_pressed("mundur"):
-			if Input.is_action_pressed("berlari"):arah_gerakan.y = -Input.get_action_strength("berlari") * 2
-			else: arah_gerakan.y = -Input.get_action_strength("mundur")
+			arah_gerakan.y = -Input.get_action_strength("mundur")
 		else:
 			if karakter.is_on_floor(): arah_gerakan.y = 0
 			else: arah_gerakan.y = lerp(arah_gerakan.y, 0.0, 0.25 * delta)

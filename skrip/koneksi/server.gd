@@ -180,9 +180,10 @@ func _pemain_terputus(id_pemain):
 			for p in properti.size():
 				if tmp_objek.get(properti[p][0]) != null: tmp_objek.set(properti[p][0], properti[p][1])
 				else: print("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti[p][0]+"]")
+			permainan.dunia.get_node("entitas").add_child(tmp_objek, true)
 			tmp_objek.global_transform.origin = posisi
 			tmp_objek.rotation = rotasi
-			permainan.dunia.get_node("entitas").add_child(tmp_objek, true)
+			tmp_objek.set("posisi_awal", posisi)
 			print_debug("menambahkan %s [%s]" % [tmp_objek.name, tmp_nama])
 		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://bodq1gcamen6h"]
+[gd_scene load_steps=51 format=3 uid="uid://bodq1gcamen6h"]
 
 [ext_resource type="AudioStream" uid="uid://vj64jsvs1gy" path="res://audio/kendaraan/tabrak.wav" id="1"]
 [ext_resource type="Script" path="res://skrip/entitas/selis.gd" id="1_e7y8u"]
@@ -6,8 +6,20 @@
 [ext_resource type="AudioStream" uid="uid://58ehf8k2uy2j" path="res://audio/kendaraan/bip-mundur.ogg" id="21"]
 [ext_resource type="AudioStream" uid="uid://cwqd5eit4wrjk" path="res://audio/kendaraan/klakson-ulang.ogg" id="22"]
 
-[sub_resource type="ConvexPolygonShape3D" id="148"]
-points = PackedVector3Array(-0.5, -1, -1.2, 0.5, -1, -1.2, -0.5, -1, 1.2, -0.5, 1, -1.2, 0.5, 1, -1.2, 0.5, -1, 1.2, -0.5, 1, 1.2, 0.5, 1, 1.2)
+[sub_resource type="BoxShape3D" id="BoxShape3D_seqf6"]
+size = Vector3(1, 0.601375, 2.35005)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o6il2"]
+size = Vector3(0.598528, 1.03954, 2.03624)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yaae1"]
+size = Vector3(0.241517, 0.243235, 1.54258)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0gn4e"]
+size = Vector3(0.121076, 0.174457, 1.87197)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kqbv5"]
+size = Vector3(0.935425, 0.468845, 1.10074)
 
 [sub_resource type="ConvexPolygonShape3D" id="147"]
 points = PackedVector3Array(0.492173, 2, 2.4625, -0.5, -1.91033, -2.38164, -0.5, 1.93472, -2.38164, 0.498362, -2, -2.49272, -0.5, -1.91033, 2.38164, 0.498362, -2, 2.49272, 0.492173, 2, -2.4625, -0.5, 1.93472, 2.38164)
@@ -527,6 +539,10 @@ properties/4/path = NodePath(".:brake")
 properties/4/spawn = false
 properties/4/sync = true
 properties/4/watch = false
+properties/5/path = NodePath("setir/rotasi_stir:rotation")
+properties/5/spawn = false
+properties/5/sync = true
+properties/5/watch = false
 
 [node name="selis" type="VehicleBody3D"]
 collision_layer = 2
@@ -541,9 +557,25 @@ can_sleep = false
 angular_damp = 1.0
 script = ExtResource("1_e7y8u")
 
-[node name="fisik" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0.194, 0)
-shape = SubResource("148")
+[node name="fisik_1" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0.00488221, 0.0206413)
+shape = SubResource("BoxShape3D_seqf6")
+
+[node name="fisik_2" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0.454496, -0.481578)
+shape = SubResource("BoxShape3D_o6il2")
+
+[node name="fisik_3" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.27, 0, 0, 0, 0.0923454, 0.253717, 0, -0.253717, 0.0923454, 0, 0.295509, 0.378989)
+shape = SubResource("BoxShape3D_yaae1")
+
+[node name="fisik_4" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.190919, -0.190919, 1.05367e-08, -0.0494134, -0.0494134, 0.2608, -0.184413, -0.184413, -0.0698812, 0, 0.601814, 0.418139)
+shape = SubResource("BoxShape3D_0gn4e")
+
+[node name="fisik_5" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0.683904, -0.261635)
+shape = SubResource("BoxShape3D_kqbv5")
 
 [node name="bidang_raycast" type="CharacterBody3D" parent="."]
 transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0.032, -0.054)
@@ -565,10 +597,10 @@ transform = Transform3D(0.27, 0, 0, 0, 0.2608, 0.0698811, 0, -0.0698811, 0.2608,
 [node name="rotasi_stir" type="Node3D" parent="setir"]
 
 [node name="pos_tangan_kanan" type="Marker3D" parent="setir/rotasi_stir"]
-transform = Transform3D(1, 0, 0, 0, -4.47035e-08, -0.999999, 0, 0.999999, -4.47035e-08, -0.8, 0.701592, 0.084882)
+transform = Transform3D(1, 0, 0, 0, 0.173648, -0.984807, 0, 0.984807, 0.173648, -0.8, 0.701657, 0.0849476)
 
 [node name="pos_tangan_kiri" type="Marker3D" parent="setir/rotasi_stir"]
-transform = Transform3D(1, 0, 0, 0, 0, 0.999999, 0, -0.999999, 0, 0.8, 0.70203, 0.0845807)
+transform = Transform3D(1, 0, 0, 0, 0.173648, -0.984807, 0, 0.984807, 0.173648, 0.800001, 0.701966, 0.0845144)
 
 [node name="model" type="Node3D" parent="setir/rotasi_stir"]
 
@@ -799,7 +831,7 @@ replication_config = SubResource("SceneReplicationConfig_0oqvj")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_c4xs6")
-visibility_update_mode = 1
+visibility_update_mode = 2
 
 [connection signal="body_entered" from="." to="." method="_ketika_menabrak_sesuatu"]
 [connection signal="finished" from="AudioMesin" to="." method="_on_AudioMesin_finished"]

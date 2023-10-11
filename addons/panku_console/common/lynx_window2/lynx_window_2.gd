@@ -4,7 +4,7 @@ class_name PankuLynxWindow extends ColorRect
 signal title_btn_clicked
 signal window_closed
 
-const lynx_window_shader_material:ShaderMaterial = preload("./lynx_window_shader_material.tres")
+#const lynx_window_shader_material:ShaderMaterial = preload("./lynx_window_shader_material.tres")
 
 @export var _window_title_container:HBoxContainer
 @export var _title_btn:Button

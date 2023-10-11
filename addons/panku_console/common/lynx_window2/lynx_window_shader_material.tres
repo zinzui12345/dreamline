@@ -5,4 +5,4 @@
 [resource]
 shader = ExtResource("1_3h55m")
 shader_parameter/lod = 4.0
-shader_parameter/modulate = Color(0, 0, 0, 0.12549)
+shader_parameter/modulate = Color(0, 0.909804, 0.360784, 0.12549)

@@ -4,17 +4,17 @@ var _module:PankuModule
 
 @export_group("%setelan_umum")
 
-@export var window_blur_effect:bool = true:
-	set(v):
-		PankuLynxWindow.lynx_window_shader_material.set("shader_parameter/lod", 4.0 if v else 0.0)
-	get:
-		return PankuLynxWindow.lynx_window_shader_material.get("shader_parameter/lod") > 0.0
+#@export var window_blur_effect:bool = true:
+#	set(v):
+#		PankuLynxWindow.lynx_window_shader_material.set("shader_parameter/lod", 4.0 if v else 0.0)
+#	get:
+#		return PankuLynxWindow.lynx_window_shader_material.get("shader_parameter/lod") > 0.0
 
-@export var window_color:Color = Color(0.0, 0.0, 0.0, 0.1):
-	set(v):
-		PankuLynxWindow.lynx_window_shader_material.set("shader_parameter/modulate", v)
-	get:
-		return PankuLynxWindow.lynx_window_shader_material.get("shader_parameter/modulate")
+#@export var window_color:Color = Color(0.0, 0.0, 0.0, 0.1):
+#	set(v):
+#		PankuLynxWindow.lynx_window_shader_material.set("shader_parameter/modulate", v)
+#	get:
+#		return PankuLynxWindow.lynx_window_shader_material.get("shader_parameter/modulate")
 
 @export var enable_os_window := false:
 	set(v):
