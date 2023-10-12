@@ -17,7 +17,7 @@ class_name Permainan
 # 09 Okt 2023 | 1.4.4 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.4 - Penambahan senjata Bola salju raksasa
 
-const versi = "Dreamline beta v1.4.4 rev 10/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 12/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -56,6 +56,11 @@ var _touchpad_disentuh = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara = Timer.new()
 var _timer_tampilkan_pesan = Timer.new()
+var tombol_aksi_2 = "angkat_sesuatu" :
+	set(ikon):
+		if ikon != tombol_aksi_2:
+			get_node("kontrol_sentuh/aksi_2").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			tombol_aksi_2 = ikon
 
 enum MODE_KONEKSI {
 	SERVER,

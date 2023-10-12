@@ -111,13 +111,20 @@ func _process(_delta):
 		if Input.is_action_pressed("lompat"):	brake = Input.get_action_strength("lompat")
 		else: brake = 0
 
+func fokus():
+	if kursi["pengemudi"] == multiplayer.get_unique_id() or kursi["penumpang"][0] == multiplayer.get_unique_id():
+		server.permainan.set("tombol_aksi_2", "berjalan")
+	else:
+		server.permainan.set("tombol_aksi_2", "naik_sepeda")
 func gunakan(id_pemain):
 	if kursi["pengemudi"] == id_pemain:		# pengemudi turun
 		server.gunakan_entitas(name, "_berhenti_mengemudi")
+		server.permainan.get_node("kontrol_sentuh/lompat").set("texture_normal", load("res://ui/tombol/lompat.svg"))
 	elif kursi["penumpang"][0] == id_pemain:# penumpang turun
 		server.gunakan_entitas(name, "_berhenti_menumpang")
 	elif kursi["pengemudi"] == -1:			# naik sebagai pengemudi
 		server.gunakan_entitas(name, "_kemudikan")
+		server.permainan.get_node("kontrol_sentuh/lompat").set("texture_normal", load("res://ui/tombol/rem.svg"))
 	elif kursi["penumpang"][0] == -1:		# naik sebagai penumpang
 		server.gunakan_entitas(name, "_menumpang")
 

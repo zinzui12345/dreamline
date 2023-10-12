@@ -40,7 +40,7 @@
 [ext_resource type="Texture2D" uid="uid://324iylkyvged" path="res://ui/ikon/ikon_tab_karakter.svg" id="15_y2ds0"]
 [ext_resource type="Texture2D" uid="uid://yueol7tljubx" path="res://ui/ikon/ikon_tab_wajah.svg" id="16_623mo"]
 [ext_resource type="Texture2D" uid="uid://dyekolvrmm25g" path="res://ui/tombol/lompat_tekan.svg" id="16_t7mcc"]
-[ext_resource type="Texture2D" uid="uid://dljhfba3xdtdn" path="res://ui/tombol/naik_sepeda.svg" id="17_m871s"]
+[ext_resource type="Texture2D" uid="uid://bo2v23ce34rnw" path="res://ui/tombol/angkat_sesuatu.svg" id="17_2rhvy"]
 [ext_resource type="PackedScene" uid="uid://caj1xl4dg83kl" path="res://ui/pemilih_warna.scn" id="18_3fc46"]
 [ext_resource type="Texture2D" uid="uid://qv0gcb22v67d" path="res://ui/slider_grabber.svg" id="18_ex6as"]
 [ext_resource type="Texture2D" uid="uid://dwwsncx7t4g2a" path="res://ui/ikon/ikon_tombol_pesan.svg" id="18_m6a3h"]
@@ -2486,7 +2486,7 @@ anchor_bottom = 0.44
 offset_right = -0.064003
 offset_bottom = -3.05176e-05
 action_mode = 0
-texture_normal = ExtResource("17_m871s")
+texture_normal = ExtResource("17_2rhvy")
 metadata/_edit_use_anchors_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2"]

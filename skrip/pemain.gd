@@ -285,6 +285,8 @@ func _physics_process(delta):
 		pos_target = _raycast_pemain.get_collision_point()
 		objek_target = _raycast_pemain.get_collider()
 		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
+			if objek_target.has_method("fokus"): objek_target.fokus()
+			if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
