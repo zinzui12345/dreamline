@@ -1,4 +1,4 @@
-[gd_scene load_steps=183 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=184 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://b6o3t5meckrn" path="res://ui/Touchpad.tscn" id="14_tax0q"]
 [ext_resource type="Texture2D" uid="uid://7c1ekxa6i7yc" path="res://ui/ikon/ikon_tombol_batal.svg" id="14_xsr60"]
 [ext_resource type="Texture2D" uid="uid://bicruf52uowkw" path="res://ui/tombol/lompat.svg" id="15_5l3bk"]
+[ext_resource type="Texture2D" uid="uid://cgodrn70mvdyl" path="res://ui/tombol/berlari.svg" id="15_67glo"]
 [ext_resource type="Texture2D" uid="uid://324iylkyvged" path="res://ui/ikon/ikon_tab_karakter.svg" id="15_y2ds0"]
 [ext_resource type="Texture2D" uid="uid://yueol7tljubx" path="res://ui/ikon/ikon_tab_wajah.svg" id="16_623mo"]
 [ext_resource type="Texture2D" uid="uid://dyekolvrmm25g" path="res://ui/tombol/lompat_tekan.svg" id="16_t7mcc"]
@@ -2395,7 +2396,6 @@ libraries = {
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 texture_repeat = 3
 layout_mode = 1
-metadata/_edit_lock_ = true
 
 [node name="kontrol_sentuh" type="Control" parent="."]
 layout_mode = 1
@@ -2456,6 +2456,25 @@ texture_normal = ExtResource("6_2op7y")
 texture_pressed = ExtResource("6_beubk")
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
+
+[node name="lari" type="TextureButton" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.098
+anchor_top = 0.307
+anchor_right = 0.176
+anchor_bottom = 0.44
+offset_top = -0.199814
+offset_right = -79.936
+offset_bottom = 0.000183105
+action_mode = 0
+texture_normal = ExtResource("15_67glo")
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lari"]
+position = Vector2(40, 40)
+shape = SubResource("CircleShape2D_2jlpn")
+action = "berlari"
 
 [node name="lompat" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -4611,6 +4630,8 @@ bus = &"Suara Pemain"
 [connection signal="touch_stop" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
 [connection signal="analog_force_change" from="kontrol_sentuh/kontrol_gerakan/analog" to="." method="_ketika_mengontrol_arah_gerak"]
 [connection signal="toggled" from="kontrol_sentuh/mic" to="." method="_berbicara"]
+[connection signal="button_down" from="kontrol_sentuh/lari" to="." method="_ketika_mulai_berlari"]
+[connection signal="button_up" from="kontrol_sentuh/lari" to="." method="_ketika_berhenti_berlari"]
 [connection signal="button_down" from="kontrol_sentuh/lompat" to="." method="_ketika_mulai_melompat"]
 [connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
 [connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]

@@ -38,14 +38,16 @@ KELUAR,Keluar,Exit
 # konfigurasi,,
 %setelan,Setelan,Settings
 TAMPILAN,Tampilan,Appearance
+bahasa,Bahasa,Language
 %input,Masukan,Input
 sensitivitas_gestur,Sensitivitas Gestur,Gesture Sensitivity
 kontrol_gerak,Kontrol Gerakan,Movement Control
 %audio,Suara,Sound
-GRAFIK,Grafik,Graphics
-bahasa,Bahasa,Language
 VOLUME,Volume Permainan,Game Volume
 musik_latar,Volume Musik,Music Volume
+%performa,Performa,Performance
+jarak_render,Jarak Render,Render Distance
+GRAFIK,Grafik,Graphics
 BALIKBAYANGAN,Balikkan render bayangan,Invert shadow
 MODEVR,Mode Virtual Reality,VR Mode
 SKALARESOLUSI,Skala Resolusi,Resolution Scale

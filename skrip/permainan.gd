@@ -4,18 +4,19 @@ class_name Permainan
 
 ## ChangeLog ##
 # 07 Jul 2023 | 1.4.0 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 1.4.1 - Implementasi Timeline
+# 04 Agu 2023 | 1.4.0 - Implementasi Timeline
 # 09 Agu 2023 | 1.4.1 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.4.1 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 1.4.2 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 14 Agu 2023 | 1.4.1 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.4.2 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.4.2 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 1.4.3 - Implementasi shader karakter menggunakan MToon
+# 18 Sep 2023 | 1.4.2 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.4.3 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.3 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 1.4.4 - Penambahan Text Chat
+# 25 Sep 2023 | 1.4.3 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.4 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.4 - Penambahan senjata Bola salju raksasa
+# 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
 
 const versi = "Dreamline beta v1.4.4 rev 12/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
@@ -508,6 +509,8 @@ func _ketika_mulai_melompat():		Input.action_press("lompat")
 func _ketika_berhenti_melompat():	Input.action_release("lompat")
 func _aksi_2_tekan(): 	Input.action_press("aksi2")
 func _aksi_2_lepas(): 	Input.action_release("aksi2")
+func _ketika_mulai_berlari():		Input.action_press("berlari")
+func _ketika_berhenti_berlari():	Input.action_release("berlari")
 
 # UI
 func _atur_persentase_memuat(nilai):
@@ -807,6 +810,7 @@ func _tampilkan_input_pesan():
 	$kontrol_sentuh/chat.release_focus()
 	if pesan:
 		$kontrol_sentuh/mic.visible = true
+		$kontrol_sentuh/lari.visible = true
 		$hud/pesan/input_pesan.release_focus()
 		$hud/daftar_pesan/animasi.play("sembunyikan")
 		$hud/pesan/animasi.play("sembunyikan")
@@ -817,6 +821,7 @@ func _tampilkan_input_pesan():
 		$hud/pesan/animasi.play("tampilkan")
 		$hud/pesan/input_pesan.grab_focus()  
 		$kontrol_sentuh/mic.visible = false
+		$kontrol_sentuh/lari.visible = false
 		karakter._atur_kendali(false)
 		pesan = true
 func _tampilkan_pesan(teks : String):
