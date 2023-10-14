@@ -172,10 +172,18 @@ func _process(delta):
 							)
 		if Input.is_action_just_pressed("aksi2"):
 			if _target_pemain:
-				if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
-				elif objek_target.name == "bidang_raycast" and \
-				 objek_target.get_parent().has_method("gunakan"):
-					objek_target.get_parent().gunakan(multiplayer.get_unique_id())
+				match karakter.peran:
+					Permainan.PERAN_KARAKTER.Arsitek:
+						if objek_target.has_method("gunakan"):
+							server.permainan._edit_objek(objek_target.get_path())
+						elif objek_target.name == "bidang_raycast" and \
+						 objek_target.get_parent().has_method("gunakan"):
+							server.permainan._edit_objek(objek_target.get_parent().get_path())
+					_:
+						if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
+						elif objek_target.name == "bidang_raycast" and \
+						 objek_target.get_parent().has_method("gunakan"):
+							objek_target.get_parent().gunakan(multiplayer.get_unique_id())
 		
 		if Input.is_action_just_pressed("mode_pandangan"): karakter.get_node("pengamat").ubah_mode()
 		
@@ -238,13 +246,12 @@ func _process(delta):
 					#get_tree().paused = false
 					# sembunyikan tampilan durasi
 					server.permainan.get_node("%timeline/animasi").play_backwards("tampilkan")
+		if Input.is_action_just_pressed("debug"):
+			karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
+			Panku.notify("mode bermain")
 		if Input.is_action_just_pressed("debug2"):
-			if get_viewport().debug_draw == Viewport.DEBUG_DRAW_WIREFRAME:
-				get_viewport().debug_draw = Viewport.DEBUG_DRAW_DISABLED
-				Panku.notify("modus render normal")
-			else:
-				get_viewport().debug_draw = Viewport.DEBUG_DRAW_WIREFRAME
-				Panku.notify("modus render wireframe")
+			karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
+			Panku.notify("mode edit")
 	
 	# atur ulang fungsi melompat ketika berada di floor
 	if karakter.is_on_floor() and lompat: lompat = false
@@ -285,23 +292,16 @@ func _physics_process(delta):
 		pos_target = _raycast_pemain.get_collision_point()
 		objek_target = _raycast_pemain.get_collider()
 		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
-			if objek_target.has_method("fokus"): objek_target.fokus()
-			if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
+			match karakter.peran:
+				Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
+					pass
+				_:
+					if objek_target.has_method("fokus"): objek_target.fokus()
+					if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-		match karakter.peran:
-			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
-				#var tmp_pos = server.permainan.dunia.get_child(4).get_node("%peta").map_to_local(pos_target)
-				#server.permainan.dunia.get_child(4).get_node("%pos_debug").global_position = Vector3(
-				#	tmp_pos.x,
-				#	server.permainan.dunia.get_child(4).get_node("%peta").global_position.y + 0.5,
-				#	tmp_pos.z
-				#)
-				#server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = true
-				pass
-	#elif server.permainan.dunia.get_child(4).get_node("%pos_debug").visible: # debug permukaan
-	#	server.permainan.dunia.get_child(4).get_node("%pos_debug").visible = false
+				
 	elif is_instance_valid(objek_target):
 		objek_target = null
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:

@@ -92,10 +92,6 @@ var tekstur
 		warna["sepatu"] = warna_baru["sepatu"]
 		atur_warna()
 
-#func _input(_event):
-#	if Input.is_action_just_pressed("debug"):
-#		Panku.notify("work!")
-
 # penampilan
 func atur_model():
 	# alis | FaceBrow
@@ -240,6 +236,18 @@ func _atur_kendali(nilai):
 func _hapus():
 	set_physics_process(false)
 	set_process(false)
+	var indeks_material = material.keys()
+	for mt in material.size():
+		if material[indeks_material[mt]]["jalur_node"] != "":
+			var jlr_mtl = material[indeks_material[mt]]["jalur_node"]
+			var id_mtl	= material[indeks_material[mt]]["id_material"]
+			for mtl in id_mtl.size():
+				if get_node_or_null("%GeneralSkeleton/"+jlr_mtl) != null\
+				 and warna.get(indeks_material[mt]) != null\
+				 and id_mtl[mtl] < get_node("%GeneralSkeleton/"+jlr_mtl).mesh.get_surface_count():
+					var tmp_mtl = get_node("%GeneralSkeleton/"+jlr_mtl).get_surface_override_material(id_mtl[mtl])
+					if tmp_mtl != null:
+						get_node("%GeneralSkeleton/"+jlr_mtl).set_surface_override_material(id_mtl[mtl], null)
 	queue_free()
 
 func _physics_process(_delta):

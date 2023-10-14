@@ -1,4 +1,4 @@
-[gd_scene load_steps=184 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=185 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -53,6 +53,7 @@
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Script" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
+[ext_resource type="PackedScene" uid="uid://cok36wfitg4po" path="res://skena/pengamat_objek.tscn" id="54_kqfbn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
@@ -2393,6 +2394,25 @@ libraries = {
 "": SubResource("AnimationLibrary_2lqgy")
 }
 
+[node name="mode_bermain" type="HBoxContainer" parent="hud"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -94.0
+offset_right = 20.0
+offset_bottom = -54.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TextureButton" type="TextureButton" parent="hud/mode_bermain"]
+layout_mode = 2
+toggle_mode = true
+
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 texture_repeat = 3
 layout_mode = 1
@@ -4624,6 +4644,8 @@ editor_description = "ini dipake untuk merekam suara pemain"
 stream = SubResource("AudioStreamMicrophone_skxpm")
 mix_target = 2
 bus = &"Suara Pemain"
+
+[node name="pengamat" parent="." instance=ExtResource("54_kqfbn")]
 
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]

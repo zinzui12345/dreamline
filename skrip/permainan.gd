@@ -18,7 +18,7 @@ class_name Permainan
 # 10 Okt 2023 | 1.4.4 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
 
-const versi = "Dreamline beta v1.4.4 rev 12/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 14/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -46,6 +46,7 @@ var dunia = null
 var map = null
 var permukaan					# Permukaan (Terrain)
 var batas_bawah = -4000			# batas area untuk re-spawn
+var edit_objek : Node3D			# ref objek yang sedang di-edit
 var thread = Thread.new()
 var koneksi = MODE_KONEKSI.CLIENT
 var jeda = false
@@ -351,6 +352,17 @@ func _kirim_pesan():
 		$hud/pesan/input_pesan.text = ""
 	$hud/pesan/input_pesan.release_focus()
 	$hud/pesan/input_pesan.grab_focus()
+func _edit_objek(jalur): 
+	edit_objek = get_node(jalur)
+	print_debug(edit_objek)
+	dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(false)
+	$pengamat.aktifkan(true)
+	$pengamat.fungsikan(true)
+func _berhenti_mengedit_objek():
+	edit_objek = null
+	$pengamat.aktifkan(false)
+	$pengamat.fungsikan(false)
+	dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(true)
 
 # koneksi
 func buat_server(headless = false):
@@ -940,7 +952,8 @@ func _ketika_mengubah_warna_sepatu_karakter(warna):
 # menu
 func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
-		karakter._atur_kendali(false)
+		if $pengamat.kontrol: $pengamat.fungsikan(false)
+		else: karakter._atur_kendali(false)
 		$kontrol_sentuh/menu.visible = false
 		$kontrol_sentuh/chat.visible = false
 		$menu_jeda/menu/animasi.play("tampilkan")
@@ -948,7 +961,8 @@ func _jeda():
 		jeda = true
 func _lanjutkan():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
-		karakter._atur_kendali(true)
+		if is_instance_valid(edit_objek): $pengamat.fungsikan(true)
+		else: karakter._atur_kendali(true)
 		$kontrol_sentuh/menu.visible = true
 		$kontrol_sentuh/chat.visible = true
 		$menu_jeda/menu/animasi.play("sembunyikan")
