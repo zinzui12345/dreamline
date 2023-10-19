@@ -5,20 +5,21 @@ class_name Permainan
 ## ChangeLog ##
 # 07 Jul 2023 | 1.4.0 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.4.0 - Implementasi Timeline
-# 09 Agu 2023 | 1.4.1 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 09 Agu 2023 | 1.4.0 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.4.1 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.4.1 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 | 1.4.2 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 15 Agu 2023 | 1.4.1 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.4.2 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.4.2 - Implementasi shader karakter menggunakan MToon
-# 21 Sep 2023 | 1.4.3 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 21 Sep 2023 | 1.4.2 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.3 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.3 - Penambahan Text Chat
-# 09 Okt 2023 | 1.4.4 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 09 Okt 2023 | 1.4.3 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.4 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
+# 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 
-const versi = "Dreamline beta v1.4.4 rev 14/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 19/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -168,15 +169,24 @@ func _process(delta):
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if Input.is_action_just_pressed("ui_cancel"):
 			if pesan: _tampilkan_input_pesan()
+			elif edit_objek != null: _berhenti_mengedit_objek()
 			elif !jeda: _jeda()
 			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
-		if Input.is_action_just_pressed("daftar_pemain"): $hud/daftar_pemain/animasi.play("tampilkan")
+		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda):
+			$hud/daftar_pemain/animasi.play("tampilkan")
 		if Input.is_action_just_pressed("tampilkan_pesan") and !jeda: _tampilkan_input_pesan()
 		if Input.is_action_just_pressed("ui_text_completion_accept") and pesan: _kirim_pesan()
 		
 		if Input.is_action_just_released("berbicara"): _berbicara(false)
-		if Input.is_action_just_released("daftar_pemain"): $hud/daftar_pemain/animasi.play_backwards("tampilkan")
+		if Input.is_action_just_released("daftar_pemain") and $hud/daftar_pemain/panel.anchor_left > -1:
+			$hud/daftar_pemain/animasi.play_backwards("tampilkan")
+		
+		if Input.is_action_just_pressed("perdekat_pandangan") or Input.is_action_just_pressed("perjauh_pandangan"):
+			if $hud/daftar_properti_objek/DragPad.kontrol:
+				$pengamat/posisi_mata.fungsi_zoom = true
+			else:
+				$pengamat/posisi_mata.fungsi_zoom = false
 	
 	if Input.is_action_just_pressed("ui_cancel"): _kembali()
 	if Input.is_action_just_pressed("modelayar_penuh"):
@@ -354,14 +364,21 @@ func _kirim_pesan():
 	$hud/pesan/input_pesan.grab_focus()
 func _edit_objek(jalur): 
 	edit_objek = get_node(jalur)
-	print_debug(edit_objek)
+	#print_debug(edit_objek)
 	dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(false)
 	$pengamat.aktifkan(true)
-	$pengamat.fungsikan(true)
+	$pengamat.kontrol = true
+	$kontrol_sentuh/menu.visible = false
+	$kontrol_sentuh/chat.visible = false
+	$hud/daftar_properti_objek/animasi.play("tampilkan")
+	$hud/daftar_properti_objek/panel/jalur.text = jalur
 func _berhenti_mengedit_objek():
+	$hud/daftar_properti_objek/animasi.play("sembunyikan")
+	$kontrol_sentuh/chat.visible = true
+	$kontrol_sentuh/menu.visible = true
 	edit_objek = null
 	$pengamat.aktifkan(false)
-	$pengamat.fungsikan(false)
+	$pengamat.kontrol = false
 	dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(true)
 
 # koneksi
@@ -484,6 +501,8 @@ func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
 			karakter.arah_pandangan.x = ceil(karakter.arah_pandangan.x)
 			karakter.arah_pandangan.y = -karakter.arah_pandangan.y * 100
 			karakter.arah_pandangan.y = ceil(karakter.arah_pandangan.y)
+		elif $pengamat.kontrol and $hud/daftar_properti_objek/DragPad.visible:
+			$pengamat/posisi_mata.arah_pandangan = arah
 func _ketika_berhenti_mengontrol_arah_pandangan():
 	_touchpad_disentuh = false
 	if is_instance_valid(karakter): # ketika dalam permainan
@@ -767,6 +786,15 @@ func _pilih_tab_sepatu_karakter():
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
+func _pilih_tab_posisi_objek(): 
+	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
+	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
+func _pilih_tab_rotasi_objek():
+	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
+	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
+func _pilih_tab_skala_objek():
+	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
+	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi

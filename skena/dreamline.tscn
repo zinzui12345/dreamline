@@ -1,4 +1,4 @@
-[gd_scene load_steps=185 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=211 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -16,10 +16,13 @@
 [ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="6_2op7y"]
 [ext_resource type="Texture2D" uid="uid://b1n6u16tnb14w" path="res://ui/frekuensi-mikrofon-bg.svg" id="6_4p8xt"]
 [ext_resource type="Texture2D" uid="uid://dwe5xfduipbj7" path="res://ui/tombol/mic_on.svg" id="6_beubk"]
+[ext_resource type="Texture2D" uid="uid://drpqx4dyihtlx" path="res://ui/ikon/ikon_posisi_objek.svg" id="6_eofx6"]
 [ext_resource type="Texture2D" uid="uid://dbltu38krgfjg" path="res://ui/ikon/ikon_tombol_setelan.svg" id="6_ps5t2"]
 [ext_resource type="Texture2D" uid="uid://bilfr77a8syp3" path="res://ui/frekuensi-mikrofon.svg" id="6_tsv27"]
 [ext_resource type="Texture2D" uid="uid://bc0g7tkpje5k0" path="res://ui/ikon/ikon_tombol_server.svg" id="7_ayqde"]
+[ext_resource type="Texture2D" uid="uid://u5qa5utnccrr" path="res://ui/ikon/ikon_rotasi_objek.svg" id="7_o72dh"]
 [ext_resource type="Texture2D" uid="uid://7v57f8qv74uo" path="res://ui/ikon/ikon_tombol_menu.svg" id="8_gqe5w"]
+[ext_resource type="Texture2D" uid="uid://c2vmm8kdtdj7d" path="res://ui/ikon/ikon_skala_objek.svg" id="8_uxrq1"]
 [ext_resource type="Texture2D" uid="uid://c71wcsoc0kjtr" path="res://ui/ikon/ikon_tombol_join.svg" id="8_wsntl"]
 [ext_resource type="Texture2D" uid="uid://ck61g0gv6mq11" path="res://ui/ikon/ikon_tombol_karakter.svg" id="9_3dohi"]
 [ext_resource type="Texture2D" uid="uid://bwd7jvdcg76jk" path="res://ui/ikon/ikon_tombol_sambungkan.svg" id="9_qt3gh"]
@@ -174,7 +177,7 @@ _data = {
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_60lyf"]
-bg_color = Color(0, 0, 0, 0.647059)
+bg_color = Color(1, 1, 1, 0.8)
 border_width_right = 1
 border_color = Color(0, 0, 0, 1)
 
@@ -209,6 +212,249 @@ tracks/1/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8uu1a"]
 _data = {
 "tampilkan": SubResource("Animation_3kb00")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o8yee"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwfet"]
+bg_color = Color(1, 1, 1, 1)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mhy42"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vvgc6"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jji8h"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_powxg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i4v6x"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_wvw6y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vdwij"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_tf5hl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ycsiu"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Theme" id="Theme_su67x"]
+LineEdit/colors/font_color = Color(1, 0.12549, 0.12549, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_la51y"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_02p8k"]
+bg_color = Color(0.705882, 0.705882, 0.705882, 1)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8xdra"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sopqa"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77cd8"]
+bg_color = Color(0.705882, 0.705882, 0.705882, 1)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_wpahf"]
+LineEdit/colors/font_color = Color(0.0745098, 0.537255, 0.0745098, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+
+[sub_resource type="Theme" id="Theme_dqa7m"]
+LineEdit/colors/font_color = Color(0, 0, 0.501961, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd4q"]
+
+[sub_resource type="Animation" id="Animation_0lfi1"]
+resource_name = "sembunyikan"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel:anchor_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel:anchor_right")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 2.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("DragPad:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, false]
+}
+
+[sub_resource type="Animation" id="Animation_dtpav"]
+resource_name = "tampilkan"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel:anchor_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel:anchor_right")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [2.0, 1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("DragPad:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_u8o78"]
+_data = {
+"sembunyikan": SubResource("Animation_0lfi1"),
+"tampilkan": SubResource("Animation_dtpav")
 }
 
 [sub_resource type="Animation" id="Animation_tc33y"]
@@ -2289,6 +2535,316 @@ libraries = {
 "": SubResource("AnimationLibrary_8uu1a")
 }
 
+[node name="daftar_properti_objek" type="Control" parent="hud"]
+layout_mode = 1
+anchor_left = 0.71875
+anchor_right = 0.999938
+anchor_bottom = 1.00033
+offset_right = 0.0639992
+offset_bottom = -0.200001
+metadata/_edit_use_anchors_ = true
+
+[node name="panel" type="Panel" parent="hud/daftar_properti_objek"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 2.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_60lyf")
+metadata/_edit_lock_ = true
+
+[node name="panel_jalur" type="Panel" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.083
+anchor_top = 0.013
+anchor_right = 0.917
+anchor_bottom = 0.067
+offset_left = 0.0959587
+offset_top = 0.200026
+offset_right = -0.0964966
+offset_bottom = -0.199867
+theme_override_styles/panel = SubResource("StyleBoxFlat_o8yee")
+
+[node name="jalur" type="Label" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.083
+anchor_top = 0.013
+anchor_right = 0.917
+anchor_bottom = 0.067
+offset_left = 3.09596
+offset_top = 0.200026
+offset_right = -3.09644
+offset_bottom = -0.199867
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_o8yee")
+text = "/root/dunia/entitas/entitas_110"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+text_overrun_behavior = 3
+
+[node name="pilih_tab_posisi" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0937481
+anchor_top = 0.115
+anchor_right = 0.316192
+anchor_bottom = 0.221334
+offset_right = -0.0640135
+offset_bottom = 0.200026
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mhy42")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
+toggle_mode = true
+button_pressed = true
+action_mode = 0
+button_group = SubResource("ButtonGroup_powxg")
+icon = ExtResource("6_eofx6")
+icon_alignment = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="pilih_tab_rotasi" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.388887
+anchor_top = 0.115
+anchor_right = 0.611331
+anchor_bottom = 0.221334
+offset_right = -0.0640135
+offset_bottom = 0.200026
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_i4v6x")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
+toggle_mode = true
+action_mode = 0
+button_group = SubResource("ButtonGroup_wvw6y")
+icon = ExtResource("7_o72dh")
+icon_alignment = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="pilih_tab_skala" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.684025
+anchor_top = 0.115
+anchor_right = 0.906469
+anchor_bottom = 0.221334
+offset_right = -0.0640135
+offset_bottom = 0.200026
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vdwij")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
+toggle_mode = true
+action_mode = 0
+button_group = SubResource("ButtonGroup_tf5hl")
+icon = ExtResource("8_uxrq1")
+icon_alignment = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="translasi_x" type="SpinBox" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0937481
+anchor_top = 0.303334
+anchor_right = 0.509998
+anchor_bottom = 0.373
+offset_right = 0.119736
+offset_bottom = 0.200745
+theme = SubResource("Theme_su67x")
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="kurangi_translasi_x" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.562499
+anchor_top = 0.303334
+anchor_right = 0.708
+anchor_bottom = 0.373
+offset_right = 0.0956573
+offset_bottom = 0.200729
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+text = "-"
+metadata/_edit_use_anchors_ = true
+
+[node name="tambah_translasi_x" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.756941
+anchor_top = 0.303334
+anchor_right = 0.902442
+anchor_bottom = 0.373
+offset_right = 0.0956573
+offset_bottom = 0.200729
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+text = "+"
+metadata/_edit_use_anchors_ = true
+
+[node name="translasi_y" type="SpinBox" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0937481
+anchor_top = 0.418335
+anchor_right = 0.509998
+anchor_bottom = 0.488001
+offset_right = 0.119736
+offset_bottom = 0.200745
+theme = SubResource("Theme_wpahf")
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="kurangi_translasi_y" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.562499
+anchor_top = 0.418335
+anchor_right = 0.708
+anchor_bottom = 0.488001
+offset_right = 0.0956573
+offset_bottom = 0.200729
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+text = "-"
+metadata/_edit_use_anchors_ = true
+
+[node name="tambah_translasi_y" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.756941
+anchor_top = 0.418335
+anchor_right = 0.902442
+anchor_bottom = 0.488001
+offset_right = 0.0956573
+offset_bottom = 0.200729
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+text = "+"
+metadata/_edit_use_anchors_ = true
+
+[node name="translasi_z" type="SpinBox" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0937481
+anchor_top = 0.531668
+anchor_right = 0.509998
+anchor_bottom = 0.601335
+offset_right = 0.119736
+offset_bottom = 0.200745
+theme = SubResource("Theme_dqa7m")
+alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="kurangi_translasi_z" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.562499
+anchor_top = 0.531668
+anchor_right = 0.708
+anchor_bottom = 0.601334
+offset_right = 0.0956573
+offset_bottom = 0.200729
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+text = "-"
+metadata/_edit_use_anchors_ = true
+
+[node name="tambah_translasi_z" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.756941
+anchor_top = 0.531668
+anchor_right = 0.902442
+anchor_bottom = 0.601334
+offset_right = 0.0956573
+offset_bottom = 0.200729
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+text = "+"
+metadata/_edit_use_anchors_ = true
+
+[node name="gulir" type="ScrollContainer" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0277777
+anchor_top = 0.640002
+anchor_right = 0.972221
+anchor_bottom = 0.98667
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="baris" type="VBoxContainer" parent="hud/daftar_properti_objek/panel/gulir"]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="DragPad" type="Panel" parent="hud/daftar_properti_objek"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -2.556
+anchor_bottom = 1.0
+offset_left = 0.129333
+offset_right = -0.000488281
+offset_bottom = 0.00201416
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_uwd4q")
+script = ExtResource("28_iksfn")
+metadata/_edit_use_anchors_ = true
+
+[node name="animasi" type="AnimationPlayer" parent="hud/daftar_properti_objek"]
+libraries = {
+"": SubResource("AnimationLibrary_u8o78")
+}
+
 [node name="frekuensi_mic" type="Control" parent="hud"]
 visible = false
 layout_mode = 1
@@ -2414,8 +2970,13 @@ layout_mode = 2
 toggle_mode = true
 
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
+visible = false
+modulate = Color(1, 1, 1, 0)
 texture_repeat = 3
 layout_mode = 1
+
+[node name="ParallaxLayer" parent="latar/latar_parallax" index="0"]
+modulate = Color(1, 1, 1, 0)
 
 [node name="kontrol_sentuh" type="Control" parent="."]
 layout_mode = 1
@@ -4647,6 +5208,10 @@ bus = &"Suara Pemain"
 
 [node name="pengamat" parent="." instance=ExtResource("54_kqfbn")]
 
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_posisi" to="." method="_pilih_tab_posisi_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_rotasi" to="." method="_pilih_tab_rotasi_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_skala" to="." method="_pilih_tab_skala_objek"]
+[connection signal="gerakan" from="hud/daftar_properti_objek/DragPad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
@@ -4704,3 +5269,5 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="popup_konfirmasi/panel/oke" to="." method="_ketika_konfirmasi_popup_konfirmasi"]
 [connection signal="meta_clicked" from="informasi/panel/link" to="." method="_ketika_menekan_link_informasi"]
 [connection signal="pressed" from="informasi/panel/oke" to="." method="_sembunyikan_panel_informasi"]
+
+[editable path="latar"]

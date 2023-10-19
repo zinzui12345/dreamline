@@ -7,21 +7,31 @@ script/source = "extends Node3D
 
 var arah : Vector3
 var arah_pandangan : Vector2
+var fungsi_zoom = false
 
-func _ready(): get_parent().mode_kontrol = 3
+func _ready():
+	get_parent().mode_kontrol = 3
+	get_node(\"%pandangan\").far = Konfigurasi.jarak_render
 
 func _input(_event):
 	if get_parent().kontrol:
 		if server.permainan.dunia.get_node_or_null(\"pemain/\"+str(client.id_koneksi)) != null:
 			arah_pandangan = server.permainan.dunia.get_node(\"pemain/\"+str(client.id_koneksi)).arah_pandangan
+			server.permainan.dunia.get_node(\"pemain/\"+str(client.id_koneksi)).arah_pandangan = Vector2.ZERO
 		else: get_parent().kontrol = false
 		
 		if is_instance_valid(server.permainan.edit_objek):
-			get_parent().global_transform.origin = server.permainan.edit_objek.global_transform.origin
-			
-			if Input.is_action_just_pressed(\"aksi2\"):
+			if Input.is_action_just_pressed(\"aksi2\"):		# berhenti mengedit
 				await get_tree().create_timer(0.1).timeout
 				server.permainan._berhenti_mengedit_objek()
+func _process(delta):
+	if get_parent().kontrol:
+		if is_instance_valid(server.permainan.edit_objek):
+			get_parent().global_transform.origin = server.permainan.edit_objek.global_transform.origin
+			if fungsi_zoom:
+				if Input.is_action_just_pressed(\"perdekat_pandangan\"): 	get_node(\"%pandangan\").position.z += 1 * delta
+				if Input.is_action_just_pressed(\"perjauh_pandangan\"):	get_node(\"%pandangan\").position.z -= 1 * delta
+			get_node(\"%pandangan\").position.z = clamp(get_node(\"%pandangan\").position.z, -Konfigurasi.jarak_render, -0.5)
 "
 
 [node name="pengamat" type="Node3D"]
@@ -40,7 +50,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0751017)
 
 [node name="pandangan" type="Camera3D" parent="kamera/rotasi_vertikal"]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, -2)
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.5, 0, -2)
 cull_mask = 1048573
 far = 400.0
 
