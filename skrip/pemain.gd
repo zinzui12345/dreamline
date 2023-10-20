@@ -175,10 +175,10 @@ func _process(delta):
 				match karakter.peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
 						if objek_target.has_method("gunakan"):
-							server.permainan._edit_objek(objek_target.get_path())
+							server.edit_objek(objek_target.get_path(), true)
 						elif objek_target.name == "bidang_raycast" and \
 						 objek_target.get_parent().has_method("gunakan"):
-							server.permainan._edit_objek(objek_target.get_parent().get_path())
+							server.edit_objek(objek_target.get_parent().get_path(), true)
 					_:
 						if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
 						elif objek_target.name == "bidang_raycast" and \

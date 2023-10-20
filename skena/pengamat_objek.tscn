@@ -23,7 +23,7 @@ func _input(_event):
 		if is_instance_valid(server.permainan.edit_objek):
 			if Input.is_action_just_pressed(\"aksi2\"):		# berhenti mengedit
 				await get_tree().create_timer(0.1).timeout
-				server.permainan._berhenti_mengedit_objek()
+				server.edit_objek(\"\", false)
 func _process(delta):
 	if get_parent().kontrol:
 		if is_instance_valid(server.permainan.edit_objek):

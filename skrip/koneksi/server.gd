@@ -18,6 +18,7 @@ var timeline : Dictionary = {
 		"frame": 0
 	}
 }
+var objek : Dictionary = {}
 
 # .: Timeline :.
 # frame : Int
@@ -30,6 +31,29 @@ var timeline : Dictionary = {
 # timeline[12][1] = { "spawn", "pintu", "res://model/pintu/pintuffburik.scn", "data": { Vec3(12, 1, 10), Vec3(0, 122, 0), Vec3(1, 1, 1), { "arah_gerak": Vec3(0.33, 0, 1.5) } } }
 # timeline[12][1] = { "sinkron", "posisi": Vec3(12, 1, 10), "rotasi": Vec3(0, 122, 0), "skala": Vec3(1, 1, 1), "kondisi": { "arah_gerak": Vec3(0.33, 0, 1.5) } }
 # timeline[12][1] = { "hapus" }
+
+# .: Objek :.
+# objek[jalur]["pemilik"] = id_pengubah
+# objek[jalur][nama_properti] = nilai_properti
+# objek{
+# 	"/root/dunia/entitas/entitas_1" : {
+#		"pemilik": 0,
+# 		"posisi" : Vector3i(988, 4, 75),
+# 		"rotasi" : Vector3(25.7, 90, 6)
+# 	},
+# 	"/root/dunia/entitas/entitas_2" : {
+#		"pemilik": 0,
+# 		"posisi" : Vector3i(64, 443, 8),
+# 		"rotasi" : Vector3(11.9, 88, 0)
+# 	}
+# }
+# data objek{} akan dikirim oleh server ke pemain yang bergabung
+# kalau objek[jalur] belum ada, maka buat dengan pemilik pengubahnya
+# kalau objek[jalur]["pemilik"] == 0, ubah objek[jalur]["pemilik"] menjadi id_pengubah
+# kalau objek[jalur]["pemilik"] == id_pengubah, maka pengubah mendapat akses untuk mengatur properti
+# ketika pengubah berhenti mengedit objek, atur objek[jalur]["pemilik"] menjadi 0
+# terapkan nilai atur_properti() kalau objek[jalur]["pemilik"] == id_pengubah
+# atur_properti_objek() memanggil _edit_properti_objek() di server, kemudian server memanggil _atur_properti_objek() ke semua peer
 
 const POSISI_SPAWN_RANDOM := 5.0
 
@@ -85,6 +109,16 @@ func gunakan_entitas(nama_entitas : String, fungsi : String):
 		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
 	else:
 		rpc_id(1, "_gunakan_entitas", nama_entitas, multiplayer.get_unique_id(), fungsi)
+func edit_objek(jalur_objek : String, fungsi : bool):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		_edit_objek(jalur_objek, multiplayer.get_unique_id(), fungsi)
+	else:
+		rpc_id(1, "_edit_objek", jalur_objek, multiplayer.get_unique_id(), fungsi)
+func atur_properti_objek(jalur_objek : String, nama_properti : String, nilai):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		_edit_properti_objek(jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
+	else:
+		rpc_id(1, "_edit_properti_objek", jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client
@@ -193,6 +227,29 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 		if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
-		#	var str_debug = nama_entitas+" => "+fungsi+"("+str(id_pengguna)+")"
-		#	print_debug(str_debug)
-		#	Panku.notify(str_debug)
+@rpc("any_peer") func _edit_objek(jalur_objek, id_pengubah, fungsi):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var t_objek = get_node_or_null(jalur_objek)
+		if t_objek != null:
+			if objek.get(jalur_objek) != null:
+				if objek[jalur_objek]["pemilik"] == id_pengubah:
+					if !fungsi: objek[jalur_objek]["pemilik"] = 0
+				elif objek[jalur_objek]["pemilik"] == 0:
+					if fungsi: objek[jalur_objek]["pemilik"] = id_pengubah
+				else: return
+			elif fungsi:
+				objek[jalur_objek] = { "pemilik": id_pengubah }
+		if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek)
+		else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek)
+@rpc("any_peer") func _edit_properti_objek(jalur_objek, id_pengubah, nama_properti, nilai_properti):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var t_objek = get_node_or_null(jalur_objek)
+		if t_objek != null:
+			if objek[jalur_objek]["pemilik"] == id_pengubah:
+				_atur_properti_objek(jalur_objek, nama_properti, nilai_properti)
+				rpc("_atur_properti_objek", jalur_objek, nama_properti, nilai_properti)
+				objek[jalur_objek][nama_properti] = nilai_properti
+@rpc("any_peer") func _atur_properti_objek(jalur_objek, nama_properti, nilai_properti):
+	var t_objek = get_node_or_null(jalur_objek)
+	if t_objek != null and t_objek.get(nama_properti) != null:
+		t_objek.set(nama_properti, nilai_properti)

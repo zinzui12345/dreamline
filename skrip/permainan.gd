@@ -19,7 +19,7 @@ class_name Permainan
 # 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 
-const versi = "Dreamline beta v1.4.4 rev 19/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 20/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -372,6 +372,8 @@ func _edit_objek(jalur):
 	$kontrol_sentuh/chat.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
+	_pilih_tab_posisi_objek()
+	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$kontrol_sentuh/chat.visible = true
@@ -789,12 +791,54 @@ func _pilih_tab_sepatu_karakter():
 func _pilih_tab_posisi_objek(): 
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
+	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
+	await get_tree().create_timer(0.05).timeout
+	if edit_objek != null:
+		$hud/daftar_properti_objek/panel/translasi_x.min_value = -2147483648
+		$hud/daftar_properti_objek/panel/translasi_x.max_value = 2147483647
+		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.global_transform.origin.x
+		$hud/daftar_properti_objek/panel/translasi_y.min_value = -2147483648
+		$hud/daftar_properti_objek/panel/translasi_y.max_value = 2147483647
+		$hud/daftar_properti_objek/panel/translasi_y.value = edit_objek.global_transform.origin.y
+		$hud/daftar_properti_objek/panel/translasi_z.min_value = -2147483648
+		$hud/daftar_properti_objek/panel/translasi_z.max_value = 2147483647
+		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.global_transform.origin.z
 func _pilih_tab_rotasi_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
+	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
+	await get_tree().create_timer(0.05).timeout
+	if edit_objek != null:
+		$hud/daftar_properti_objek/panel/translasi_x.min_value = -359
+		$hud/daftar_properti_objek/panel/translasi_x.max_value = 359
+		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.rotation_degrees.x
+		$hud/daftar_properti_objek/panel/translasi_y.min_value = -359
+		$hud/daftar_properti_objek/panel/translasi_y.max_value = 359
+		$hud/daftar_properti_objek/panel/translasi_y.value = edit_objek.rotation_degrees.y
+		$hud/daftar_properti_objek/panel/translasi_z.min_value = -359
+		$hud/daftar_properti_objek/panel/translasi_z.max_value = 359
+		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.rotation_degrees.z
 func _pilih_tab_skala_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
+	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
+	await get_tree().create_timer(0.05).timeout
+	if edit_objek != null:
+		$hud/daftar_properti_objek/panel/translasi_x.min_value = 0.1
+		$hud/daftar_properti_objek/panel/translasi_x.max_value = 100
+		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.scale.x
+		$hud/daftar_properti_objek/panel/translasi_y.min_value = 0.1
+		$hud/daftar_properti_objek/panel/translasi_y.max_value = 100
+		$hud/daftar_properti_objek/panel/translasi_y.value = edit_objek.scale.y
+		$hud/daftar_properti_objek/panel/translasi_z.min_value = 0.1
+		$hud/daftar_properti_objek/panel/translasi_z.max_value = 100
+		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.scale.z
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi

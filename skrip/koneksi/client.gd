@@ -86,3 +86,6 @@ func tambah_pemain(pemain):
 @rpc func tambahkan_pemain(daftar : Dictionary):
 	var data = daftar.keys()
 	for p in data.size(): permainan._tambahkan_pemain(int(data[p]), daftar[data[p]])
+@rpc func edit_objek(fungsi : bool, jalur_objek = ""):
+	if fungsi: server.permainan._edit_objek(jalur_objek); Panku.notify("mengedit objek : "+jalur_objek)
+	else: 	 server.permainan._berhenti_mengedit_objek(); Panku.notify("berhenti mengedit objek")
