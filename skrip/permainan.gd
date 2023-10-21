@@ -19,7 +19,7 @@ class_name Permainan
 # 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 
-const versi = "Dreamline beta v1.4.4 rev 20/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 21/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -373,6 +373,7 @@ func _edit_objek(jalur):
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
 	_pilih_tab_posisi_objek()
+	# TODO : rpc untuk freeze objek (hanya objek yang memiliki properti tersebut)
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
@@ -789,6 +790,7 @@ func _pilih_tab_sepatu_karakter():
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
 func _pilih_tab_posisi_objek(): 
+	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
 	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
@@ -807,6 +809,7 @@ func _pilih_tab_posisi_objek():
 		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.global_transform.origin.z
 func _pilih_tab_rotasi_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
+	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
 	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
@@ -825,6 +828,7 @@ func _pilih_tab_rotasi_objek():
 func _pilih_tab_skala_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
+	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = true
 	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
@@ -839,6 +843,36 @@ func _pilih_tab_skala_objek():
 		$hud/daftar_properti_objek/panel/translasi_z.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_z.max_value = 100
 		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.scale.z
+func _tambah_translasi_x_objek(): $hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step
+func _kurang_translasi_x_objek(): $hud/daftar_properti_objek/panel/translasi_x.value -= $hud/daftar_properti_objek/panel/translasi_x.step
+func _tambah_translasi_y_objek(): $hud/daftar_properti_objek/panel/translasi_y.value += $hud/daftar_properti_objek/panel/translasi_y.step
+func _kurang_translasi_y_objek(): $hud/daftar_properti_objek/panel/translasi_y.value -= $hud/daftar_properti_objek/panel/translasi_y.step
+func _tambah_translasi_z_objek(): $hud/daftar_properti_objek/panel/translasi_z.value += $hud/daftar_properti_objek/panel/translasi_z.step
+func _kurang_translasi_z_objek(): $hud/daftar_properti_objek/panel/translasi_z.value -= $hud/daftar_properti_objek/panel/translasi_z.step
+func _ketika_translasi_x_objek_diubah(nilai):
+	if edit_objek != null:
+		if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:x", nilai)
+		elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:x", nilai)
+		elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "scale:x", nilai)
+func _ketika_translasi_y_objek_diubah(nilai):
+	if edit_objek != null:
+		if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:y", nilai)
+		elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:y", nilai)
+		elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "scale:y", nilai)
+func _ketika_translasi_z_objek_diubah(nilai):
+	if edit_objek != null:
+		if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:z", nilai)
+		elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:z", nilai)
+		elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
+			server.atur_properti_objek(edit_objek.get_path(), "scale:z", nilai)
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi
@@ -862,17 +896,18 @@ func _tutup_popup_konfirmasi():
 	$popup_konfirmasi/animasi.play("tutup")
 	$popup_konfirmasi.penampil.grab_focus()
 func _mainkan_musik_latar():
-	if $pemutar_musik/AudioStreamPlayer.stream == null:
-		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
-		if musik != null:
-			$pemutar_musik/AudioStreamPlayer.stream = musik
-			$pemutar_musik/AudioStreamPlayer.play()
-			$pemutar_musik/judul.text = "Holding Hands"
-			$pemutar_musik/artis.text = "Couple N"
-			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	else:
-		$pemutar_musik/AudioStreamPlayer.play()
-		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+#	if $pemutar_musik/AudioStreamPlayer.stream == null:
+#		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
+#		if musik != null:
+#			$pemutar_musik/AudioStreamPlayer.stream = musik
+#			$pemutar_musik/AudioStreamPlayer.play()
+#			$pemutar_musik/judul.text = "Holding Hands"
+#			$pemutar_musik/artis.text = "Couple N"
+#			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+#	else:
+#		$pemutar_musik/AudioStreamPlayer.play()
+#		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	pass
 func _ketika_musik_latar_selesai_dimainkan():
 	await get_tree().create_timer(10.0).timeout
 	_mainkan_musik_latar()

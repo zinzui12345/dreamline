@@ -251,5 +251,5 @@ func _pemain_terputus(id_pemain):
 				objek[jalur_objek][nama_properti] = nilai_properti
 @rpc("any_peer") func _atur_properti_objek(jalur_objek, nama_properti, nilai_properti):
 	var t_objek = get_node_or_null(jalur_objek)
-	if t_objek != null and t_objek.get(nama_properti) != null:
-		t_objek.set(nama_properti, nilai_properti)
+	if t_objek != null and t_objek.get_indexed(nama_properti) != null:
+		t_objek.set_indexed(nama_properti, nilai_properti)
