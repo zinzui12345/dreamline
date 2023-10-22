@@ -3,6 +3,7 @@ extends CharacterBody3D
 class_name Karakter
 
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
+# TODO : muat material normal/shader
 
 var arah : Vector3
 var arah_pandangan : Vector2 	# ini arah input / event relative

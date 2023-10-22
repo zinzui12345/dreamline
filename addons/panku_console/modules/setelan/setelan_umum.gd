@@ -42,6 +42,14 @@ func sarankan_fitur(): OS.shell_open("https://t.me/cinta_buatan")
 		Konfigurasi.jarak_render = jarak
 		jarak_render = jarak
 
+@export var gunakan_shader : bool = false:
+	get:
+		return Konfigurasi.shader_karakter
+	set(aktif):
+		#server.permainan._ketika_mengubah_alis_karakter(server.permainan.data["alis"]) cek karakter.gd:6!
+		#Konfigurasi.shader_karakter = aktif --> fix yang diatas dulu!
+		gunakan_shader = aktif
+
 # ----------------------------------------------------------------# ----------------------------------------------------------------
 @export_group("%audio")
 

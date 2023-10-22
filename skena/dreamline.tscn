@@ -1,4 +1,4 @@
-[gd_scene load_steps=211 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=208 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -265,8 +265,6 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_powxg"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i4v6x"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 2
@@ -279,8 +277,6 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="ButtonGroup" id="ButtonGroup_wvw6y"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vdwij"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 2
@@ -292,8 +288,6 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_tf5hl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ycsiu"]
 bg_color = Color(1, 1, 1, 1)
@@ -2604,7 +2598,6 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 toggle_mode = true
 button_pressed = true
 action_mode = 0
-button_group = SubResource("ButtonGroup_powxg")
 icon = ExtResource("6_eofx6")
 icon_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -2625,7 +2618,6 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
 theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 toggle_mode = true
 action_mode = 0
-button_group = SubResource("ButtonGroup_wvw6y")
 icon = ExtResource("7_o72dh")
 icon_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -2646,7 +2638,6 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
 theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 toggle_mode = true
 action_mode = 0
-button_group = SubResource("ButtonGroup_tf5hl")
 icon = ExtResource("8_uxrq1")
 icon_alignment = 1
 metadata/_edit_use_anchors_ = true

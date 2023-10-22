@@ -3,23 +3,24 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 | 1.4.0 - Implementasi LAN Server berbasis Cross-Play
+# 07 Jul 2023 | 1.3.9 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.4.0 - Implementasi Timeline
 # 09 Agu 2023 | 1.4.0 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 | 1.4.1 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 11 Agu 2023 | 1.4.0 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.4.1 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.4.1 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
-# 06 Sep 2023 | 1.4.2 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 06 Sep 2023 | 1.4.1 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.4.2 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.4.2 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 1.4.3 - Penambahan entity posisi spawn pemain
+# 23 Sep 2023 | 1.4.2 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.3 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.3 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
-# 10 Okt 2023 | 1.4.4 - Penambahan senjata Bola salju raksasa
+# 10 Okt 2023 | 1.4.3 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
+# 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 
-const versi = "Dreamline beta v1.4.4 rev 21/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 22/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -794,10 +795,13 @@ func _pilih_tab_posisi_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
 	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
+	$hud/daftar_properti_objek/panel/translasi_y.editable = false
 	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
-	await get_tree().create_timer(0.05).timeout
+	$hud/daftar_properti_objek/panel/translasi_z.editable = false
 	if edit_objek != null:
+		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = -2147483648
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 2147483647
 		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.global_transform.origin.x
@@ -807,6 +811,9 @@ func _pilih_tab_posisi_objek():
 		$hud/daftar_properti_objek/panel/translasi_z.min_value = -2147483648
 		$hud/daftar_properti_objek/panel/translasi_z.max_value = 2147483647
 		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.global_transform.origin.z
+		$hud/daftar_properti_objek/panel/translasi_x.editable = true
+		$hud/daftar_properti_objek/panel/translasi_y.editable = true
+		$hud/daftar_properti_objek/panel/translasi_z.editable = true
 func _pilih_tab_rotasi_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = true
@@ -814,8 +821,11 @@ func _pilih_tab_rotasi_objek():
 	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
-	await get_tree().create_timer(0.05).timeout
+	$hud/daftar_properti_objek/panel/translasi_x.editable = false
+	$hud/daftar_properti_objek/panel/translasi_y.editable = false
+	$hud/daftar_properti_objek/panel/translasi_z.editable = false
 	if edit_objek != null:
+		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = -359
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 359
 		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.rotation_degrees.x
@@ -825,6 +835,9 @@ func _pilih_tab_rotasi_objek():
 		$hud/daftar_properti_objek/panel/translasi_z.min_value = -359
 		$hud/daftar_properti_objek/panel/translasi_z.max_value = 359
 		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.rotation_degrees.z
+		$hud/daftar_properti_objek/panel/translasi_x.editable = true
+		$hud/daftar_properti_objek/panel/translasi_y.editable = true
+		$hud/daftar_properti_objek/panel/translasi_z.editable = true
 func _pilih_tab_skala_objek():
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
@@ -832,8 +845,11 @@ func _pilih_tab_skala_objek():
 	$hud/daftar_properti_objek/panel/translasi_x.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_y.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
-	await get_tree().create_timer(0.05).timeout
+	$hud/daftar_properti_objek/panel/translasi_x.editable = false
+	$hud/daftar_properti_objek/panel/translasi_y.editable = false
+	$hud/daftar_properti_objek/panel/translasi_z.editable = false
 	if edit_objek != null:
+		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 100
 		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.scale.x
@@ -843,36 +859,58 @@ func _pilih_tab_skala_objek():
 		$hud/daftar_properti_objek/panel/translasi_z.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_z.max_value = 100
 		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.scale.z
-func _tambah_translasi_x_objek(): $hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step
-func _kurang_translasi_x_objek(): $hud/daftar_properti_objek/panel/translasi_x.value -= $hud/daftar_properti_objek/panel/translasi_x.step
-func _tambah_translasi_y_objek(): $hud/daftar_properti_objek/panel/translasi_y.value += $hud/daftar_properti_objek/panel/translasi_y.step
-func _kurang_translasi_y_objek(): $hud/daftar_properti_objek/panel/translasi_y.value -= $hud/daftar_properti_objek/panel/translasi_y.step
-func _tambah_translasi_z_objek(): $hud/daftar_properti_objek/panel/translasi_z.value += $hud/daftar_properti_objek/panel/translasi_z.step
-func _kurang_translasi_z_objek(): $hud/daftar_properti_objek/panel/translasi_z.value -= $hud/daftar_properti_objek/panel/translasi_z.step
+		$hud/daftar_properti_objek/panel/translasi_x.editable = true
+		$hud/daftar_properti_objek/panel/translasi_y.editable = true
+		$hud/daftar_properti_objek/panel/translasi_z.editable = true
+func _tambah_translasi_x_objek():
+	$hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step
+	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
+func _kurang_translasi_x_objek():
+	$hud/daftar_properti_objek/panel/translasi_x.value -= $hud/daftar_properti_objek/panel/translasi_x.step
+	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
+func _tambah_translasi_y_objek():
+	$hud/daftar_properti_objek/panel/translasi_y.value += $hud/daftar_properti_objek/panel/translasi_y.step
+	#_ketika_translasi_y_objek_diubah($hud/daftar_properti_objek/panel/translasi_y.value)
+func _kurang_translasi_y_objek():
+	$hud/daftar_properti_objek/panel/translasi_y.value -= $hud/daftar_properti_objek/panel/translasi_y.step
+	#_ketika_translasi_y_objek_diubah($hud/daftar_properti_objek/panel/translasi_y.value)
+func _tambah_translasi_z_objek():
+	$hud/daftar_properti_objek/panel/translasi_z.value += $hud/daftar_properti_objek/panel/translasi_z.step
+	#_ketika_translasi_z_objek_diubah($hud/daftar_properti_objek/panel/translasi_z.value)
+func _kurang_translasi_z_objek():
+	$hud/daftar_properti_objek/panel/translasi_z.value -= $hud/daftar_properti_objek/panel/translasi_z.step
+	#_ketika_translasi_z_objek_diubah($hud/daftar_properti_objek/panel/translasi_z.value)
 func _ketika_translasi_x_objek_diubah(nilai):
-	if edit_objek != null:
-		if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:x", nilai)
-		elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:x", nilai)
-		elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "scale:x", nilai)
+	if $hud/daftar_properti_objek/panel/translasi_x.editable:
+		#Panku.notify("ceritakan padanya~")
+		if edit_objek != null:
+			await get_tree().create_timer(0.05).timeout
+			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:x", nilai)
+			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:x", nilai)
+			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "scale:x", nilai)
 func _ketika_translasi_y_objek_diubah(nilai):
-	if edit_objek != null:
-		if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:y", nilai)
-		elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:y", nilai)
-		elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "scale:y", nilai)
+	if $hud/daftar_properti_objek/panel/translasi_y.editable:
+		if edit_objek != null:
+			await get_tree().create_timer(0.05).timeout
+			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:y", nilai)
+			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:y", nilai)
+			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "scale:y", nilai)
 func _ketika_translasi_z_objek_diubah(nilai):
-	if edit_objek != null:
-		if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:z", nilai)
-		elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:z", nilai)
-		elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-			server.atur_properti_objek(edit_objek.get_path(), "scale:z", nilai)
+	if $hud/daftar_properti_objek/panel/translasi_z.editable:
+		if edit_objek != null:
+			await get_tree().create_timer(0.05).timeout
+			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:z", nilai)
+			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:z", nilai)
+			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
+				server.atur_properti_objek(edit_objek.get_path(), "scale:z", nilai)
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi
