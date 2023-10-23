@@ -20,7 +20,7 @@ class_name Permainan
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 
-const versi = "Dreamline beta v1.4.4 rev 22/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 23/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -41,7 +41,8 @@ var data = {
 	"warna_sepatu":	Color.WHITE,
 	"posisi":		Vector3.ZERO,
 	"rotasi":		Vector3.ZERO,
-	"sistem":		OS.get_distribution_name()
+	"sistem":		OS.get_distribution_name(),
+	"id_sys":		OS.get_unique_id()
 }
 var karakter : CharacterBody3D
 var dunia = null
@@ -65,6 +66,11 @@ var tombol_aksi_2 = "angkat_sesuatu" :
 		if ikon != tombol_aksi_2:
 			get_node("kontrol_sentuh/aksi_2").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_2 = ikon
+var tombol_aksi_3 = "berlari" :
+	set(ikon):
+		if ikon != tombol_aksi_3:
+			get_node("kontrol_sentuh/lari").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			tombol_aksi_3 = ikon
 
 enum MODE_KONEKSI {
 	SERVER,
@@ -272,7 +278,7 @@ func _muat_map(file_map):
 func _tambahkan_pemain(id: int, data_pemain):
 	var pemain
 	var sumber = "" # ini jalur resource pemain, fungsinya untuk disimpan di timeline
-	if is_instance_valid(dunia) and koneksi == MODE_KONEKSI.SERVER:
+	if is_instance_valid(dunia) and koneksi == MODE_KONEKSI.SERVER: # ini maksudnya cuma dijalanin di server untuk semua (peer) pemain
 		match data_pemain["gender"]:
 			"L": pemain = karakter_cowok.instantiate(); sumber = karakter_cowok.resource_path
 			"P": pemain = karakter_cewek.instantiate(); sumber = karakter_cewek.resource_path
@@ -281,7 +287,9 @@ func _tambahkan_pemain(id: int, data_pemain):
 		# INFO : (6) terapkan data pemain ke model pemain
 		pemain.id_pemain = id
 		pemain.name = str(id)
-		pemain.nama = data_pemain["nama"]
+		pemain.nama 				= data_pemain["nama"]
+		pemain.gender 				= data_pemain["gender"]
+		pemain.id_sistem			= data_pemain["id_sys"]
 		pemain.platform_pemain 		= data_pemain["sistem"]
 		pemain.model["alis"] 		= data_pemain["alis"]
 		pemain.model["garis_mata"] 	= data_pemain["garis_mata"]
@@ -294,7 +302,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 		pemain.model["celana"] 		= data_pemain["celana"]
 		pemain.warna["celana"] 		= data_pemain["warna_celana"]
 		pemain.model["sepatu"] 		= data_pemain["sepatu"]
-		#pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
+		pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
 		
 		# terapkan kondisi | note : ini harus sebelum pemain ditambahin ke dunia supaya sync dengan ServerSynchronizer
 		pemain.position = data_pemain["posisi"]
@@ -313,8 +321,16 @@ func _tambahkan_pemain(id: int, data_pemain):
 			}
 		}
 		
-		# server
+		# hanya pada server
 		if id == 1:
+			# INFO : tambah info pemain (server) ke daftar pemain
+			_tambah_daftar_pemain(pemain.id_pemain, {
+				"nama"	: pemain.nama,
+				"sistem": pemain.platform_pemain,
+				"id_sys": pemain.id_sistem,
+				"gender": pemain.gender
+			})
+			
 			# INFO : (8a) mulai permainan
 			karakter = pemain
 			pemain._kendalikan(true)
@@ -374,7 +390,6 @@ func _edit_objek(jalur):
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
 	_pilih_tab_posisi_objek()
-	# TODO : rpc untuk freeze objek (hanya objek yang memiliki properti tersebut)
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
@@ -428,6 +443,7 @@ func putuskan_server(paksa = false):
 		$hud.visible = false
 		$kontrol_sentuh.visible = false
 		$kontrol_sentuh/menu.visible = true
+		jeda = false
 		# INFO : (9) tampilkan kembali menu utama
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_utama/animasi.play("tampilkan")
@@ -470,6 +486,9 @@ func putuskan_server(paksa = false):
 		karakter = null
 		dunia.hapus_map()
 		dunia.hapus_instance_pemain()
+		
+		# hapus daftar pemain
+		for d_pemain in $hud/daftar_pemain/panel/gulir/baris.get_children(): d_pemain.queue_free()
 		
 		$latar.tampilkan()
 		_mainkan_musik_latar()
@@ -957,10 +976,15 @@ func _tambah_daftar_pemain(id_pemain, data_pemain):
 	# INFO : tambahkan info pemain ke daftar pemain
 	#print("just a little more~")
 	$hud/daftar_pemain/panel/gulir/baris.add_child(pemain)
+	pemain.id		= data_pemain["id_sys"]
 	pemain.sistem	= data_pemain["sistem"]
 	pemain.nama		= data_pemain["nama"]
 	pemain.karakter	= data_pemain["gender"]
 	pemain.name = str(id_pemain)
+func _hapus_daftar_pemain(id_pemain):
+	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node(str(id_pemain))
+	$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
+	tmp_daftar.queue_free()
 func _tampilkan_setelan_permainan():
 	Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()")
 func _tampilkan_input_pesan():

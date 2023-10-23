@@ -120,13 +120,17 @@ func gunakan(id_pemain):
 	if kursi["pengemudi"] == id_pemain:		# pengemudi turun
 		server.gunakan_entitas(name, "_berhenti_mengemudi")
 		server.permainan.get_node("kontrol_sentuh/lompat").set("texture_normal", load("res://ui/tombol/lompat.svg"))
+		server.permainan.set("tombol_aksi_3", "berlari")
 	elif kursi["penumpang"][0] == id_pemain:# penumpang turun
 		server.gunakan_entitas(name, "_berhenti_menumpang")
+		server.permainan.set("tombol_aksi_3", "berlari")
 	elif kursi["pengemudi"] == -1:			# naik sebagai pengemudi
 		server.gunakan_entitas(name, "_kemudikan")
 		server.permainan.get_node("kontrol_sentuh/lompat").set("texture_normal", load("res://ui/tombol/rem.svg"))
+		server.permainan.set("tombol_aksi_3", "atur_pandangan")
 	elif kursi["penumpang"][0] == -1:		# naik sebagai penumpang
 		server.gunakan_entitas(name, "_menumpang")
+		server.permainan.set("tombol_aksi_3", "atur_pandangan")
 
 func _kemudikan(id_pengemudi):
 	#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = true

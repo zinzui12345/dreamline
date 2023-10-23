@@ -156,6 +156,7 @@ func _pemain_terputus(id_pemain):
 				pemain[idx_pemain]["posisi"] = permainan.dunia.get_node("pemain/"+str(id_pemain)).position
 				pemain[idx_pemain]["rotasi"] = permainan.dunia.get_node("pemain/"+str(id_pemain)).rotation
 		permainan.dunia.get_node("pemain/"+str(id_pemain))._hapus()
+		permainan._hapus_daftar_pemain(id_pemain)
 		print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 		pemain_terhubung -= 1
 
@@ -235,7 +236,7 @@ func _pemain_terputus(id_pemain):
 				if objek[jalur_objek]["pemilik"] == id_pengubah:
 					if !fungsi:
 						#_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false)   E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true.
-						#_edit_properti_objek(jalur_objek, id_pengubah, "sleeping", false) E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true.
+						_edit_properti_objek(jalur_objek, id_pengubah, "sleeping", false)
 						objek[jalur_objek]["pemilik"] = 0
 				elif objek[jalur_objek]["pemilik"] == 0:
 					if fungsi: objek[jalur_objek]["pemilik"] = id_pengubah

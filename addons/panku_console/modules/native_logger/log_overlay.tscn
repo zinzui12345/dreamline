@@ -6,6 +6,7 @@
 default_font_size = 16
 
 [node name="LogOverlay" type="RichTextLabel"]
+visible = false
 modulate = Color(1, 1, 1, 0.501961)
 anchors_preset = 15
 anchor_right = 1.0

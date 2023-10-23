@@ -70,13 +70,14 @@ func _ketika_terputus_dari_server():
 		print("koneksi server terputus.")
 
 func tambah_pemain(pemain):
-	if pemain.id_pemain != id_koneksi:
-		# FIXME : fix data client
-		permainan._tambah_daftar_pemain(pemain.id_pemain, {
-			"nama"	: pemain.nama,
-			"sistem": pemain.platform_pemain,
-			"gender": "fixme"
-		})
+	# INFO : tambah info pemain ke daftar pemain
+	#if pemain.id_pemain != id_koneksi:
+	permainan._tambah_daftar_pemain(pemain.id_pemain, {
+		"nama"	: pemain.nama,
+		"sistem": pemain.platform_pemain,
+		"id_sys": str(pemain.id_pemain),
+		"gender": pemain.gender
+	})
 	print("spawn pemain "+str(pemain))
 
 @rpc func gabung_ke_server(nama_map, posisi, rotasi):
@@ -89,7 +90,8 @@ func tambah_pemain(pemain):
 @rpc func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		server.permainan._edit_objek(jalur_objek);
-		server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true)
+		#server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true)  E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true.
+		server.atur_properti_objek(permainan.edit_objek.get_path(), "sleeping", true)
 		Panku.notify("mengedit objek : "+jalur_objek)
 	else:
 		server.permainan._berhenti_mengedit_objek();

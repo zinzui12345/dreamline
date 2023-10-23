@@ -74,8 +74,10 @@ func _process(delta):
 func aktifkan(nilai = true, vr = false):
 	if vr:	pass
 	else:
-		get_node("%pandangan").current = nilai
-		get_node("%target").enabled = nilai
+		if get_node("%pandangan").current != nilai:
+			get_node("%pandangan").current = nilai
+		if get_node("%target").enabled != nilai:
+			get_node("%target").enabled = nilai
 	
 	if 	nilai:	_karakter.get_node("nama").visible = false
 	else:		_karakter.get_node("nama").visible = true

@@ -53,8 +53,8 @@ extends Panel
 	set(karakternya):
 		if get_node_or_null(\"ikon\") != null:
 			match karakternya:
-				\"cewek\":
-					$ikon.texture = load(\"res://ui/ikon/ikon_gender_cewek.svg\")
+				\"cewek\", \"P\": $ikon.texture = load(\"res://ui/ikon/ikon_pemain_cewek.svg\")
+				\"cowok\", \"L\": $ikon.texture = load(\"res://ui/ikon/ikon_gender_cowok.svg\")
 		karakter = karakternya
 "
 

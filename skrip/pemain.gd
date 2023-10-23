@@ -294,7 +294,7 @@ func _physics_process(delta):
 		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
 			match karakter.peran:
 				Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
-					pass
+					server.permainan.set("tombol_aksi_2", "edit_objek")
 				_:
 					if objek_target.has_method("fokus"): objek_target.fokus()
 					if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()

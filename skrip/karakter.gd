@@ -22,7 +22,9 @@ var tekstur
 			$nama.text = namaa
 		if namaa != "":
 			nama = namaa
+@export var gender := "P"
 @export var peran = Permainan.PERAN_KARAKTER.Arsitek
+@export var id_sistem = ""
 @export var platform_pemain := "Linux"
 @export var id_pemain := -44 :
 	set(id):

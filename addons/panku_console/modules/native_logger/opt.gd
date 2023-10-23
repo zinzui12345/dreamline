@@ -17,7 +17,7 @@ func open_window():
 	get:
 		return _module.logger_ui.rlabel.theme.default_font_size
 
-@export var screen_overlay:bool = true:
+@export var screen_overlay:bool = false:
 	set(v):
 		_module.output_overlay.visible = v
 	get:
