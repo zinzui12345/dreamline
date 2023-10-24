@@ -142,39 +142,14 @@ func _process(delta):
 			if _target_pemain:
 				match karakter.peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
-						# set_cell_item(position: Vector3i, item: int, orientation: int = 0)
-						#server.permainan.dunia.get_child(4).get_node("%peta").set_cell_item(
-						#	Vector3i(pos_target.x, 0, pos_target.z), 
-						#	0, 	# item
-						#	0	# orientasi
-						#)
-						#print_debug(target_pemain)
-						
-						if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-							server._tambahkan_entitas(
-								"res://skena/entitas/placeholder_entitas.tscn",
-								Vector3i(pos_target.x, pos_target.y, pos_target.z),
-								Vector3.ZERO,
-								[
-									["modulate", Color(randf(), randf(), randf(), 1)]
-								]
-							)
-						else:
-							server.rpc_id(
-								1,
-								"_tambahkan_entitas",
-								"res://skena/entitas/placeholder_entitas.tscn",
-								Vector3i(pos_target.x, pos_target.y, pos_target.z),
-								Vector3.ZERO,
-								[
-									["modulate", Color(randf(), randf(), randf(), 1)]
-								]
-							)
+						server.permainan.pasang_objek = pos_target
+						server.permainan._tampilkan_daftar_objek()
 		if Input.is_action_just_pressed("aksi2"):
 			if _target_pemain:
 				match karakter.peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
-						if objek_target.has_method("gunakan"):
+						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
+						elif objek_target.has_method("gunakan") or objek_target.is_in_group("dapat_diedit"):
 							server.edit_objek(objek_target.get_path(), true)
 						elif objek_target.name == "bidang_raycast" and \
 						 objek_target.get_parent().has_method("gunakan"):
@@ -184,6 +159,10 @@ func _process(delta):
 						elif objek_target.name == "bidang_raycast" and \
 						 objek_target.get_parent().has_method("gunakan"):
 							objek_target.get_parent().gunakan(multiplayer.get_unique_id())
+			else:
+				match karakter.peran:
+					Permainan.PERAN_KARAKTER.Arsitek:
+						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
 		
 		if Input.is_action_just_pressed("mode_pandangan"): karakter.get_node("pengamat").ubah_mode()
 		

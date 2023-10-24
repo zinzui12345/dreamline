@@ -50,6 +50,8 @@ var map = null
 var permukaan					# Permukaan (Terrain)
 var batas_bawah = -4000			# batas area untuk re-spawn
 var edit_objek : Node3D			# ref objek yang sedang di-edit
+var memasang_objek = false
+var pasang_objek : Vector3		# posisi objek yang akan dipasang
 var thread = Thread.new()
 var koneksi = MODE_KONEKSI.CLIENT
 var jeda = false
@@ -382,23 +384,33 @@ func _kirim_pesan():
 func _edit_objek(jalur): 
 	edit_objek = get_node(jalur)
 	#print_debug(edit_objek)
-	dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(false)
+	#dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(false)
+	karakter._atur_kendali(false)
 	$pengamat.aktifkan(true)
 	$pengamat.kontrol = true
 	$kontrol_sentuh/menu.visible = false
 	$kontrol_sentuh/chat.visible = false
+	$kontrol_sentuh/lari.visible = false
+	$kontrol_sentuh/lompat.visible = false
+	$kontrol_sentuh/kontrol_gerakan.visible = false
+	$kontrol_sentuh/kontrol_pandangan.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
 	_pilih_tab_posisi_objek()
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
+	# TODO : dapetin properti lain objek; mis. warna, kondisi
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/menu.visible = true
+	$kontrol_sentuh/lari.visible = true
+	$kontrol_sentuh/lompat.visible = true
+	$kontrol_sentuh/kontrol_gerakan.visible = true
+	$kontrol_sentuh/kontrol_pandangan.visible = true
 	edit_objek = null
 	$pengamat.aktifkan(false)
 	$pengamat.kontrol = false
-	dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(true)
+	karakter._kendalikan(true)
 
 # koneksi
 func buat_server(headless = false):
@@ -881,6 +893,16 @@ func _pilih_tab_skala_objek():
 		$hud/daftar_properti_objek/panel/translasi_x.editable = true
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
 		$hud/daftar_properti_objek/panel/translasi_z.editable = true
+func _tampilkan_daftar_objek():
+	if $hud/daftar_objek/Panel.anchor_top > 0: $hud/daftar_objek/animasi.play("tampilkan")
+	karakter._atur_kendali(false)
+	karakter.kontrol = true
+	memasang_objek = true
+func _tutup_daftar_objek(paksa = false):
+	# kalau paksa berarti kendali pemain gak dikembaliin
+	$hud/daftar_objek/animasi.play("sembunyikan")
+	if !paksa: karakter._atur_kendali(true)
+	memasang_objek = false
 func _tambah_translasi_x_objek():
 	$hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step
 	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
@@ -1122,6 +1144,7 @@ func _ketika_mengubah_warna_sepatu_karakter(warna):
 func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if $pengamat.kontrol: $pengamat.fungsikan(false)
+		elif memasang_objek: _tutup_daftar_objek(true)
 		else: karakter._atur_kendali(false)
 		$kontrol_sentuh/menu.visible = false
 		$kontrol_sentuh/chat.visible = false

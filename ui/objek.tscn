@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://dshoprkgyv6ov"]
+
+[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_xr2t4"]
+
+[sub_resource type="GDScript" id="GDScript_y5c11"]
+resource_name = "pilih_objek"
+script/source = "extends TextureButton
+
+func _ready(): connect(\"pressed\", pilih)
+
+func pilih():
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		server._tambahkan_entitas(
+			get_meta(\"jalur_objek\"),
+			server.permainan.pasang_objek,
+			Vector3.ZERO,
+			[
+				[\"modulate\", Color(randf(), randf(), randf(), 1)]
+			]
+		)
+	else:
+		server.rpc_id(
+			1,
+			\"_tambahkan_entitas\",
+			get_meta(\"jalur_objek\"),
+			server.permainan.pasang_objek,
+			Vector3.ZERO,
+			[
+				[\"modulate\", Color(randf(), randf(), randf(), 1)]
+			]
+		)
+	server.permainan._tutup_daftar_objek()
+	release_focus()
+"
+
+[node name="pilih_objek" type="TextureButton"]
+anchors_preset = -1
+anchor_right = 0.125
+anchor_bottom = 0.213
+offset_right = -128.0
+offset_bottom = -127.8
+toggle_mode = true
+texture_normal = ExtResource("1_xr2t4")
+script = SubResource("GDScript_y5c11")
+metadata/jalur_objek = "res://skena/entitas/placeholder_entitas.tscn"
