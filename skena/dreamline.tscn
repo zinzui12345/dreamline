@@ -1,4 +1,4 @@
-[gd_scene load_steps=215 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=216 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -30,6 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://bwd7jvdcg76jk" path="res://ui/ikon/ikon_tombol_sambungkan.svg" id="9_qt3gh"]
 [ext_resource type="Texture2D" uid="uid://diyodg6i58iu7" path="res://ui/ikon/ikon_tab_lan.svg" id="10_ggwxk"]
 [ext_resource type="Texture2D" uid="uid://crpre874tw4x0" path="res://ui/ikon/ikon_tombol_info.svg" id="10_gun25"]
+[ext_resource type="PackedScene" uid="uid://c6w1ecsxnrmni" path="res://ui/properti_warna.tscn" id="10_p7nt1"]
 [ext_resource type="AnimationLibrary" uid="uid://c4gjvh5u16s1j" path="res://ui/animasi_panel.res" id="11_4hn36"]
 [ext_resource type="Texture2D" uid="uid://cd2xek1w7o182" path="res://ui/ikon/ikon_tab_internet.svg" id="11_662sn"]
 [ext_resource type="Texture2D" uid="uid://dfqc0jobjauax" path="res://ui/ikon/ikon_tombol_musik.svg" id="11_lbgy5"]
@@ -483,6 +484,10 @@ LineEdit/font_sizes/font_size = 25
 LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy6xj"]
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd4q"]
 
@@ -2819,9 +2824,9 @@ metadata/_edit_lock_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0937481
-anchor_top = 0.303334
+anchor_top = 0.280001
 anchor_right = 0.509998
-anchor_bottom = 0.373
+anchor_bottom = 0.349667
 offset_right = 0.119736
 offset_bottom = 0.200745
 theme = SubResource("Theme_su67x")
@@ -2832,9 +2837,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.562499
-anchor_top = 0.303334
+anchor_top = 0.280001
 anchor_right = 0.708
-anchor_bottom = 0.373
+anchor_bottom = 0.349667
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -2852,9 +2857,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.756941
-anchor_top = 0.303334
+anchor_top = 0.280001
 anchor_right = 0.902442
-anchor_bottom = 0.373
+anchor_bottom = 0.349667
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -2872,9 +2877,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0937481
-anchor_top = 0.418335
+anchor_top = 0.395002
 anchor_right = 0.509998
-anchor_bottom = 0.488001
+anchor_bottom = 0.464668
 offset_right = 0.119736
 offset_bottom = 0.200745
 theme = SubResource("Theme_wpahf")
@@ -2885,9 +2890,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.562499
-anchor_top = 0.418335
+anchor_top = 0.395002
 anchor_right = 0.708
-anchor_bottom = 0.488001
+anchor_bottom = 0.464668
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -2905,9 +2910,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.756941
-anchor_top = 0.418335
+anchor_top = 0.395002
 anchor_right = 0.902442
-anchor_bottom = 0.488001
+anchor_bottom = 0.464668
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -2925,9 +2930,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0937481
-anchor_top = 0.531668
+anchor_top = 0.508335
 anchor_right = 0.509998
-anchor_bottom = 0.601335
+anchor_bottom = 0.578002
 offset_right = 0.119736
 offset_bottom = 0.200745
 theme = SubResource("Theme_dqa7m")
@@ -2938,9 +2943,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.562499
-anchor_top = 0.531668
+anchor_top = 0.508335
 anchor_right = 0.708
-anchor_bottom = 0.601334
+anchor_bottom = 0.578001
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -2958,9 +2963,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.756941
-anchor_top = 0.531668
+anchor_top = 0.508335
 anchor_right = 0.902442
-anchor_bottom = 0.601334
+anchor_bottom = 0.578001
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -2974,7 +2979,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
-[node name="gulir" type="ScrollContainer" parent="hud/daftar_properti_objek/panel"]
+[node name="properti_kustom" type="ScrollContainer" parent="hud/daftar_properti_objek/panel"]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -2986,20 +2991,15 @@ grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_yy6xj")
 metadata/_edit_use_anchors_ = true
 
-[node name="baris" type="VBoxContainer" parent="hud/daftar_properti_objek/panel/gulir"]
+[node name="baris" type="VBoxContainer" parent="hud/daftar_properti_objek/panel/properti_kustom"]
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="warna_1" type="HSplitContainer" parent="hud/daftar_properti_objek/panel/gulir/baris"]
-custom_minimum_size = Vector2(0, 40)
+[node name="warna_1" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="hud/daftar_properti_objek/panel/gulir/baris/warna_1"]
-layout_mode = 2
-text = "  warna_1"
-
-[node name="ColorPickerButton" type="ColorPickerButton" parent="hud/daftar_properti_objek/panel/gulir/baris/warna_1"]
+[node name="warna_2" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
 [node name="DragPad" type="Panel" parent="hud/daftar_properti_objek"]

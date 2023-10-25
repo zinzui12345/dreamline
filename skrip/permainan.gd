@@ -398,9 +398,14 @@ func _edit_objek(jalur):
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
 	_pilih_tab_posisi_objek()
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
-	# TODO : dapetin properti lain objek; mis. warna, kondisi
+	# dapetin properti lain objek; mis. warna, kondisi
+	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
+	if edit_objek.get("warna_2") != null:
+		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.visible = true
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
+	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/menu.visible = true
 	$kontrol_sentuh/lari.visible = true
