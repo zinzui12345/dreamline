@@ -235,7 +235,7 @@ func _pemain_terputus(id_pemain):
 			if objek.get(jalur_objek) != null:
 				if objek[jalur_objek]["pemilik"] == id_pengubah:
 					if !fungsi:
-						#_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false)   E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true.
+						#_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false)   E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true. [cuma kalo pake ServerSynchronizer]
 						_edit_properti_objek(jalur_objek, id_pengubah, "sleeping", false)
 						objek[jalur_objek]["pemilik"] = 0
 				elif objek[jalur_objek]["pemilik"] == 0:

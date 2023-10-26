@@ -20,7 +20,7 @@ class_name Permainan
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 
-const versi = "Dreamline beta v1.4.4 rev 23/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 26/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -383,8 +383,6 @@ func _kirim_pesan():
 	$hud/pesan/input_pesan.grab_focus()
 func _edit_objek(jalur): 
 	edit_objek = get_node(jalur)
-	#print_debug(edit_objek)
-	#dunia.get_node("pemain/"+str(multiplayer.get_unique_id()))._kendalikan(false)
 	karakter._atur_kendali(false)
 	$pengamat.aktifkan(true)
 	$pengamat.kontrol = true
@@ -400,8 +398,13 @@ func _edit_objek(jalur):
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 	# dapetin properti lain objek; mis. warna, kondisi
 	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
+	if edit_objek.get("warna_1") != null:
+		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_1.atur_nilai(edit_objek.get("warna_1"))
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_1.visible = true
 	if edit_objek.get("warna_2") != null:
 		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.atur_nilai(edit_objek.get("warna_2"))
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.visible = true
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")

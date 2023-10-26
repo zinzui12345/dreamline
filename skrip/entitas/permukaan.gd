@@ -144,7 +144,8 @@ func _process(_delta):
 						posisi_pengamat.z >= posisi.y and posisi_pengamat.z <= (posisi.y + batas.y):
 						
 						get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
-						get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
+						if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+							get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
 						
 						#get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
 						#	potongan[pt]["pusat_x"],
@@ -199,21 +200,24 @@ func _process(_delta):
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" "+str(sudut)+" < "+str(pengamat.fov + (pengamat.fov * 0.405453467695))+" : visibel"); await get_tree().create_timer(0.5).timeout
 								if !potongan_node.visible:
 									potongan_node.visible = true
-									potongan_fisik.disabled = false
+									if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+										potongan_fisik.disabled = false
 									if gunakan_object_culling:
 										atur_visibilitas_potongan_vegetasi(pt, true)
 							elif jarak_render <= jarak and sudut <= 175:
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" jarak < lebar : visibel")
 								if !potongan_node.visible:
 									potongan_node.visible = true
-									potongan_fisik.disabled = false
+									if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+										potongan_fisik.disabled = false
 									if gunakan_object_culling:
 										atur_visibilitas_potongan_vegetasi(pt, true)
 							else:
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" umum : tidak-visibel")
 								if potongan_node.visible:
 									potongan_node.visible = false
-									potongan_fisik.disabled = true
+									if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+										potongan_fisik.disabled = true
 									if gunakan_object_culling:
 										atur_visibilitas_potongan_vegetasi(pt, false)
 							arah_target_pengamat.rotation_degrees.y = 0

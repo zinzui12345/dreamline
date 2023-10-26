@@ -1,7 +1,17 @@
 # 29/09/23
 extends VehicleBody3D
 
-@export var warna_1 = Color.BLACK
+@export var warna_1 = Color.BLACK :
+	set(warna_baru):
+		if get_node("%besi_rangka").get_surface_override_material(0) == null:
+			var mtl_baru = StandardMaterial3D.new()
+			get_node("%besi_rangka").set_surface_override_material(0, mtl_baru)
+			get_node("%stir").set_surface_override_material(0, mtl_baru)
+			get_node("%rangka_depan").set_surface_override_material(0, mtl_baru)
+			get_node("%rangka_belakang").set_surface_override_material(0, mtl_baru)
+		var tmp_mtl = get_node("%besi_rangka").get_surface_override_material(0)
+		tmp_mtl.albedo_color = warna_baru
+		warna_1 = warna_baru
 @export var warna_2 = Color.DARK_TURQUOISE :
 	set(warna_baru):
 		if get_node("%lampu_depan").get_surface_override_material(0) == null:
@@ -9,7 +19,7 @@ extends VehicleBody3D
 			get_node("%lampu_depan").set_surface_override_material(0, mtl_baru)
 			get_node("%spakbor_depan").set_surface_override_material(0, mtl_baru)
 			get_node("%spakbor_belakang").set_surface_override_material(0, mtl_baru)
-		var tmp_mtl = $setir/rotasi_stir/model/Cylinder/lampu_depan.get_surface_override_material(0)
+		var tmp_mtl = get_node("%lampu_depan").get_surface_override_material(0)
 		tmp_mtl.albedo_color = warna_baru
 		warna_2 = warna_baru
 @export var kursi = {

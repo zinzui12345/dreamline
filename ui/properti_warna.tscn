@@ -7,6 +7,8 @@ func _ready():
 	$Label.text = \"  \"+name
 	$ColorPickerButton.connect(\"color_changed\", _ubah_nilai)
 
+func atur_nilai(warna):
+	$ColorPickerButton.color = warna
 func _ubah_nilai(warna):
 	if visible: server.atur_properti_objek(server.permainan.edit_objek.get_path(), name, warna)
 "

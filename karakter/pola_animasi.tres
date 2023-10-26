@@ -26,10 +26,10 @@ animation = &"animasi/berlari mundur"
 play_mode = 1
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8k1co"]
-animation = &"animasi/berjalan kekanan"
+animation = &"animasi/berjalan mundur"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bhfbk"]
-animation = &"animasi/berjalan kekiri"
+animation = &"animasi/berjalan mundur"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tkxui"]
 animation = &"animasi/berjalan maju"
@@ -166,6 +166,7 @@ input_2/auto_advance = false
 input_2/reset = true
 
 [resource]
+graph_offset = Vector2(-424, 86.6667)
 nodes/arah_gerakan/node = SubResource("AnimationNodeBlendSpace2D_sttqg")
 nodes/arah_gerakan/position = Vector2(-266.667, 133.333)
 nodes/arah_jongkok/node = SubResource("AnimationNodeBlendSpace1D_e423v")
