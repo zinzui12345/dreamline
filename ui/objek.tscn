@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dshoprkgyv6ov"]
+[gd_scene load_steps=4 format=3 uid="uid://dshoprkgyv6ov"]
 
 [ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_xr2t4"]
+[ext_resource type="Texture2D" uid="uid://pyg83iwgglw8" path="res://ui/tombol/pilih_objek.png" id="2_c5a26"]
 
 [sub_resource type="GDScript" id="GDScript_y5c11"]
 resource_name = "pilih_objek"
@@ -41,5 +42,6 @@ offset_right = -128.0
 offset_bottom = -127.8
 toggle_mode = true
 texture_normal = ExtResource("1_xr2t4")
+texture_focused = ExtResource("2_c5a26")
 script = SubResource("GDScript_y5c11")
 metadata/jalur_objek = "res://skena/entitas/placeholder_entitas.tscn"

@@ -54,6 +54,9 @@ func atur_pengendali(id):
 		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
+func atur_raycast(nilai):
+	_raycast_pemain.enabled = nilai
+	if nilai == false: _target_pemain = false
 
 func _ready():
 	set_process(false)
@@ -225,12 +228,8 @@ func _process(delta):
 					#get_tree().paused = false
 					# sembunyikan tampilan durasi
 					server.permainan.get_node("%timeline/animasi").play_backwards("tampilkan")
-		if Input.is_action_just_pressed("debug"):
-			karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
-			Panku.notify("mode bermain")
-		if Input.is_action_just_pressed("debug2"):
-			karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
-			Panku.notify("mode edit")
+		if Input.is_action_just_pressed("debug"):	server.permainan.pilih_mode_bermain()
+		if Input.is_action_just_pressed("debug2"):	server.permainan.pilih_mode_edit()
 	
 	# atur ulang fungsi melompat ketika berada di floor
 	if karakter.is_on_floor() and lompat: lompat = false
@@ -272,7 +271,7 @@ func _physics_process(delta):
 		objek_target = _raycast_pemain.get_collider()
 		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
 			match karakter.peran:
-				Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
+				Permainan.PERAN_KARAKTER.Arsitek:
 					server.permainan.set("tombol_aksi_2", "edit_objek")
 				_:
 					if objek_target.has_method("fokus"): objek_target.fokus()
@@ -280,11 +279,17 @@ func _physics_process(delta):
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-				
+		match karakter.peran:
+			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
+				if !server.permainan.dunia.get_node("kursor_objek").visible:
+					server.permainan.dunia.get_node("kursor_objek").visible = true
+				server.permainan.dunia.get_node("kursor_objek").global_transform.origin = pos_target
 	elif is_instance_valid(objek_target):
 		objek_target = null
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+		if server.permainan.dunia.get_node("kursor_objek").visible:
+			server.permainan.dunia.get_node("kursor_objek").visible = false
 	
 	# kendalikan pemain dengan input
 	if karakter.kontrol:

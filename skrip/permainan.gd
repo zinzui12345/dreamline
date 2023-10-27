@@ -20,7 +20,7 @@ class_name Permainan
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 
-const versi = "Dreamline beta v1.4.4 rev 26/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 27/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -124,6 +124,7 @@ func _ready():
 		'P': $karakter/panel/tab/tab_personalitas/pilih_gender.select(0); _ketika_mengubah_gender_karakter(0)
 		'L': $karakter/panel/tab/tab_personalitas/pilih_gender.select(1); _ketika_mengubah_gender_karakter(1)
 	$hud.visible = false
+	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
 	# setup timer berbicara
@@ -394,6 +395,7 @@ func _edit_objek(jalur):
 	$kontrol_sentuh/kontrol_pandangan.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
+	$mode_bermain.visible = false
 	_pilih_tab_posisi_objek()
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 	# dapetin properti lain objek; mis. warna, kondisi
@@ -409,6 +411,7 @@ func _edit_objek(jalur):
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
+	$mode_bermain.visible = true
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/menu.visible = true
 	$kontrol_sentuh/lari.visible = true
@@ -461,6 +464,7 @@ func putuskan_server(paksa = false):
 		$hud/kompas.set_physics_process(false)
 		$hud/kompas.parent = null
 		$hud.visible = false
+		$mode_bermain.visible = false
 		$kontrol_sentuh.visible = false
 		$kontrol_sentuh/menu.visible = true
 		jeda = false
@@ -597,6 +601,9 @@ func _tampilkan_permainan():
 	_hentikan_musik_latar()
 	$hud/kompas.parent = karakter
 	$hud/kompas.set_physics_process(true)
+	$mode_bermain.visible = true
+	$mode_bermain/main.button_pressed = true
+	$mode_bermain/edit.button_pressed = false
 	$hud.visible = true
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	$kontrol_sentuh/chat.visible = true
@@ -829,6 +836,20 @@ func _pilih_tab_sepatu_karakter():
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
+func pilih_mode_bermain():
+	if is_instance_valid(karakter) and !jeda:
+		$mode_bermain/main.button_pressed = true
+		$mode_bermain/edit.button_pressed = false
+		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
+		Panku.notify("mode bermain")
+		$mode_bermain/main.release_focus()
+func pilih_mode_edit():
+	if is_instance_valid(karakter) and !jeda:
+		$mode_bermain/main.button_pressed = false
+		$mode_bermain/edit.button_pressed = true
+		karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
+		Panku.notify("mode edit")
+		$mode_bermain/edit.release_focus()
 func _pilih_tab_posisi_objek(): 
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
@@ -902,13 +923,13 @@ func _pilih_tab_skala_objek():
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
 		$hud/daftar_properti_objek/panel/translasi_z.editable = true
 func _tampilkan_daftar_objek():
-	if $hud/daftar_objek/Panel.anchor_top > 0: $hud/daftar_objek/animasi.play("tampilkan")
+	if $daftar_objek/Panel.anchor_top > 0: $daftar_objek/animasi.play("tampilkan")
 	karakter._atur_kendali(false)
 	karakter.kontrol = true
 	memasang_objek = true
 func _tutup_daftar_objek(paksa = false):
 	# kalau paksa berarti kendali pemain gak dikembaliin
-	$hud/daftar_objek/animasi.play("sembunyikan")
+	$daftar_objek/animasi.play("sembunyikan")
 	if !paksa: karakter._atur_kendali(true)
 	memasang_objek = false
 func _tambah_translasi_x_objek():
