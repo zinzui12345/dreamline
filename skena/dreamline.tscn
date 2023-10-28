@@ -463,6 +463,18 @@ tracks/2/keys = {
 "update": 1,
 "values": [false, false]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../../kontrol_sentuh:anchor_right")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.72, 1.0]
+}
 
 [sub_resource type="Animation" id="Animation_dtpav"]
 resource_name = "tampilkan"
@@ -502,6 +514,18 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [false, true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("../../kontrol_sentuh:anchor_right")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.72]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_u8o78"]
@@ -3154,7 +3178,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_lock_ = true
 
 [node name="kontrol_pandangan" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1

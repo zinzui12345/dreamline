@@ -110,6 +110,6 @@ func ubah_mode():
 		3: atur_mode(1)
 
 func fungsikan(nilai):
-	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	else: 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)
+	else: 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE;	ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", true)
 	kontrol = nilai

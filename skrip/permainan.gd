@@ -20,7 +20,7 @@ class_name Permainan
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 
-const versi = "Dreamline beta v1.4.4 rev 27/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 28/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -385,6 +385,7 @@ func _kirim_pesan():
 func _edit_objek(jalur): 
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
+	karakter.get_node("PlayerInput").atur_raycast(false)
 	$pengamat.aktifkan(true)
 	$pengamat.kontrol = true
 	$kontrol_sentuh/menu.visible = false
@@ -397,6 +398,9 @@ func _edit_objek(jalur):
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
 	$mode_bermain.visible = false
 	_pilih_tab_posisi_objek()
+	tombol_aksi_2 = "stop_edit_objek"
+	await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
+	$kontrol_sentuh/aksi_2.visible = true
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 	# dapetin properti lain objek; mis. warna, kondisi
 	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
@@ -411,6 +415,10 @@ func _edit_objek(jalur):
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
+	$hud/daftar_properti_objek/panel/pilih_tab_posisi.release_focus()
+	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.release_focus()
+	$hud/daftar_properti_objek/panel/pilih_tab_skala.release_focus()
+	tombol_aksi_2 = "edit_objek"
 	$mode_bermain.visible = true
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/menu.visible = true
@@ -422,6 +430,7 @@ func _berhenti_mengedit_objek():
 	$pengamat.aktifkan(false)
 	$pengamat.kontrol = false
 	karakter._kendalikan(true)
+	karakter.get_node("PlayerInput").atur_raycast(true)
 
 # koneksi
 func buat_server(headless = false):
@@ -467,6 +476,7 @@ func putuskan_server(paksa = false):
 		$mode_bermain.visible = false
 		$kontrol_sentuh.visible = false
 		$kontrol_sentuh/menu.visible = true
+		if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
 		jeda = false
 		# INFO : (9) tampilkan kembali menu utama
 		$menu_jeda/menu/animasi.play("sembunyikan")
@@ -1173,8 +1183,9 @@ func _ketika_mengubah_warna_sepatu_karakter(warna):
 func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if $pengamat.kontrol: $pengamat.fungsikan(false)
-		elif memasang_objek: _tutup_daftar_objek(true)
-		else: karakter._atur_kendali(false)
+		else:
+			if memasang_objek: _tutup_daftar_objek(true)
+			karakter._atur_kendali(false)
 		$kontrol_sentuh/menu.visible = false
 		$kontrol_sentuh/chat.visible = false
 		$menu_jeda/menu/animasi.play("tampilkan")

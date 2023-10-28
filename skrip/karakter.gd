@@ -239,6 +239,7 @@ func _atur_kendali(nilai):
 func _hapus():
 	set_physics_process(false)
 	set_process(false)
+	kontrol = false
 	var indeks_material = material.keys()
 	for mt in material.size():
 		if material[indeks_material[mt]]["jalur_node"] != "":

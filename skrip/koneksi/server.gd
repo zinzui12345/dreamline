@@ -235,8 +235,7 @@ func _pemain_terputus(id_pemain):
 			if objek.get(jalur_objek) != null:
 				if objek[jalur_objek]["pemilik"] == id_pengubah:
 					if !fungsi:
-						#_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false)   E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true. [cuma kalo pake ServerSynchronizer dan bukan authoritynya]
-						_edit_properti_objek(jalur_objek, id_pengubah, "sleeping", false)
+						_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false)   # FIXME : instance_set_transform: Condition "!v.is_finite()" is true. [cuma di kendaraan (VehicleBody3D)]
 						objek[jalur_objek]["pemilik"] = 0
 				elif objek[jalur_objek]["pemilik"] == 0:
 					if fungsi: objek[jalur_objek]["pemilik"] = id_pengubah
@@ -256,5 +255,8 @@ func _pemain_terputus(id_pemain):
 @rpc("any_peer") func _atur_properti_objek(jalur_objek, nama_properti, nilai_properti):
 	var t_objek = get_node_or_null(jalur_objek)
 	if t_objek != null and t_objek.get_indexed(nama_properti) != null:
+		if nama_properti == "freeze":
+			t_objek.set("angular_velocity", Vector3.ZERO)
+			t_objek.set("linear_velocity", Vector3.ZERO)
 		t_objek.set_indexed(nama_properti, nilai_properti)
 		#Panku.notify("mengatur properti ["+nama_properti+"] pada $"+jalur_objek+" dengan nilai : "+str(nilai_properti))

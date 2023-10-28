@@ -90,8 +90,7 @@ func tambah_pemain(pemain):
 @rpc func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		server.permainan._edit_objek(jalur_objek);
-		#server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true)  E 0:00:48:0728   instance_set_transform: Condition "!v.is_finite()" is true.
-		server.atur_properti_objek(permainan.edit_objek.get_path(), "sleeping", true)
+		server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true) # FIXME : instance_set_transform: Condition "!v.is_finite()" is true.
 		Panku.notify("mengedit objek : "+jalur_objek)
 	else:
 		server.permainan._berhenti_mengedit_objek();

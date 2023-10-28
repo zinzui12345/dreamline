@@ -50,14 +50,13 @@ func _setup():
 			)
 		#$MultiplayerSynchronizer.visibility_update_mode = MultiplayerSynchronizer.VISIBILITY_PROCESS_NONE gak guna
 		queue_free()
-func _dummy_visibility_changed(peer : int): print_debug(peer)
 
 @onready var torsi_kemiringan = $roda_belakang.wheel_roll_influence
 @onready var posisi_awal = global_transform.origin
 @onready var rotasi_awal = rotation
 
 func _physics_process(delta):
-	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
+	if $sinkronisasi_server.get_multiplayer_authority() == multiplayer.get_unique_id():
 		if kursi["pengemudi"] != -1 and is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
 			gerakan_pandangan = server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).arah_pandangan
 		
@@ -154,9 +153,11 @@ func _kemudikan(id_pengemudi):
 	server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").start()
 	brake = 0
 	kursi["pengemudi"] = id_pengemudi
-	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengemudi)
-	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority($MultiplayerSynchronizer.get_multiplayer_authority())
-	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = self
+	$sinkronisasi_server.set_multiplayer_authority(id_pengemudi)
+	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority($sinkronisasi_server.get_multiplayer_authority())
+	if $sinkronisasi_server.get_multiplayer_authority() == multiplayer.get_unique_id():
+		server.permainan.get_node("mode_bermain").visible = false
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = self
 func _berhenti_mengemudi(id_pengemudi):
 	arah_stir = Vector2.ZERO
 	brake = 0.25
@@ -172,8 +173,10 @@ func _berhenti_mengemudi(id_pengemudi):
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
 	kursi["pengemudi"] = -1
-	if $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id(): server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
-	$MultiplayerSynchronizer.set_multiplayer_authority(1) 
+	if $sinkronisasi_server.get_multiplayer_authority() == multiplayer.get_unique_id():
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
+		server.permainan.get_node("mode_bermain").visible = true
+	$sinkronisasi_server.set_multiplayer_authority(1) 
 	if kursi["penumpang"][0] != -1: server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority(1)
 func _menumpang(id_penumpang):
 	server.permainan.dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, false)
