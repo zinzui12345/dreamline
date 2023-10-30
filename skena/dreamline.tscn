@@ -1,4 +1,4 @@
-[gd_scene load_steps=224 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=226 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -56,6 +56,7 @@
 [ext_resource type="Texture2D" uid="uid://dbngqyysbphw6" path="res://ui/ikon/ikon_tab_rambut.svg" id="20_x7tnp"]
 [ext_resource type="Texture2D" uid="uid://bkbtjgpe4ucul" path="res://ui/spinner_menghubungkan.svg" id="21_lgrqm"]
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
+[ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/aksi_1.svg" id="23_p8sf0"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
@@ -635,6 +636,9 @@ _data = {
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2jlpn"]
 radius = 35.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tw50u"]
+radius = 50.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovj3w"]
 bg_color = Color(1, 1, 1, 0.0392157)
@@ -3035,7 +3039,6 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="DragPad" type="Panel" parent="hud/daftar_properti_objek"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -2.556
@@ -3044,9 +3047,12 @@ offset_left = 0.129333
 offset_right = -0.000488281
 offset_bottom = 0.00201416
 grow_horizontal = 0
+mouse_default_cursor_shape = 13
 theme_override_styles/panel = SubResource("StyleBoxEmpty_uwd4q")
 script = ExtResource("28_iksfn")
 metadata/_edit_use_anchors_ = true
+
+[node name="Touchpad" parent="hud/daftar_properti_objek/DragPad" instance=ExtResource("14_tax0q")]
 
 [node name="animasi" type="AnimationPlayer" parent="hud/daftar_properti_objek"]
 libraries = {
@@ -3063,6 +3069,7 @@ offset_left = 0.127991
 offset_right = -0.128052
 offset_bottom = -0.200001
 grow_horizontal = 2
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="posisi" type="Control" parent="hud/frekuensi_mic"]
@@ -3071,6 +3078,7 @@ anchor_top = -1.0
 anchor_right = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="persentasi" type="TextureProgressBar" parent="hud/frekuensi_mic/posisi"]
 layout_mode = 1
@@ -3186,6 +3194,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 2
+mouse_default_cursor_shape = 3
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
@@ -3266,6 +3275,25 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(40, 40)
 shape = SubResource("CircleShape2D_2jlpn")
 action = "lompat"
+
+[node name="aksi_1" type="TextureButton" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.636719
+anchor_top = 0.76
+anchor_right = 0.746156
+anchor_bottom = 0.946666
+offset_right = -0.0640259
+offset_bottom = 0.000183105
+action_mode = 0
+texture_normal = ExtResource("23_p8sf0")
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
+position = Vector2(56, 56)
+shape = SubResource("CircleShape2D_tw50u")
+action = "aksi1_sentuh"
 
 [node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -3371,6 +3399,7 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="Panel" type="Panel" parent="daftar_objek"]
 layout_mode = 1
@@ -3807,6 +3836,7 @@ anchor_right = 0.333423
 anchor_bottom = 0.92
 offset_top = 0.199997
 offset_right = -0.0723267
+mouse_default_cursor_shape = 13
 theme_override_styles/panel = SubResource("StyleBoxFlat_acxcj")
 script = ExtResource("28_iksfn")
 metadata/_edit_lock_ = true
@@ -5504,6 +5534,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/kurangi_translasi_z" to="." method="_kurang_translasi_z_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/tambah_translasi_z" to="." method="_tambah_translasi_z_objek"]
 [connection signal="gerakan" from="hud/daftar_properti_objek/DragPad" to="." method="_ketika_mengontrol_arah_pandangan"]
+[connection signal="touch_move" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
@@ -5513,6 +5544,8 @@ bus = &"Suara Pemain"
 [connection signal="button_up" from="kontrol_sentuh/lari" to="." method="_ketika_berhenti_berlari"]
 [connection signal="button_down" from="kontrol_sentuh/lompat" to="." method="_ketika_mulai_melompat"]
 [connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
+[connection signal="button_down" from="kontrol_sentuh/aksi_1" to="." method="_aksi_1_tekan"]
+[connection signal="button_up" from="kontrol_sentuh/aksi_1" to="." method="_aksi_1_lepas"]
 [connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]
 [connection signal="button_up" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]

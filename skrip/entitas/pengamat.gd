@@ -110,6 +110,6 @@ func ubah_mode():
 		3: atur_mode(1)
 
 func fungsikan(nilai):
-	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)
-	else: 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE;	ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", true)
+	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)#; Panku.notify("set : false = hasil : "+str(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")))
+	else: 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE;	ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", true)# biarpun berhasil di-set, ketika runtime gak ngaruh
 	kontrol = nilai

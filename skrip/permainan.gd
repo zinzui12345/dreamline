@@ -20,7 +20,7 @@ class_name Permainan
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 
-const versi = "Dreamline beta v1.4.4 rev 28/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 30/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -58,7 +58,9 @@ var jeda = false
 var pesan = false				# ketika input pesan ditampilkan
 var _posisi_tab_koneksi = "LAN" # | "Internet"
 var _rotasi_tampilan_karakter : Vector3
+var _rotasi_tampilan_objek : Vector3
 var _arah_gestur_tampilan_karakter : Vector2
+var _arah_gestur_tampilan_objek : Vector2
 var _touchpad_disentuh = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara = Timer.new()
@@ -127,6 +129,7 @@ func _ready():
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
+	$hud/daftar_properti_objek/DragPad.visible = false
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
 	_timer_kirim_suara.wait_time = 2.0
@@ -149,6 +152,7 @@ func _ready():
 func _process(delta):
 	# tampilan karakter di setelan karakter
 	_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
+	_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -360:
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 360
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 360:
@@ -158,6 +162,8 @@ func _process(delta):
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y >= 180:
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 90 * 4
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= _rotasi_tampilan_karakter.y
+	$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
+	$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
 	
 	# pemutar musik
 	if $pemutar_musik.visible:
@@ -208,6 +214,10 @@ func _process(delta):
 			Konfigurasi.mode_layar_penuh = true
 		Panku.notify("modelayar_penuh : "+str(Konfigurasi.mode_layar_penuh))
 	
+	# jangan sembunyikan tombol tutup edit objek
+	if is_instance_valid(edit_objek) and !$kontrol_sentuh/aksi_2.visible:
+		$kontrol_sentuh/aksi_2.visible = true
+	
 	# informasi
 	var info_mode_koneksi = ""
 	match koneksi:
@@ -226,6 +236,16 @@ func _process(delta):
 			String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED))
 		]
 	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps | "+info_mode_koneksi
+func _notification(what):
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		if is_instance_valid(karakter): # ketika dalam permainan
+			if pesan: _tampilkan_input_pesan()
+			elif edit_objek != null: _berhenti_mengedit_objek()
+			elif !jeda: _jeda()
+			else: _lanjutkan()
+		else: _kembali()
+	elif what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
+	elif what == NOTIFICATION_WM_CLOSE_REQUEST: _keluar()
 
 # core
 func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
@@ -386,11 +406,11 @@ func _edit_objek(jalur):
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
 	karakter.get_node("PlayerInput").atur_raycast(false)
-	$pengamat.aktifkan(true)
-	$pengamat.kontrol = true
+	$pengamat/kamera/rotasi_vertikal/pandangan.make_current()
 	$kontrol_sentuh/menu.visible = false
 	$kontrol_sentuh/chat.visible = false
 	$kontrol_sentuh/lari.visible = false
+	$kontrol_sentuh/aksi_1.visible = false
 	$kontrol_sentuh/lompat.visible = false
 	$kontrol_sentuh/kontrol_gerakan.visible = false
 	$kontrol_sentuh/kontrol_pandangan.visible = false
@@ -399,8 +419,7 @@ func _edit_objek(jalur):
 	$mode_bermain.visible = false
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "stop_edit_objek"
-	await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
-	$kontrol_sentuh/aksi_2.visible = true
+	_touchpad_disentuh = false
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 	# dapetin properti lain objek; mis. warna, kondisi
 	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
@@ -423,12 +442,12 @@ func _berhenti_mengedit_objek():
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/menu.visible = true
 	$kontrol_sentuh/lari.visible = true
+	$kontrol_sentuh/aksi_1.visible = true
 	$kontrol_sentuh/lompat.visible = true
 	$kontrol_sentuh/kontrol_gerakan.visible = true
 	$kontrol_sentuh/kontrol_pandangan.visible = true
 	edit_objek = null
-	$pengamat.aktifkan(false)
-	$pengamat.kontrol = false
+	$pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
 	karakter._kendalikan(true)
 	karakter.get_node("PlayerInput").atur_raycast(true)
 
@@ -530,7 +549,7 @@ func putuskan_server(paksa = false):
 # kontrol
 func _ketika_mulai_mengontrol_arah_pandangan(): _touchpad_disentuh = true
 func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
-	if is_instance_valid(karakter): # ketika dalam permainan
+	if is_instance_valid(karakter) and !jeda: # ketika dalam permainan
 		if _touchpad_disentuh:
 			if _arah_sentuhan_touchpad.x == 0:
 				karakter.arah_pandangan.x = 0
@@ -558,8 +577,10 @@ func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
 			karakter.arah_pandangan.x = ceil(karakter.arah_pandangan.x)
 			karakter.arah_pandangan.y = -karakter.arah_pandangan.y * 100
 			karakter.arah_pandangan.y = ceil(karakter.arah_pandangan.y)
-		elif $pengamat.kontrol and $hud/daftar_properti_objek/DragPad.visible:
-			$pengamat/posisi_mata.arah_pandangan = arah
+		elif $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
+			# selama kontrol_sentuh visible, ini gak work karena _touchpad_disentuh : true, apalagi karena posisinya dibelakang kontrol_sentuh
+			_arah_gestur_tampilan_objek = arah
+		#Panku.notify("sentuh [harus false] : "+str(_touchpad_disentuh)+" -- arah_gestur_objek : "+str(_arah_gestur_tampilan_objek))
 func _ketika_berhenti_mengontrol_arah_pandangan():
 	_touchpad_disentuh = false
 	if is_instance_valid(karakter): # ketika dalam permainan
@@ -595,8 +616,10 @@ func _ketika_mengontrol_arah_gerak(arah, _analog):
 			Input.action_release("kanan")
 func _ketika_mulai_melompat():		Input.action_press("lompat")
 func _ketika_berhenti_melompat():	Input.action_release("lompat")
-func _aksi_2_tekan(): 	Input.action_press("aksi2")
-func _aksi_2_lepas(): 	Input.action_release("aksi2")
+func _aksi_1_tekan(): 				Input.action_press("aksi1_sentuh")
+func _aksi_1_lepas(): 				Input.action_release("aksi1_sentuh")
+func _aksi_2_tekan(): 				Input.action_press("aksi2")
+func _aksi_2_lepas(): 				Input.action_release("aksi2")
 func _ketika_mulai_berlari():		Input.action_press("berlari")
 func _ketika_berhenti_berlari():	Input.action_release("berlari")
 
@@ -1092,6 +1115,7 @@ func _sembunyikan_panel_informasi():
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _ketika_menekan_link_informasi(tautan):
 	Panku.notify(tautan)
+func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama
@@ -1182,7 +1206,7 @@ func _ketika_mengubah_warna_sepatu_karakter(warna):
 # menu
 func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
-		if $pengamat.kontrol: $pengamat.fungsikan(false)
+		if $pengamat/kamera/rotasi_vertikal/pandangan.current: pass
 		else:
 			if memasang_objek: _tutup_daftar_objek(true)
 			karakter._atur_kendali(false)
@@ -1193,7 +1217,7 @@ func _jeda():
 		jeda = true
 func _lanjutkan():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
-		if is_instance_valid(edit_objek): $pengamat.fungsikan(true)
+		if is_instance_valid(edit_objek): pass
 		else: karakter._atur_kendali(true)
 		$kontrol_sentuh/menu.visible = true
 		$kontrol_sentuh/chat.visible = true

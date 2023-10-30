@@ -1,32 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://cok36wfitg4po"]
-
-[ext_resource type="Script" path="res://skrip/entitas/pengamat.gd" id="1_bikxa"]
+[gd_scene load_steps=2 format=3 uid="uid://cok36wfitg4po"]
 
 [sub_resource type="GDScript" id="GDScript_hcnrk"]
 script/source = "extends Node3D
 
-var arah : Vector3
-var arah_pandangan : Vector2
 var fungsi_zoom = false
 
 func _ready():
-	get_parent().mode_kontrol = 3
 	get_node(\"%pandangan\").far = Konfigurasi.jarak_render
 
 func _input(_event):
-	if get_parent().kontrol:
-		if server.permainan.dunia.get_node_or_null(\"pemain/\"+str(client.id_koneksi)) != null:
-			arah_pandangan = server.permainan.dunia.get_node(\"pemain/\"+str(client.id_koneksi)).arah_pandangan
-			server.permainan.dunia.get_node(\"pemain/\"+str(client.id_koneksi)).arah_pandangan = Vector2.ZERO
-		else: get_parent().kontrol = false
-		
+	if get_node(\"%pandangan\").current:
 		if is_instance_valid(server.permainan.edit_objek):
 			if Input.is_action_just_pressed(\"aksi2\"):		# berhenti mengedit
 				var jalur_node = server.permainan.edit_objek.get_path()
 				await get_tree().create_timer(0.1).timeout
 				server.edit_objek(jalur_node, false)
 func _process(delta):
-	if get_parent().kontrol:
+	if get_node(\"%pandangan\").current:
 		if is_instance_valid(server.permainan.edit_objek):
 			get_parent().global_transform.origin = server.permainan.edit_objek.global_transform.origin
 			if fungsi_zoom:
@@ -36,8 +26,6 @@ func _process(delta):
 "
 
 [node name="pengamat" type="Node3D"]
-script = ExtResource("1_bikxa")
-mode_kontrol = 3
 
 [node name="posisi_mata" type="Node3D" parent="."]
 script = SubResource("GDScript_hcnrk")
@@ -45,7 +33,6 @@ script = SubResource("GDScript_hcnrk")
 [node name="nama" type="Node3D" parent="posisi_mata"]
 
 [node name="kamera" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0751017)
 
 [node name="rotasi_vertikal" type="Node3D" parent="kamera"]
 

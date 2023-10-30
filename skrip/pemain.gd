@@ -141,8 +141,9 @@ func _process(delta):
 				#print_debug("frame : %s/%s    keyframe : %s    interval : %s" % [-_frame_saat_ini, tmp_jml_f, tmp_idx_f, (server.timeline["data"]["frame"] - tmp_idx_f)/1000])
 				#print_debug(frame_karakter)
 		
-		if Input.is_action_just_pressed("aksi1"):
-			if _target_pemain:
+		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
+			if Input.is_action_just_pressed("aksi1") and server.permainan.get_node("kontrol_sentuh").visible: pass # FIXME : cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			elif _target_pemain:
 				match karakter.peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
 						server.permainan.pasang_objek = pos_target
