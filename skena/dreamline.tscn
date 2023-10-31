@@ -1,4 +1,4 @@
-[gd_scene load_steps=226 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=229 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -57,11 +57,14 @@
 [ext_resource type="Texture2D" uid="uid://bkbtjgpe4ucul" path="res://ui/spinner_menghubungkan.svg" id="21_lgrqm"]
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
 [ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/aksi_1.svg" id="23_p8sf0"]
+[ext_resource type="Texture2D" uid="uid://xf60ppb2l5u2" path="res://ui/tombol/aksi_1_tekan.svg" id="24_5vy8q"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Script" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
+[ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="32_clll1"]
+[ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="PackedScene" uid="uid://cok36wfitg4po" path="res://skena/pengamat_objek.tscn" id="54_kqfbn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
@@ -708,11 +711,6 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_detail = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32pwm"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-
 [sub_resource type="Animation" id="Animation_phy3t"]
 resource_name = "sembunyikan"
 length = 0.4
@@ -752,6 +750,30 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [2, 2]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("tutup:anchor_top")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [-0.379351, 0.0, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("tutup:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.25, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, true, false, false]
 }
 
 [sub_resource type="Animation" id="Animation_cuolv"]
@@ -794,12 +816,41 @@ tracks/2/keys = {
 "update": 1,
 "values": [2, 1]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("tutup:anchor_top")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, -0.379351]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("tutup:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, true]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rjl2w"]
 _data = {
 "sembunyikan": SubResource("Animation_phy3t"),
 "tampilkan": SubResource("Animation_cuolv")
 }
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32pwm"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g3k4m"]
 bg_color = Color(0, 0, 0, 0.4)
@@ -3286,12 +3337,12 @@ anchor_bottom = 0.946666
 offset_right = -0.0640259
 offset_bottom = 0.000183105
 action_mode = 0
-texture_normal = ExtResource("23_p8sf0")
 stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
-position = Vector2(56, 56)
+texture_normal = ExtResource("23_p8sf0")
+texture_pressed = ExtResource("24_5vy8q")
 shape = SubResource("CircleShape2D_tw50u")
 action = "aksi1_sentuh"
 
@@ -3401,6 +3452,11 @@ mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
+[node name="animasi" type="AnimationPlayer" parent="daftar_objek"]
+libraries = {
+"": SubResource("AnimationLibrary_rjl2w")
+}
+
 [node name="Panel" type="Panel" parent="daftar_objek"]
 layout_mode = 1
 anchors_preset = -1
@@ -3437,10 +3493,27 @@ layout_mode = 2
 texture_normal = ExtResource("6_v16kx")
 metadata/jalur_objek = "res://skena/entitas/selis.tscn"
 
-[node name="animasi" type="AnimationPlayer" parent="daftar_objek"]
-libraries = {
-"": SubResource("AnimationLibrary_rjl2w")
-}
+[node name="tutup" type="TextureButton" parent="daftar_objek"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.715
+anchor_right = 0.793
+anchor_bottom = 0.000240019
+offset_left = -0.160034
+offset_top = -0.0577011
+offset_right = -0.0315552
+offset_bottom = -0.0657654
+action_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="daftar_objek/tutup"]
+position = Vector2(80, 0)
+rotation = 1.5708
+texture_normal = ExtResource("32_clll1")
+texture_pressed = ExtResource("33_ovk4l")
+shape = SubResource("CircleShape2D_2jlpn")
+action = "aksi2"
 
 [node name="menu_jeda" type="Control" parent="."]
 visible = false

@@ -4,23 +4,24 @@ class_name Permainan
 
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.9 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 1.4.0 - Implementasi Timeline
+# 04 Agu 2023 | 1.3.9 - Implementasi Timeline
 # 09 Agu 2023 | 1.4.0 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.4.0 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 1.4.1 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 14 Agu 2023 | 1.4.0 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.4.1 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.4.1 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 1.4.2 - Implementasi shader karakter menggunakan MToon
+# 18 Sep 2023 | 1.4.1 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.4.2 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.2 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 1.4.3 - Penambahan Text Chat
+# 25 Sep 2023 | 1.4.2 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.3 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.3 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 1.4.4 - Tombol Sentuh Fleksibel
+# 12 Okt 2023 | 1.4.3 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
+# 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
 
-const versi = "Dreamline beta v1.4.4 rev 30/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 31/10/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -418,7 +419,7 @@ func _edit_objek(jalur):
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
 	$mode_bermain.visible = false
 	_pilih_tab_posisi_objek()
-	tombol_aksi_2 = "stop_edit_objek"
+	tombol_aksi_2 = "tutup_panel_objek"
 	_touchpad_disentuh = false
 	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 	# dapetin properti lain objek; mis. warna, kondisi
@@ -489,14 +490,7 @@ func putuskan_server(paksa = false):
 			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
 		
-		$hud/kompas.set_physics_process(false)
-		$hud/kompas.parent = null
-		$hud.visible = false
-		$mode_bermain.visible = false
-		$kontrol_sentuh.visible = false
-		$kontrol_sentuh/menu.visible = true
-		if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
-		jeda = false
+		_sembunyikan_antarmuka_permainan()
 		# INFO : (9) tampilkan kembali menu utama
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_utama/animasi.play("tampilkan")
@@ -617,9 +611,9 @@ func _ketika_mengontrol_arah_gerak(arah, _analog):
 func _ketika_mulai_melompat():		Input.action_press("lompat")
 func _ketika_berhenti_melompat():	Input.action_release("lompat")
 func _aksi_1_tekan(): 				Input.action_press("aksi1_sentuh")
-func _aksi_1_lepas(): 				Input.action_release("aksi1_sentuh")
+func _aksi_1_lepas(): 				Input.action_release("aksi1_sentuh");	$kontrol_sentuh/aksi_1.release_focus()
 func _aksi_2_tekan(): 				Input.action_press("aksi2")
-func _aksi_2_lepas(): 				Input.action_release("aksi2")
+func _aksi_2_lepas(): 				Input.action_release("aksi2");			$kontrol_sentuh/aksi_2.release_focus()
 func _ketika_mulai_berlari():		Input.action_press("berlari")
 func _ketika_berhenti_berlari():	Input.action_release("berlari")
 
@@ -640,6 +634,17 @@ func _tampilkan_permainan():
 	$hud.visible = true
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	$kontrol_sentuh/chat.visible = true
+	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
+func _sembunyikan_antarmuka_permainan():
+	$hud/kompas.set_physics_process(false)
+	$hud/kompas.parent = null
+	$hud.visible = false
+	$mode_bermain.visible = false
+	$kontrol_sentuh.visible = false
+	$kontrol_sentuh/menu.visible = true
+	$daftar_objek/tutup/TouchScreenButton.visible = false
+	if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
+	jeda = false
 func _tampilkan_pemutar_musik():
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	else: $pemutar_musik/animasi.play("tampilkan")
@@ -1074,20 +1079,24 @@ func _tampilkan_setelan_permainan():
 func _tampilkan_input_pesan():
 	$kontrol_sentuh/chat.release_focus()
 	if pesan:
-		$kontrol_sentuh/mic.visible = true
-		$kontrol_sentuh/lari.visible = true
 		$hud/pesan/input_pesan.release_focus()
 		$hud/daftar_pesan/animasi.play("sembunyikan")
 		$hud/pesan/animasi.play("sembunyikan")
-		karakter._atur_kendali(true)
+		if $daftar_objek/Panel.anchor_top < 1 or edit_objek != null: pass # jangan tangkap mouse ketika menutup input pesan pada saat membuat/mengedit objek
+		else:
+			$kontrol_sentuh/mic.visible = true
+			$kontrol_sentuh/lari.visible = true
+			karakter._atur_kendali(true)
 		pesan = false
 	else:
 		$hud/daftar_pesan/animasi.play("tampilkan")
 		$hud/pesan/animasi.play("tampilkan")
 		$hud/pesan/input_pesan.grab_focus()  
-		$kontrol_sentuh/mic.visible = false
-		$kontrol_sentuh/lari.visible = false
-		karakter._atur_kendali(false)
+		if $daftar_objek/Panel.anchor_top < 1 or edit_objek != null: pass # jangan ubah kendali pemain ketika membuka input pesan pada saat membuat/mengedit objek
+		else:
+			$kontrol_sentuh/mic.visible = false
+			$kontrol_sentuh/lari.visible = false
+			karakter._atur_kendali(false)
 		pesan = true
 func _tampilkan_pesan(teks : String):
 	$hud/daftar_pesan/animasi.play("tampilkan")

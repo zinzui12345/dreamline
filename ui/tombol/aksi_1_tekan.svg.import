@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c41b8e5spwwqr"
-path="res://.godot/imported/stop_edit_objek.svg-b5dbdffe479e7af4e536f5967e368187.ctex"
+uid="uid://xf60ppb2l5u2"
+path="res://.godot/imported/aksi_1_tekan.svg-17360e365d80434fbf7d4c28c957d114.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/tombol/stop_edit_objek.svg"
-dest_files=["res://.godot/imported/stop_edit_objek.svg-b5dbdffe479e7af4e536f5967e368187.ctex"]
+source_file="res://ui/tombol/aksi_1_tekan.svg"
+dest_files=["res://.godot/imported/aksi_1_tekan.svg-17360e365d80434fbf7d4c28c957d114.ctex"]
 
 [params]
 
