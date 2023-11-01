@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
-[ext_resource type="PackedScene" uid="uid://bodq1gcamen6h" path="res://skena/entitas/selis.tscn" id="2_u08w8"]
+[ext_resource type="PackedScene" uid="uid://cpcojrbbqe4r4" path="res://skena/entitas/pencemaran.scn" id="2_qqabw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fu78a"]
 albedo_texture = ExtResource("1_xfa6m")
@@ -21,6 +21,9 @@ size = Vector3(100, 1, 100)
 [node name="posisi_spawn" type="Marker3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 
+[node name="batas_bawah" type="Marker3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7, 0)
+
 [node name="lantai" type="StaticBody3D" parent="."]
 
 [node name="m_lantai" type="MeshInstance3D" parent="lantai"]
@@ -32,5 +35,5 @@ skeleton = NodePath("../..")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_oj1l1")
 
-[node name="selis" parent="." instance=ExtResource("2_u08w8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -8)
+[node name="batu_bintang" parent="." instance=ExtResource("2_qqabw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, -0.4, -14)

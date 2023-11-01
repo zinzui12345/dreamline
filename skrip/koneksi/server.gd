@@ -34,6 +34,7 @@ var objek : Dictionary = {}
 
 # .: Objek :.
 # objek[jalur]["pemilik"] = id_pengubah
+# objek[jalur]["sumber"] = jalur sumber skena (hanya jika node tidak ada di dunia)
 # objek[jalur][nama_properti] = nilai_properti
 # objek{
 # 	"/root/dunia/entitas/entitas_1" : {

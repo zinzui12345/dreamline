@@ -21,7 +21,7 @@ class_name Permainan
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
 
-const versi = "Dreamline beta v1.4.4 rev 31/10/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 01/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -247,8 +247,12 @@ func _notification(what):
 		else: _kembali()
 	elif what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST: _keluar()
+	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
 
 # core
+func atur_map(nama_map : StringName = "pulau"):
+	if FileAccess.file_exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map; return "mengatur map menjadi : "+nama_map
+	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
 func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
@@ -297,6 +301,7 @@ func _muat_map(file_map):
 	elif koneksi == MODE_KONEKSI.CLIENT:
 		# INFO : (5b1) kirim data pemain ke server
 		server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
+		# TODO : request objek dari server
 		#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
 	thread.call_deferred("wait_to_finish")
 func _tambahkan_pemain(id: int, data_pemain):
