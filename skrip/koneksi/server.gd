@@ -229,6 +229,9 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 		if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
+@rpc("any_peer") func _kirim_objek_ke_pemain(id_pemain):
+	# INFO (5b4) kirim objek ke pemain 
+	client.rpc_id(id_pemain, "dapatkan_objek", objek)
 @rpc("any_peer") func _edit_objek(jalur_objek, id_pengubah, fungsi):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var t_objek = get_node_or_null(jalur_objek)

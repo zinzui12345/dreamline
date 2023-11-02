@@ -87,6 +87,26 @@ func tambah_pemain(pemain):
 @rpc func tambahkan_pemain(daftar : Dictionary):
 	var data = daftar.keys()
 	for p in data.size(): permainan._tambahkan_pemain(int(data[p]), daftar[data[p]])
+@rpc func dapatkan_objek(data : Dictionary):
+	var objek = data.keys()
+	var nama_node = ""
+	var instansi_node : Node3D
+	# INFO (5b5) instansi dan atur properti objek
+	for o in objek.size():
+		var jalur_asal = objek[o]											# /root/dunia/entitas/entitas_1
+		var potong = jalur_asal.split('/', false)							# [root, dunia, entitas, entitas_1]
+		var jalur_node = '/'+("/".join(potong.slice(0, -1)))				# /root/dunia/entitas
+		nama_node = "".join(potong.slice(potong.size() - 1, potong.size()))	# entitas_1
+		server.objek[jalur_asal] = server.objek.size()
+		if get_node(jalur_node).get_node_or_null(nama_node) == null and data[objek[o]].get("sumber") != null:
+			instansi_node = load(data[objek[o]]["sumber"]).instantiate()
+			get_node(jalur_node).add_child(instansi_node)
+			instansi_node.name = nama_node
+		instansi_node = get_node(jalur_node+'/'+nama_node)
+		var properti = data[objek[o]].keys()
+		for p in properti.size():
+			if instansi_node.get_indexed(properti[p]) != null:
+				instansi_node.set_indexed(properti[p], data[objek[o]][properti[p]])
 @rpc func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		server.permainan._edit_objek(jalur_objek);

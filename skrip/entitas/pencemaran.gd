@@ -27,4 +27,5 @@ func _ready():
 			"global_transform:origin": global_transform.origin,
 			"rotation_degrees": rotation_degrees
 		}
+	elif server.objek.has(str(get_path())): pass
 	else: queue_free()
