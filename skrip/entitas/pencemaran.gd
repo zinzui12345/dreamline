@@ -27,5 +27,12 @@ func _ready():
 			"global_transform:origin": global_transform.origin,
 			"rotation_degrees": rotation_degrees
 		}
+		$interval_pencemaran.wait_time = interval_pencemaran * 60
+		$interval_spawn.wait_time = interval_spawn * 60
+		$interval_pencemaran.start()
+		$interval_spawn.start()
 	elif server.objek.has(str(get_path())): pass
 	else: queue_free()
+
+func _ketika_interval_pencemaran(): pass
+func _ketika_interval_spawn(): pass

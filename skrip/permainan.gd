@@ -21,7 +21,7 @@ class_name Permainan
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
 
-const versi = "Dreamline beta v1.4.4 rev 01/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 03/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
