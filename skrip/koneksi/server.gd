@@ -7,7 +7,10 @@ class_name Server
 var interface = null
 var peer : MultiplayerPeer
 var broadcast : ServerAdvertiser
+var upnp : UPNP
 var headless = false
+var publik = false
+var ip_publik
 var jumlah_pemain = 32
 var pemain_terhubung = 0
 var map = "pulau"
@@ -86,12 +89,37 @@ func buat_koneksi():
 	# setup timeline
 	timeline["data"]["mulai"] = Time.get_ticks_msec()
 	set_process(true)
+	if publik: # koneksi publik
+		upnp = UPNP.new()
+		var hasil_pencarian = upnp.discover(4000, 2)
+		
+		# cek apakah adapter mendukung
+		if hasil_pencarian == UPNP.UPNP_RESULT_SUCCESS:
+			if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
+				var map_hasil_udp = upnp.add_port_mapping(10567, 0, "godot_udp", "UDP")
+				var map_hasil_tcp = upnp.add_port_mapping(10567, 0, "godot_tcp", "TCP")
+				
+				# cek kalo port gak bisa di-forward
+				if not map_hasil_udp == UPNP.UPNP_RESULT_SUCCESS:
+					upnp.add_port_mapping(10567, 0, "", "UDP")
+				if not map_hasil_tcp == UPNP.UPNP_RESULT_SUCCESS:
+					upnp.add_port_mapping(10567, 0, "", "TCP")
+			
+			# dapetin ip publik
+			ip_publik = upnp.query_external_address()
+		else:
+			ip_publik = "ERROR:<"+str(hasil_pencarian)+">"
+			publik = false
 	var t_inf_kon = TranslationServer.translate("%buatkoneksi")
 	Panku.notify(t_inf_kon % [map, "localhost"]) # FIXME : unsupported format character
 	Panku.gd_exprenv.register_env("server", self)
 func putuskan():
 	interface.set_refuse_new_connections(true)
 	broadcast.queue_free()
+	if publik: # koneksi publik
+		upnp.delete_port_mapping(10567, "UDP")
+		upnp.delete_port_mapping(10567, "TCP")
+		ip_publik = "<null>"
 	peer.close()
 	peer = null
 	interface.clear()

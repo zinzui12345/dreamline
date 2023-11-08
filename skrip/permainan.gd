@@ -5,23 +5,24 @@ class_name Permainan
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.9 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.3.9 - Implementasi Timeline
-# 09 Agu 2023 | 1.4.0 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 09 Agu 2023 | 1.3.9 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.4.0 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.4.0 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 | 1.4.1 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 15 Agu 2023 | 1.4.0 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.4.1 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.4.1 - Implementasi shader karakter menggunakan MToon
-# 21 Sep 2023 | 1.4.2 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 21 Sep 2023 | 1.4.1 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.2 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.2 - Penambahan Text Chat
-# 09 Okt 2023 | 1.4.3 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 09 Okt 2023 | 1.4.2 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.3 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.3 - Tombol Sentuh Fleksibel
-# 14 Okt 2023 | 1.4.4 - Penambahan Mode Edit Objek
+# 14 Okt 2023 | 1.4.3 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.4 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
+# 08 Nov 2023 | 1.4.4 - Implementasi Koneksi Publik menggunakan UPnP
 
-const versi = "Dreamline beta v1.4.4 rev 03/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 08/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -545,6 +546,9 @@ func putuskan_server(paksa = false):
 		
 		$latar.tampilkan()
 		_mainkan_musik_latar()
+func ip():
+	var informasi = "%s" % [str(server.ip_publik)]
+	return informasi
 
 # kontrol
 func _ketika_mulai_mengontrol_arah_pandangan(): _touchpad_disentuh = true
@@ -1276,6 +1280,7 @@ func detikKeMenit(detik: int) -> String:
 	return menit_terformat + ":" + detik_terformat
 
 # bantuan pada console
+const _HELP_ip					:= "Cek alamat IP Lokal/Publik koneksi"
 const _HELP_cek_koneksi_server	:= "Cek status koneksi dengan server"
 const _HELP_putuskan_server 	:= "Hentikan/Putuskan server [fungsi ini dipanggil secara otomatis!] * memanggilnya secara manual akan membiarkan kursor mouse dalam kondisi capture"
 const _HELP_PERAN_KARAKTER		:= "Tipe-tipe peran yang dapat diperankan karakter/pemain" # gak work!

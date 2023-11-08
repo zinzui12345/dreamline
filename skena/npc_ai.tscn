@@ -12,6 +12,7 @@ script = ExtResource("1_af5lk")
 shape = SubResource("SphereShape3D_e25su")
 
 [node name="navigasi" type="NavigationAgent3D" parent="."]
+radius = 0.6
 debug_enabled = true
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
