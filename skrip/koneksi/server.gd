@@ -138,6 +138,38 @@ func gunakan_entitas(nama_entitas : String, fungsi : String):
 		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
 	else:
 		rpc_id(1, "_gunakan_entitas", nama_entitas, multiplayer.get_unique_id(), fungsi)
+func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek) -> bool:
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var ref_pemain : Karakter = permainan.dunia.get_node_or_null("pemain/"+str(id_pemain))
+		var ref_entitas : Node3D  = get_node_or_null(jalur_objek)
+		if ref_pemain != null and ref_entitas != null:
+			# tentukan jarak dan arahnya
+			var arah_pemain = Vector3(0, 0,-1).rotated(Vector3.UP, deg_to_rad(ref_pemain.rotation.y))
+			var jarak_pemain = ref_entitas.global_transform.origin.distance_to(ref_pemain.global_transform.origin)
+			var jarak_entitas : Vector3
+			if ref_entitas.global_transform.origin > ref_pemain.global_transform.origin:
+				jarak_entitas = ref_pemain.global_transform.origin - ref_entitas.global_transform.origin
+			elif ref_entitas.global_transform.origin < ref_pemain.global_transform.origin:
+				jarak_entitas = ref_entitas.global_transform.origin - ref_pemain.global_transform.origin
+			
+			# normalisasi vektor
+			jarak_entitas.y = 0 # kalkulasi secara horizontal, abaikan ketinggian!
+			arah_pemain = arah_pemain.normalized()
+			jarak_entitas = jarak_entitas.normalized()
+			
+			# hitung sudut antara vektor
+			var dot_product = arah_pemain.dot(jarak_entitas)
+			var sudut = rad_to_deg(acos(dot_product))
+			
+			# periksa apakah jarak pemain cukup dekat atau sudut kurang dari FOV pemain
+			if jarak_pemain <= 15: return true
+			else: 
+				# FIXME : sudut gak sesuai!
+				print_debug(str(sudut)+" <= "+str(ref_pemain.get_node("%pandangan").fov / 2)+" == "+str(sudut <= ref_pemain.get_node("%pandangan").fov / 2))
+				return sudut <= ref_pemain.get_node("%pandangan").fov / 2
+		else:
+			return false
+	else:	return false
 func edit_objek(jalur_objek : String, fungsi : bool):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_edit_objek(jalur_objek, multiplayer.get_unique_id(), fungsi)
@@ -176,7 +208,6 @@ func _pemain_bergabung(id_pemain):
 	)
 	print("%s => pemain [%s] telah bergabung" % [Time.get_ticks_msec(), id_pemain])
 	pemain_terhubung += 1
-
 func _pemain_terputus(id_pemain):
 	# simpan kondisi terakhir berdasarkan id client kemudian hapus
 	if permainan.dunia.get_node_or_null("pemain/"+str(id_pemain)) != null:

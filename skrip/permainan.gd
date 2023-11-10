@@ -22,7 +22,7 @@ class_name Permainan
 # 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.4 - Implementasi Koneksi Publik menggunakan UPnP
 
-const versi = "Dreamline beta v1.4.4 rev 08/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 10/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1133,6 +1133,7 @@ func _sembunyikan_panel_informasi():
 	$menu_utama/animasi.play("tampilkan")
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _ketika_menekan_link_informasi(tautan):
+	# TODO : konfirmasi tautan
 	Panku.notify(tautan)
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
