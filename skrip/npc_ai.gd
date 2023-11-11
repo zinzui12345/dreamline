@@ -1,6 +1,8 @@
 # 03/11/23
 extends CharacterBody3D
 
+class_name npc_ai
+
 var _proses_navigasi = false
 
 enum grup {
@@ -74,7 +76,7 @@ func _ketika_berjalan(arah):
 		for p in server.pemain.size():
 			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path(), jarak_render):
 				server.atur_properti_objek(self.get_path(), "global_transform:origin", global_transform.origin)
-				server.atur_properti_objek(self.get_path(), "rotation_degrees", rotation_degrees)
+				#server.atur_properti_objek(self.get_path(), "rotation_degrees", rotation_degrees) # putaran gak perlu karena yang mutar cuma model dan fisik
 				#server.permainan.get_node("%nilai_debug").text = "pemain "+str(pmn[p])+" melihat npc_ai"
  
 # ketika sampai di posisi tujuan
