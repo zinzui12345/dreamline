@@ -10,6 +10,7 @@ enum grup {
 }
 
 @export var jalur_skena = "res://skena/npc_ai.tscn"
+@export var jarak_render = 50
 @export var nyawa = 100
 @export var serangan = 25
 @export var kelompok = grup.netral
@@ -30,8 +31,13 @@ func _ready():
 		navigasi.avoidance_enabled = true
 		navigasi.connect("velocity_computed", _ketika_berjalan)
 		navigasi.connect("navigation_finished", _ketika_navigasi_selesai)
-	elif server.objek.has(str(get_path())): pass
+		setup()
+	elif server.objek.has(str(get_path())): setup()
 	else: queue_free()
+
+# fungsi untuk mengatur node ketika spawn
+func setup():
+	$Sprite3D.visibility_range_end = jarak_render
 
 ## core ##
 # arahkan untuk pergi ke posisi tertentu
@@ -66,10 +72,10 @@ func _ketika_berjalan(arah):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var pmn = server.pemain.keys()
 		for p in server.pemain.size():
-			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path()):
+			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path(), jarak_render):
 				server.atur_properti_objek(self.get_path(), "global_transform:origin", global_transform.origin)
 				server.atur_properti_objek(self.get_path(), "rotation_degrees", rotation_degrees)
-				Panku.notify("pemain "+str(pmn[p])+" melihat npc_ai")
+				#server.permainan.get_node("%nilai_debug").text = "pemain "+str(pmn[p])+" melihat npc_ai"
  
 # ketika sampai di posisi tujuan
 func _ketika_navigasi_selesai():

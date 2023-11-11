@@ -22,7 +22,7 @@ class_name Permainan
 # 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.4 - Implementasi Koneksi Publik menggunakan UPnP
 
-const versi = "Dreamline beta v1.4.4 rev 10/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 11/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 

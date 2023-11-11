@@ -138,19 +138,15 @@ func gunakan_entitas(nama_entitas : String, fungsi : String):
 		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
 	else:
 		rpc_id(1, "_gunakan_entitas", nama_entitas, multiplayer.get_unique_id(), fungsi)
-func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek) -> bool:
+func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak_render_entitas = 100) -> bool:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var ref_pemain : Karakter = permainan.dunia.get_node_or_null("pemain/"+str(id_pemain))
 		var ref_entitas : Node3D  = get_node_or_null(jalur_objek)
 		if ref_pemain != null and ref_entitas != null:
 			# tentukan jarak dan arahnya
-			var arah_pemain = Vector3(0, 0,-1).rotated(Vector3.UP, deg_to_rad(ref_pemain.rotation.y))
+			var arah_pemain = Vector3.BACK.rotated(Vector3.UP, ref_pemain.rotation.y)
 			var jarak_pemain = ref_entitas.global_transform.origin.distance_to(ref_pemain.global_transform.origin)
-			var jarak_entitas : Vector3
-			if ref_entitas.global_transform.origin > ref_pemain.global_transform.origin:
-				jarak_entitas = ref_pemain.global_transform.origin - ref_entitas.global_transform.origin
-			elif ref_entitas.global_transform.origin < ref_pemain.global_transform.origin:
-				jarak_entitas = ref_entitas.global_transform.origin - ref_pemain.global_transform.origin
+			var jarak_entitas : Vector3 = ref_entitas.global_transform.origin - ref_pemain.global_transform.origin
 			
 			# normalisasi vektor
 			jarak_entitas.y = 0 # kalkulasi secara horizontal, abaikan ketinggian!
@@ -163,10 +159,8 @@ func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek) -> bo
 			
 			# periksa apakah jarak pemain cukup dekat atau sudut kurang dari FOV pemain
 			if jarak_pemain <= 15: return true
-			else: 
-				# FIXME : sudut gak sesuai!
-				print_debug(str(sudut)+" <= "+str(ref_pemain.get_node("%pandangan").fov / 2)+" == "+str(sudut <= ref_pemain.get_node("%pandangan").fov / 2))
-				return sudut <= ref_pemain.get_node("%pandangan").fov / 2
+			elif jarak_pemain > (jarak_render_entitas + 5): return false
+			else: return sudut <= (ref_pemain.get_node("%pandangan").fov / 2) + 5
 		else:
 			return false
 	else:	return false

@@ -3217,6 +3217,15 @@ libraries = {
 "": SubResource("AnimationLibrary_2lqgy")
 }
 
+[node name="nilai_debug" type="Label" parent="hud"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 48.0
+offset_bottom = 34.0
+text = "null"
+
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 visible = false
 modulate = Color(1, 1, 1, 0)
