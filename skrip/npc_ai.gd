@@ -64,6 +64,7 @@ func _physics_process(delta):
 			_ketika_berjalan(arah)
 	elif velocity != Vector3.ZERO:
 		velocity.x = lerpf(velocity.x, 0, kecepatan_gerak * delta)
+		velocity.y = 0
 		velocity.z = lerpf(velocity.z, 0, kecepatan_gerak * delta)
 	move_and_slide()
 
