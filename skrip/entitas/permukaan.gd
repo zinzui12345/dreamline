@@ -196,7 +196,7 @@ func _process(_delta):
 							var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"]) / 0.405453467695
 							#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
 							#											+str(sudut)+" <= 175"
-							if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
+							if (sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695))) and (jarak_render <= (jarak * 2)):
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" "+str(sudut)+" < "+str(pengamat.fov + (pengamat.fov * 0.405453467695))+" : visibel"); await get_tree().create_timer(0.5).timeout
 								if !potongan_node.visible:
 									potongan_node.visible = true

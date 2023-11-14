@@ -22,7 +22,7 @@ class_name Permainan
 # 31 Okt 2023 | 1.4.4 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.4 - Implementasi Koneksi Publik menggunakan UPnP
 
-const versi = "Dreamline beta v1.4.4 rev 11/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 14/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -164,6 +164,11 @@ func _process(delta):
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y >= 180:
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 90 * 4
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= _rotasi_tampilan_karakter.y
+	if $karakter/panel/pilih_tab_wajah.button_pressed and _rotasi_tampilan_karakter.y != 0:
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y = clampf(
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y,
+			-60, 60
+		)
 	$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
 	$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
 	
@@ -797,7 +802,6 @@ func _pilih_tab_wajah_karakter():
 			0.5
 		)
 		tween_arah_pengamat.play()
-	# TODO : clamp putaran pengamat ke <= 60
 func _pilih_tab_rambut_karakter():
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tab.current_tab = 2
