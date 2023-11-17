@@ -31,6 +31,7 @@ func setup():
 	else:
 		$navigasi.queue_free()
 		$pandangan.queue_free()
+	$proyektil.serangan = serangan
 
 func _process(delta):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:

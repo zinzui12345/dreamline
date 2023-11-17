@@ -1,9 +1,13 @@
 # 17/11/23
 extends Node3D
 
+# TODO : opsi arah_tembakan.y berdasarkan jarak target | lemparan
+
+@export var penembak : NodePath
+@export var serangan : int
+
 var _peluru_ditembak = {} # TODO : ini daftar untuk di sinkron
 
-var peluru : RigidBody3D
 var kecepatan : float = 40.0
 
 func _ready():
@@ -28,9 +32,11 @@ func tembakkan():
 	fisik.linear_velocity = arah_tembakan
 	
 	fisik.get_node("f").disabled = false
+	fisik.jalur_proyektil = get_path()
+	fisik.jalur_penembak = penembak
+	fisik.damage_serangan = serangan
 
-func hapus_peluru(nama : StringName):
-	# gimana caranya menggil ke sini sedangkan parent-nya bukan ini???
-	server.permainan.dunia.get_node("entitas").remove_child(
+func hapus_peluru(nama : NodePath):
+	server.permainan.dunia.get_node("entitas").call_deferred("remove_child", 
 		server.permainan.dunia.get_node("entitas").get_node(nama)
 	)
