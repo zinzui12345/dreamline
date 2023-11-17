@@ -19,6 +19,7 @@ var arah_pandangan = 0.0 :
 		$model.rotation.y = nilai
 		$fisik.rotation.y = nilai
 		$pandangan.rotation.y = nilai
+		$proyektil.rotation.y = nilai
 		arah_pandangan = nilai
 
 func setup():

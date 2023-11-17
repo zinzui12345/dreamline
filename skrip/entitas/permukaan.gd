@@ -1,7 +1,6 @@
 @tool
 extends Node3D
 
-# TODO : occlusion culling untuk vegetasi yang visible
 # TODO : frekuensi model vegetasi (batu = 0.25, semak = 0.5, pohon = 1)
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
 
@@ -191,33 +190,40 @@ func _process(_delta):
 							)
 						
 						# menghitung sudut antara vektor arah_pandang dan posisi potongan
+						# menghitung sudut antara vektor arah_pandang dan posisi potongan
 						if arah_target_pengamat != null:
 							var sudut = abs(arah_target_pengamat.rotation_degrees.y)
 							var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"]) / 0.405453467695
 							#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
 							#											+str(sudut)+" <= 175"
-							if (sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695))) and (jarak_render <= (jarak * 2)):
+							if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" "+str(sudut)+" < "+str(pengamat.fov + (pengamat.fov * 0.405453467695))+" : visibel"); await get_tree().create_timer(0.5).timeout
-								if !potongan_node.visible:
-									potongan_node.visible = true
-									if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+								if (jarak_render <= (jarak * 2)):
+									if !potongan_node.visible:
+										potongan_node.visible = true
 										potongan_fisik.disabled = false
 									if gunakan_object_culling:
 										atur_visibilitas_potongan_vegetasi(pt, true)
+								else:
+									potongan_node.visible = false
+									potongan_fisik.disabled = true
+									if gunakan_object_culling:
+										atur_visibilitas_potongan_vegetasi(pt, false)
 							elif jarak_render <= jarak and sudut <= 175:
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" jarak < lebar : visibel")
 								if !potongan_node.visible:
 									potongan_node.visible = true
-									if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
-										potongan_fisik.disabled = false
+									potongan_fisik.disabled = false
 									if gunakan_object_culling:
-										atur_visibilitas_potongan_vegetasi(pt, true)
+										if sudut < 90:
+											atur_visibilitas_potongan_vegetasi(pt, true)
+										else:
+											atur_visibilitas_potongan_vegetasi(pt, false)
 							else:
 								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" umum : tidak-visibel")
 								if potongan_node.visible:
 									potongan_node.visible = false
-									if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
-										potongan_fisik.disabled = true
+									potongan_fisik.disabled = true
 									if gunakan_object_culling:
 										atur_visibilitas_potongan_vegetasi(pt, false)
 							arah_target_pengamat.rotation_degrees.y = 0
