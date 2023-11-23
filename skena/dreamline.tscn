@@ -3226,13 +3226,9 @@ offset_right = 48.0
 offset_bottom = 34.0
 
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
-visible = false
-modulate = Color(1, 1, 1, 0)
 texture_repeat = 3
 layout_mode = 1
-
-[node name="ParallaxLayer" parent="latar/latar_parallax" index="0"]
-modulate = Color(1, 1, 1, 0)
+fungsikan = false
 
 [node name="Cute4" parent="latar/latar_parallax/ParallaxLayer" index="0"]
 metadata/_edit_lock_ = true
@@ -5601,6 +5597,7 @@ mix_target = 2
 bus = &"Suara Pemain"
 
 [node name="pengamat" parent="." instance=ExtResource("54_kqfbn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_posisi" to="." method="_pilih_tab_posisi_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_rotasi" to="." method="_pilih_tab_rotasi_objek"]

@@ -18,8 +18,9 @@ var arah_pandangan = 0.0 :
 	set(nilai):
 		$model.rotation.y = nilai
 		$fisik.rotation.y = nilai
-		$pandangan.rotation.y = nilai
-		$proyektil.rotation.y = nilai
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			$pandangan.rotation.y = nilai
+			$proyektil.rotation.y = nilai
 		arah_pandangan = nilai
 
 func setup():
@@ -33,7 +34,7 @@ func setup():
 		$pandangan.queue_free()
 	$proyektil.serangan = serangan
 
-func _process(delta):
+func _process(_delta):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if _proses_navigasi:
 			lihat_ke(navigasi.get_next_path_position())

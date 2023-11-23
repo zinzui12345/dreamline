@@ -43,12 +43,12 @@ func setup():
 
 ## core ##
 # arahkan untuk pergi ke posisi tertentu
-func navigasi_ke(posisi : Vector3, berlari = false):
+func navigasi_ke(posisi : Vector3, _berlari = false):
 	navigasi.set_target_position(posisi)
 	_proses_navigasi = true
 
 # ketika diserang dengan nilai serangan tertentu
-func serang(id_penyerang, damage_serangan : int):
+func serang(_id_penyerang, _damage_serangan : int):
 	pass
 
 ## event ##

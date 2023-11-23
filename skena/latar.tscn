@@ -8,6 +8,15 @@ script/source = "extends Control
 # skala sama dengan ukuran y viewport / ukuran y default (600)
 # posisi vertikal sama dengan tinggi gambar parallax / 8
 
+@export var gambar = \"res://material/wp/cute4.png\"
+@export var fungsikan : bool = true :
+	set(apa):
+		if apa == false:
+			visible = false
+			modulate = Color(0,0,0,0)
+			$latar_parallax/ParallaxLayer.modulate = Color(0,0,0,0)
+		fungsikan = apa
+
 func _ready():
 	_ketika_ukuran_diubah()
 	get_parent().connect(\"resized\", Callable(self, \"_ketika_ukuran_diubah\"))
@@ -23,14 +32,16 @@ func _ketika_ukuran_diubah():
 	#		latar.position.y = -( latar.texture.get_height() / 8 )
 
 func tampilkan():
-	if $latar_parallax/ParallaxLayer/Cute4.texture == null:
-		$latar_parallax/ParallaxLayer/Cute4.texture = load(\"res://material/wp/cute4.png\")
-	$animasi.play(\"tampilkan\")
-	$animasi.queue(\"animasi2\")
+	if fungsikan:
+		if $latar_parallax/ParallaxLayer/Cute4.texture == null:
+			$latar_parallax/ParallaxLayer/Cute4.texture = load(gambar)
+		$animasi.play(\"tampilkan\")
+		$animasi.queue(\"animasi2\")
 func sembunyikan():
-	$animasi.play(\"sembunyikan\")
-	await get_tree().create_timer(1.0).timeout
-	$latar_parallax/ParallaxLayer/Cute4.texture = null
+	if fungsikan:
+		$animasi.play(\"sembunyikan\")
+		await get_tree().create_timer(1.0).timeout
+		$latar_parallax/ParallaxLayer/Cute4.texture = null
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vx7d7"]
@@ -173,6 +184,8 @@ _data = {
 }
 
 [node name="latar" type="Control"]
+visible = false
+modulate = Color(1, 1, 1, 0)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -186,6 +199,7 @@ script = SubResource("GDScript_vqr5r")
 scroll_limit_end = Vector2(0, -245)
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="latar_parallax"]
+modulate = Color(1, 1, 1, 0)
 scale = Vector2(0.25, 0.25)
 motion_mirroring = Vector2(4096, 0)
 
