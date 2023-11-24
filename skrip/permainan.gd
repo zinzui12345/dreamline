@@ -23,7 +23,7 @@ class_name Permainan
 # 08 Nov 2023 | 1.4.4 - Implementasi Koneksi Publik menggunakan UPnP
 # 17 Nov 2023 | 1.4.4 - Implementasi Proyektil
 
-const versi = "Dreamline beta v1.4.4 rev 23/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 24/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 

@@ -2,9 +2,8 @@
 extends Node3D
 
 # TODO : opsi arah_tembakan.y berdasarkan jarak target | lemparan
-# TODO : muat resource (MeshInstance3D) peluru sebagai peluru
+# FIXME : pindahin rpc ke server.gd
 
-@export var peluru : Resource
 @export var penembak : NodePath
 @export var serangan : int
 
@@ -68,11 +67,11 @@ func sinkronisasi_peluru(id):
 @rpc func sinkronkan_tampilan(nama : StringName, arah : Basis, posisi : Vector3):
 	var node_peluru = server.permainan.dunia.get_node_or_null("entitas/"+nama)
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT and node_peluru != null:
-		node_peluru.global_transform.basis = arah
-		node_peluru.global_transform.origin = posisi
+		#Panku.notify("sync!")
+		node_peluru.set_indexed("global_transform:basis", arah)
+		node_peluru.set_indexed("global_transform:origin", posisi)
 @rpc func hapus_tampilan(nama : StringName):
 	var node_peluru = server.permainan.dunia.get_node_or_null("entitas/"+nama)
-	# FIXME : kadang dihapus bersamaan ketika server menambah ulang dengan nama yang sama
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT and node_peluru != null:
 		node_peluru.name = node_peluru.name+"_israel_babi"
 		node_peluru.queue_free()

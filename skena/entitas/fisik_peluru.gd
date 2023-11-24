@@ -20,7 +20,7 @@ func menabrak_sesuatu(node: Node):
 
 func _physics_process(_delta):
 	if id > -1 and server.get_node_or_null(jalur_proyektil) != null and server.get_node(jalur_proyektil).has_method("sinkronisasi_peluru"):
-		if server.get_node(jalur_proyektil)._peluru_ditembak.get(id) != null:
+		if server.get_node(jalur_proyektil)._peluru_ditembak.get(str(id)) != null:
 			server.get_node(jalur_proyektil)._peluru_ditembak[str(id)]["arah"] = global_transform.basis
 			server.get_node(jalur_proyektil)._peluru_ditembak[str(id)]["posisi"] = global_transform.origin
 			server.get_node(jalur_proyektil).sinkronisasi_peluru(id)
