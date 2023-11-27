@@ -14,9 +14,10 @@ var damage_serangan = 5	# tokimeki poporon des~
 func menabrak_sesuatu(node: Node):
 	# fungsi serang mending pake id_penyerang apa jalur_node_penyerang?
 	if server.get_node_or_null(jalur_proyektil) != null and server.get_node(jalur_proyektil).has_method("hapus_peluru"):
-		# cek, jangan hapus kalo nabrak proyektil atau penembaknya sendiri!
+		# FIXME : cek, jangan hapus dan serang kalo nabrak proyektil atau penembaknya sendiri!
 		server.get_node(jalur_proyektil).hapus_peluru(id)
-		#Panku.notify("damage : "+str(damage_serangan))
+		if node.has_method("serang"):
+			node.call("serang", damage_serangan)
 
 func _physics_process(_delta):
 	if id > -1 and server.get_node_or_null(jalur_proyektil) != null and server.get_node(jalur_proyektil).has_method("sinkronisasi_peluru"):

@@ -29,6 +29,8 @@ func setup():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		$pandangan.connect("body_entered", _ketika_melihat_sesuatu)
 		$pandangan.monitoring = true
+		$gigit.connect("body_entered", _ketika_menggigit_sesuatu)
+		$gigit.monitoring = true
 	else:
 		$navigasi.queue_free()
 		$pandangan.queue_free()
@@ -38,10 +40,10 @@ func _process(_delta):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if _proses_navigasi:
 			lihat_ke(navigasi.get_next_path_position())
-		elif kondisi != varian_kondisi.menyerang:
-			if kondisi == varian_kondisi.mengejar and musuh != null:
-				Panku.notify("dame!")
-				var jarak_musuh = global_transform.origin.distance_to(musuh.global_transform.origin)
+		elif kondisi != varian_kondisi.menyerang and musuh != null:
+			var jarak_musuh = global_transform.origin.distance_to(musuh.global_transform.origin)
+			if kondisi == varian_kondisi.mengejar:
+				#Panku.notify("dame!")
 				if nyawa > serangan:
 					if jarak_musuh > 1 and jarak_musuh <= 2:
 						menyerang(musuh, "tembak")
@@ -50,14 +52,27 @@ func _process(_delta):
 					else:
 						lihat_ke(musuh.global_transform.origin)
 						navigasi_ke(musuh.global_transform.origin, true)
-				elif nyawa < serangan:
+				elif nyawa <= serangan:
 					if jarak_musuh > 10:
 						navigasi_ke(musuh.global_transform.origin, true)
 					elif jarak_musuh > 5:
 						menyerang(musuh, "tembak")
 					elif jarak_musuh <= 5:
-						# TODO : ubah kondisi menjadi menghindar
-						pass
+						#Panku.notify("uwa")
+						kondisi = varian_kondisi.menghindar
+						_kondisi_sebelumnya = varian_kondisi.diam # FIXME : mungkin ini gak kepake nantinya!
+			elif kondisi == varian_kondisi.menghindar:
+				if jarak_musuh < 50:
+					# jauhi musuh
+					var arah_hindar = (global_transform.origin - musuh.global_transform.origin).normalized()
+					var posisi_tujuan = global_transform.origin + arah_hindar * 100
+					navigasi_ke(posisi_tujuan)
+					Panku.notify("menghindar ke :"+str(posisi_tujuan))
+				else:
+					# lupain musuh terus set kondisi ke diam
+					musuh = null
+					kondisi = varian_kondisi.diam
+					Panku.notify("lupain target")
 func _ketika_berjalan(arah):
 	velocity = arah
 	#server.permainan.get_node("%nilai_debug").text = str(velocity.rotated(Vector3.UP, $model.rotation.y).normalized())
@@ -68,6 +83,7 @@ func _ketika_berjalan(arah):
 		var pmn = server.pemain.keys()
 		for p in server.pemain.size():
 			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path(), jarak_render):
+				# FIXME : hanya kirim rpc ke pemain yang melihat
 				server.atur_properti_objek(self.get_path(), "global_transform:origin", global_transform.origin)
 				server.atur_properti_objek(self.get_path(), "arah_pandangan", arah_pandangan)
 	else: print("[Galat] fungsi ini hanya dapat dipanggil di server!")
@@ -79,14 +95,14 @@ func _ketika_melihat_sesuatu(sesuatu : Node3D):
 	if sesuatu is Karakter: _ketika_melihat_pemain(sesuatu)
 	elif sesuatu.get("kelompok") != null:
 		match sesuatu.kelompok:
-			grup.musuh: pass
-			_: # ketika ada kelompok lain
+			kelompok: pass # abaikan kalau melihat sekutu
+			_: # ketika melihat kelompok lain
 				match kondisi:
 					varian_kondisi.diam:
-						if nyawa < serangan:
-							if global_transform.origin.distance_to(sesuatu.global_transform.origin) < 20:
-								# TODO : ubah kondisi menjadi menghindar
-								pass
+						if nyawa <= serangan:
+							if global_transform.origin.distance_to(sesuatu.global_transform.origin) < 10:
+								kondisi = varian_kondisi.menghindar
+								_kondisi_sebelumnya = varian_kondisi.diam # FIXME : mungkin ini gak kepake nantinya!
 func _ketika_melihat_pemain(pemain : Karakter):
 	#Panku.notify("feel this love")
 	var jarak_pemain = global_transform.origin.distance_to(pemain.global_transform.origin)
@@ -101,6 +117,10 @@ func _ketika_melihat_pemain(pemain : Karakter):
 						navigasi_ke(pemain.global_transform.origin, true)
 					elif jarak_pemain <= 25:
 						menyerang(pemain, "tembak")
+func _ketika_menggigit_sesuatu(sesuatu : Node3D):
+	if sesuatu.has_method("serang"):
+		sesuatu.call("serang", serangan)
+	#Panku.notify("menggigit "+sesuatu.name)
 
 func lihat_ke(posisi : Vector3):
 	$model.look_at(posisi, Vector3.UP, true)
@@ -115,17 +135,14 @@ func menyerang(target_serangan : Node3D, tipe_serangan : StringName):
 		lihat_ke(target_serangan.global_transform.origin)
 		match tipe_serangan:
 			"gigit":
-				# TODO : serangan jarak dekat (gigit)
-				pass
+				$model/AnimationTree.set("parameters/aksi_serang/transition_request", "menggigit")
+				$model/AnimationTree.set("parameters/menyerang/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			"tembak":
 				$model/AnimationTree.set("parameters/aksi_serang/transition_request", "menembak")
 				$model/AnimationTree.set("parameters/menyerang/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 	else: print("[Galat] fungsi ini hanya dapat dipanggil di server!")
-func _setelah_menembak_racun():
+func _setelah_menyerang():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		# TODO : pindah ke node racun yang ditembakkan (fisik_peluru.gd)
-		# if target.has_method("serang"):
-		# 	target.call("serang", serangan)
 		kondisi = _kondisi_sebelumnya
 		target = null
 		$pandangan.monitoring = true
