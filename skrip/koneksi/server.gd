@@ -174,6 +174,12 @@ func atur_properti_objek(jalur_objek : String, nama_properti : String, nilai):
 		_edit_properti_objek(jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
 	else:
 		rpc_id(1, "_edit_properti_objek", jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
+func sinkronkan_properti_objek(id_klien, jalur_objek, nama_properti, nilai_properti):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var t_objek = get_node_or_null(jalur_objek)
+		if t_objek != null:
+			_atur_properti_objek(jalur_objek, nama_properti, nilai_properti)
+			rpc_id(id_klien, "_atur_properti_objek", jalur_objek, nama_properti, nilai_properti)
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client

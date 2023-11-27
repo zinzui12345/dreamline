@@ -2,6 +2,7 @@
 extends npc_ai
 
 # FIXME : optimalkan performa
+# FIXME : sinkronkan transisi dan request animasi menyerang
 
 enum varian_kondisi {
 	diam,		# idle / keliling
@@ -67,12 +68,12 @@ func _process(_delta):
 					var arah_hindar = (global_transform.origin - musuh.global_transform.origin).normalized()
 					var posisi_tujuan = global_transform.origin + arah_hindar * 100
 					navigasi_ke(posisi_tujuan)
-					Panku.notify("menghindar ke :"+str(posisi_tujuan))
+					#Panku.notify("menghindar ke :"+str(posisi_tujuan))
 				else:
 					# lupain musuh terus set kondisi ke diam
 					musuh = null
 					kondisi = varian_kondisi.diam
-					Panku.notify("lupain target")
+					#Panku.notify("lupain target")
 func _ketika_berjalan(arah):
 	velocity = arah
 	#server.permainan.get_node("%nilai_debug").text = str(velocity.rotated(Vector3.UP, $model.rotation.y).normalized())
@@ -83,9 +84,9 @@ func _ketika_berjalan(arah):
 		var pmn = server.pemain.keys()
 		for p in server.pemain.size():
 			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path(), jarak_render):
-				# FIXME : hanya kirim rpc ke pemain yang melihat
-				server.atur_properti_objek(self.get_path(), "global_transform:origin", global_transform.origin)
-				server.atur_properti_objek(self.get_path(), "arah_pandangan", arah_pandangan)
+				server.sinkronkan_properti_objek(server.pemain[pmn[p]]["id_client"], self.get_path(), "arah_pandangan", arah_pandangan)
+				server.sinkronkan_properti_objek(server.pemain[pmn[p]]["id_client"], self.get_path(), "global_transform:origin", global_transform.origin)
+				server.sinkronkan_properti_objek(server.pemain[pmn[p]]["id_client"], $model/AnimationTree.get_path(), "parameters/gerakan/blend_position", $model/AnimationTree.get("parameters/gerakan/blend_position"))
 	else: print("[Galat] fungsi ini hanya dapat dipanggil di server!")
 func _ketika_navigasi_selesai():
 	if _proses_navigasi: _proses_navigasi = false
