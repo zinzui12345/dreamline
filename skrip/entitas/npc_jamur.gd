@@ -2,7 +2,6 @@
 extends npc_ai
 
 # FIXME : optimalkan performa
-# FIXME : sinkronkan transisi dan request animasi menyerang
 
 enum varian_kondisi {
 	diam,		# idle / keliling
@@ -80,6 +79,7 @@ func _ketika_berjalan(arah):
 	if _proses_navigasi:
 		$model/AnimationTree.set("parameters/gerakan/blend_position", 0)
 	move_and_slide()
+	# sinkronkan animasi ke pemain yang melihat
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var pmn = server.pemain.keys()
 		for p in server.pemain.size():
@@ -141,6 +141,12 @@ func menyerang(target_serangan : Node3D, tipe_serangan : StringName):
 			"tembak":
 				$model/AnimationTree.set("parameters/aksi_serang/transition_request", "menembak")
 				$model/AnimationTree.set("parameters/menyerang/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+		# sinkronkan animasi ke pemain yang melihat
+		var pmn = server.pemain.keys()
+		for p in server.pemain.size():
+			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path(), jarak_render):
+				server.sinkronkan_properti_objek(server.pemain[pmn[p]]["id_client"], $model/AnimationTree.get_path(), "parameters/aksi_serang/transition_request", $model/AnimationTree.get("parameters/aksi_serang/transition_request"))
+				server.sinkronkan_properti_objek(server.pemain[pmn[p]]["id_client"], $model/AnimationTree.get_path(), "parameters/menyerang/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE) # ini harus setelah transisi di-set!
 	else: print("[Galat] fungsi ini hanya dapat dipanggil di server!")
 func _setelah_menyerang():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
