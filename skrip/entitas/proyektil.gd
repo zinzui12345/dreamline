@@ -2,7 +2,6 @@
 extends Node3D
 
 # TODO : opsi arah_tembakan.y berdasarkan jarak target | lemparan
-# FIXME : pindahin rpc ke server.gd
 
 @export var penembak : NodePath
 @export var serangan : int
@@ -46,31 +45,31 @@ func tembakkan():
 			"posisi":	fisik.global_transform.origin
 		}
 		
-		rpc("buat_tampilan", nama_peluru)
+		server.fungsikan_objek(self.get_path(), "buat_tampilan", [nama_peluru])
 
 func hapus_peluru(id : int):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.get_node_or_null("entitas/"+str(_peluru_ditembak[str(id)].nama)) != null:
 		server.permainan.dunia.get_node("entitas/"+str(_peluru_ditembak[str(id)].nama)).queue_free()
 		_peluru_ditembak.erase(id)
-		rpc("hapus_tampilan", str(_peluru_ditembak[str(id)].nama))
+		server.fungsikan_objek(self.get_path(), "hapus_tampilan", [str(_peluru_ditembak[str(id)].nama)])
 
 func sinkronisasi_peluru(id):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		rpc("sinkronkan_tampilan", _peluru_ditembak[str(id)].nama, _peluru_ditembak[str(id)].arah, _peluru_ditembak[str(id)].posisi)
+		server.fungsikan_objek(self.get_path(), "sinkronkan_tampilan", [_peluru_ditembak[str(id)].nama, _peluru_ditembak[str(id)].arah, _peluru_ditembak[str(id)].posisi])
 
-@rpc func buat_tampilan(nama):
+func buat_tampilan(nama):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
 		var model = $peluru.duplicate()
 		model.name = nama
 		model.visible = true
 		server.permainan.dunia.get_node("entitas").add_child(model)
-@rpc func sinkronkan_tampilan(nama : StringName, arah : Basis, posisi : Vector3):
+func sinkronkan_tampilan(nama : StringName, arah : Basis, posisi : Vector3):
 	var node_peluru = server.permainan.dunia.get_node_or_null("entitas/"+nama)
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT and node_peluru != null:
 		#Panku.notify("sync!")
 		node_peluru.set_indexed("global_transform:basis", arah)
 		node_peluru.set_indexed("global_transform:origin", posisi)
-@rpc func hapus_tampilan(nama : StringName):
+func hapus_tampilan(nama : StringName):
 	var node_peluru = server.permainan.dunia.get_node_or_null("entitas/"+nama)
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT and node_peluru != null:
 		node_peluru.name = node_peluru.name+"_israel_babi"
