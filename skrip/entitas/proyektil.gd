@@ -35,8 +35,8 @@ func tembakkan():
 		
 		fisik.get_node("f").disabled = false
 		fisik.id = id_peluru
+		fisik.penembak = get_node(penembak)
 		fisik.jalur_proyektil = get_path()
-		fisik.jalur_penembak = penembak
 		fisik.damage_serangan = serangan
 		
 		_peluru_ditembak[str(id_peluru)] = {

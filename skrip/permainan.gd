@@ -24,7 +24,7 @@ class_name Permainan
 # 17 Nov 2023 | 1.4.4 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.4 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 
-const versi = "Dreamline beta v1.4.4 rev 27/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 29/11/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -93,6 +93,7 @@ enum PERAN_KARAKTER {
 
 func _enter_tree():
 	get_tree().get_root().set("min_size", Vector2(980, 600))
+	Konfigurasi.muat()
 func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
@@ -215,12 +216,8 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("ui_cancel"): _kembali()
 	if Input.is_action_just_pressed("modelayar_penuh"):
-		if Konfigurasi.mode_layar_penuh:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			Konfigurasi.mode_layar_penuh = false
-		else:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-			Konfigurasi.mode_layar_penuh = true
+		if Konfigurasi.mode_layar_penuh: Konfigurasi.mode_layar_penuh = false
+		else: Konfigurasi.mode_layar_penuh = true
 		Panku.notify("modelayar_penuh : "+str(Konfigurasi.mode_layar_penuh))
 	
 	# jangan sembunyikan tombol tutup edit objek
@@ -259,7 +256,7 @@ func _notification(what):
 
 # core
 func atur_map(nama_map : StringName = "pulau"):
-	if FileAccess.file_exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map; return "mengatur map menjadi : "+nama_map
+	if ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;	return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
 func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
@@ -553,7 +550,7 @@ func putuskan_server(paksa = false):
 		
 		$latar.tampilkan()
 		_mainkan_musik_latar()
-func ip():
+func alamat_ip():
 	var informasi = "%s" % [str(server.ip_publik)]
 	return informasi
 
@@ -1287,7 +1284,7 @@ func detikKeMenit(detik: int) -> String:
 	return menit_terformat + ":" + detik_terformat
 
 # bantuan pada console
-const _HELP_ip					:= "Cek alamat IP Lokal/Publik koneksi"
+const _HELP_alamat_ip			:= "Cek alamat IP Lokal/Publik koneksi"
 const _HELP_cek_koneksi_server	:= "Cek status koneksi dengan server"
 const _HELP_putuskan_server 	:= "Hentikan/Putuskan server [fungsi ini dipanggil secara otomatis!] * memanggilnya secara manual akan membiarkan kursor mouse dalam kondisi capture"
 const _HELP_PERAN_KARAKTER		:= "Tipe-tipe peran yang dapat diperankan karakter/pemain" # gak work!

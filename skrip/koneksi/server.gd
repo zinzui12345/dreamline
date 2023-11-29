@@ -300,7 +300,11 @@ func _pemain_terputus(id_pemain):
 			if objek.get(jalur_objek) != null:
 				if objek[jalur_objek]["pemilik"] == id_pengubah:
 					if !fungsi:
-						_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false)   # FIXME : instance_set_transform: Condition "!v.is_finite()" is true. [cuma di kendaraan (VehicleBody3D) yang ada roda-nya (VehicleWheel3D)]
+						_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false) # FIXME : instance_set_transform: Condition "!v.is_finite()" is true. [cuma di kendaraan (VehicleBody3D) yang ada roda-nya (VehicleWheel3D)]
+						# solusi sementara : client.gd ==> @rpc func edit_objek(fungsi : bool, jalur_objek = ""):
+						#						if fungsi:
+						#							server.permainan._edit_objek(jalur_objek);
+						#							if permainan.edit_objek is VehicleBody3D: pass
 						objek[jalur_objek]["pemilik"] = 0
 				elif objek[jalur_objek]["pemilik"] == 0:
 					if fungsi: objek[jalur_objek]["pemilik"] = id_pengubah

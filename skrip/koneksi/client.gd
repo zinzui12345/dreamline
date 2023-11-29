@@ -110,7 +110,8 @@ func tambah_pemain(pemain):
 @rpc func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		server.permainan._edit_objek(jalur_objek);
-		server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true) # FIXME : instance_set_transform: Condition "!v.is_finite()" is true.
+		if permainan.edit_objek is VehicleBody3D: pass
+		else: server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true)
 		Panku.notify("mengedit objek : "+jalur_objek)
 	else:
 		server.permainan._berhenti_mengedit_objek();

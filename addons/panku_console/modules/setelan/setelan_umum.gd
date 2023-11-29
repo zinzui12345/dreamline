@@ -3,7 +3,7 @@ extends Resource
 # ----------------------------------------------------------------
 @export_group("%setelan_umum")
 
-@export var bahasa := Konfigurasi.bahasa.auto :
+@export var bahasa := Konfigurasi.pilih_bahasa.auto :
 	get:
 		var kode_bahasa = 0
 		match TranslationServer.get_locale():
@@ -11,17 +11,15 @@ extends Resource
 			"id": 	 kode_bahasa = "indonesia"
 			"en_US": kode_bahasa = "english"
 			"en": 	 kode_bahasa = "english"
-		return Konfigurasi.bahasa[kode_bahasa]
+		return Konfigurasi.pilih_bahasa[kode_bahasa]
 	set(ubah):
-		TranslationServer.set_locale(Konfigurasi.kode_bahasa[ubah])
-		bahasa = ubah
+		Konfigurasi.bahasa = ubah
+		bahasa = Konfigurasi.bahasa
 
 @export var export_button_mode_layar_penuh := "%mode_layar_penuh"
 func mode_layar_penuh():
-	if DisplayServer.window_get_mode() != DisplayServer.WINDOW_MODE_WINDOWED:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	if Konfigurasi.mode_layar_penuh: Konfigurasi.mode_layar_penuh = false
+	else: Konfigurasi.mode_layar_penuh = true
 	Panku.notify("Fullscreen: " + str(DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN))
 
 @export var export_button_laporkan_bug := "%laporkan_bug" # Report Bugs

@@ -48,7 +48,7 @@ func navigasi_ke(posisi : Vector3, _berlari = false):
 	_proses_navigasi = true
 
 # ketika diserang dengan nilai serangan tertentu
-func serang(_id_penyerang, _damage_serangan : int):
+func serang(_penyerang : Node3D, _damage_serangan : int):
 	pass
 
 ## event ##

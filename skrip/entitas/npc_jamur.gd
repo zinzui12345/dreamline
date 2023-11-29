@@ -35,6 +35,7 @@ func setup():
 		$navigasi.queue_free()
 		$pandangan.queue_free()
 	$proyektil.serangan = serangan
+	$proyektil.penembak = get_path()
 
 func _process(_delta):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -120,7 +121,7 @@ func _ketika_melihat_pemain(pemain : Karakter):
 						menyerang(pemain, "tembak")
 func _ketika_menggigit_sesuatu(sesuatu : Node3D):
 	if sesuatu.has_method("serang"):
-		sesuatu.call("serang", serangan)
+		sesuatu.call("serang", self, serangan)
 	#Panku.notify("menggigit "+sesuatu.name)
 
 func lihat_ke(posisi : Vector3):

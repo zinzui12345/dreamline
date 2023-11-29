@@ -1,7 +1,19 @@
 extends Node
 
+var data_konfigurasi = "user://konfigurasi.dreamline"
+var bahasa = 0 :
+	set(pilih):
+		TranslationServer.set_locale(kode_bahasa[pilih])
+		bahasa = pilih
 var sensitivitasPandangan : float = 25.0
-var mode_layar_penuh = false
+var mode_layar_penuh = false :
+	set(nilai):
+		if nilai:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+			mode_layar_penuh = nilai
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			mode_layar_penuh = nilai
 var mode_kontrol_sentuh = false
 var mode_kontrol_gerak = "analog"
 var skala_kontrol_gerak = 0.8 # TODO : ini untuk ukuran D-Pad dan Analog sentuh
@@ -12,7 +24,7 @@ var volume_musik_latar : float = -3.2 :
 		volume_musik_latar = volume
 var jarak_render : int = 400
 
-enum bahasa {
+enum pilih_bahasa {
 	auto,
 	indonesia,
 	english
@@ -27,3 +39,48 @@ var kode_bahasa = [
 	"id",
 	"en"
 ]
+
+func muat():
+	if !FileAccess.file_exists(data_konfigurasi):
+		Panku.notify("Tidak ada file konfigurasi yang ditemukan")
+		Panku.notify("Membuat file konfigurasi")
+		simpan()
+	else:
+		Panku.notify("Memuat file konfigurasi")
+	
+	var file = FileAccess.open(data_konfigurasi, FileAccess.READ)
+	var data = file.get_var()
+	
+	if data != null:
+		if data.get("bahasa") != null:						bahasa = data["bahasa"]
+		if data.get("mode_layar_penuh") != null:			mode_layar_penuh = data["mode_layar_penuh"]
+		
+		if data.get("mode_kontrol_gerak") != null:			mode_kontrol_gerak = data["mode_kontrol_gerak"]
+		if data.get("skala_kontrol_gerak") != null:			skala_kontrol_gerak = data["skala_kontrol_gerak"]
+		if data.get("sensitivitas_pandangan") != null:		sensitivitasPandangan = data["sensitivitas_pandangan"]
+		
+		if data.get("jarak_render") != null:				jarak_render = data["jarak_render"]
+		if data.get("shader_karakter") != null:				shader_karakter = data["shader_karakter"]
+		
+		if data.get("volume_musik_latar") != null:			volume_musik_latar = data["volume_musik_latar"]
+	file.close()
+func simpan():
+	var file = FileAccess.open(data_konfigurasi, FileAccess.WRITE)
+	var data = {
+		"bahasa"				: bahasa,
+		"mode_layar_penuh"		: mode_layar_penuh,
+		
+		"mode_kontrol_gerak"	: mode_kontrol_gerak,
+		"skala_kontrol_gerak"	: skala_kontrol_gerak,
+		"sensitivitas_pandangan": sensitivitasPandangan,
+		
+		"jarak_render"			: jarak_render,
+		"shader_karakter"		: shader_karakter,
+		
+		"volume_musik_latar"	: volume_musik_latar
+	}
+	
+	file.store_var(data)
+	file.close()
+	
+	Panku.notify("Menyimpan konfigurasi")
