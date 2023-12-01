@@ -611,8 +611,8 @@ properties/6/sync = false
 properties/6/watch = false
 
 [node name="selis" type="VehicleBody3D"]
-collision_layer = 2
-collision_mask = 3
+collision_layer = 4
+collision_mask = 5
 input_ray_pickable = false
 axis_lock_angular_z = true
 mass = 20.0
@@ -645,7 +645,7 @@ shape = SubResource("BoxShape3D_kqbv5")
 
 [node name="bidang_raycast" type="CharacterBody3D" parent="."]
 transform = Transform3D(0.27, 0, 0, 0, 0.27, 0, 0, 0, 0.27, 0, 0.032, -0.054)
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 motion_mode = 1
 floor_stop_on_slope = false
@@ -730,7 +730,7 @@ mesh = SubResource("20")
 
 [node name="f_roda_depan" type="CharacterBody3D" parent="roda_depan"]
 transform = Transform3D(0.6075, 0, 0, 0, -4.47035e-08, -0.6075, 0, 0.6075, -4.47035e-08, 0, 0, 0)
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape3D" parent="roda_depan/f_roda_depan"]
@@ -759,7 +759,7 @@ mesh = SubResource("20")
 
 [node name="f_roda_belakang" type="CharacterBody3D" parent="roda_belakang"]
 transform = Transform3D(0.6075, 0, 0, 0, -2.98023e-08, -0.6075, 0, 0.6075, -2.98023e-08, 0, 0, -1.78814e-07)
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape3D" parent="roda_belakang/f_roda_belakang"]

@@ -16,8 +16,8 @@ func menabrak_sesuatu(node: Node):
 	if server.get_node_or_null(jalur_proyektil) != null and server.get_node(jalur_proyektil).has_method("hapus_peluru"):
 		# FIXME : cek, jangan hapus dan serang kalo nabrak proyektil atau penembaknya sendiri!
 		server.get_node(jalur_proyektil).hapus_peluru(id)
-		if node.has_method("serang"):
-			node.call("serang", penembak, damage_serangan)
+		if node.has_method("_diserang"):
+			node.call("_diserang", penembak, damage_serangan)
 			#Panku.notify(penembak.name+" menyerang "+str(node.get_path())+" << "+str(damage_serangan))
 
 func _physics_process(_delta):

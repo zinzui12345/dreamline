@@ -61,7 +61,7 @@ func _process(_delta):
 					elif jarak_musuh <= 5:
 						#Panku.notify("uwa")
 						kondisi = varian_kondisi.menghindar
-						_kondisi_sebelumnya = varian_kondisi.diam # FIXME : mungkin ini gak kepake nantinya!
+						_kondisi_sebelumnya = varian_kondisi.diam
 			elif kondisi == varian_kondisi.menghindar:
 				if jarak_musuh < 50:
 					# jauhi musuh
@@ -104,7 +104,7 @@ func _ketika_melihat_sesuatu(sesuatu : Node3D):
 						if nyawa <= serangan:
 							if global_transform.origin.distance_to(sesuatu.global_transform.origin) < 10:
 								kondisi = varian_kondisi.menghindar
-								_kondisi_sebelumnya = varian_kondisi.diam # FIXME : mungkin ini gak kepake nantinya!
+								_kondisi_sebelumnya = varian_kondisi.diam
 func _ketika_melihat_pemain(pemain : Karakter):
 	#Panku.notify("feel this love")
 	var jarak_pemain = global_transform.origin.distance_to(pemain.global_transform.origin)
@@ -120,8 +120,8 @@ func _ketika_melihat_pemain(pemain : Karakter):
 					elif jarak_pemain <= 25:
 						menyerang(pemain, "tembak")
 func _ketika_menggigit_sesuatu(sesuatu : Node3D):
-	if sesuatu.has_method("serang"):
-		sesuatu.call("serang", self, serangan)
+	if sesuatu.has_method("_diserang"):
+		sesuatu.call("_diserang", self, serangan)
 	#Panku.notify("menggigit "+sesuatu.name)
 
 func lihat_ke(posisi : Vector3):
@@ -154,3 +154,27 @@ func _setelah_menyerang():
 		kondisi = _kondisi_sebelumnya
 		target = null
 		$pandangan.monitoring = true
+func _diserang(penyerang : Node3D, damage_serangan : int):
+	if nyawa >= serangan:
+		if nyawa > damage_serangan:
+			match kondisi:
+				varian_kondisi.diam:
+					musuh = penyerang
+					menyerang(penyerang, "tembak")
+					kondisi = varian_kondisi.mengejar
+					navigasi_ke(penyerang.global_transform.origin, true)
+				varian_kondisi.menghindar:
+					menyerang(penyerang, "tembak")
+					if penyerang != musuh:
+						musuh = penyerang
+						kondisi = varian_kondisi.diam
+						_kondisi_sebelumnya = varian_kondisi.menghindar
+				
+			if kondisi == varian_kondisi.mengejar:	nyawa -= damage_serangan / 2
+			else: 									nyawa -= damage_serangan
+		else:
+			#mati()
+			Panku.notify(name+" mati >~<")
+	else:
+		# cek kalo nyawa <= damage_serangan ==> mati(), selain itu ubah ke kondisi menghindar
+		Panku.notify(name+" mati!")

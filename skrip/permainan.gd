@@ -24,7 +24,7 @@ class_name Permainan
 # 17 Nov 2023 | 1.4.4 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.4 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 
-const versi = "Dreamline beta v1.4.4 rev 29/11/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 01/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
