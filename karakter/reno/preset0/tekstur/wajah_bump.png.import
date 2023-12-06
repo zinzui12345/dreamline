@@ -3,15 +3,17 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctjcsq3kq27um"
-path="res://.godot/imported/wajah_bump.png-574dff3219e8e745b7ce775ab956ffe0.ctex"
+path.s3tc="res://.godot/imported/wajah_bump.png-574dff3219e8e745b7ce775ab956ffe0.s3tc.ctex"
+path.etc2="res://.godot/imported/wajah_bump.png-574dff3219e8e745b7ce775ab956ffe0.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://karakter/reno/preset0/tekstur/wajah_bump.png"
-dest_files=["res://.godot/imported/wajah_bump.png-574dff3219e8e745b7ce775ab956ffe0.ctex"]
+dest_files=["res://.godot/imported/wajah_bump.png-574dff3219e8e745b7ce775ab956ffe0.s3tc.ctex", "res://.godot/imported/wajah_bump.png-574dff3219e8e745b7ce775ab956ffe0.etc2.ctex"]
 
 [params]
 

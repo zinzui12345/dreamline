@@ -3,7 +3,6 @@ extends CharacterBody3D
 class_name Karakter
 
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
-# TODO : muat material normal/shader
 
 var arah : Vector3
 var arah_pandangan : Vector2 	# ini arah input / event relative
@@ -47,6 +46,17 @@ var tekstur
 		if ubah != $pose.get("parameters/pose_duduk/current_state"):
 			$pose.set("parameters/pose_duduk/transition_request", ubah)
 			pose_duduk = ubah
+@export var lompat = false : 
+	set(melompat):
+		if melompat:
+			# FIXME lompat gak sync !!
+			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
+			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
+			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
+			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 5, true)
+			$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
+			$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+		lompat = melompat
 @export var arah_gerakan : Vector3
 @export var model = {
 	"alis"		: 0,
@@ -205,9 +215,10 @@ func atur_warna():
 						else:
 							tmp_mtl = StandardMaterial3D.new()
 							#print_debug("lavender mist")
-							tmp_mtl.cull_mode = BaseMaterial3D.CULL_BACK
+							tmp_mtl.cull_mode		= src_mtl.cull_mode #BaseMaterial3D.CULL_BACK
 							tmp_mtl.albedo_texture 	= src_mtl.albedo_texture
 							tmp_mtl.albedo_color	= src_mtl.albedo_color
+							tmp_mtl.metallic		= src_mtl.metallic
 							tmp_mtl.transparency	= src_mtl.transparency
 						get_node("%GeneralSkeleton/"+jlr_mtl).set_surface_override_material(id_mtl[mtl], tmp_mtl)
 						if get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f") != null\

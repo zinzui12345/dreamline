@@ -24,10 +24,11 @@ class_name Permainan
 # 17 Nov 2023 | 1.4.4 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.4 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 
-const versi = "Dreamline beta v1.4.4 rev 01/12/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 04/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
+#region properti
 var data = {
 	"nama":			"",
 	"gender": 		"P",
@@ -79,7 +80,9 @@ var tombol_aksi_3 = "berlari" :
 		if ikon != tombol_aksi_3:
 			get_node("kontrol_sentuh/lari").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_3 = ikon
+#endregion
 
+#region enumerasi
 enum MODE_KONEKSI {
 	SERVER,
 	CLIENT
@@ -90,7 +93,9 @@ enum PERAN_KARAKTER {
 	Penjelajah,
 	Nelayan
 }
+#endregion
 
+#region setup
 func _enter_tree():
 	get_tree().get_root().set("min_size", Vector2(980, 600))
 	Konfigurasi.muat()
@@ -153,6 +158,7 @@ func _ready():
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 	$latar.tampilkan()
 	_mainkan_musik_latar()
+#endregion
 
 func _process(delta):
 	# tampilan karakter di setelan karakter
@@ -269,9 +275,10 @@ func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vec
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible:
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = false
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") != null:
-		var tmp_p = $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node("pencahayaan_karakter")
-		$karakter/panel/tampilan/SubViewportContainer/SubViewport.remove_child(tmp_p)
-		tmp_p.queue_free()
+ 		# gaperlu karena beda world
+		#var tmp_p = $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node("pencahayaan_karakter")
+		#$karakter/panel/tampilan/SubViewportContainer/SubViewport.remove_child(tmp_p)
+		#tmp_p.queue_free()
 		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
 	if $proses_koneksi.visible:
@@ -707,10 +714,11 @@ func _tampilkan_setelan_karakter():
 	if $karakter.visible: _sembunyikan_setelan_karakter()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
-		if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") == null:
-			$karakter/panel/tampilan/SubViewportContainer/SubViewport.add_child(
-				load("res://pencahayaan_karakter.scn").instantiate()
-			)
+		# gaperlu karena beda world
+		#if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") == null:
+		#	$karakter/panel/tampilan/SubViewportContainer/SubViewport.add_child(
+		#		load("res://pencahayaan_karakter.scn").instantiate()
+		#	)
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = false
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible == false:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = true

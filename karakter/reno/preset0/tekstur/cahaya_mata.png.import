@@ -3,15 +3,17 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://13cp78j8bm64"
-path="res://.godot/imported/cahaya_mata.png-0b77155b217f1fbd646c7ceb74295a7a.ctex"
+path.s3tc="res://.godot/imported/cahaya_mata.png-0b77155b217f1fbd646c7ceb74295a7a.s3tc.ctex"
+path.etc2="res://.godot/imported/cahaya_mata.png-0b77155b217f1fbd646c7ceb74295a7a.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://karakter/reno/preset0/tekstur/cahaya_mata.png"
-dest_files=["res://.godot/imported/cahaya_mata.png-0b77155b217f1fbd646c7ceb74295a7a.ctex"]
+dest_files=["res://.godot/imported/cahaya_mata.png-0b77155b217f1fbd646c7ceb74295a7a.s3tc.ctex", "res://.godot/imported/cahaya_mata.png-0b77155b217f1fbd646c7ceb74295a7a.etc2.ctex"]
 
 [params]
 

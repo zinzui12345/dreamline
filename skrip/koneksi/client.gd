@@ -98,10 +98,14 @@ func tambah_pemain(pemain):
 		var jalur_node = '/'+("/".join(potong.slice(0, -1)))				# /root/dunia/entitas
 		nama_node = "".join(potong.slice(potong.size() - 1, potong.size()))	# entitas_1
 		server.objek[jalur_asal] = server.objek.size()
+		#Panku.notify("spawn : "+str(jalur_asal)+" ["+str(jalur_node)+"] << "+str(nama_node))
 		if get_node(jalur_node).get_node_or_null(nama_node) == null and data[objek[o]].get("sumber") != null:
 			instansi_node = load(data[objek[o]]["sumber"]).instantiate()
+			instansi_node.name = nama_node	# nama harus di-set sebelum ditambah ke node, supaya jalur di server.objek sesuai dan node gak kehapus
 			get_node(jalur_node).add_child(instansi_node)
-			instansi_node.name = nama_node
+		#	Panku.notify("berhasil spawn : "+str(jalur_asal))
+		#else:
+		#	Panku.notify("gagal spawn : "+str(jalur_asal))
 		instansi_node = get_node(jalur_node+'/'+nama_node)
 		var properti = data[objek[o]].keys()
 		for p in properti.size():

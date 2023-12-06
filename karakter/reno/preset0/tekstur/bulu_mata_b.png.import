@@ -3,15 +3,17 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3oty00ai07ed"
-path="res://.godot/imported/bulu_mata_b.png-81b123d688bbeeec0afdfc6392e399a0.ctex"
+path.s3tc="res://.godot/imported/bulu_mata_b.png-81b123d688bbeeec0afdfc6392e399a0.s3tc.ctex"
+path.etc2="res://.godot/imported/bulu_mata_b.png-81b123d688bbeeec0afdfc6392e399a0.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://karakter/reno/preset0/tekstur/bulu_mata_b.png"
-dest_files=["res://.godot/imported/bulu_mata_b.png-81b123d688bbeeec0afdfc6392e399a0.ctex"]
+dest_files=["res://.godot/imported/bulu_mata_b.png-81b123d688bbeeec0afdfc6392e399a0.s3tc.ctex", "res://.godot/imported/bulu_mata_b.png-81b123d688bbeeec0afdfc6392e399a0.etc2.ctex"]
 
 [params]
 

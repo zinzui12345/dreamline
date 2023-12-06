@@ -7,7 +7,8 @@ enum varian_kondisi {
 	diam,		# idle / keliling
 	mengejar,	# menarget musuh
 	menyerang,	# menyerang musuh
-	menghindar	# menjauh dari musuh
+	menghindar,	# menjauh dari musuh
+	mati		# gak usah ditanya lagi!
 }
 
 var musuh : Node3D
@@ -170,11 +171,25 @@ func _diserang(penyerang : Node3D, damage_serangan : int):
 						kondisi = varian_kondisi.diam
 						_kondisi_sebelumnya = varian_kondisi.menghindar
 				
-			if kondisi == varian_kondisi.mengejar:	nyawa -= damage_serangan / 2
+			if kondisi == varian_kondisi.mengejar:	nyawa -= ceil(damage_serangan) / 2
 			else: 									nyawa -= damage_serangan
-		else:
-			#mati()
-			Panku.notify(name+" mati >~<")
+		else: mati()
 	else:
-		# cek kalo nyawa <= damage_serangan ==> mati(), selain itu ubah ke kondisi menghindar
-		Panku.notify(name+" mati!")
+		if nyawa <= damage_serangan: mati()
+		else:
+			_kondisi_sebelumnya = kondisi
+			kondisi = varian_kondisi.menghindar
+func mati():
+	nyawa = 0
+	musuh = null
+	kondisi = varian_kondisi.mati
+	_kondisi_sebelumnya = varian_kondisi.diam
+	$partikel_kematian.emitting = true
+	$model/AnimationTree.set("parameters/kondisi/transition_request", "mati")
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		$gigit.monitoring = false
+		$pandangan.monitoring = false
+		server.fungsikan_objek(self.get_path(), "mati", [])
+func _setelah_mati():
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		hapus()

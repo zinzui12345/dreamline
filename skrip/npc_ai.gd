@@ -51,6 +51,9 @@ func navigasi_ke(posisi : Vector3, _berlari = false):
 func _diserang(_penyerang : Node3D, _damage_serangan : int):
 	pass
 
+# hapus / hilangkan
+func hapus(): server.hapus_objek(self.get_path())
+
 ## event ##
 # proses navigasi
 func _physics_process(delta):
@@ -84,6 +87,10 @@ func _ketika_berjalan(arah):
 func _ketika_navigasi_selesai():
 	if _proses_navigasi:
 		_proses_navigasi = false
+
+# ketika mati
+func mati():
+	Panku.notify(name+" mati >~<")
 
 ## debug ##
 func _input(_event):

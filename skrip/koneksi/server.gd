@@ -182,6 +182,10 @@ func sinkronkan_properti_objek(id_klien, jalur_objek, nama_properti, nilai_prope
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var t_objek = get_node_or_null(jalur_objek)
 		if t_objek != null: rpc_id(id_klien, "_atur_properti_objek", jalur_objek, nama_properti, nilai_properti)
+func hapus_objek(jalur_objek):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		_hapus_objek(jalur_objek)
+		rpc("_hapus_objek", jalur_objek)
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client
@@ -329,10 +333,10 @@ func _pemain_terputus(id_pemain):
 			t_objek.set("linear_velocity", Vector3.ZERO)
 		t_objek.set_indexed(nama_properti, nilai_properti)
 		#Panku.notify("mengatur properti ["+nama_properti+"] pada $"+jalur_objek+" dengan nilai : "+str(nilai_properti))
-@rpc("any_peer") func _fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array):
-	var objek = get_node_or_null(jalur_objek)
-	if objek != null:
-		var panggil_fungsi = Callable(objek, nama_fungsi)
+@rpc("authority") func _fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array):
+	var objek_difungsikan = get_node_or_null(jalur_objek)
+	if objek_difungsikan != null:
+		var panggil_fungsi = Callable(objek_difungsikan, nama_fungsi)
 		for nilai_parameter in parameter.size():
 			panggil_fungsi = panggil_fungsi.bind(
 				parameter[
@@ -340,3 +344,8 @@ func _pemain_terputus(id_pemain):
 				]
 			)
 		panggil_fungsi.call()
+@rpc("authority") func _hapus_objek(jalur_objek : NodePath):
+	var objek_dihapus = get_node_or_null(jalur_objek)
+	if objek_dihapus != null and objek.get(str(jalur_objek)) != null:
+		objek.erase(str(jalur_objek))
+		objek_dihapus.queue_free()

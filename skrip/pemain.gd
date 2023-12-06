@@ -304,7 +304,8 @@ func _physics_process(delta):
 						karakter.arah.y = 200 * delta
 						#lompat = true
 				elif karakter.is_on_floor():
-					# FIXME : melompat
+					# melompat, pindah ke pemain.gd
+					karakter.set("lompat", true)
 					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
 					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
 					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
