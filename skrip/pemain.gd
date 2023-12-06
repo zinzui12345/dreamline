@@ -233,7 +233,9 @@ func _process(delta):
 		if Input.is_action_just_pressed("debug2"):	server.permainan.pilih_mode_edit()
 	
 	# atur ulang fungsi melompat ketika berada di floor
-	if karakter.is_on_floor() and lompat: lompat = false
+	if karakter.is_on_floor() and lompat:
+		if karakter.kontrol: karakter.set("lompat", false)
+		lompat = false
 	
 	# atur ulang posisi kalau terjatuh dari dunia
 	if karakter.global_position.y < server.permainan.batas_bawah:
@@ -299,19 +301,10 @@ func _physics_process(delta):
 				if Input.is_action_pressed("berlari") and karakter.arah.z > 1.0:
 					if karakter.is_on_floor():
 						karakter.arah.y = 180 * delta
-						#lompat = true
 					elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"): # ini fitur btw >u<
 						karakter.arah.y = 200 * delta
-						#lompat = true
 				elif karakter.is_on_floor():
-					# melompat, pindah ke pemain.gd
 					karakter.set("lompat", true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 0, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 1, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 4, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(57, 5, true)
-					#karakter.get_node("model/animasi").get_animation("anim/melompat").track_set_key_value(58, 0, arah_gerakan)
-					#karakter.get_node("pose").set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 					karakter.arah.y = 150 * delta
 				lompat = true
 

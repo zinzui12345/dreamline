@@ -49,7 +49,6 @@ var tekstur
 @export var lompat = false : 
 	set(melompat):
 		if melompat:
-			# FIXME lompat gak sync !!
 			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
 			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
 			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
