@@ -49,11 +49,12 @@ var tekstur
 @export var lompat = false : 
 	set(melompat):
 		if melompat:
-			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
-			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
-			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
-			$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 5, true)
-			$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
+			# track dan keyframe belum ada
+			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
+			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
+			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
+			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 5, true)
+			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
 			$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 		lompat = melompat
 @export var arah_gerakan : Vector3

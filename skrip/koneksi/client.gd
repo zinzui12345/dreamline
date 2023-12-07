@@ -80,14 +80,14 @@ func tambah_pemain(pemain):
 	})
 	print("spawn pemain "+str(pemain))
 
-@rpc func gabung_ke_server(nama_map, posisi, rotasi):
+@rpc("authority") func gabung_ke_server(nama_map, posisi, rotasi):
 	print("telah terhubung ke server")
 	id_koneksi = interface.get_unique_id()
 	permainan._mulai_permainan(nama_map, posisi, rotasi)
-@rpc func tambahkan_pemain(daftar : Dictionary):
+@rpc("authority") func tambahkan_pemain(daftar : Dictionary):
 	var data = daftar.keys()
 	for p in data.size(): permainan._tambahkan_pemain(int(data[p]), daftar[data[p]])
-@rpc func dapatkan_objek(data : Dictionary):
+@rpc("authority") func dapatkan_objek(data : Dictionary):
 	var objek = data.keys()
 	var nama_node = ""
 	var instansi_node : Node3D
@@ -111,12 +111,17 @@ func tambah_pemain(pemain):
 		for p in properti.size():
 			if instansi_node.get_indexed(properti[p]) != null:
 				instansi_node.set_indexed(properti[p], data[objek[o]][properti[p]])
-@rpc func edit_objek(fungsi : bool, jalur_objek = ""):
+@rpc("authority") func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
-		server.permainan._edit_objek(jalur_objek);
+		permainan._edit_objek(jalur_objek);
 		if permainan.edit_objek is VehicleBody3D: pass
 		else: server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true)
 		Panku.notify("mengedit objek : "+jalur_objek)
 	else:
-		server.permainan._berhenti_mengedit_objek();
+		permainan._berhenti_mengedit_objek();
 		Panku.notify("berhenti mengedit objek")
+@rpc("authority") func dapatkan_posisi_entitas(nama_entitas : String, posisi : Vector3, rotasi : Vector3):
+	var t_entitas : Node3D = permainan.dunia.get_node("entitas/" + nama_entitas)
+	if t_entitas != null:
+		t_entitas.global_transform.origin = posisi
+		t_entitas.rotation_degrees = rotasi

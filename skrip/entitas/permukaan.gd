@@ -143,8 +143,7 @@ func _process(_delta):
 						posisi_pengamat.z >= posisi.y and posisi_pengamat.z <= (posisi.y + batas.y):
 						
 						get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
-						if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
-							get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
+						get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
 						
 						#get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
 						#	potongan[pt]["pusat_x"],

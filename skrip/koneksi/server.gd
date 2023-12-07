@@ -111,7 +111,7 @@ func buat_koneksi():
 			ip_publik = "ERROR:<"+str(hasil_pencarian)+">"
 			publik = false
 	var t_inf_kon = TranslationServer.translate("%buatkoneksi")
-	Panku.notify(t_inf_kon % [map, "localhost"]) # FIXME : unsupported format character
+	Panku.notify(t_inf_kon % [map, "localhost"]) # unsupported format character
 	Panku.gd_exprenv.register_env("server", self)
 func putuskan():
 	interface.set_refuse_new_connections(true)
@@ -294,6 +294,10 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 		if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
+@rpc("any_peer") func _sesuaikan_posisi_entitas(nama_entitas : String, id_pemain : int):
+	# kirim posisi entitas ke client kalau posisi di client de-sync
+	var t_entitas : Node3D = permainan.dunia.get_node("entitas/" + nama_entitas)
+	client.rpc_id(id_pemain, "dapatkan_posisi_entitas", nama_entitas, t_entitas.global_transform.origin, t_entitas.rotation_degrees)
 @rpc("any_peer") func _kirim_objek_ke_pemain(id_pemain):
 	# INFO (5b4) kirim objek ke pemain 
 	client.rpc_id(id_pemain, "dapatkan_objek", objek)
