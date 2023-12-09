@@ -232,8 +232,42 @@ func atur_warna():
 						tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
 					else: tmp_mtl.albedo_color = warna[indeks_material[mt]]
 func atur_ragdoll(nilai):
-	if nilai:	$"%GeneralSkeleton".physical_bones_start_simulation()
-	else:		$"%GeneralSkeleton".physical_bones_stop_simulation()
+	if nilai:
+		var tmp_ragdoll = load("res://karakter/"+$model.get_child(0).name+"/ragdoll.scn").instantiate()
+		for f in (tmp_ragdoll.get_child(0).get_child_count()):
+			if tmp_ragdoll.get_child(0).get_child(f) is PhysicalBone3D:
+				$"%GeneralSkeleton".add_child(tmp_ragdoll.get_child(0).get_child(f).duplicate())
+		tmp_ragdoll.queue_free()
+		# FIXME : kalo di set pada saat melompat atau jongkok bakalan glitch
+		$pose.active = false
+		$"%GeneralSkeleton".physical_bones_start_simulation()
+	else:
+		var nama_collider_fisik = [
+			"fisik kepala", 
+			"fisik leher", 
+			"fisik skapula kiri", 
+			"fisik skapula kanan", 
+			"fisik bahu kiri",
+			"fisik bahu kanan",
+			"fisik lengan kiri",
+			"fisik lengan kanan",
+			"fisik tangan kiri",
+			"fisik tangan kanan",
+			"fisik dada",
+			"fisik perut",
+			"fisik pinggang",
+			"fisik pusat",
+			"fisik paha kiri",
+			"fisik paha kanan",
+			"fisik betis kiri",
+			"fisik betis kanan",
+			"fisik kaki kiri",
+			"fisik kaki kanan"
+		]
+		for col in nama_collider_fisik.size():
+			$"%GeneralSkeleton".get_node(nama_collider_fisik[col]).queue_free()
+		$"%GeneralSkeleton".physical_bones_stop_simulation()
+		$pose.active = true
 
 # setup
 func _ready():
