@@ -232,8 +232,8 @@ func atur_warna():
 						tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
 					else: tmp_mtl.albedo_color = warna[indeks_material[mt]]
 func atur_ragdoll(nilai):
-	if nilai:	$model/Root/Skeleton3D.physical_bones_start_simulation()
-	else:		$model/Root/Skeleton3D.physical_bones_stop_simulation()
+	if nilai:	$"%GeneralSkeleton".physical_bones_start_simulation()
+	else:		$"%GeneralSkeleton".physical_bones_stop_simulation()
 
 # setup
 func _ready():

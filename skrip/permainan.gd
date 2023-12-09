@@ -24,7 +24,7 @@ class_name Permainan
 # 17 Nov 2023 | 1.4.4 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.4 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 
-const versi = "Dreamline beta v1.4.4 rev 07/12/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 08/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -261,7 +261,7 @@ func _notification(what):
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
 
 # core
-func atur_map(nama_map : StringName = "pulau"):
+func atur_map(nama_map : StringName = "empty"):
 	if ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;	return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
 func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):

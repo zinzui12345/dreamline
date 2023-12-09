@@ -37,6 +37,7 @@ gdscript/warnings/narrowing_conversion=0
 
 window/size/viewport_width=1024
 window/size/viewport_height=600
+window/size/initial_screen=2
 window/stretch/aspect="keep_width"
 window/handheld/orientation=4
 window/vsync/vsync_mode=0
