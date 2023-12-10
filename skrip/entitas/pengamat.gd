@@ -62,7 +62,7 @@ func _process(delta):
 				$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
 				$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
 				get_node("%target").rotation_degrees.x = 0
-				if _karakter.arah.x != 0 or (_karakter.arah.z != 0 and _karakter.is_on_floor()):
+				if (_karakter.arah.x != 0 or (_karakter.arah.z != 0 and _karakter.is_on_floor())) and _karakter.get_node("pose").active:
 					_karakter.rotation.y = lerp_angle(_karakter.rotation.y, global_rotation.y, 0.4)
 					rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
 					_karakter.rotation_degrees.y -= rotasi.y

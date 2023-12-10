@@ -24,7 +24,7 @@ class_name Permainan
 # 17 Nov 2023 | 1.4.4 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.4 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 
-const versi = "Dreamline beta v1.4.4 rev 08/12/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 10/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -303,6 +303,7 @@ func _muat_map(file_map):
 	if map.get_node_or_null("batas_bawah") != null:
 		batas_bawah = map.get_node("batas_bawah").position.y
 	call_deferred("_atur_persentase_memuat", 70)
+	await get_tree().create_timer(0.5).timeout
 	dunia.call_deferred("add_child", map)
 	if koneksi == MODE_KONEKSI.SERVER:
 		# INFO : (5a) buat server

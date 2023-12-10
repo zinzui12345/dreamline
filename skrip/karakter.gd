@@ -238,35 +238,13 @@ func atur_ragdoll(nilai):
 			if tmp_ragdoll.get_child(0).get_child(f) is PhysicalBone3D:
 				$"%GeneralSkeleton".add_child(tmp_ragdoll.get_child(0).get_child(f).duplicate())
 		tmp_ragdoll.queue_free()
-		# FIXME : kalo di set pada saat melompat atau jongkok bakalan glitch
 		$pose.active = false
+		$pengamat.atur_mode(3)
 		$"%GeneralSkeleton".physical_bones_start_simulation()
 	else:
-		var nama_collider_fisik = [
-			"fisik kepala", 
-			"fisik leher", 
-			"fisik skapula kiri", 
-			"fisik skapula kanan", 
-			"fisik bahu kiri",
-			"fisik bahu kanan",
-			"fisik lengan kiri",
-			"fisik lengan kanan",
-			"fisik tangan kiri",
-			"fisik tangan kanan",
-			"fisik dada",
-			"fisik perut",
-			"fisik pinggang",
-			"fisik pusat",
-			"fisik paha kiri",
-			"fisik paha kanan",
-			"fisik betis kiri",
-			"fisik betis kanan",
-			"fisik kaki kiri",
-			"fisik kaki kanan"
-		]
-		for col in nama_collider_fisik.size():
-			$"%GeneralSkeleton".get_node(nama_collider_fisik[col]).queue_free()
+		$pengamat.atur_mode(1)
 		$"%GeneralSkeleton".physical_bones_stop_simulation()
+		$"%GeneralSkeleton".get_node("fisik kerangka").queue_free()
 		$pose.active = true
 
 # setup
@@ -300,15 +278,16 @@ func _hapus():
 	queue_free()
 
 func _physics_process(_delta):
-	# terapkan arah gerak
-	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
-	elif is_on_floor() and arah.y < 0: arah.y = 0
-	velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
-	_menabrak = move_and_slide()
-	
-	# terapkan gerakan
-	$pose.set("parameters/arah_gerakan/blend_position", Vector2(-arah_gerakan.x, arah_gerakan.z / 2)) # TODO : clamp arah gerak z > 0.25
-	$pose.set("parameters/arah_jongkok/blend_position", arah_gerakan.z)
+	if $pose.active: # jangan fungsikan kalo animasi gak aktif
+		# terapkan arah gerak
+		if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
+		elif is_on_floor() and arah.y < 0: arah.y = 0
+		velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
+		_menabrak = move_and_slide()
+		
+		# terapkan gerakan
+		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-arah_gerakan.x, arah_gerakan.z / 2)) # TODO : clamp arah gerak z > 0.25
+		$pose.set("parameters/arah_jongkok/blend_position", arah_gerakan.z)
 func _process(_delta):
 	# kalkulasi gerakan
 	arah.x = $PlayerInput.arah_gerakan.x
