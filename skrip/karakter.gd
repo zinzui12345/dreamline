@@ -378,7 +378,7 @@ func _ketika_ditabrak(node):
 func _ketika_bangkit(): # bangkit kembali setelah menjadi ragdoll
 	var total_percepatan_kerangka = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
 	var percepatan_kerangka = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
-	var posisi_bangkit = $"%GeneralSkeleton/fisik kerangka".global_position
+	var posisi_bangkit = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
 	if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
 		_timer_ragdoll.stop()
 		atur_ragdoll(false, posisi_bangkit)
