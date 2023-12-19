@@ -11,6 +11,8 @@ enum varian_kondisi {
 	mati		# gak usah ditanya lagi!
 }
 
+const posisi_bar_nyawa = 0.65
+
 var musuh : Node3D
 var target : Node3D					# node yang akan diserang
 var kondisi = varian_kondisi.diam	# kondisi (state)

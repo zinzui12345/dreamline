@@ -287,6 +287,16 @@ func _physics_process(delta):
 					if objek_target.has_method("fokus"): objek_target.fokus()
 					if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
+			if !server.permainan.dunia.get_node("bar_nyawa").visible:
+				server.permainan.dunia.get_node("bar_nyawa").visible = true
+			server.permainan.dunia.get_node("bar_nyawa").global_position =  Vector3(
+				objek_target.global_position.x,
+				objek_target.global_position.y + objek_target.posisi_bar_nyawa,
+				objek_target.global_position.z
+			)
+			server.permainan.dunia.get_node("bar_nyawa").max_value = 150
+			server.permainan.dunia.get_node("bar_nyawa").value = objek_target.nyawa
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		match karakter.peran:
@@ -300,6 +310,8 @@ func _physics_process(delta):
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		if server.permainan.dunia.get_node("kursor_objek").visible:
 			server.permainan.dunia.get_node("kursor_objek").visible = false
+		if server.permainan.dunia.get_node("bar_nyawa").visible:
+			server.permainan.dunia.get_node("bar_nyawa").visible = false
 	
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
