@@ -12,6 +12,15 @@ var arah_p_pandangan : Vector2 :# ini arah pose
 		$pose.set("parameters/arah_y_pandangan/blend_position", nilai.y)
 		arah_p_pandangan = nilai
 var _menabrak = false
+var _ragdoll = false :
+	set(nilai):
+		$pengamat.position.x 		= 0
+		$pengamat.position.y 		= 0
+		$pengamat.position.z 		= 0
+		$pengamat/kamera.position.x = 0
+		$pengamat/kamera.position.z = 0
+		_ragdoll = nilai
+var _timer_ragdoll : Timer
 var tekstur
 
 @export var kontrol = false
@@ -231,25 +240,48 @@ func atur_warna():
 					if Konfigurasi.shader_karakter or tmp_mtl is ShaderMaterial:
 						tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
 					else: tmp_mtl.albedo_color = warna[indeks_material[mt]]
-func atur_ragdoll(nilai):
-	if nilai:
-		var tmp_ragdoll = load("res://karakter/"+$model.get_child(0).name+"/ragdoll.scn").instantiate()
+func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
+	if nilai and !_ragdoll:
+		var tmp_ragdoll = load("res://karakter/ragdoll.scn").instantiate()
 		for f in (tmp_ragdoll.get_child(0).get_child_count()):
 			if tmp_ragdoll.get_child(0).get_child(f) is PhysicalBone3D:
 				$"%GeneralSkeleton".add_child(tmp_ragdoll.get_child(0).get_child(f).duplicate())
 		tmp_ragdoll.queue_free()
+		_ragdoll = true
 		$pose.active = false
+		$fisik.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
 		$pengamat.atur_mode(3)
+		#$area_tabrak/area.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
 		$"%GeneralSkeleton".physical_bones_start_simulation()
-	else:
+		$"%GeneralSkeleton/fisik kerangka".apply_central_impulse(percepatan)
+		$"%GeneralSkeleton/fisik kerangka/fisik pinggang".apply_central_impulse(percepatan)
+		$"%GeneralSkeleton/fisik kerangka/fisik paha kiri".apply_central_impulse(percepatan)
+		$"%GeneralSkeleton/fisik kerangka/fisik paha kanan".apply_central_impulse(percepatan)
+		$"%GeneralSkeleton/fisik kerangka/fisik pinggang/fisik perut".apply_central_impulse(percepatan)
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			if _timer_ragdoll == null:
+				_timer_ragdoll = Timer.new()
+				_timer_ragdoll.name = "timer bangkit"
+				add_child(_timer_ragdoll)
+				_timer_ragdoll.wait_time = 3
+				_timer_ragdoll.connect("timeout", _ketika_bangkit)
+			_timer_ragdoll.start()
+	elif !nilai and _ragdoll:
 		$pengamat.atur_mode(1)
 		$"%GeneralSkeleton".physical_bones_stop_simulation()
 		$"%GeneralSkeleton".get_node("fisik kerangka").queue_free()
 		$pose.active = true
+		$fisik.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+		#$area_tabrak/area.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+		global_position = percepatan
+		_ragdoll = false
 
 # setup
 func _ready():
 	$pose.active = true
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		$area_tabrak.monitoring = true
+		$area_tabrak.connect("body_entered", _ketika_ditabrak)
 func _kendalikan(nilai):
 	$pengamat.aktifkan(nilai) # ini harus di set true | false untuk layer visibilitas
 	if kontrol != nilai: # gak usah  di terapin kalo nilai gak berubah
@@ -297,6 +329,61 @@ func _process(_delta):
 	arah_gerakan = get_real_velocity() * transform.basis
 	
 	# atur posisi pengamat
-	#$pengamat/kamera.position.x = get_node("%kepala").position.x # FIXME : attach ke leher ? gak usah
-	$pengamat.position.y 		= get_node("%mata_kiri").position.y
-	$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
+	if _ragdoll:
+		$pengamat.global_position.x = get_node("%pinggang").global_position.x
+		$pengamat.global_position.y = get_node("%pinggang").global_position.y
+		$pengamat.global_position.z = get_node("%pinggang").global_position.z
+	else:
+		$pengamat/kamera.position.x = 0
+		$pengamat.position.y 		= get_node("%mata_kiri").position.y
+		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
+func _ketika_ditabrak(node):
+	var velocity = node.get_linear_velocity()
+	var hantaman = 0
+	
+	# Terapkan arah Area
+	$area_tabrak.look_at(node.global_position, Vector3.UP, true)
+	$area_tabrak.rotation_degrees.x = 0
+	$area_tabrak.rotation_degrees.z = 0
+	
+	# Dapatkan transformasi dari Area3D
+	var area_transform = $area_tabrak.global_transform
+	
+	# Gunakan matriks rotasi dari transformasi area
+	var area_rotation = area_transform.basis
+	
+	# Arah dari area adalah vektor ke depan (0, 0, 1) yang diubah dengan matriks rotasi area
+	var area_direction = Vector3(0, 0, 1) * area_rotation
+	
+	var direction = velocity.normalized()
+	var alignment = area_direction.dot(direction)
+	
+	# Jika arah kecepatan linear mengarah tepat ke area
+	if alignment > 0.99:  # Misalnya, jika arah mendekati 1, hampir tepat ke area
+		hantaman = velocity.length()  # Total dari kecepatan linear
+	else:
+		# Jika arah kecepatan linear tidak tepat ke area
+		hantaman = velocity.length() * alignment  # Persentase ketepatan arah node ke area
+	hantaman = abs(hantaman)
+	
+	if node.get("radius_tabrak") != null:
+		hantaman = hantaman * node.radius_tabrak
+		if hantaman >= 10:
+			atur_ragdoll(true, velocity / 2)
+			server.fungsikan_objek(get_path(), "atur_ragdoll", [true, velocity/2])
+	
+	# TODO : nyawa!?
+	 
+	#Panku.notify(node.name+" menabrak "+name+" : "+str(hantaman))
+func _ketika_bangkit(): # bangkit kembali setelah menjadi ragdoll
+	var total_percepatan_kerangka = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
+	var percepatan_kerangka = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
+	var posisi_bangkit = $"%GeneralSkeleton/fisik kerangka".global_position
+	if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
+		_timer_ragdoll.stop()
+		atur_ragdoll(false, posisi_bangkit)
+		server.fungsikan_objek(get_path(), "atur_ragdoll", [false, posisi_bangkit])
+	elif $"%GeneralSkeleton/fisik kerangka".global_position.y < server.permainan.batas_bawah: # atur ulang posisi kalau terjatuh dari dunia
+		_timer_ragdoll.stop()
+		atur_ragdoll(false, global_position)
+		server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])

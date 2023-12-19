@@ -46,14 +46,14 @@ func atur_pengendali(id):
 			server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 		client.permainan.karakter = karakter
 		client.permainan._tampilkan_permainan()
-	else:
+		
 		# INFO : atur layer visibilitas model
-		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, false)
 func atur_raycast(nilai):
 	_raycast_pemain.enabled = nilai
 	if nilai == false: _target_pemain = false
@@ -61,6 +61,13 @@ func atur_raycast(nilai):
 func _ready():
 	set_process(false)
 	_raycast_pemain = karakter.get_node("pengamat/%target")
+	
+	get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
