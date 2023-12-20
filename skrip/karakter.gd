@@ -338,7 +338,7 @@ func _process(_delta):
 		$pengamat.position.y 		= get_node("%mata_kiri").position.y
 		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
 func _ketika_ditabrak(node):
-	var velocity = node.get_linear_velocity()
+	var percepatan = node.get_linear_velocity()
 	var hantaman = 0
 	
 	# Terapkan arah Area
@@ -355,22 +355,22 @@ func _ketika_ditabrak(node):
 	# Arah dari area adalah vektor ke depan (0, 0, 1) yang diubah dengan matriks rotasi area
 	var area_direction = Vector3(0, 0, 1) * area_rotation
 	
-	var direction = velocity.normalized()
+	var direction = percepatan.normalized()
 	var alignment = area_direction.dot(direction)
 	
 	# Jika arah kecepatan linear mengarah tepat ke area
 	if alignment > 0.99:  # Misalnya, jika arah mendekati 1, hampir tepat ke area
-		hantaman = velocity.length()  # Total dari kecepatan linear
+		hantaman = percepatan.length()  # Total dari kecepatan linear
 	else:
 		# Jika arah kecepatan linear tidak tepat ke area
-		hantaman = velocity.length() * alignment  # Persentase ketepatan arah node ke area
+		hantaman = percepatan.length() * alignment  # Persentase ketepatan arah node ke area
 	hantaman = abs(hantaman)
 	
 	if node.get("radius_tabrak") != null:
 		hantaman = hantaman * node.radius_tabrak
 		if hantaman >= 10:
-			atur_ragdoll(true, velocity / 2)
-			server.fungsikan_objek(get_path(), "atur_ragdoll", [true, velocity/2])
+			atur_ragdoll(true, percepatan / 2)
+			server.fungsikan_objek(get_path(), "atur_ragdoll", [true, percepatan/2])
 	
 	# TODO : nyawa!?
 	 
