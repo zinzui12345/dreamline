@@ -116,6 +116,7 @@ func _ketika_melihat_pemain(pemain : Karakter):
 			varian_kondisi.diam:
 				if nyawa > serangan:
 					if jarak_pemain <= 5:
+						# TODO : hanya mengejar pemain yang membawa nektar
 						musuh = pemain
 						kondisi = varian_kondisi.mengejar
 						_kondisi_sebelumnya = varian_kondisi.diam
