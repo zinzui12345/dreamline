@@ -3,6 +3,8 @@ extends RigidBody3D
  
 class_name nektar
 
+# FIXME : hancurkan ketika mengenai musuh atau pencemaran
+
 var nyawa = 70
 var id_pelempar = -1
 
@@ -39,12 +41,14 @@ func _setup():
 func _process(_delta):
 	if id_pengangkat != -1 and id_pengangkat == client.id_koneksi:
 		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(id_pengangkat))):
+			var pengangkat = server.permainan.dunia.get_node("pemain/"+str(id_pengangkat))
+			
 			# attach posisi ke pemain
-			global_transform.origin = server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%pinggang").global_transform.origin
-			global_rotation = server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%pinggang").global_rotation
+			global_transform.origin = pengangkat.get_node("%pinggang").global_transform.origin
+			global_rotation = pengangkat.get_node("%pinggang").global_rotation
 			
 			# input kendali
-			if server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)).kontrol:
+			if pengangkat.kontrol:
 				if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
 					if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
 					else: server.gunakan_entitas(name, "_lempar")
@@ -52,6 +56,10 @@ func _process(_delta):
 			# jangan biarkan tombol lepas disable
 			if !server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 				server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			
+			# jatuhkan jika pengangkatnya menjadi ragdoll
+			if pengangkat._ragdoll:
+				server.gunakan_entitas(name, "_lepas")
 	elif id_pengangkat != -1 and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		# kalo pengangkatnya terputus, lepas
 		if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) == null:
@@ -70,7 +78,7 @@ func _physics_process(delta):
 			server.rpc_id(1, "_sesuaikan_posisi_entitas", name, client.id_koneksi)
 func _ketika_menabrak(node: Node):
 	var percepatan = (linear_velocity * transform.basis).abs()
-	var damage = ceil((percepatan.y + percepatan.z) * 10)
+	#var damage = ceil((percepatan.y + percepatan.z) * 10)
 	if id_pelempar != -1:
 		if node != server.permainan.dunia.get_node("pemain/"+str(id_pelempar)):
 			remove_collision_exception_with(server.permainan.dunia.get_node("pemain/"+str(id_pelempar)))
@@ -81,12 +89,16 @@ func _ketika_menabrak(node: Node):
 						server.permainan.dunia.get_node("pemain/"+str(id_pelempar)),
 						node.nyawa
 					)
-					# FIXME : hancur
+					server.fungsikan_objek(self.get_path(), "_hancur", [])
 		id_pelempar = -1
 		$halangan_navigasi.avoidance_enabled = true
+	# TODO : efek partikel hantam
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengangkat == multiplayer.get_unique_id() and server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)).kontrol:
 		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
+func _hancur(): # ketika hancur (musnah)
+	# TODO : efek partikel hancur
+	pass
 
 func fokus():
 	server.permainan.set("tombol_aksi_2", "angkat_sesuatu")
@@ -110,7 +122,6 @@ func _angkat(id):
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 func _lepas(id):
-	id_pengangkat = -1
 	freeze = false
 	$CollisionShape3D.disabled = false
 	$MultiplayerSynchronizer.set_multiplayer_authority(1)
@@ -123,6 +134,7 @@ func _lepas(id):
 	apply_central_force(Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(true)
+	id_pengangkat = -1
 func _lempar(pelempar):
 	var kekuatan = 400
 	freeze = false

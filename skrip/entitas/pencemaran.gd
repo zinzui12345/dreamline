@@ -1,6 +1,8 @@
 # 01/11/23
 extends Node3D
 
+class_name pencemaran
+
 var ketahanan = 9999			# resistansi/nyawa
 var serangan = 7				# kerusakan/damage
 var interval_pencemaran = 7		# interval pencemaran

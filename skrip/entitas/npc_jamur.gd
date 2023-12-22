@@ -187,7 +187,7 @@ func mati():
 	musuh = null
 	kondisi = varian_kondisi.mati
 	_kondisi_sebelumnya = varian_kondisi.diam
-	$partikel_kematian.emitting = true
+	#$partikel_kematian.emitting = true >> pindah ke animasinya!
 	$model/AnimationTree.set("parameters/kondisi/transition_request", "mati")
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		$gigit.monitoring = false

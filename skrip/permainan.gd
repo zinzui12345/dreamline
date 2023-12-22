@@ -26,7 +26,7 @@ class_name Permainan
 # 10 Des 2023 | 1.4.4 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
 
-const versi = "Dreamline beta v1.4.4 rev 20/12/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 22/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -442,7 +442,6 @@ func _edit_objek(jalur):
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "tutup_panel_objek"
 	_touchpad_disentuh = false
-	# TODO : bikin petunjuk arah sumbu, nonaktifkan visibilitas kompas
 	# dapetin properti lain objek; mis. warna, kondisi
 	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
 	if edit_objek.get("warna_1") != null:
@@ -650,6 +649,7 @@ func _tampilkan_permainan():
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
 	_hentikan_musik_latar()
+	$hud/kompas.visible = true
 	$hud/kompas.parent = karakter
 	$hud/kompas.set_physics_process(true)
 	$mode_bermain.visible = true
@@ -900,6 +900,7 @@ func _pilih_tab_sepatu_karakter():
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
 func pilih_mode_bermain():
 	if is_instance_valid(karakter) and !jeda:
+		$hud/kompas.visible = true
 		$mode_bermain/main.button_pressed = true
 		$mode_bermain/edit.button_pressed = false
 		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
@@ -907,6 +908,7 @@ func pilih_mode_bermain():
 		$mode_bermain/main.release_focus()
 func pilih_mode_edit():
 	if is_instance_valid(karakter) and !jeda:
+		$hud/kompas.visible = false
 		$mode_bermain/main.button_pressed = false
 		$mode_bermain/edit.button_pressed = true
 		karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
