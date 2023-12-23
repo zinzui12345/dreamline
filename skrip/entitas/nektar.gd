@@ -8,7 +8,27 @@ class_name nektar
 var nyawa = 70
 var id_pelempar = -1
 
-@export var id_pengangkat = -1
+@export var id_pengangkat = -1:
+	set(id):
+		if id != -1:
+			freeze = true
+			$CollisionShape3D.disabled = true
+			$MultiplayerSynchronizer.set_multiplayer_authority(id)
+			server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($pos_tangan_kanan.get_path())
+			server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
+			server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($pos_tangan_kiri.get_path())
+			server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
+			add_collision_exception_with(server.permainan.dunia.get_node("pemain/"+str(id)))
+		else:
+			freeze = false
+			$CollisionShape3D.disabled = false
+			$MultiplayerSynchronizer.set_multiplayer_authority(1)
+			if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) != null:
+				server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").set_target_node("")
+				server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").stop()
+				server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").set_target_node("")
+				server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").stop()
+		id_pengangkat = id
 
 # sama seperti musuh, ini di-spawn dari bunga dengan interval 2X lipat dari pencemaran
 # ini gak bisa didekati musuh (npc_jamur) tapi bisa dihancurkan oleh tembakan racunnya
@@ -107,29 +127,14 @@ func gunakan(id_pemain):
 	elif id_pengangkat == -1: 						server.gunakan_entitas(name, "_angkat")
 
 func _angkat(id):
-	id_pengangkat = id
-	freeze = true
-	$CollisionShape3D.disabled = true
-	$MultiplayerSynchronizer.set_multiplayer_authority(id_pengangkat)
-	server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($pos_tangan_kanan.get_path())
-	server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
-	server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($pos_tangan_kiri.get_path())
-	server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
-	add_collision_exception_with(server.permainan.dunia.get_node("pemain/"+str(id)))
 	# cek id_pengangkat dengan client.id_koneksi, kalau pemain utama, jangan non-aktifkan visibilitas tombol aksi_2, non-aktifkan raycast pemain, begitupula pada _lepas()
 	if id_pengangkat == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+	id_pengangkat = id
 func _lepas(id):
-	freeze = false
-	$CollisionShape3D.disabled = false
-	$MultiplayerSynchronizer.set_multiplayer_authority(1)
 	if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id)) != null:
-		server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node("")
-		server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").stop()
-		server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node("")
-		server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").stop()
 		remove_collision_exception_with(server.permainan.dunia.get_node("pemain/"+str(id)))
 	apply_central_force(Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
@@ -137,14 +142,7 @@ func _lepas(id):
 	id_pengangkat = -1
 func _lempar(pelempar):
 	var kekuatan = 400
-	freeze = false
-	$CollisionShape3D.disabled = false
-	$MultiplayerSynchronizer.set_multiplayer_authority(1)
 	if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) != null:
-		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").set_target_node("")
-		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").stop()
-		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").set_target_node("")
-		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").stop()
 		rotation.y = server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)).rotation.y
 		rotation.x = server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%pandangan").rotation.x
 		# jumpshoot!
