@@ -39,6 +39,8 @@ var id_pelempar = -1
 # ketika mengenai pencemaran;
 #  maka nyawa pencemaran akan dikurangi dengan nyawa * 10 ditambah dengan percepatan (velocity) [jika dilempar]
 #  kemudian ini hancur
+# ketika diangkat pemain;
+#  kalau pemain diserang, kurangi nyawa nektar sampai hancur
 
 func _ready(): call_deferred("_setup")
 func _setup():
@@ -113,6 +115,7 @@ func _ketika_menabrak(node: Node):
 		id_pelempar = -1
 		$halangan_navigasi.avoidance_enabled = true
 	# TODO : efek partikel hantam
+	#print_debug(get_inverse_inertia_tensor()) # [X: (14.20119, -0, -0), Y: (-0, 14.20119, -0), Z: (-0.000001, -0, 14.20119)]
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengangkat == multiplayer.get_unique_id() and server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)).kontrol:
 		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")

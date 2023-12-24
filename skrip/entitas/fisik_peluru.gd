@@ -12,7 +12,15 @@ var jalur_proyektil : NodePath :	# node proyektil
 		jalur_proyektil = jalurnya
 var penembak : Node3D				# karakter yang menembak ini
 var damage_serangan = 5				# tokimeki poporon des~
+var timer : Timer
 
+func atur_timer():
+	timer = Timer.new()
+	timer.wait_time = 5
+	timer.one_shot = true
+	timer.connect("timeout", _musnahkan)
+	add_child(timer)
+	timer.start()
 func menabrak_sesuatu(node: Node):
 	# fungsi serang mending pake id_penyerang apa jalur_node_penyerang?
 	if server.get_node_or_null(jalur_proyektil) != null and server.get_node(jalur_proyektil).has_method("hapus_peluru"):
@@ -31,3 +39,6 @@ func _physics_process(_delta):
 			server.get_node(jalur_proyektil)._peluru_ditembak[str(id)]["arah"] = global_transform.basis
 			server.get_node(jalur_proyektil)._peluru_ditembak[str(id)]["posisi"] = global_transform.origin
 			server.get_node(jalur_proyektil).sinkronisasi_peluru(id)
+func _musnahkan():
+	server.get_node(jalur_proyektil).hapus_peluru(id)
+	Panku.notify("yatim")

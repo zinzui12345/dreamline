@@ -19,9 +19,10 @@ func tembakkan():
 		var fisik = $fisik_peluru.duplicate()
 		var arah_tembakan = global_transform.basis.z.normalized() * kecepatan
 		var id_peluru : int = server.permainan.dunia.get_node("entitas").get_child_count()
-		var nama_peluru = "peluru_"+str(id_peluru)+"_"+str(_peluru_ditembak.size())
+		var nama_peluru = str(get_path())+":"+str(id_peluru)+"_"+str(_peluru_ditembak.size())
 	
 		fisik.name = nama_peluru
+		nama_peluru = fisik.name
 		server.permainan.dunia.get_node("entitas").add_child(fisik)
 		
 		fisik.global_transform.basis = $peluru.global_transform.basis
@@ -38,6 +39,7 @@ func tembakkan():
 		fisik.penembak = get_node(penembak)
 		fisik.jalur_proyektil = get_path()
 		fisik.damage_serangan = serangan
+		fisik.atur_timer()
 		
 		_peluru_ditembak[str(id_peluru)] = {
 			"nama":		nama_peluru,
