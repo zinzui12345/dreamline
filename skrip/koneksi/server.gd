@@ -353,3 +353,4 @@ func _pemain_terputus(id_pemain):
 	if objek_dihapus != null and objek.get(str(jalur_objek)) != null:
 		objek.erase(str(jalur_objek))
 		objek_dihapus.queue_free()
+	#else: Panku.notify("error")

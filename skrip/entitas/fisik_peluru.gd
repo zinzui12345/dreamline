@@ -1,8 +1,6 @@
 # 17/11/23
 extends RigidBody3D
 
-# TODO : hapus otomatis setelah interval tertentu
-
 var id = -1							# id pada dictionary node proyektil
 var jalur_proyektil : NodePath :	# node proyektil
 	set(jalurnya):
@@ -41,4 +39,4 @@ func _physics_process(_delta):
 			server.get_node(jalur_proyektil).sinkronisasi_peluru(id)
 func _musnahkan():
 	server.get_node(jalur_proyektil).hapus_peluru(id)
-	Panku.notify("yatim")
+	#Panku.notify("yatim")

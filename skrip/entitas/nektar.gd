@@ -3,7 +3,7 @@ extends RigidBody3D
  
 class_name nektar
 
-# FIXME : hancurkan ketika mengenai musuh atau pencemaran
+# FIXME : hancurkan ketika mengenai pencemaran
 
 var nyawa = 70
 var id_pelempar = -1
@@ -111,6 +111,7 @@ func _ketika_menabrak(node: Node):
 						server.permainan.dunia.get_node("pemain/"+str(id_pelempar)),
 						node.nyawa
 					)
+					_hancur()
 					server.fungsikan_objek(self.get_path(), "_hancur", [])
 		id_pelempar = -1
 		$halangan_navigasi.avoidance_enabled = true
@@ -121,7 +122,8 @@ func _input(_event): # lepas walaupun tidak di-fokus
 		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
 func _hancur(): # ketika hancur (musnah)
 	# TODO : efek partikel hancur
-	pass
+	#Panku.notify("hapusss")
+	queue_free()
 
 func fokus():
 	server.permainan.set("tombol_aksi_2", "angkat_sesuatu")
@@ -159,5 +161,6 @@ func _lempar(pelempar):
 	apply_central_force(gaya.rotated(Vector3.UP, rotation.y))
 	if id_pengangkat == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/PlayerInput").atur_raycast(true)
+		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 	id_pengangkat = -1
 	id_pelempar = pelempar

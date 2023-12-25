@@ -376,14 +376,15 @@ func _ketika_ditabrak(node):
 	 
 	#Panku.notify(node.name+" menabrak "+name+" : "+str(hantaman))
 func _ketika_bangkit(): # bangkit kembali setelah menjadi ragdoll
-	var total_percepatan_kerangka = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
-	var percepatan_kerangka = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
-	var posisi_bangkit = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
-	if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
-		_timer_ragdoll.stop()
-		atur_ragdoll(false, posisi_bangkit)
-		server.fungsikan_objek(get_path(), "atur_ragdoll", [false, posisi_bangkit])
-	elif $"%GeneralSkeleton/fisik kerangka".global_position.y < server.permainan.batas_bawah: # atur ulang posisi kalau terjatuh dari dunia
-		_timer_ragdoll.stop()
-		atur_ragdoll(false, global_position)
-		server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])
+	if is_instance_valid($"%GeneralSkeleton/fisik kerangka"):
+		var total_percepatan_kerangka = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
+		var percepatan_kerangka = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
+		var posisi_bangkit = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
+		if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
+			_timer_ragdoll.stop()
+			atur_ragdoll(false, posisi_bangkit)
+			server.fungsikan_objek(get_path(), "atur_ragdoll", [false, posisi_bangkit])
+		elif $"%GeneralSkeleton/fisik kerangka".global_position.y < server.permainan.batas_bawah: # atur ulang posisi kalau terjatuh dari dunia
+			_timer_ragdoll.stop()
+			atur_ragdoll(false, global_position)
+			server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])

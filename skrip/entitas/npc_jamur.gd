@@ -186,7 +186,7 @@ func mati():
 	nyawa = 0
 	musuh = null
 	kondisi = varian_kondisi.mati
-	_kondisi_sebelumnya = varian_kondisi.diam
+	_kondisi_sebelumnya = varian_kondisi.diam # FIXME : stop proses navigasi!
 	#$partikel_kematian.emitting = true >> pindah ke animasinya!
 	$model/AnimationTree.set("parameters/kondisi/transition_request", "mati")
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
