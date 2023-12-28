@@ -26,7 +26,7 @@ class_name Permainan
 # 10 Des 2023 | 1.4.4 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
 
-const versi = "Dreamline beta v1.4.4 rev 25/12/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 28/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -263,6 +263,9 @@ func _notification(what):
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
 
 # core
+func uji_performa():
+	if dunia != null: dunia.queue_free()
+	get_tree().change_scene_to_file("res://skena/perf_test.tscn")
 func atur_map(nama_map : StringName = "empty"):
 	if ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;	return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"

@@ -3,6 +3,7 @@ extends Node3D
 
 # TODO : frekuensi model vegetasi (batu = 0.25, semak = 0.5, pohon = 1)
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
+# TODO : gabung mesh lod3 vegetasi menjadi 1 mesh pada jarak 2x lod3 | GPU Instancing
 
 @export var debug_culling = false :
 	set(mode):
@@ -99,7 +100,7 @@ func _enter_tree():
 	add_child(posisi_relatif_pengamat)
 func _ready():
 	if Engine.is_editor_hint(): set_process(debug_culling)
-	else: server.permainan.permukaan = self
+	elif is_instance_valid(server.permainan): server.permainan.permukaan = self
 	muat_terrain()
 func _process(_delta):
 	# jangan cek kalo gak ada
@@ -137,95 +138,97 @@ func _process(_delta):
 					posisi_pengamat = pengamat.position
 				
 				# cek pengamat mengarah kemana?, potongan mana saja yang harus visible dan invisible?
-				if get_node_or_null("bentuk_" + potongan[pt]["indeks"]) != null and gunakan_frustum_culling:
-					# kalo pengamat berada pada potongan, render potongan tersebut
-					if posisi_pengamat.x >= posisi.x and posisi_pengamat.x <= (posisi.x + batas.x) and \
-						posisi_pengamat.z >= posisi.y and posisi_pengamat.z <= (posisi.y + batas.y):
+				if get_node_or_null("bentuk_" + potongan[pt]["indeks"]) != null:
+					if gunakan_frustum_culling:
+						# kalo pengamat berada pada potongan, render potongan tersebut
+						if posisi_pengamat.x >= posisi.x and posisi_pengamat.x <= (posisi.x + batas.x) and \
+							posisi_pengamat.z >= posisi.y and posisi_pengamat.z <= (posisi.y + batas.y):
+							
+							get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
+							get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
+							
+							#get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
+							#	potongan[pt]["pusat_x"],
+							#	0,
+							#	potongan[pt]["pusat_y"]
+							#)
+							
+							# TODO : cull setiap vegetasi
+							atur_visibilitas_potongan_vegetasi(pt, true) # kalau di cull gak bisa pake ini, karena ini set semua vegetasi di potongan!
 						
-						get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
-						get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
-						
-						#get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
-						#	potongan[pt]["pusat_x"],
-						#	0,
-						#	potongan[pt]["pusat_y"]
-						#)
-					
-					# hanya render potongan yang terlihat di pandangan pengamat
-					else:
-						var potongan_node = get_node("bentuk_" + potongan[pt]["indeks"])
-						var potongan_fisik = get_node("fisik/fisik_" + potongan[pt]["indeks"])
-						
-						# atur arah arah_target_pengamat ke potongan_node dengan look_at()
-						# tentukan batas sudut arah_target_pengamat berdasarkan jarak titik tengah potongan_node
-						# kalau misalnya >= 90, non-aktifkan visibilitas potongan_node
-						# selain itu aktifkan.
-						# 20/08/2023 :: metode ini kutemukan sendiri gatau apa namanya, aku menyebutnya direction culling
-						# + dibandingkan dengan frustum culling, metode ini menggunakan lebih sedikit instruksi pada CPU
-						# + aku membuat metode ini sepenuhnya dengan hati tanpa bantuan AI kecuali baca dokumentasi
-						# - metode ini gak berguna kalau bounding box objek yang ingin di cull != 1:1 atau > 1:4
-						# * metode ini akan jauh lebih optimal lagi kalau digabung dengan RenderingServer dan diproses pada Thread
-						
-						# mendapatkan posisi tengah potongan
-						#var potongan_tengah = potongan_node.transform.origin + Vector3(batas.x / 2, 0, batas.y / 2)
-						var potongan_tengah = Vector3(
-							potongan[pt]["pusat_x"],
-							0,
-							potongan[pt]["pusat_y"]
-						)
-						#get_parent().get_node("debug_pos_chunk").transform.origin = potongan_tengah
-						
-						# menghitung jarak antara kamera dan potongan
-						var jarak_render = posisi_pengamat.distance_to(potongan_tengah)
-						
-						# mengarahkan arah_target_pengamat dari kamera ke potongan
-						if arah_target_pengamat != null:
-							arah_target_pengamat.get_parent().position = posisi_pengamat
-							arah_target_pengamat.get_parent().global_rotation_degrees = pengamat.global_rotation_degrees
-							arah_target_pengamat.look_at(
-								potongan_tengah, 
-								Vector3.UP,
-								false
+						# hanya render potongan yang terlihat di pandangan pengamat
+						else:
+							var potongan_node = get_node("bentuk_" + potongan[pt]["indeks"])
+							var potongan_fisik = get_node("fisik/fisik_" + potongan[pt]["indeks"])
+							
+							# atur arah arah_target_pengamat ke potongan_node dengan look_at()
+							# tentukan batas sudut arah_target_pengamat berdasarkan jarak titik tengah potongan_node
+							# kalau misalnya >= 90, non-aktifkan visibilitas potongan_node
+							# selain itu aktifkan.
+							# 20/08/2023 :: metode ini kutemukan sendiri gatau apa namanya, aku menyebutnya direction culling
+							# + dibandingkan dengan frustum culling, metode ini menggunakan lebih sedikit instruksi pada CPU
+							# + aku membuat metode ini sepenuhnya dengan hati tanpa bantuan AI kecuali baca dokumentasi
+							# - metode ini gak berguna kalau bounding box objek yang ingin di cull != 1:1 atau > 1:4
+							# * metode ini akan jauh lebih optimal lagi kalau digabung dengan RenderingServer dan diproses pada Thread
+							
+							# mendapatkan posisi tengah potongan
+							#var potongan_tengah = potongan_node.transform.origin + Vector3(batas.x / 2, 0, batas.y / 2)
+							var potongan_tengah = Vector3(
+								potongan[pt]["pusat_x"],
+								0,
+								potongan[pt]["pusat_y"]
 							)
-						
-						# menghitung sudut antara vektor arah_pandang dan posisi potongan
-						# menghitung sudut antara vektor arah_pandang dan posisi potongan
-						if arah_target_pengamat != null:
-							var sudut = abs(arah_target_pengamat.rotation_degrees.y)
-							var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"]) / 0.405453467695
-							#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
-							#											+str(sudut)+" <= 175"
-							if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
-								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" "+str(sudut)+" < "+str(pengamat.fov + (pengamat.fov * 0.405453467695))+" : visibel"); await get_tree().create_timer(0.5).timeout
-								if (jarak_render <= (jarak * 2)):
+							#get_parent().get_node("debug_pos_chunk").transform.origin = potongan_tengah
+							
+							# menghitung jarak antara kamera dan potongan
+							var jarak_render = posisi_pengamat.distance_to(potongan_tengah)
+							
+							# mengarahkan arah_target_pengamat dari kamera ke potongan
+							if arah_target_pengamat != null:
+								arah_target_pengamat.get_parent().position = posisi_pengamat
+								arah_target_pengamat.get_parent().global_rotation_degrees = pengamat.global_rotation_degrees
+								arah_target_pengamat.look_at(
+									potongan_tengah, 
+									Vector3.UP,
+									false
+								)
+							
+							# menghitung sudut antara vektor arah_pandang dan posisi potongan
+							if arah_target_pengamat != null:
+								var sudut = abs(arah_target_pengamat.rotation_degrees.y)
+								var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"]) / 0.405453467695
+								#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
+								#											+str(sudut)+" <= 175"
+								if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
+									#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" "+str(sudut)+" < "+str(pengamat.fov + (pengamat.fov * 0.405453467695))+" : visibel"); await get_tree().create_timer(0.5).timeout
+									if (jarak_render <= (jarak * 2)):
+										if !potongan_node.visible:
+											potongan_node.visible = true
+											potongan_fisik.disabled = false
+										atur_visibilitas_potongan_vegetasi(pt, true)
+									elif potongan_node.visible:
+										potongan_node.visible = false
+										potongan_fisik.disabled = true
+										atur_visibilitas_potongan_vegetasi(pt, false)
+								elif jarak_render <= jarak and sudut <= 175:
+									#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" jarak < lebar : visibel")
 									if !potongan_node.visible:
 										potongan_node.visible = true
 										potongan_fisik.disabled = false
-									if gunakan_object_culling:
+									if sudut < 90:
 										atur_visibilitas_potongan_vegetasi(pt, true)
-								else:
+									else:
+										atur_visibilitas_potongan_vegetasi(pt, false)
+								elif potongan_node.visible:
 									potongan_node.visible = false
 									potongan_fisik.disabled = true
-									if gunakan_object_culling:
-										atur_visibilitas_potongan_vegetasi(pt, false)
-							elif jarak_render <= jarak and sudut <= 175:
-								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" jarak < lebar : visibel")
-								if !potongan_node.visible:
-									potongan_node.visible = true
-									potongan_fisik.disabled = false
-									if gunakan_object_culling:
-										if sudut < 90:
-											atur_visibilitas_potongan_vegetasi(pt, true)
-										else:
-											atur_visibilitas_potongan_vegetasi(pt, false)
-							else:
-								#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" umum : tidak-visibel")
-								if potongan_node.visible:
-									potongan_node.visible = false
-									potongan_fisik.disabled = true
-									if gunakan_object_culling:
-										atur_visibilitas_potongan_vegetasi(pt, false)
-							arah_target_pengamat.rotation_degrees.y = 0
+									atur_visibilitas_potongan_vegetasi(pt, false)
+								arah_target_pengamat.rotation_degrees.y = 0
+					else:
+						if !get_node("bentuk_" + potongan[pt]["indeks"]).visible:
+							get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
+							get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
+						atur_visibilitas_potongan_vegetasi(pt, true)
 func _exit_tree():
 #	RenderingServer.free() # INFO : memory leak | hapus RID satu-persatu!
 	print("menghapus vegetasi permukaan")

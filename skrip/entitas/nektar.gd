@@ -100,11 +100,19 @@ func _physics_process(delta):
 			server.rpc_id(1, "_sesuaikan_posisi_entitas", name, client.id_koneksi)
 func _ketika_menabrak(node: Node):
 	var percepatan = (linear_velocity * transform.basis).abs()
-	#var damage = ceil((percepatan.y + percepatan.z) * 10)
+	var damage = ceil((percepatan.y + percepatan.z) * 10)
 	if id_pelempar != -1:
 		if node != server.permainan.dunia.get_node("pemain/"+str(id_pelempar)):
 			remove_collision_exception_with(server.permainan.dunia.get_node("pemain/"+str(id_pelempar)))
-		if node.get("kelompok") != null:
+		if node is Area3D and node.get_parent() is pencemaran:
+			Panku.notify("hit!") # FIXME : area nonsolid!
+			node.get_parent()._diserang(
+				server.permainan.dunia.get_node("pemain/"+str(id_pelempar)),
+				(node.nyawa * 10) + damage
+			)
+			_hancur()
+			server.fungsikan_objek(self.get_path(), "_hancur", [])
+		elif node.get("kelompok") != null:
 			match node.kelompok:
 				npc_ai.grup.musuh:
 					node._diserang(

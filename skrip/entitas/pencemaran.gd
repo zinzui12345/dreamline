@@ -31,6 +31,8 @@ func _ready():
 			"rotation_degrees": rotation_degrees
 		}
 		
+		$area_pencemaran.monitoring = true
+		$area_pencemaran.monitorable = true
 		$interval_pencemaran.wait_time = interval_pencemaran * 60
 		$interval_spawn.wait_time = interval_spawn * 60
 		$interval_pencemaran.start()
