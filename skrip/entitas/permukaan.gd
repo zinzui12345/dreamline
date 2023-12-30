@@ -10,7 +10,7 @@ extends Node3D
 		if Engine.is_editor_hint(): set_process(mode)
 		debug_culling = mode
 @export var gunakan_frustum_culling = false
-@export var gunakan_object_culling = false
+@export var gunakan_occlusion_culling = false
 @export var hasilkan_vegetasi = false
 @export var hasilkan_fisik = false
 @export var hasilkan_potongan = false
@@ -153,8 +153,7 @@ func _process(_delta):
 							#	potongan[pt]["pusat_y"]
 							#)
 							
-							# TODO : cull setiap vegetasi
-							atur_visibilitas_potongan_vegetasi(pt, true) # kalau di cull gak bisa pake ini, karena ini set semua vegetasi di potongan!
+							atur_visibilitas_vegetasi_potongan(pt)
 						
 						# hanya render potongan yang terlihat di pandangan pengamat
 						else:
@@ -205,7 +204,7 @@ func _process(_delta):
 										if !potongan_node.visible:
 											potongan_node.visible = true
 											potongan_fisik.disabled = false
-										atur_visibilitas_potongan_vegetasi(pt, true)
+										atur_visibilitas_potongan_vegetasi(pt, true) # ini jangan cek kalo potongan visibel, bisa jadi vegetasi tidak visibel, tetapi potongan tetap visibel [cek baris 213]
 									elif potongan_node.visible:
 										potongan_node.visible = false
 										potongan_fisik.disabled = true
@@ -238,6 +237,7 @@ func _exit_tree():
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["detail"])
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod1"])
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod2"])
+		# potongan[pt]["vegetasi"].clear() :: ini pindah ke ketika menyipan skena
 
 func hasilkan_terrain():
 	var arr_mesh = ArrayMesh.new()
@@ -616,7 +616,14 @@ func tempatkan_vegetasi(posisi : Vector3):
 		data_vegetasi["rotasi"] = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
 		#add_child(vegetation_instance)
 		vegetasi.append(data_vegetasi)
-func atur_visibilitas_potongan_vegetasi(id_potongan, nilai):
+func atur_visibilitas_vegetasi_potongan(id_potongan):			# atur visibilitas vegetasi satu per-satu relatif terhadap pengamat pada suatu potongan
+	# TODO : cull setiap vegetasi
+	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
+	for vg in potongan[id_potongan]["vegetasi"].size():
+		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():
+			#RenderingServer.instance_get_transform()
+			pass
+func atur_visibilitas_potongan_vegetasi(id_potongan, nilai): 	# atur visibilitas semua vegetasi pada suatu potongan
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
 	for vg in potongan[id_potongan]["vegetasi"].size():
 		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():

@@ -26,7 +26,7 @@ class_name Permainan
 # 10 Des 2023 | 1.4.4 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
 
-const versi = "Dreamline beta v1.4.4 rev 28/12/23 alpha"
+const versi = "Dreamline beta v1.4.4 rev 30/12/23 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -563,7 +563,7 @@ func putuskan_server(paksa = false):
 		$latar.tampilkan()
 		_mainkan_musik_latar()
 func alamat_ip():
-	var informasi = "%s" % [str(server.ip_publik)]
+	var informasi = "IP : %s" % [str(server.ip_publik)]
 	return informasi
 
 # kontrol
