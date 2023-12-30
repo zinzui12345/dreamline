@@ -5,7 +5,6 @@ func _ready():
 	if "--server" in OS.get_cmdline_args():
 		server.publik = true
 		server.permainan.buat_server(true);
-		print(server.permainan.alamat_ip())
 		return
 
 func hapus_map():

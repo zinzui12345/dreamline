@@ -316,6 +316,8 @@ func _muat_map(file_map):
 		if !server.headless:
 			call_deferred("_tambahkan_pemain", 1, data)
 			server.pemain_terhubung = 1
+		else:
+			call_deferred("_mulai_server_cli")
 	elif koneksi == MODE_KONEKSI.CLIENT:
 		# INFO : (5b1) kirim data pemain ke server
 		server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
@@ -323,6 +325,9 @@ func _muat_map(file_map):
 		server.call_deferred("rpc_id", 1, "_kirim_objek_ke_pemain", client.id_koneksi)
 		#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
 	thread.call_deferred("wait_to_finish")
+func _mulai_server_cli():
+	print(alamat_ip())
+	if permukaan != null: permukaan.gunakan_frustum_culling = false
 func _tambahkan_pemain(id: int, data_pemain):
 	var pemain
 	var sumber = "" # ini jalur resource pemain, fungsinya untuk disimpan di timeline

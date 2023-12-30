@@ -29,6 +29,11 @@ extends Node3D
 @export var tekstur : Image
 @export var potongan = []
 @export var vegetasi = []
+@export var hapus_rid_vegetasi = false :
+	set(nilai):
+		if nilai:
+			hapus_rid()
+		hapus_rid_vegetasi = false
 @export var perbarui = false :
 	set(nilai):
 		if nilai:
@@ -237,7 +242,6 @@ func _exit_tree():
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["detail"])
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod1"])
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod2"])
-		# potongan[pt]["vegetasi"].clear() :: ini pindah ke ketika menyipan skena
 
 func hasilkan_terrain():
 	var arr_mesh = ArrayMesh.new()
@@ -340,6 +344,10 @@ func hasilkan_terrain():
 		if is_instance_valid(fisik) and fisik.get_child_count() > 0: fisik.remove_child(fisik.get_child(0))
 		print("memotong bentuk : 4 * 4 => 16")
 		slice_terrain(gambar_noise, mat)
+func hapus_rid():
+	print("menghapus rid vegetasi")
+	for pt in potongan.size():
+		potongan[pt]["vegetasi"].clear()
 
 func simpan_terrain():
 	var packed_scene 	= PackedScene.new()
@@ -378,7 +386,7 @@ func ekspor_terrain():
 
 func muat_terrain():
 	print("memuat data permukaan")
-	if FileAccess.file_exists("res://model/permukaan.scn"):
+	if ResourceLoader.exists("res://model/permukaan.scn"):
 		var data = load("res://model/permukaan.scn").instantiate()
 		for isi_data in data.get_children():
 			add_child(isi_data.duplicate())
