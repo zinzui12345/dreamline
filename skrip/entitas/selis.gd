@@ -80,18 +80,23 @@ func _physics_process(delta):
 		steering = move_toward(steering, arah_belok, 1.5 * delta)
 		$setir/rotasi_stir.rotation_degrees.y = steering * 50
 		
-		if kursi["pengemudi"] != -1:
-			if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
+	if kursi["pengemudi"] != -1:
+		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
+			if server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"]))._ragdoll:
+				if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+					server._gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
+				else: print_debug("ini bukan server")
+			else:
 				server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
 				server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
-			elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-				server._gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
-		if kursi["penumpang"][0] != -1:
-			if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0]))):
-				server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
-				server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
-			elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-				server._gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
+		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			server._gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
+	if kursi["penumpang"][0] != -1:
+		if is_instance_valid(server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0]))):
+			server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
+			server.permainan.dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
+		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			server._gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
 		
 	if global_position.y < server.permainan.batas_bawah:
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -168,8 +173,8 @@ func _berhenti_mengemudi(id_pengemudi):
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "berdiri")
 		#server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = false
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, true)
-		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.x = 0
-		server.permainan.dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation.z = 0
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).rotation.x = 0
+		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).rotation.z = 0
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").set_target_node("")
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
