@@ -159,7 +159,7 @@ func _process(_delta):
 							#	potongan[pt]["pusat_y"]
 							#)
 							
-							atur_visibilitas_vegetasi_potongan(pt, posisi_pengamat, pengamat.rotation, pengamat.fov)
+							atur_visibilitas_vegetasi_potongan(pt, posisi_pengamat, pengamat.global_rotation, pengamat.fov)
 						
 						# hanya render potongan yang terlihat di pandangan pengamat
 						else:
@@ -629,8 +629,9 @@ func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pen
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
 	for vg in potongan[id_potongan]["vegetasi"].size():
 		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():
-			var posisi_vegetasi = vegetasi[indeks_vegetasi[vg]]["posisi"]
+			var posisi_vegetasi : Vector3 = vegetasi[indeks_vegetasi[vg]]["posisi"]
 			var arah_pengamat = Vector3.FORWARD.rotated(Vector3.UP, rotasi_pengamat.y)
+			var jarak_pengamat = posisi_vegetasi.distance_to(posisi_pengamat)
 			var pengamat_ke_vegetasi : Vector3 = posisi_vegetasi - posisi_pengamat
 			pengamat_ke_vegetasi.y = 0 # gak usah cek ketinggian!
 			#print(posisi_vegetasi) # HACK : mencetak banyak data dalam waktu bersamaan akan memperlambat kinerja cpu
@@ -641,8 +642,9 @@ func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pen
 			var dot_product = arah_pengamat.dot(pengamat_ke_vegetasi)
 			var sudut_arah = rad_to_deg(acos(dot_product))
 			
-			if sudut_arah <= (fov_pengamat + (fov_pengamat * 0.405453467695)):
-				# FIXME : cuma cull kalo jarak pengamat > 10
+			# lakukan culling hanya jika jarak vegetasi dan pengamat > 10 atau sudut_arah lebih dari fov pengamat
+			# jarak 10 ditujukan supaya pengamat dapat tetap melihat vegetasi dari dekat, ini dikarenakan bentuk model vegetasi
+			if sudut_arah <= (fov_pengamat + (fov_pengamat * 0.405453467695)) or jarak_pengamat < 10:
 				RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], true)
 				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
 					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], true)
