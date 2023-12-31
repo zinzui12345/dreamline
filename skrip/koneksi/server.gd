@@ -111,7 +111,7 @@ func buat_koneksi():
 			ip_publik = "ERROR:<"+str(hasil_pencarian)+">"
 			publik = false
 	var t_inf_kon = TranslationServer.translate("%buatkoneksi")
-	Panku.notify(t_inf_kon % [map, "localhost"]) # unsupported format character
+	Panku.notify(t_inf_kon % [map, "localhost"])
 	Panku.gd_exprenv.register_env("server", self)
 func putuskan():
 	interface.set_refuse_new_connections(true)

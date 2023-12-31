@@ -2,10 +2,15 @@ extends Node3D
 
 # Mulai modus server
 func _ready():
-	if "--server" in OS.get_cmdline_args():
-		server.publik = true
-		server.permainan.buat_server(true);
-		return
+	var argumen : Array = OS.get_cmdline_args() # ["res://skena/dreamline.tscn", "--server", "empty"]
+	var jumlah_argumen  = argumen.size()
+	for arg in jumlah_argumen:
+		if argumen[arg] == "--server":
+			if arg < jumlah_argumen - 1 and argumen[arg+1] != "":
+				server.permainan.atur_map(argumen[arg+1])
+			server.publik = true
+			server.permainan.buat_server(true);
+			return
 
 func hapus_map():
 	if get_node_or_null("lingkungan") != null:

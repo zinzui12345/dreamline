@@ -93,17 +93,17 @@ func _physics_process(delta):
 			elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 				server._gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
 		
-		if global_position.y < server.permainan.batas_bawah:
-			if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-				freeze = true
-				angular_velocity = Vector3.ZERO
-				linear_velocity  = Vector3.ZERO
-				global_transform.origin = posisi_awal
-				rotation		 		= rotasi_awal
-				Panku.notify("re-spawn "+name)
-				freeze = false
-			elif server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
-				server.rpc_id(1, "_sesuaikan_posisi_entitas", name, client.id_koneksi)
+	if global_position.y < server.permainan.batas_bawah:
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			freeze = true
+			angular_velocity = Vector3.ZERO
+			linear_velocity  = Vector3.ZERO
+			global_transform.origin = posisi_awal
+			rotation		 		= rotasi_awal
+			Panku.notify("re-spawn "+name)
+			freeze = false
+		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+			server.rpc_id(1, "_sesuaikan_posisi_entitas", name, client.id_koneksi)
 
 func _process(_delta):
 	if client.id_koneksi == kursi["pengemudi"]:
