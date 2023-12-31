@@ -3,6 +3,7 @@ extends Node3D
 
 # TODO : frekuensi model vegetasi (batu = 0.25, semak = 0.5, pohon = 1)
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
+# TODO : atur visibility_parent mesh lod vegetasi manjadi detailnya, jangan atur visibilitas satu-persatu!
 # TODO : gabung mesh lod3 vegetasi menjadi 1 mesh pada jarak 2x lod3 | GPU Instancing
 
 @export var debug_culling = false :
@@ -158,7 +159,7 @@ func _process(_delta):
 							#	potongan[pt]["pusat_y"]
 							#)
 							
-							atur_visibilitas_vegetasi_potongan(pt)
+							atur_visibilitas_vegetasi_potongan(pt, posisi_pengamat, pengamat.rotation, pengamat.fov)
 						
 						# hanya render potongan yang terlihat di pandangan pengamat
 						else:
@@ -624,14 +625,36 @@ func tempatkan_vegetasi(posisi : Vector3):
 		data_vegetasi["rotasi"] = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
 		#add_child(vegetation_instance)
 		vegetasi.append(data_vegetasi)
-func atur_visibilitas_vegetasi_potongan(id_potongan):			# atur visibilitas vegetasi satu per-satu relatif terhadap pengamat pada suatu potongan
-	# TODO : cull setiap vegetasi
+func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pengamat, fov_pengamat):	# atur visibilitas vegetasi satu per-satu relatif terhadap pengamat pada suatu potongan
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
 	for vg in potongan[id_potongan]["vegetasi"].size():
 		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():
-			#RenderingServer.instance_get_transform()
-			pass
-func atur_visibilitas_potongan_vegetasi(id_potongan, nilai): 	# atur visibilitas semua vegetasi pada suatu potongan
+			var posisi_vegetasi = vegetasi[indeks_vegetasi[vg]]["posisi"]
+			var arah_pengamat = Vector3.FORWARD.rotated(Vector3.UP, rotasi_pengamat.y)
+			var pengamat_ke_vegetasi : Vector3 = posisi_vegetasi - posisi_pengamat
+			pengamat_ke_vegetasi.y = 0 # gak usah cek ketinggian!
+			#print(posisi_vegetasi) # HACK : mencetak banyak data dalam waktu bersamaan akan memperlambat kinerja cpu
+			
+			arah_pengamat = arah_pengamat.normalized()
+			pengamat_ke_vegetasi = pengamat_ke_vegetasi.normalized()
+			
+			var dot_product = arah_pengamat.dot(pengamat_ke_vegetasi)
+			var sudut_arah = rad_to_deg(acos(dot_product))
+			
+			if sudut_arah <= (fov_pengamat + (fov_pengamat * 0.405453467695)):
+				# FIXME : cuma cull kalo jarak pengamat > 10
+				RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], true)
+				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
+					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], true)
+				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
+					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], true)
+			else:
+				RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], false)
+				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
+					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], false)
+				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
+					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], false)
+func atur_visibilitas_potongan_vegetasi(id_potongan, nilai): 											# atur visibilitas semua vegetasi pada suatu potongan
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
 	for vg in potongan[id_potongan]["vegetasi"].size():
 		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():
