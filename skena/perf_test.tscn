@@ -33,6 +33,8 @@ func _atur_frustum_culling(nilai):
 	$viewport_utama/viewport/lingkungan/permukaan.gunakan_frustum_culling = nilai
 func _atur_object_culling(nilai):
 	$viewport_utama/viewport/lingkungan/permukaan.gunakan_occlusion_culling = nilai
+func _atur_level_of_detail(nilai):
+	$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
 
 # ketika memilih tampilan viewport culling
 func _pilih_tidak_ada():
@@ -744,6 +746,7 @@ clip_text = true
 [connection signal="pressed" from="panel_opsi/pilih_fc" to="." method="_pilih_frustum_culling"]
 [connection signal="toggled" from="panel_opsi/opsi_oc" to="." method="_atur_object_culling"]
 [connection signal="pressed" from="panel_opsi/pilih_oc" to="." method="_pilih_occlusion_culling"]
+[connection signal="toggled" from="panel_opsi/opsi_lod" to="." method="_atur_level_of_detail"]
 [connection signal="pressed" from="panel_opsi/pilih_lod" to="." method="_pilih_lod"]
 [connection signal="pressed" from="panel_opsi/pilih_mipmap" to="." method="_pilih_mipmap"]
 [connection signal="value_changed" from="panel_opsi_2/atur_fov" to="." method="_atur_fov"]

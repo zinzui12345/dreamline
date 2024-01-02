@@ -52,7 +52,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_oj1l1")
 
 [node name="permukaan" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.95, 0)
 script = ExtResource("3_kx3r3")
 gunakan_frustum_culling = true
 hasilkan_vegetasi = true
@@ -63,6 +63,7 @@ tinggi_maks = 60
 tekstur = ExtResource("4_kp02e")
 potongan = [{
 "indeks": "1_1",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -480.0,
@@ -72,6 +73,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "1_2",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -160.0,
@@ -81,6 +83,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "1_3",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 160.0,
@@ -90,6 +93,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "1_4",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 480.0,
@@ -99,6 +103,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "2_1",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -480.0,
@@ -108,6 +113,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "2_2",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -160.0,
@@ -117,6 +123,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "2_3",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 160.0,
@@ -126,6 +133,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "2_4",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 480.0,
@@ -135,6 +143,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "3_1",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -480.0,
@@ -144,6 +153,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "3_2",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -160.0,
@@ -153,6 +163,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "3_3",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 160.0,
@@ -162,6 +173,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "3_4",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 480.0,
@@ -171,6 +183,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "4_1",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -480.0,
@@ -180,6 +193,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "4_2",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": -160.0,
@@ -189,6 +203,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "4_3",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 160.0,
@@ -198,6 +213,7 @@ potongan = [{
 "vegetasi": {}
 }, {
 "indeks": "4_4",
+"instance": "",
 "lebar_x": 128,
 "lebar_y": 128,
 "pusat_x": 480.0,
@@ -11914,7 +11930,7 @@ vegetasi = [{
 }]
 
 [node name="air" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.5, 0)
 mesh = SubResource("PlaneMesh_nopol")
 surface_material_override/0 = SubResource("ShaderMaterial_8bme2")
 
