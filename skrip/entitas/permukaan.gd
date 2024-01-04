@@ -369,7 +369,7 @@ func hasilkan_terrain():
 func hapus_rid():
 	print("menghapus rid vegetasi")
 	for pt in potongan.size():
-		potongan[pt]["instance"] = ""
+		potongan[pt]["instance"].clear()
 		potongan[pt]["vegetasi"].clear()
 
 func simpan_terrain():
@@ -415,12 +415,6 @@ func muat_terrain():
 			add_child(isi_data.duplicate())
 		data.queue_free()
 		if vegetasi.size() > 0:
-			if potongan.size() > 0:
-				for pt in potongan.size():
-					var instance_potongan : RID = RenderingServer.instance_create()
-					RenderingServer.instance_set_scenario(instance_potongan, scenario)
-					potongan[pt]["instance"] = instance_potongan
-			
 			print("menghasilkan vegetasi")
 			for v in vegetasi.size():
 				var instance : RID = RenderingServer.instance_create()
@@ -482,7 +476,6 @@ func muat_terrain():
 				
 				if potongan.size() > 0:
 					for pt in potongan.size():
-						var instance_potongan = potongan[pt]["instance"]
 						var lebar_terrain_x = ((potongan[pt]["lebar_x"] * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
 						var lebar_terrain_y = ((potongan[pt]["lebar_y"] * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
 						
@@ -500,18 +493,59 @@ func muat_terrain():
 						if posisi_vegetasi.z >= posisi.y and posisi_vegetasi.z <= (posisi.y + batas.y): pass
 						else: continue
 						
-						RenderingServer.instance_set_visibility_parent(instance, instance_potongan)
-						if instance_lod1.is_valid():
-							RenderingServer.instance_set_visibility_parent(instance_lod1, instance_potongan)
-						if instance_lod2.is_valid():
-							RenderingServer.instance_set_visibility_parent(instance_lod2, instance_potongan)
-						
 						potongan[pt]["vegetasi"][v] = {
 							"terlihat":	true,
 							"detail":	instance,
 							"lod1":		instance_lod1,
 							"lod2":		instance_lod2
 						}
+			
+			# @ 04/01/24 : buat MeshInstance3D gabungan dari lod2 sebagai lod3 | GPU Instancing
+			if potongan.size() > 0:
+				for pt in potongan.size():
+					potongan[pt]["instance"] = {}
+					if potongan[pt]["vegetasi"].size() > 0:
+						for v in potongan[pt]["vegetasi"].size():
+							if vegetasi[v]["tipe"] == "pohon": # hanya pohon yang bisa terlihat dari kejauhan
+								var indeks = vegetasi[v]["tipe"]+"_"+str(vegetasi[v]["model"])
+								var multimesh : RID
+								
+								if potongan[pt]["instance"].get(indeks) == null:
+									multimesh = RenderingServer.multimesh_create()
+									var instance : RID = RenderingServer.instance_create()
+									
+									RenderingServer.instance_set_base(instance, multimesh)
+									RenderingServer.instance_set_scenario(instance, scenario)
+									
+									if pohon[vegetasi[v]["model"]]["lod2"] != null:
+										RenderingServer.multimesh_set_mesh(multimesh, pohon[vegetasi[v]["model"]]["lod2"])
+									elif pohon[vegetasi[v]["model"]]["lod1"] != null:
+										RenderingServer.multimesh_set_mesh(multimesh, pohon[vegetasi[v]["model"]]["lod1"])
+									else:
+										RenderingServer.multimesh_set_mesh(multimesh, pohon[vegetasi[v]["model"]]["detail"])
+									
+									potongan[pt]["instance"][indeks] = {}
+									potongan[pt]["instance"][indeks]["instance"] = instance
+									potongan[pt]["instance"][indeks]["jumlah_instance"] = 1
+									potongan[pt]["instance"][indeks]["multimesh"] = multimesh
+									potongan[pt]["instance"][indeks]["buffer_transformasi"] = PackedFloat32Array()
+								else:
+									multimesh = potongan[pt]["instance"][indeks]["multimesh"]
+									potongan[pt]["instance"][indeks]["jumlah_instance"] += 1
+								
+								if multimesh.is_valid():
+									potongan[pt]["instance"][indeks]["buffer_transformasi"].append_array(
+										[
+											1, 0, 0, vegetasi[v]["posisi"].x,
+											0, 1, 0, vegetasi[v]["posisi"].y,
+											0, 0, 1, vegetasi[v]["posisi"].z
+										]
+									)
+									if v == potongan[pt]["vegetasi"].size() - 1:
+										RenderingServer.multimesh_allocate_data(multimesh, potongan[pt]["instance"][indeks]["jumlah_instance"], RenderingServer.MULTIMESH_TRANSFORM_3D)
+										RenderingServer.multimesh_set_buffer(multimesh, potongan[pt]["instance"][indeks]["buffer_transformasi"])
+										#print_debug(RenderingServer.multimesh_get_instance_count(multimesh))
+										#print_debug(potongan[pt]["instance"][indeks]["jumlah_instance"])
 	else: print("tidak ada data permukaan")
 
 func slice_terrain(gambar_noise, material):
@@ -701,8 +735,6 @@ func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pen
 						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], false)
 					potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = false
 func atur_visibilitas_potongan_vegetasi(id_potongan, nilai : bool): 									# atur visibilitas semua vegetasi pada suatu potongan
-	if potongan[id_potongan]["instance"].is_valid():
-		RenderingServer.instance_set_visible(potongan[id_potongan]["instance"], nilai)
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
 	for vg in potongan[id_potongan]["vegetasi"].size():
 		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] != nilai:
@@ -715,3 +747,5 @@ func atur_visibilitas_potongan_vegetasi(id_potongan, nilai : bool): 									# a
 				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
 					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], nilai)
 			potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = nilai
+	#if potongan[id_potongan]["instance"].is_valid(): # FIXME : harus di loop
+	#	RenderingServer.instance_set_visible(potongan[id_potongan]["instance"], nilai)
