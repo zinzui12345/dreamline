@@ -1,10 +1,6 @@
 @tool
 extends Node3D
 
-# FIXME : gabung mesh lod3 vegetasi menjadi 1 mesh pada satu chunk dengan jarak_render 2x lod3 | GPU Instancing 
-#		 ==> karena instance dari multimesh tidak bisa menggunakan visibility_range; maka:
-#        ==> tentukan visibilitas instance, hanya tampilkan pada chunk terakhir sebelum tidak visibel pada baris 224
-
 # TODO : frekuensi model vegetasi (batu = 0.25, semak = 0.5, pohon = 1)
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
 
@@ -181,7 +177,9 @@ func _process(_delta):
 							#	0,
 							#	potongan[pt]["pusat_y"]
 							#)
+							potongan[pt]["m_render"] = "detail"
 							
+							atur_visibilitas_lod_potongan_vegetasi(pt, false)
 							atur_visibilitas_vegetasi_potongan(pt, posisi_pengamat, pengamat.global_rotation, pengamat.fov)
 						
 						# hanya render potongan yang terlihat di pandangan pengamat
@@ -228,29 +226,52 @@ func _process(_delta):
 								#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
 								#											+str(sudut)+" <= 175"
 								if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
-									#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" "+str(sudut)+" < "+str(pengamat.fov + (pengamat.fov * 0.405453467695))+" : visibel"); await get_tree().create_timer(0.5).timeout
 									if (jarak_render <= (jarak * 2)):
 										if !potongan_node.visible:
 											potongan_node.visible = true
 											potongan_fisik.disabled = false
-										atur_visibilitas_potongan_vegetasi(pt, true) # ini jangan cek kalo potongan visibel, bisa jadi vegetasi tidak visibel, tetapi potongan tetap visibel [cek baris 213]
+										# 05/01/24 :: kalkulasi jarak terdekat antara permukaan dan pengamat berdasarkan jarak lod2 vegetasi, lalu fungsikan lod
+										#		==> masukkan jarak hasil kalkulasi pada fungsi yang kemudian visibilitas instance lod diatur berdasarkan jarak lod2 masing-masing instance
+										#		==> pada fungsi, jika semua instance lod visibel, maka atur visibilitas_potongan_vegetasi menjadi false
+										#	 	==> selain itu atur visibilitas_potongan_vegetasi menjadi true
+										if (jarak_render - (jarak / 2)) <= 70:
+											atur_visibilitas_potongan_vegetasi(pt, true)
+											atur_visibilitas_lod_potongan_vegetasi(pt, false)
+											potongan[pt]["m_render"] = "lod"
+										else:
+											atur_visibilitas_potongan_vegetasi(pt, false)
+											atur_visibilitas_lod_potongan_vegetasi(pt, true)
+											potongan[pt]["m_render"] = "gpu instance"
 									elif potongan_node.visible:
 										potongan_node.visible = false
 										potongan_fisik.disabled = true
 										atur_visibilitas_potongan_vegetasi(pt, false)
+										atur_visibilitas_lod_potongan_vegetasi(pt, false)
+										potongan[pt]["m_render"] = "lod"
 								elif jarak_render <= jarak and sudut <= 175:
-									#if pt == 0: print_debug("bentuk_" + potongan[pt]["indeks"]+" jarak < lebar : visibel")
 									if !potongan_node.visible:
 										potongan_node.visible = true
 										potongan_fisik.disabled = false
 									if sudut < 90:
-										atur_visibilitas_potongan_vegetasi(pt, true)
+										if (jarak_render - (jarak / 2)) <= 65:
+											atur_visibilitas_potongan_vegetasi(pt, true)
+											atur_visibilitas_lod_potongan_vegetasi(pt, false)
+											potongan[pt]["m_render"] = "lod"
+										else:
+											atur_visibilitas_potongan_vegetasi(pt, false)
+											atur_visibilitas_lod_potongan_vegetasi(pt, true)
+											potongan[pt]["m_render"] = "gpu instance 2"
 									else:
 										atur_visibilitas_potongan_vegetasi(pt, false)
+										atur_visibilitas_lod_potongan_vegetasi(pt, false)
+										potongan[pt]["m_render"] = ""
+									#atur_visibilitas_lod_potongan_vegetasi(pt, false)
 								elif potongan_node.visible:
 									potongan_node.visible = false
 									potongan_fisik.disabled = true
 									atur_visibilitas_potongan_vegetasi(pt, false)
+									atur_visibilitas_lod_potongan_vegetasi(pt, false)
+									potongan[pt]["m_render"] = ""
 								arah_target_pengamat.rotation_degrees.y = 0
 					else:
 						if !get_node("bentuk_" + potongan[pt]["indeks"]).visible:
@@ -266,6 +287,7 @@ func _exit_tree():
 		for vg in potongan[pt]["vegetasi"].size():
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["detail"])
 			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod1"])
+			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod2"])
 		for ld2 in potongan[pt]["instance"].size():
 			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["instance"])
 			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["multimesh"])
@@ -524,7 +546,9 @@ func muat_terrain():
 									RenderingServer.instance_set_scenario(instance, scenario)
 									RenderingServer.multimesh_set_mesh(multimesh, mesh_lod2)
 									
+									potongan[pt]["m_render"] = "detail"
 									potongan[pt]["instance"][indeks] = {}
+									potongan[pt]["instance"][indeks]["terlihat"] = true
 									potongan[pt]["instance"][indeks]["instance"] = instance
 									potongan[pt]["instance"][indeks]["jumlah_instance"] = 1
 									potongan[pt]["instance"][indeks]["multimesh"] = multimesh
@@ -725,16 +749,16 @@ func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pen
 					if gunakan_level_of_detail:
 						if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
 							RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], true)
-						#if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
-						#	RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], true)
+						if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
+							RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], true)
 					potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = true
 			else:
 				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] != false:
 					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], false)
 					if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
 						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], false)
-					#if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
-					#	RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], false)
+					if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
+						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], false)
 					potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = false
 func atur_visibilitas_potongan_vegetasi(id_potongan, nilai : bool): 									# atur visibilitas semua vegetasi pada suatu potongan
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
@@ -746,8 +770,13 @@ func atur_visibilitas_potongan_vegetasi(id_potongan, nilai : bool): 									# a
 			if gunakan_level_of_detail or !nilai:
 				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
 					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], nilai)
-				#if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
-				#	RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], nilai)
+				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
+					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], nilai)
 			potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = nilai
-	#if potongan[id_potongan]["instance"].is_valid(): # FIXME : harus di loop
-	#	RenderingServer.instance_set_visible(potongan[id_potongan]["instance"], nilai)
+func atur_visibilitas_lod_potongan_vegetasi(id_potongan, nilai : bool): 								# atur visibilitas semua lod vegetasi pada suatu potongan
+	var indeks_instance = potongan[id_potongan]["instance"].keys()
+	for i in potongan[id_potongan]["instance"].size():
+		if potongan[id_potongan]["instance"][indeks_instance[i]]["instance"].is_valid():
+			if potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] != nilai:
+				RenderingServer.instance_set_visible(potongan[id_potongan]["instance"][indeks_instance[i]]["instance"], nilai)
+				potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] = nilai
