@@ -223,6 +223,7 @@ func _pemain_terputus(id_pemain):
 				pemain[idx_pemain]["rotasi"] = permainan.dunia.get_node("pemain/"+str(id_pemain)).rotation
 		permainan.dunia.get_node("pemain/"+str(id_pemain))._hapus()
 		permainan._hapus_daftar_pemain(id_pemain)
+		client.rpc("hapus_pemain", id_pemain)
 		print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 		pemain_terhubung -= 1
 

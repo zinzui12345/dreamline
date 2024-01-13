@@ -4,29 +4,30 @@ class_name Permainan
 
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.7 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 1.3.8 - Implementasi Timeline
+# 04 Agu 2023 | 1.3.7 - Implementasi Timeline
 # 09 Agu 2023 | 1.3.8 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.3.8 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 1.3.9 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 14 Agu 2023 | 1.3.8 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.3.9 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.3.9 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 1.4.0 - Implementasi shader karakter menggunakan MToon
+# 18 Sep 2023 | 1.3.9 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.4.0 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.0 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 1.4.1 - Penambahan Text Chat
+# 25 Sep 2023 | 1.4.0 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.1 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.1 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 1.4.2 - Tombol Sentuh Fleksibel
+# 12 Okt 2023 | 1.4.1 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.2 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.2 - Mode Edit Objek telah berhasil di-implementasikan
-# 31 Okt 2023 | 1.4.3 - Perbaikan kesalahan kontrol sentuh
+# 31 Okt 2023 | 1.4.2 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.3 - Implementasi Koneksi Publik menggunakan UPnP
 # 17 Nov 2023 | 1.4.3 - Implementasi Proyektil
-# 27 Nov 2023 | 1.4.4 - Penambahan kemampuan penghindaran npc terhadap musuhnya
+# 27 Nov 2023 | 1.4.3 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 # 10 Des 2023 | 1.4.4 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
+# 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 
-const versi = "Dreamline beta v1.4.4 rev 02/01/24 alpha"
+const versi = "Dreamline beta v1.4.4 rev 11/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 

@@ -1,7 +1,8 @@
 @tool
 extends Node3D
 
-# TODO : frekuensi model vegetasi (batu = 0.25, semak = 0.5, pohon = 1)
+# FIXME : jangan disable fisik chunk yang di-cull pada server
+# TODO : tambah model pohon
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
 
 @export var debug_culling = false :
@@ -71,12 +72,12 @@ var pohon = [
  {
  	"detail":	load("res://model/alam/pohon1/detail.res"),
  	"lod1": 	load("res://model/alam/pohon1/lod1.res"), 	"jarak_lod1": 	20,
- 	"lod2": 	load("res://model/alam/pohon1/lod2.res"), 	"jarak_lod2": 	65
+ 	"lod2": 	load("res://model/alam/pohon1/lod2.res"), 	"jarak_lod2": 	50
  },
  {
 	"detail":	load("res://model/alam/pohon2/detail.res"),
  	"lod1": 	load("res://model/alam/pohon2/lod1.res"), 	"jarak_lod1": 	15,
- 	"lod2": 	load("res://model/alam/pohon2/lod2.res"), 	"jarak_lod2": 	60
+ 	"lod2": 	load("res://model/alam/pohon2/lod2.res"), 	"jarak_lod2": 	50
  },
  { 
 	"detail": load("res://model/alam/placeholder_pohon.tres"),
@@ -108,6 +109,12 @@ var batu = [
  load("res://model/alam/placeholder_batu.tres"),
  load("res://model/alam/placeholder_batu.tres")
 ]
+
+var total_pohon = 0
+var total_semak = 0
+var total_batu = 0
+var total_pencemaran = 0
+var total_bunga_nektar = 0
 
 var fisik : StaticBody3D
 var posisi_terakhir : Vector3
@@ -142,16 +149,16 @@ func _process(_delta):
 		# pastiin jumlah chunk lebih dari 0
 		if potongan.size() > 0:
 			for pt in potongan.size():
-				var lebar_terrain_x = ((potongan[pt]["lebar_x"] * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
-				var lebar_terrain_y = ((potongan[pt]["lebar_y"] * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
+				var lebar_terrain_x	= potongan[pt]["lebar_x"]
+				var lebar_terrain_y	= potongan[pt]["lebar_y"]
 				
 				var posisi = {
-					'x': potongan[pt]["start_x"] * (ukuran * 0.25) - (lebar_terrain_x / 2),
-					'y': potongan[pt]["start_y"] * (ukuran * 0.25) - (lebar_terrain_y / 2)
+					'x': potongan[pt]["start_x"],
+					'y': potongan[pt]["start_y"]
 				}
 				var batas = {
-					'x': potongan[pt]["lebar_x"] * (ukuran * 0.25),
-					'y': potongan[pt]["lebar_y"] * (ukuran * 0.25)
+					'x': potongan[pt]["lebar_x"],
+					'y': potongan[pt]["lebar_y"]
 				}
 				var posisi_pengamat : Vector3
 				
@@ -218,23 +225,18 @@ func _process(_delta):
 									Vector3.UP,
 									false
 								)
-							
+							 
 							# menghitung sudut antara vektor arah_pandang dan posisi potongan
 							if arah_target_pengamat != null:
 								var sudut = abs(arah_target_pengamat.rotation_degrees.y)
-								var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"]) / 0.405453467695
-								#get_parent().get_node("debug/Label").text = str(jarak_render)+" <= "+str(jarak)+"\n"\
-								#											+str(sudut)+" <= 175"
-								if sudut <= (pengamat.fov + (pengamat.fov * 0.405453467695)):
-									if (jarak_render <= (jarak * 2)):
+								var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"])
+								
+								if (jarak_render <= (jarak * 2)):
+									if sudut <= pengamat.fov:
 										if !potongan_node.visible:
 											potongan_node.visible = true
 											potongan_fisik.disabled = false
-										# 05/01/24 :: kalkulasi jarak terdekat antara permukaan dan pengamat berdasarkan jarak lod2 vegetasi, lalu fungsikan lod
-										#		==> masukkan jarak hasil kalkulasi pada fungsi yang kemudian visibilitas instance lod diatur berdasarkan jarak lod2 masing-masing instance
-										#		==> pada fungsi, jika semua instance lod visibel, maka atur visibilitas_potongan_vegetasi menjadi false
-										#	 	==> selain itu atur visibilitas_potongan_vegetasi menjadi true
-										if (jarak_render - (jarak / 2)) <= 70:
+										if jarak_render < jarak:
 											atur_visibilitas_potongan_vegetasi(pt, true)
 											atur_visibilitas_lod_potongan_vegetasi(pt, false)
 											potongan[pt]["m_render"] = "lod"
@@ -242,30 +244,12 @@ func _process(_delta):
 											atur_visibilitas_potongan_vegetasi(pt, false)
 											atur_visibilitas_lod_potongan_vegetasi(pt, true)
 											potongan[pt]["m_render"] = "gpu instance"
-									elif potongan_node.visible:
+									elif jarak_render >= jarak and potongan_node.visible:
 										potongan_node.visible = false
 										potongan_fisik.disabled = true
 										atur_visibilitas_potongan_vegetasi(pt, false)
 										atur_visibilitas_lod_potongan_vegetasi(pt, false)
-										potongan[pt]["m_render"] = "lod"
-								elif jarak_render <= jarak and sudut <= 175:
-									if !potongan_node.visible:
-										potongan_node.visible = true
-										potongan_fisik.disabled = false
-									if sudut < 90:
-										if (jarak_render - (jarak / 2)) <= 65:
-											atur_visibilitas_potongan_vegetasi(pt, true)
-											atur_visibilitas_lod_potongan_vegetasi(pt, false)
-											potongan[pt]["m_render"] = "lod"
-										else:
-											atur_visibilitas_potongan_vegetasi(pt, false)
-											atur_visibilitas_lod_potongan_vegetasi(pt, true)
-											potongan[pt]["m_render"] = "gpu instance 2"
-									else:
-										atur_visibilitas_potongan_vegetasi(pt, false)
-										atur_visibilitas_lod_potongan_vegetasi(pt, false)
-										potongan[pt]["m_render"] = ""
-									#atur_visibilitas_lod_potongan_vegetasi(pt, false)
+										potongan[pt]["m_render"] = "cull"
 								elif potongan_node.visible:
 									potongan_node.visible = false
 									potongan_fisik.disabled = true
@@ -279,22 +263,12 @@ func _process(_delta):
 							get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
 						atur_visibilitas_potongan_vegetasi(pt, true)
 func _exit_tree():
-#	RenderingServer.free() # INFO : memory leak | hapus RID satu-persatu!
-	print("menghapus vegetasi permukaan")
-	for pt in potongan.size():
-		var indeks_vegetasi = potongan[pt]["vegetasi"].keys()
-		var indeks_instance_vegetasi = potongan[pt]["instance"].keys()
-		for vg in potongan[pt]["vegetasi"].size():
-			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["detail"])
-			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod1"])
-			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod2"])
-		for ld2 in potongan[pt]["instance"].size():
-			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["instance"])
-			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["multimesh"])
+	hapus_vegetasi()
 
 func hasilkan_terrain():
 	var arr_mesh = ArrayMesh.new()
 	var surftool = SurfaceTool.new()
+	var posisi_vegetasi = []
 	
 	# hapus child
 	if get_child_count() > 0:
@@ -311,6 +285,7 @@ func hasilkan_terrain():
 	print("menghasilkan vertex dari pixel")
 	surftool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	if hasilkan_vegetasi:
+		if vegetasi.size() > 0: hapus_vegetasi(); hapus_rid()
 		vegetasi = []
 		print("menempatkan vegetasi")
 	for y in gambar_noise.get_height()+1:
@@ -343,10 +318,20 @@ func hasilkan_terrain():
 			surftool.set_uv(uv)
 			surftool.add_vertex(vertex)
 			
-			# penempatan vegetasi
+			# tentukan penempatan vegetasi
 			if hasilkan_vegetasi:
 				if randf() < float(frekuensi_vegetasi)/10 and vertex.y >= float(tinggi_maks)/10:  # hanya berada pada rumput | frekuensi penempatan vegetasi (0.5)
-					tempatkan_vegetasi(Vector3(vertex.x, vertex.y, vertex.z))
+					posisi_vegetasi.append(Vector3(vertex.x, vertex.y, vertex.z))
+	
+	# tentukan total tiap tipe vegetasi
+	total_pohon = posisi_vegetasi.size() * 0.5
+	total_semak = posisi_vegetasi.size() * 0.22
+	total_batu  = posisi_vegetasi.size() * 0.2
+	total_pencemaran   = posisi_vegetasi.size() * 0.05
+	total_bunga_nektar = posisi_vegetasi.size() * 0.03
+	
+	# tempatkan vegetasi
+	for vg in posisi_vegetasi.size(): tempatkan_vegetasi(posisi_vegetasi[vg])
 	
 	# buat face
 	print("membuat surface")
@@ -393,6 +378,18 @@ func hasilkan_terrain():
 		if is_instance_valid(fisik) and fisik.get_child_count() > 0: fisik.remove_child(fisik.get_child(0))
 		print("memotong bentuk : 4 * 4 => 16")
 		slice_terrain(gambar_noise, mat)
+func hapus_vegetasi():
+	print("menghapus vegetasi permukaan")
+	for pt in potongan.size():
+		var indeks_vegetasi = potongan[pt]["vegetasi"].keys()
+		var indeks_instance_vegetasi = potongan[pt]["instance"].keys()
+		for vg in potongan[pt]["vegetasi"].size():
+			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["detail"])
+			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod1"])
+			RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod2"])
+		for ld2 in potongan[pt]["instance"].size():
+			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["instance"])
+			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["multimesh"])
 func hapus_rid():
 	print("menghapus rid vegetasi")
 	for pt in potongan.size():
@@ -501,16 +498,16 @@ func muat_terrain():
 				
 				if potongan.size() > 0:
 					for pt in potongan.size():
-						var lebar_terrain_x = ((potongan[pt]["lebar_x"] * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
-						var lebar_terrain_y = ((potongan[pt]["lebar_y"] * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
+						var lebar_terrain_x = potongan[pt]["lebar_x"]
+						var lebar_terrain_y = potongan[pt]["lebar_y"]
 						
 						var posisi = {
-							'x' : potongan[pt]["start_x"] * (ukuran * 0.25) - (lebar_terrain_x / 2),
-							'y' : potongan[pt]["start_y"] * (ukuran * 0.25) - (lebar_terrain_y / 2)
+							'x' : potongan[pt]["start_x"],
+							'y' : potongan[pt]["start_y"]
 						}
 						var batas = {
-							'x' : potongan[pt]["lebar_x"] * (ukuran * 0.25),
-							'y' : potongan[pt]["lebar_y"] * (ukuran * 0.25)
+							'x' : potongan[pt]["lebar_x"],
+							'y' : potongan[pt]["lebar_y"]
 						}
 						
 						if posisi_vegetasi.x >= posisi.x and posisi_vegetasi.x <= (posisi.x + batas.x): pass
@@ -629,36 +626,16 @@ func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, poto
 	var slice_mesh = ArrayMesh.new()
 	var surftool = SurfaceTool.new()
 	var data_potongan = {}
-	#var potongan_awal = false
-
-	var lebar_terrain_x = ((res_x * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
-	var lebar_terrain_y = ((res_y * (float(jumlah_potongan) / 2)) * 1.25) * jumlah_potongan
-
-	#if start_x == 0: res_x -= 1 rusak
-	#if start_x == 0: res_y -= 1 gak ngaruh, yang ada malah ngurangin verteks akhir
-	#if start_y == 0: start_y = 1; if start_x == 0: potongan_awal = true
-
-	#print_debug(str(start_y)+" & "+str(start_x)+" : "+str(res_y)+" & "+str(res_x))
-	#print_debug(
-	#	str(
-	#		potongan_ke + 0.5
-	#	) + " * " +
-	#	str(
-	#		lebar_terrain_x / jumlah_potongan
-	#	) + " = " +
-	#	str(
-	#		(potongan_ke + 0.5) * (lebar_terrain_x / jumlah_potongan) - (lebar_terrain_x / 2)
-	#	)
-	#)
-
+	var skala_aktual = 2.5 # ???
+	
 	surftool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	data_potongan["indeks"]  = bagian_potongan
-	data_potongan["start_x"] = start_x
-	data_potongan["start_y"] = start_y
-	data_potongan["lebar_x"] = res_x
-	data_potongan["lebar_y"] = res_y
-	data_potongan["pusat_x"] = ((potongan_ke_x + 0.5) * (lebar_terrain_x / jumlah_potongan)) - (lebar_terrain_x / 2)
-	data_potongan["pusat_y"] = ((potongan_ke_y + 0.5) * (lebar_terrain_y / jumlah_potongan)) - (lebar_terrain_y / 2)
+	data_potongan["start_x"] = (start_x - (gambar_noise.get_width() / 2)) * skala_aktual
+	data_potongan["start_y"] = (start_y - (gambar_noise.get_height() / 2))* skala_aktual
+	data_potongan["lebar_x"] = res_x * skala_aktual
+	data_potongan["lebar_y"] = res_y * skala_aktual
+	data_potongan["pusat_x"] = data_potongan["start_x"] + (data_potongan["lebar_x"] / 2)
+	data_potongan["pusat_y"] = data_potongan["start_y"] + (data_potongan["lebar_y"] / 2)
 	data_potongan["vegetasi"]= {}
 	potongan.append(data_potongan)
 	
@@ -704,26 +681,50 @@ func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, poto
 		return slice_mesh
 
 func tempatkan_vegetasi(posisi : Vector3):
-	var tipe_vegetasi = randi() % 3  # Pohon, Semak, Batu
+	var tipe_vegetasi = randi() % 5  # Pohon, Semak, Batu, Pencemaran, Bunga Nektar
 	var array_model = []
 	var data_vegetasi = {}
-
+	
 	match tipe_vegetasi:
 		0: array_model = pohon; data_vegetasi["tipe"] = "pohon"
 		1: array_model = semak; data_vegetasi["tipe"] = "semak"
 		2: array_model = batu; 	data_vegetasi["tipe"] = "batu"
 
+	# FIXME : pencemaran dan bunga nektar tidak tersebar, hanya berkumpul pada potongan awal
 	if array_model.size() > 0:
 		var indeks_model = randi() % array_model.size()
-		#model_vegetasi = array_model[indeks_model]
-		#var vegetation_instance = model_vegetasi.instantiate()
-		#vegetation_instance.transform.origin = posisi
-		#vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
+		if tipe_vegetasi == 0:
+			if total_pohon <= 0:	tempatkan_vegetasi(posisi); return
+			else:					total_pohon -= 1
+		elif tipe_vegetasi == 1:
+			if total_semak <= 0:	tempatkan_vegetasi(posisi); return
+			else:					total_semak -= 1
+		elif tipe_vegetasi == 2:
+			if total_batu <= 0:		tempatkan_vegetasi(posisi); return
+			else:					total_batu -= 1
 		data_vegetasi["model"] 	= indeks_model
 		data_vegetasi["posisi"] = posisi
 		data_vegetasi["rotasi"] = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
-		#add_child(vegetation_instance)
 		vegetasi.append(data_vegetasi)
+	elif tipe_vegetasi == 3:
+		# pencemaran
+		if total_pencemaran <= 0: tempatkan_vegetasi(posisi); return
+		var model_vegetasi = load("res://skena/entitas/pencemaran.scn")
+		var vegetation_instance = model_vegetasi.instantiate()
+		# TODO : atur nama
+		vegetation_instance.transform.origin = posisi
+		vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
+		add_child(vegetation_instance)
+		total_pencemaran -= 1
+	elif tipe_vegetasi == 4:
+		# bunga nektar
+		if total_bunga_nektar <= 0: tempatkan_vegetasi(posisi); return
+		var model_vegetasi = load("res://skena/entitas/bunga_nektar.scn")
+		var vegetation_instance = model_vegetasi.instantiate()
+		vegetation_instance.transform.origin = posisi
+		vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
+		add_child(vegetation_instance)
+		total_bunga_nektar -= 1
 func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pengamat, fov_pengamat):	# atur visibilitas vegetasi satu per-satu relatif terhadap pengamat pada suatu potongan
 	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
 	for vg in potongan[id_potongan]["vegetasi"].size():

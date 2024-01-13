@@ -125,3 +125,5 @@ func tambah_pemain(pemain):
 	if t_entitas != null:
 		t_entitas.global_transform.origin = posisi
 		t_entitas.rotation_degrees = rotasi
+@rpc("authority") func hapus_pemain(id_pemain):
+	permainan._hapus_daftar_pemain(id_pemain)
