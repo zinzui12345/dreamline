@@ -126,6 +126,7 @@ func _process(_delta):
 			else: arah_stir.x = 0;				  if rotation.z == 0:	axis_lock_angular_z = true
 		
 		if Input.is_action_pressed("lompat"):	brake = Input.get_action_strength("lompat")
+		elif Input.is_action_pressed("jongkok"):brake = Input.get_action_strength("jongkok")
 		else: brake = 0
 
 func fokus():

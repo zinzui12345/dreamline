@@ -5,10 +5,6 @@ extends Node3D
 # TODO : tambah model pohon
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
 
-@export var debug_culling = false :
-	set(mode):
-		if Engine.is_editor_hint(): set_process(mode)
-		debug_culling = mode
 @export var gunakan_frustum_culling = false
 @export var gunakan_occlusion_culling = false
 @export var gunakan_level_of_detail = true:
@@ -96,8 +92,8 @@ var pohon = [
  }
 ]
 var semak = [
- load("res://model/alam/placeholder_semak.tres"),
- load("res://model/alam/placeholder_semak.tres"),
+ load("res://model/alam/semak1.res"),
+ load("res://model/alam/semak2.res"),
  load("res://model/alam/placeholder_semak.tres"),
  load("res://model/alam/placeholder_semak.tres"),
  load("res://model/alam/placeholder_semak.tres")
@@ -132,9 +128,10 @@ func _enter_tree():
 	p_arah_target_pengamat.add_child(arah_target_pengamat)
 	add_child(posisi_relatif_pengamat)
 func _ready():
-	if Engine.is_editor_hint(): set_process(debug_culling)
-	elif is_instance_valid(server.permainan): server.permainan.permukaan = self
-	muat_terrain()
+	if Engine.is_editor_hint(): pass
+	else:
+		if is_instance_valid(server.permainan): server.permainan.permukaan = self
+		muat_terrain()
 func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
@@ -149,9 +146,6 @@ func _process(_delta):
 		# pastiin jumlah chunk lebih dari 0
 		if potongan.size() > 0:
 			for pt in potongan.size():
-				var lebar_terrain_x	= potongan[pt]["lebar_x"]
-				var lebar_terrain_y	= potongan[pt]["lebar_y"]
-				
 				var posisi = {
 					'x': potongan[pt]["start_x"],
 					'y': potongan[pt]["start_y"]
@@ -232,7 +226,7 @@ func _process(_delta):
 								var jarak = max(potongan[pt]["lebar_x"], potongan[pt]["lebar_y"])
 								
 								if (jarak_render <= (jarak * 2)):
-									if sudut <= pengamat.fov:
+									if sudut <= (pengamat.fov * 1.1):
 										if !potongan_node.visible:
 											potongan_node.visible = true
 											potongan_fisik.disabled = false
@@ -262,6 +256,8 @@ func _process(_delta):
 							get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
 							get_node("fisik/fisik_" + potongan[pt]["indeks"]).disabled = false
 						atur_visibilitas_potongan_vegetasi(pt, true)
+						atur_visibilitas_lod_potongan_vegetasi(pt, false)
+						potongan[pt]["m_render"] = "detail"
 func _exit_tree():
 	hapus_vegetasi()
 
@@ -498,9 +494,6 @@ func muat_terrain():
 				
 				if potongan.size() > 0:
 					for pt in potongan.size():
-						var lebar_terrain_x = potongan[pt]["lebar_x"]
-						var lebar_terrain_y = potongan[pt]["lebar_y"]
-						
 						var posisi = {
 							'x' : potongan[pt]["start_x"],
 							'y' : potongan[pt]["start_y"]
@@ -532,7 +525,6 @@ func muat_terrain():
 							if vegetasi[indeks_vegetasi[v]]["tipe"] == "pohon" and pohon[vegetasi[indeks_vegetasi[v]]["model"]]["lod2"] != null: # hanya pohon yang bisa terlihat dari kejauhan
 								var indeks = vegetasi[indeks_vegetasi[v]]["tipe"]+"_"+str(vegetasi[indeks_vegetasi[v]]["model"])
 								var mesh_lod2 : RID = pohon[vegetasi[indeks_vegetasi[v]]["model"]]["lod2"]
-								var jarak_lod2 = pohon[vegetasi[indeks_vegetasi[v]]["model"]]["jarak_lod2"]
 								var multimesh : RID
 								
 								if potongan[pt]["instance"].get(indeks) == null:
@@ -596,7 +588,7 @@ func slice_terrain(gambar_noise, material):
 				terrain_surface,
 				x * slice_res_x, y * slice_res_y,
 				slice_res_x, slice_res_y,
-				x, y, nama_potongan,
+				nama_potongan,
 				gambar_noise
 			)
 			var new_instance = MeshInstance3D.new()
@@ -604,13 +596,9 @@ func slice_terrain(gambar_noise, material):
 			new_instance.mesh = new_mesh
 			new_instance.material_override = material
 			new_instance.lod_bias = 2.0
-			#new_instance.position = Vector3(
-			#	(x * slice_res_x) * ukuran, 
-			#	0, 
-			#	(y * slice_res_y) * ukuran
-			#)
 			print("menambahkan bentuk potongan")
 			add_child(new_instance)
+			
 			# INFO : buat fisik chunk
 			if hasilkan_fisik:
 				print("membuat fisik potongan [%s][%s]" % [str(y+1), str(x+1)])
@@ -622,7 +610,7 @@ func slice_terrain(gambar_noise, material):
 				print("menambahkan fisik potongan [%s][%s]" % [str(y+1), str(x+1)])
 				fisik.add_child(tmp_m_fisik)
 				tmp_fisik.queue_free()
-func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, potongan_ke_x, potongan_ke_y, bagian_potongan, gambar_noise):
+func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, bagian_potongan, gambar_noise):
 	var slice_mesh = ArrayMesh.new()
 	var surftool = SurfaceTool.new()
 	var data_potongan = {}

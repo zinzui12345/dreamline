@@ -1,4 +1,4 @@
-[gd_scene load_steps=233 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=235 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -58,6 +58,8 @@
 [ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/aksi_1.svg" id="23_p8sf0"]
 [ext_resource type="Texture2D" uid="uid://xf60ppb2l5u2" path="res://ui/tombol/aksi_1_tekan.svg" id="24_5vy8q"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
+[ext_resource type="Texture2D" uid="uid://bdbbtd3gddyws" path="res://ui/tombol/jongkok.svg" id="25_umeh2"]
+[ext_resource type="Texture2D" uid="uid://3flv2byt2kkb" path="res://ui/tombol/jongkok_tekan.svg" id="26_5khf0"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Script" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
@@ -2041,7 +2043,7 @@ tracks/9/keys = {
 
 [sub_resource type="Animation" id="Animation_0aegn"]
 resource_name = "perluas_"
-length = 0.02
+length = 0.05
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -2050,7 +2052,7 @@ tracks/0/path = NodePath("Panel/buat_server:icon_alignment")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2062,7 +2064,7 @@ tracks/1/path = NodePath("Panel/gabung_server:icon_alignment")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2074,7 +2076,7 @@ tracks/2/path = NodePath("Panel/karakter:icon_alignment")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2086,7 +2088,7 @@ tracks/3/path = NodePath("Panel:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
@@ -2098,7 +2100,7 @@ tracks/4/path = NodePath("..:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, true]
@@ -2110,7 +2112,7 @@ tracks/5/path = NodePath("Panel:anchor_right")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [1.0, 1.0]
@@ -2122,7 +2124,7 @@ tracks/6/path = NodePath("Panel/buat_server:text")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": ["%buat_server", "%buat_server"]
@@ -2134,7 +2136,7 @@ tracks/7/path = NodePath("Panel/gabung_server:text")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": ["%gabung_server", "%gabung_server"]
@@ -2146,7 +2148,7 @@ tracks/8/path = NodePath("Panel/karakter:text")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": ["%karakter", "%karakter"]
@@ -2158,7 +2160,7 @@ tracks/9/path = NodePath("Panel:anchor_left")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.02),
+"times": PackedFloat32Array(0, 0.05),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 0.0]
@@ -2980,8 +2982,6 @@ anchors_preset = -1
 anchor_right = 1.0
 grow_horizontal = 2
 grow_vertical = 0
-focus_neighbor_left = NodePath("../../../batal")
-focus_neighbor_right = NodePath("../../../simpan")
 mouse_filter = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
@@ -3594,6 +3594,25 @@ metadata/_edit_use_anchors_ = true
 position = Vector2(40, 40)
 shape = SubResource("CircleShape2D_2jlpn")
 action = "lompat"
+
+[node name="jongkok" type="TextureButton" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.263672
+anchor_top = 0.77
+anchor_right = 0.361391
+anchor_bottom = 0.936666
+offset_right = -0.0640259
+offset_bottom = 0.000183105
+action_mode = 0
+stretch_mode = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/jongkok"]
+texture_normal = ExtResource("25_umeh2")
+texture_pressed = ExtResource("26_5khf0")
+shape = SubResource("CircleShape2D_tw50u")
+action = "jongkok"
 
 [node name="aksi_1" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -5008,6 +5027,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_2dl5y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4ngvc")
 button_mask = 7
+text = "%buat_server"
 icon = ExtResource("7_ayqde")
 alignment = 0
 text_overrun_behavior = 2
@@ -5036,8 +5056,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_2dl5y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4ngvc")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 button_mask = 7
-text = "
-"
+text = "%gabung_server"
 icon = ExtResource("8_wsntl")
 alignment = 0
 text_overrun_behavior = 2
@@ -5064,6 +5083,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_lhgek")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ysvot")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 button_mask = 7
+text = "%karakter"
 icon = ExtResource("9_3dohi")
 alignment = 0
 text_overrun_behavior = 2
@@ -5889,6 +5909,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="button_up" from="kontrol_sentuh/lari" to="." method="_ketika_berhenti_berlari"]
 [connection signal="button_down" from="kontrol_sentuh/lompat" to="." method="_ketika_mulai_melompat"]
 [connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
+[connection signal="button_down" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_tekan"]
+[connection signal="button_up" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_lepas"]
 [connection signal="button_down" from="kontrol_sentuh/aksi_1" to="." method="_aksi_1_tekan"]
 [connection signal="button_up" from="kontrol_sentuh/aksi_1" to="." method="_aksi_1_lepas"]
 [connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]

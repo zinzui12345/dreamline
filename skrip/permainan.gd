@@ -27,7 +27,7 @@ class_name Permainan
 # 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 
-const versi = "Dreamline beta v1.4.4 rev 11/01/24 alpha"
+const versi = "Dreamline beta v1.4.4 rev 14/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -155,7 +155,11 @@ func _ready():
 	server.set_process(false)
 	server.process_mode = Node.PROCESS_MODE_ALWAYS
 	# INFO : (2) muat data konfigurasi atau terapkan konfigurasi default
-	if OS.get_distribution_name() == "Android": Konfigurasi.mode_kontrol_sentuh = true # aktifkan otomatis kontrol sentuh di android
+	if OS.get_distribution_name() == "Android":
+		# aktifkan otomatis kontrol sentuh di android
+		Konfigurasi.mode_kontrol_sentuh = true
+		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
+		dunia.get_node("matahari").directional_shadow_max_distance /= 2
 	# INFO : (3) tampilkan menu utama
 	$menu_utama/animasi.play("tampilkan")
 	$menu_utama/menu/Panel/buat_server.grab_focus()
@@ -492,10 +496,15 @@ func buat_server(headless = false):
 func gabung_server():
 	koneksi = MODE_KONEKSI.CLIENT
 	var ip = $daftar_server/panel/panel_input/input_ip.text
-	if not ip.is_valid_ip_address():
-		if ip == "": 	_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
-		else:			_tampilkan_popup_informasi("%iptakvalid", $daftar_server/panel/panel_input/input_ip)
-		return
+	if _posisi_tab_koneksi == "LAN":
+		if not ip.is_valid_ip_address():
+			if ip == "": 	_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
+			else:			_tampilkan_popup_informasi("%iptakvalid", $daftar_server/panel/panel_input/input_ip)
+			return
+	elif _posisi_tab_koneksi == "Internet":
+		if ip == "":
+			_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
+			return
 	$daftar_server/panel/panel_input/input_ip.grab_focus()
 	$proses_koneksi/animasi.play("tampilkan")
 	$proses_koneksi/panel/animasi.play("proses")
@@ -648,6 +657,8 @@ func _aksi_2_tekan(): 				Input.action_press("aksi2")
 func _aksi_2_lepas(): 				Input.action_release("aksi2");			$kontrol_sentuh/aksi_2.release_focus()
 func _ketika_mulai_berlari():		Input.action_press("berlari")
 func _ketika_berhenti_berlari():	Input.action_release("berlari")
+func _tombol_jongkok_tekan():		Input.action_press("jongkok")
+func _tombol_jongkok_lepas():		Input.action_release("jongkok");		$kontrol_sentuh/jongkok.release_focus()
 
 # UI
 func _atur_persentase_memuat(nilai):
