@@ -270,23 +270,15 @@ func _process(_delta):
 												# + dibandingkan dengan occlusion culling aslinya, metode ini menggunakan lebih sedikit instruksi pada CPU
 												# - tetapi visibilitas objek kurang akurat, kadang tetap di-render walau semestinya tidak terlihat
 												
-												# FIXME : jangan pake loop, karena gak bisa di-jeda | pake fungsi yang saling memanggil!
-												for titik in 8:
-													raycast_occlusion_culling.global_position = aabb_instance[titik]
-													raycast_occlusion_culling.look_at(pengamat.global_position)
-													Panku.notify(str(titik)+" => aktifkan raycast")
-													raycast_occlusion_culling.enabled = true
-													await get_tree().create_timer(0.5).timeout # FIXME : proses gak berurut!
-													if raycast_occlusion_culling.is_colliding():
-														var objek_raycast = raycast_occlusion_culling.get_collider()
-														if objek_raycast.get_parent() == pengamat:
-															Panku.notify(str(titik)+" => kena cuyy")
-															return # harusnya loop berhenti dan baris 288 udah gak ke-eksekusi karena vegetasi udah terlihat
-													# setelah selesai, atur raycast enabled menjadi false
-													raycast_occlusion_culling.enabled = false
-													Panku.notify(str(titik)+" => matikan raycast")
+												# jangan pake loop, karena gak bisa di-jeda | pake fungsi yang saling memanggil!
+												var hasil = await _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, 0)
+												
 												gunakan_occlusion_culling = false # debug
-												Panku.notify("ini ke-print gak?")
+												if not hasil:
+													Panku.notify("vegetasi %s terlihat" % [str(pt)])
+												else:
+													# kalau true, berarti vegetasi terhalang
+													Panku.notify("vegetasi %s terhalang" % [str(pt)])
 									elif jarak_render >= jarak and potongan_node.visible:
 										potongan_node.visible = false
 										potongan_fisik.disabled = true
@@ -837,3 +829,17 @@ func atur_visibilitas_lod_potongan_vegetasi(id_potongan, nilai : bool): 								
 			if potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] != nilai:
 				RenderingServer.instance_set_visible(potongan[id_potongan]["instance"][indeks_instance[i]]["instance"], nilai)
 				potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] = nilai
+
+func _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik):
+	if titik < 8:
+		raycast_occlusion_culling.global_position = aabb_instance[titik]
+		raycast_occlusion_culling.look_at(pengamat.global_position)
+		raycast_occlusion_culling.force_raycast_update()
+		var mengenai_pengamat = await raycast_occlusion_culling.is_colliding()
+		if mengenai_pengamat:
+			var objek_raycast = raycast_occlusion_culling.get_collider()
+			if objek_raycast.get_parent() == pengamat: return false
+		else:
+			var hasil_1 = await self._kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik + 1)
+			return hasil_1
+	else: return true
