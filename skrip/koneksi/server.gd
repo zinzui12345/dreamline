@@ -108,7 +108,8 @@ func buat_koneksi():
 			# dapetin ip publik
 			ip_publik = upnp.query_external_address()
 		else:
-			ip_publik = "ERROR:<"+str(hasil_pencarian)+">"
+			#ip_publik = "ERROR:<"+str(hasil_pencarian)+">"
+			ip_publik = "localhost:10567"
 			publik = false
 	var t_inf_kon = TranslationServer.translate("%buatkoneksi")
 	Panku.notify(t_inf_kon % [map, "localhost"])

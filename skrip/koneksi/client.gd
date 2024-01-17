@@ -23,10 +23,10 @@ func hentikan_pencarian_server():
 		listener.queue_free()
 		listener = null
 
-func sambungkan_server(ip):
+func sambungkan_server(ip, port=10567):
 	interface = MultiplayerAPI.create_default_interface()
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(ip, 10567)
+	peer.create_client(ip, port)
 	interface.set_multiplayer_peer(peer)
 	interface.connect("connection_failed", self._ketika_gagal_menghubungkan_server)
 	interface.connect("server_disconnected", self._ketika_terputus_dari_server)

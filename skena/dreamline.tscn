@@ -1,4 +1,4 @@
-[gd_scene load_steps=235 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=240 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -2563,6 +2563,165 @@ tracks/1/keys = {
 _data = {
 "sembunyikan": SubResource("Animation_fpowq"),
 "tampilkan": SubResource("Animation_p0xgs")
+}
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_0hte2"]
+number_color = Color(0.6, 0.619608, 1, 1)
+symbol_color = Color(0.796078, 0.631373, 0, 1)
+function_color = Color(1, 0.52549, 0.313726, 1)
+member_variable_color = Color(0.890196, 0.47451, 0, 1)
+keyword_colors = {
+"Pemain": Color(0.6, 1, 0.996078, 1),
+"fungsi": Color(0.203922, 0.921569, 0.137255, 1),
+"var": Color(0, 0.941176, 0.890196, 1)
+}
+
+[sub_resource type="GDScript" id="GDScript_rtonl"]
+script/source = "extends CodeEdit
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	fold_all_lines()
+	add_string_delimiter(\"\\\"\", \"\\\"\")
+	add_comment_delimiter(\"/*\", \"*/\")
+	create_code_region()
+	syntax_highlighter.add_color_region(\"/*\", \"*/\", Color.BLUE_VIOLET)
+	syntax_highlighter.add_color_region(\"\\\"\", \"\\\"\", Color.GREEN_YELLOW)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+func _on_code_completion_requested():
+	add_code_completion_option(
+		CodeEdit.KIND_CLASS,
+		\"fungsi nama_fungsi(nilai = null):\",
+		\"fungsi nama_fungsi():\\n\\tpass /* ganti bagian ini dengan perintah */\",
+		Color(\"#34eb23\")
+	)
+	add_code_completion_option(
+		CodeEdit.KIND_CLASS,
+		\"Permainan\",
+		\"Permainan\"
+	)
+	add_code_completion_option(
+		CodeEdit.KIND_CLASS,
+		\"Pemain\",
+		\"Pemain\",
+		Color.AQUAMARINE
+	)
+	update_code_completion_options(true)
+"
+
+[sub_resource type="Animation" id="Animation_jtrf2"]
+resource_name = "sembunyikan"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:mouse_filter")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CodeEdit:anchor_top")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -0.533]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CodeEdit:anchor_bottom")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.533, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CodeEdit:grow_vertical")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 1]
+}
+
+[sub_resource type="Animation" id="Animation_0g66h"]
+resource_name = "tampilkan"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:mouse_filter")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [2, 0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CodeEdit:anchor_top")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-0.533, 0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CodeEdit:anchor_bottom")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.533]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CodeEdit:grow_vertical")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_nq78w"]
+_data = {
+"sembunyikan": SubResource("Animation_jtrf2"),
+"tampilkan": SubResource("Animation_0g66h")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6u3l"]
@@ -5283,6 +5442,64 @@ libraries = {
 volume_db = -5.0
 bus = &"Musik Latar"
 
+[node name="editor_kode" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CodeEdit" type="CodeEdit" parent="editor_kode"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = -0.533
+anchor_right = 0.875
+offset_right = -6.10352e-05
+offset_bottom = 0.199982
+theme_override_colors/background_color = Color(0, 0, 0, 0.823529)
+theme_override_colors/selection_color = Color(0, 0, 0, 0.784314)
+theme_override_colors/current_line_color = Color(0, 0, 0, 1)
+theme_override_colors/line_number_color = Color(0.815686, 0.764706, 0.494118, 1)
+text = "var a = 5
+var n : bunga_nektar
+
+fungsi _mulai():
+	notifikasi(\"halo dunia!\")
+	print_debug(a + 5)
+	n = Permainan.buat_objek(\"bunga_nektar\", Vector3(88, 2, 35), Vector3.ZERO)
+	Pemain.teleportasi(23, 10, 12)
+	notifikasi(\"selamat datang di dreamline ^u^\")
+
+/* fungsi ini akan dipanggil setiap saat | d adalah percepatan waktu / delta */
+fungsi proses(d):
+	jika n.nyawa < 50: n.nyawa = 100
+	jika Pemain.posisi.y < -28: notifikasi(\"kamu terjatuh dari dunia!\")"
+scroll_smooth = true
+minimap_draw = true
+minimap_width = 100
+caret_blink = true
+syntax_highlighter = SubResource("CodeHighlighter_0hte2")
+highlight_all_occurrences = true
+highlight_current_line = true
+draw_control_chars = true
+draw_tabs = true
+draw_spaces = true
+line_folding = true
+gutters_draw_line_numbers = true
+gutters_draw_fold_gutter = true
+code_completion_enabled = true
+auto_brace_completion_enabled = true
+auto_brace_completion_highlight_matching = true
+script = SubResource("GDScript_rtonl")
+
+[node name="animasi" type="AnimationPlayer" parent="editor_kode"]
+libraries = {
+"": SubResource("AnimationLibrary_nq78w")
+}
+
 [node name="proses_memuat" type="Control" parent="."]
 visible = false
 layout_direction = 2
@@ -5958,6 +6175,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="pressed" from="menu_utama/setelan" to="." method="_tampilkan_setelan_permainan"]
 [connection signal="pressed" from="menu_utama/keluar" to="." method="_keluar"]
 [connection signal="finished" from="pemutar_musik/AudioStreamPlayer" to="." method="_ketika_musik_latar_selesai_dimainkan"]
+[connection signal="code_completion_requested" from="editor_kode/CodeEdit" to="editor_kode/CodeEdit" method="_on_code_completion_requested"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/oke" to="." method="_ketika_konfirmasi_popup_konfirmasi"]

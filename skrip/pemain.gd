@@ -50,14 +50,12 @@ func atur_pengendali(id):
 		# INFO : atur layer visibilitas model
 		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, false)
 		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, false)
 		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, false)
 		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, false)
 		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, false)
 	else:
 		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
@@ -72,7 +70,6 @@ func _ready():
 	# default kalo nggak di set (karakter)
 	get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
 	get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/telinga").set_layer_mask_value(1, true)
 	get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
 	get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
 	get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)

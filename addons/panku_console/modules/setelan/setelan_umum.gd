@@ -5,7 +5,7 @@ extends Resource
 
 @export var bahasa := Konfigurasi.pilih_bahasa.auto :
 	get:
-		var kode_bahasa = 0
+		var kode_bahasa = "auto"
 		match TranslationServer.get_locale():
 			"id_ID": kode_bahasa = "indonesia"
 			"id": 	 kode_bahasa = "indonesia"

@@ -40,6 +40,17 @@ extends Node3D
 @export var pengamat : Camera3D :
 	set(kamera):
 		if is_instance_valid(kamera):
+			var tmp_bb_fisik_pengamat = BoxShape3D.new()
+			var tmp_b_fisik_pengamat = CollisionShape3D.new()
+			var tmp_fisik_pengamat = StaticBody3D.new()
+			tmp_fisik_pengamat.name = "target_raycast_culling"
+			kamera.add_child(tmp_fisik_pengamat)
+			tmp_fisik_pengamat.set_collision_layer_value(1, false)
+			tmp_fisik_pengamat.set_collision_layer_value(32, true)
+			tmp_b_fisik_pengamat.name = "fisik"
+			tmp_b_fisik_pengamat.shape = tmp_bb_fisik_pengamat
+			tmp_fisik_pengamat.add_child(tmp_b_fisik_pengamat)
+			tmp_bb_fisik_pengamat.size = Vector3(0.5, 0.5, 0.5)
 			posisi_terakhir = kamera.global_transform.origin
 			rotasi_terakhir = kamera.global_rotation_degrees
 			pengamat = kamera
@@ -117,6 +128,7 @@ var posisi_terakhir : Vector3
 var rotasi_terakhir : Vector3
 var arah_target_pengamat : Marker3D
 var posisi_relatif_pengamat : Marker3D
+var raycast_occlusion_culling : RayCast3D
 
 @onready var scenario = get_world_3d().scenario
 
@@ -124,9 +136,16 @@ func _enter_tree():
 	var p_arah_target_pengamat = Node3D.new()
 	arah_target_pengamat	= Marker3D.new()
 	posisi_relatif_pengamat = Marker3D.new()
+	raycast_occlusion_culling = RayCast3D.new()
 	add_child(p_arah_target_pengamat)
 	p_arah_target_pengamat.add_child(arah_target_pengamat)
 	add_child(posisi_relatif_pengamat)
+	raycast_occlusion_culling.name = "raycast_occlusion_culling"
+	raycast_occlusion_culling.set_collision_mask_value(2, true)
+	raycast_occlusion_culling.set_collision_mask_value(3, true)
+	raycast_occlusion_culling.set_collision_mask_value(32, true)
+	raycast_occlusion_culling.target_position = Vector3(0, 0, -400)
+	add_child(raycast_occlusion_culling)
 func _ready():
 	if Engine.is_editor_hint(): pass
 	else:
@@ -199,13 +218,11 @@ func _process(_delta):
 							# * metode ini akan jauh lebih optimal lagi kalau digabung dengan RenderingServer dan diproses pada Thread
 							
 							# mendapatkan posisi tengah potongan
-							#var potongan_tengah = potongan_node.transform.origin + Vector3(batas.x / 2, 0, batas.y / 2)
 							var potongan_tengah = Vector3(
 								potongan[pt]["pusat_x"],
 								0,
 								potongan[pt]["pusat_y"]
 							)
-							#get_parent().get_node("debug_pos_chunk").transform.origin = potongan_tengah
 							
 							# menghitung jarak antara kamera dan potongan
 							var jarak_render = posisi_pengamat.distance_to(potongan_tengah)
@@ -238,6 +255,38 @@ func _process(_delta):
 											atur_visibilitas_potongan_vegetasi(pt, false)
 											atur_visibilitas_lod_potongan_vegetasi(pt, true)
 											potongan[pt]["m_render"] = "gpu instance"
+											if gunakan_occlusion_culling and potongan[pt].get("aabb") != null:
+												var aabb_instance = potongan[pt]["aabb"]
+												
+												# dapatkan aabb instance lod vegetasi
+												# loop tiap posisi aabb :
+												# - atur posisi raycast ke posisi sudut aabb
+												# - arahkan raycast ke pengamat
+												# - dapatkan objek yang terkena raycast:
+												# - - jika objek raycast adalah pengamat, hentikan proses eksekusi | return
+												# non-aktifkan visibilitas instance lod vegetasi.
+												# 15/01/24 :: occlusion culling mengecek kedalaman (depth) tiap pixel, itu cukup rumit pada hardware rendah, apalagi jika terdapat banyak objek
+												# ^ sama seperti frustum culling, metode ini meng-kalkulasi (axis-aligned bounding box) AABB / (bounding box) dari suatu objek
+												# + dibandingkan dengan occlusion culling aslinya, metode ini menggunakan lebih sedikit instruksi pada CPU
+												# - tetapi visibilitas objek kurang akurat, kadang tetap di-render walau semestinya tidak terlihat
+												
+												# FIXME : jangan pake loop, karena gak bisa di-jeda | pake fungsi yang saling memanggil!
+												for titik in 8:
+													raycast_occlusion_culling.global_position = aabb_instance[titik]
+													raycast_occlusion_culling.look_at(pengamat.global_position)
+													Panku.notify(str(titik)+" => aktifkan raycast")
+													raycast_occlusion_culling.enabled = true
+													await get_tree().create_timer(0.5).timeout # FIXME : proses gak berurut!
+													if raycast_occlusion_culling.is_colliding():
+														var objek_raycast = raycast_occlusion_culling.get_collider()
+														if objek_raycast.get_parent() == pengamat:
+															Panku.notify(str(titik)+" => kena cuyy")
+															return # harusnya loop berhenti dan baris 288 udah gak ke-eksekusi karena vegetasi udah terlihat
+													# setelah selesai, atur raycast enabled menjadi false
+													raycast_occlusion_culling.enabled = false
+													Panku.notify(str(titik)+" => matikan raycast")
+												gunakan_occlusion_culling = false # debug
+												Panku.notify("ini ke-print gak?")
 									elif jarak_render >= jarak and potongan_node.visible:
 										potongan_node.visible = false
 										potongan_fisik.disabled = true
@@ -557,10 +606,29 @@ func muat_terrain():
 						var indeks_instance = potongan[pt]["instance"].keys()
 						for i in potongan[pt]["instance"].size():
 							var multimesh = potongan[pt]["instance"][indeks_instance[i]]["multimesh"]
+							if potongan[pt].get("aabb") == null: potongan[pt]["aabb"] = AABB()
 							if multimesh.is_valid():
 								RenderingServer.multimesh_allocate_data(multimesh, potongan[pt]["instance"][indeks_instance[i]]["jumlah_instance"], RenderingServer.MULTIMESH_TRANSFORM_3D)
 								RenderingServer.multimesh_set_buffer(multimesh, potongan[pt]["instance"][indeks_instance[i]]["buffer_transformasi"])
 								potongan[pt]["instance"][indeks_instance[i]].erase("buffer_transformasi")
+								potongan[pt]["aabb"] = potongan[pt]["aabb"].merge(RenderingServer.multimesh_get_aabb(multimesh))
+						
+						var aabb = potongan[pt]["aabb"]
+						var tmp_aabb = []
+						var potongan_tengah = Vector3(
+								potongan[pt]["pusat_x"],
+								0,
+								potongan[pt]["pusat_y"]
+							)
+						for titik in 8:
+							var tmp_vektor = aabb.get_endpoint(titik)
+							# sesuaikan posisi aabb dengan titik tengah
+							tmp_vektor.x += aabb.size.x / 2
+							tmp_vektor.z += aabb.size.z / 2
+							# ubah posisi abb menjadi posisi global
+							tmp_vektor = potongan_tengah + tmp_vektor
+							tmp_aabb.append(tmp_vektor)
+						potongan[pt]["aabb"] = tmp_aabb
 	else: print("tidak ada data permukaan")
 
 func slice_terrain(gambar_noise, material):

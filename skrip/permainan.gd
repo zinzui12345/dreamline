@@ -5,29 +5,30 @@ class_name Permainan
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.7 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.3.7 - Implementasi Timeline
-# 09 Agu 2023 | 1.3.8 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 09 Agu 2023 | 1.3.7 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.3.8 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.3.8 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 | 1.3.9 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 15 Agu 2023 | 1.3.8 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.3.9 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.3.9 - Implementasi shader karakter menggunakan MToon
-# 21 Sep 2023 | 1.4.0 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 21 Sep 2023 | 1.3.9 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.4.0 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.0 - Penambahan Text Chat
-# 09 Okt 2023 | 1.4.1 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 09 Okt 2023 | 1.4.0 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.1 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.1 - Tombol Sentuh Fleksibel
-# 14 Okt 2023 | 1.4.2 - Penambahan Mode Edit Objek
+# 14 Okt 2023 | 1.4.1 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.2 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.2 - Perbaikan kesalahan kontrol sentuh
-# 08 Nov 2023 | 1.4.3 - Implementasi Koneksi Publik menggunakan UPnP
+# 08 Nov 2023 | 1.4.2 - Implementasi Koneksi Publik menggunakan UPnP
 # 17 Nov 2023 | 1.4.3 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.3 - Penambahan kemampuan penghindaran npc terhadap musuhnya
-# 10 Des 2023 | 1.4.4 - Perbaikan ragdoll karakter
+# 10 Des 2023 | 1.4.3 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
+# 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline beta v1.4.4 rev 14/01/24 alpha"
+const versi = "Dreamline beta v1.4.4 rev 17/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -285,10 +286,6 @@ func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vec
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible:
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = false
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") != null:
- 		# gaperlu karena beda world
-		#var tmp_p = $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node("pencahayaan_karakter")
-		#$karakter/panel/tampilan/SubViewportContainer/SubViewport.remove_child(tmp_p)
-		#tmp_p.queue_free()
 		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
 	if $proses_koneksi.visible:
@@ -496,6 +493,7 @@ func buat_server(headless = false):
 func gabung_server():
 	koneksi = MODE_KONEKSI.CLIENT
 	var ip = $daftar_server/panel/panel_input/input_ip.text
+	var port = 10567
 	if _posisi_tab_koneksi == "LAN":
 		if not ip.is_valid_ip_address():
 			if ip == "": 	_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
@@ -505,11 +503,20 @@ func gabung_server():
 		if ip == "":
 			_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
 			return
+		elif ip.get_slice_count(":") == 2:
+			# cek pola | 0.tcp.ap.ngrok.io:12089
+			var alamat = ip.split(":", true, 1)
+			ip = alamat[0]
+			port = alamat[1].to_int()
+			print("mengatur port menjadi {%s}" % [str(port)])
+		elif not ip.is_valid_ip_address():
+			_tampilkan_popup_informasi("%iptakvalid", $daftar_server/panel/panel_input/input_ip)
+			return
 	$daftar_server/panel/panel_input/input_ip.grab_focus()
 	$proses_koneksi/animasi.play("tampilkan")
 	$proses_koneksi/panel/animasi.play("proses")
 	client.hentikan_pencarian_server()
-	client.sambungkan_server(ip)
+	client.sambungkan_server(ip, port)
 func cari_server(): 		client.cari_server()
 func cek_koneksi_server(): 	client.cek_koneksi()
 func putuskan_server(paksa = false):
@@ -1172,6 +1179,22 @@ func _ketika_menekan_link_informasi(tautan):
 	# TODO : konfirmasi tautan
 	Panku.notify(tautan)
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+func tampilkan_editor_kode(nilai):
+	if nilai:
+		# cek apakah berada di menu atau dalam permainan
+		#if $pemutar_musik.visible:
+		#	$pemutar_musik/animasi.play("sembunyikan")
+		#if $daftar_server.visible:
+		#	$daftar_server/animasi.play("animasi_panel/tutup")
+		#if $karakter.visible:
+		#	$karakter/animasi.play("animasi_panel/tutup")
+		#$menu_utama/animasi.play("lipat")
+		
+		$editor_kode/animasi.play("tampilkan")
+	else:
+		#$menu_utama/animasi.play("perluas")
+		
+		$editor_kode/animasi.play("sembunyikan")
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama

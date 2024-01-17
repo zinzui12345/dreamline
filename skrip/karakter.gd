@@ -84,16 +84,16 @@ var tekstur
 	"sepatu"	: false
 }
 @export var material = {
-	"badan"		: { "jalur_node": "badan", "id_material": [0] },
-	"wajah"		: { "jalur_node": "wajah", "id_material": [0, 1, 6, 7] },
-	"mata"		: { "jalur_node": "wajah", "id_material": [5, 2] },
-	"telinga"	: { "jalur_node": "telinga", "id_material": [0] },
-	"tangan"	: { "jalur_node": "rambut", "id_material": [0] },
-	"alis"		: { "jalur_node": "", "id_material": [4] },
-	"rambut"	: { "jalur_node": "rambut", "id_material": [1, 2, 3] },
-	"baju"		: { "jalur_node": "baju", "id_material": [0] },
-	"celana"	: { "jalur_node": "celana", "id_material": [0] },
-	"sepatu"	: { "jalur_node": "sepatu", "id_material": [0] }
+	"badan"		: { "jalur_node": "badan",	"id_material": [0] },
+	"wajah"		: { "jalur_node": "wajah",	"id_material": [0, 1, 6, 7] },
+	"mata"		: { "jalur_node": "wajah",	"id_material": [5, 2] },
+	"telinga"	: { "jalur_node": "telinga","id_material": [0] },
+	"tangan"	: { "jalur_node": "rambut",	"id_material": [0] },
+	"alis"		: { "jalur_node": "",		"id_material": [4] },
+	"rambut"	: { "jalur_node": "rambut",	"id_material": [0, 1, 2] },
+	"baju"		: { "jalur_node": "baju",	"id_material": [0] },
+	"celana"	: { "jalur_node": "celana",	"id_material": [0] },
+	"sepatu"	: { "jalur_node": "sepatu",	"id_material": [0] }
 }
 @export var warna = {
 	"badan"		: Color.WHITE,

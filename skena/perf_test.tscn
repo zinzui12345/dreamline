@@ -25,7 +25,7 @@ var mode_layar_penuh = false :
 func _ready():
 	if dunia == null:
 		dunia = await load(\"res://skena/dunia.scn\").instantiate()
-		get_tree().get_root().call_deferred(\"add_child\", dunia)
+		call_deferred(\"add_child\", dunia)
 	
 	permukaan.pengamat = $viewport_utama/viewport/pengamat
 	for pt in permukaan.potongan.size():
@@ -54,6 +54,10 @@ func _input(event):
 					label_info.text = permukaan.potongan[pt][\"m_render\"]
 		posisi_terakhir = $viewport_utama/viewport/pengamat.global_transform.origin
 		rotasi_terakhir = $viewport_utama/viewport/pengamat.global_rotation_degrees
+func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
+	$viewport_utama/viewport/pengamat.global_position.x = posisi_x
+	$viewport_utama/viewport/pengamat.global_position.y = posisi_y
+	$viewport_utama/viewport/pengamat.global_position.z = posisi_z
 
 # ketika mengatur culling
 func _atur_frustum_culling(nilai):
