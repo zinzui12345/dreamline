@@ -2573,6 +2573,9 @@ member_variable_color = Color(0.890196, 0.47451, 0, 1)
 keyword_colors = {
 "Pemain": Color(0.6, 1, 0.996078, 1),
 "fungsi": Color(0.203922, 0.921569, 0.137255, 1),
+"if": Color(1, 0.278431, 0.278431, 1),
+"jika": Color(1, 0.278431, 0.278431, 1),
+"nilai": Color(0, 0.941176, 0.890196, 1),
 "var": Color(0, 0.941176, 0.890196, 1)
 }
 
@@ -2593,6 +2596,27 @@ func _ready():
 func _process(delta):
 	pass
 
+func _jalankan():
+	for baris in get_line_count():
+		if is_in_comment(baris) < 0:
+			set_line_as_executing(baris, true)
+	var array_eksekusi = get_executing_lines()
+	for baris_eksekusi in array_eksekusi.size():
+		var baris = get_line(array_eksekusi[baris_eksekusi])
+		var baris_hasil : String = \"\"
+		
+		if baris.contains(':'):
+			var pecah_bagian = baris.split(':', false, 2)
+			if pecah_bagian.size() == 1 or is_in_string(baris_eksekusi, pecah_bagian[0].length()) > -1:
+				baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
+			else:
+				baris_hasil = baris_hasil + kompilasi_kode(pecah_bagian[0], baris_eksekusi) + ':' + kompilasi_kode(pecah_bagian[1], baris_eksekusi)
+		else:
+			baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
+		
+		print_debug(\"kode sumber: \"+baris)
+		print_debug(\"hasil compile: \"+baris_hasil)
+
 func _on_code_completion_requested():
 	add_code_completion_option(
 		CodeEdit.KIND_CLASS,
@@ -2612,6 +2636,53 @@ func _on_code_completion_requested():
 		Color.AQUAMARINE
 	)
 	update_code_completion_options(true)
+
+func _terjemahkan_deklarasi(nama : String):
+	match nama:
+		\"fungsi\":		return \"func\"
+		\"nilai\":		return \"var\"
+		_:				return nama
+func _terjemahkan_fungsi(nama : String):
+	match nama:
+		\"notifikasi(\":	return \"Panku.notify(\"
+		\"jika\":			return \"if\"
+		\"dan\":			return \"and\"
+		\"atau\":			return \"or\"
+		_:				return nama
+
+func kompilasi_kode(kode, baris_eksekusi):
+	var baris_hasil : String = \"\"
+	if kode.substr(0, 1) == \"\\t\":
+		# contoh kode : \\tnotifikasi(\"aaaaeea!\")
+		var pecah_indentasi = kode.split(\"\\t\") # [\"\",\"notifikasi(\"aaaaeea!\")\"]
+		var posisi_kolom : int = 0
+		for i in pecah_indentasi:
+			if i == \"\": baris_hasil = baris_hasil + \"\\t\"; posisi_kolom += 1
+			elif i.contains('\"'):
+				# cek, kalo ada karakter \" split dengan karakter tersebut kemudian lakukan loop lagi
+				# \"notifikasi(\"aaaaeea!\")\"
+				var pecah_kalimat = i.split(\"\\\"\") # [\"notifikasi(\", \"aaaaeea!\", \")\"]
+				for k in pecah_kalimat:
+					# \"notifikasi(\"
+					if is_in_string(baris_eksekusi, posisi_kolom + 1) > -1:
+						# kalau berada dalam string #
+						baris_hasil = baris_hasil + '\"' + k
+					else:
+						baris_hasil = baris_hasil + _terjemahkan_fungsi(k)
+					posisi_kolom += k.length()
+			else:
+				var pecah_kalimat = i.split(\" \") # [\"jika\", \"Pemain\"]
+				for k in pecah_kalimat:
+					baris_hasil = baris_hasil + _terjemahkan_fungsi(k) + ' '; posisi_kolom += k.length()
+	else:
+		# terjemahkan deklarasi variabel dan fungsi
+		# hanya kalimat pertama yang diterjemahkan
+		# contoh baris : \"fungsi mulai():\"
+		var pecah_kalimat = kode.split(\" \") # [\"fungsi\", \"mulai():\"]
+		for k in pecah_kalimat:
+			baris_hasil = baris_hasil + _terjemahkan_deklarasi(k) + ' '
+	if baris_hasil.substr(baris_hasil.length()-1, 1) == ' ': baris_hasil = baris_hasil.substr(0, baris_hasil.length()-1)
+	return baris_hasil
 "
 
 [sub_resource type="Animation" id="Animation_jtrf2"]
@@ -5463,8 +5534,8 @@ theme_override_colors/background_color = Color(0, 0, 0, 0.823529)
 theme_override_colors/selection_color = Color(0, 0, 0, 0.784314)
 theme_override_colors/current_line_color = Color(0, 0, 0, 1)
 theme_override_colors/line_number_color = Color(0.815686, 0.764706, 0.494118, 1)
-text = "var a = 5
-var n : bunga_nektar
+text = "nilai a = 5
+nilai n : bunga_nektar
 
 fungsi _mulai():
 	notifikasi(\"halo dunia!\")
@@ -5473,10 +5544,15 @@ fungsi _mulai():
 	Pemain.teleportasi(23, 10, 12)
 	notifikasi(\"selamat datang di dreamline ^u^\")
 
-/* fungsi ini akan dipanggil setiap saat | d adalah percepatan waktu / delta */
+/* fungsi diwawah ini akan dipanggil setiap saat
+	d adalah percepatan waktu / delta
+*/
 fungsi proses(d):
 	jika n.nyawa < 50: n.nyawa = 100
-	jika Pemain.posisi.y < -28: notifikasi(\"kamu terjatuh dari dunia!\")"
+	jika Pemain.posisi.y < -28: notifikasi(\"kamu terjatuh dari dunia!\")
+	
+	jika Pemain.posisi.y > 3264789266:
+		notifikasi(\"kamu pergi ke surga ^-^\")"
 scroll_smooth = true
 minimap_draw = true
 minimap_width = 100

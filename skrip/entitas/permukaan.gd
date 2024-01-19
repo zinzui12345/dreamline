@@ -54,6 +54,10 @@ extends Node3D
 			posisi_terakhir = kamera.global_transform.origin
 			rotasi_terakhir = kamera.global_rotation_degrees
 			pengamat = kamera
+			var debug_raycast = raycast_occlusion_culling.duplicate()
+			pengamat.add_child(debug_raycast) # debug
+			debug_raycast.position.z = 5
+			debug_raycast.set_collision_mask_value(32, false) # FIXME : ngapa raycastnya nggak tembus dari samping bawah???
 @export var frekuensi_vegetasi = 0.5
 @export var tekstur : Image
 @export var potongan = []
@@ -145,7 +149,16 @@ func _enter_tree():
 	raycast_occlusion_culling.set_collision_mask_value(3, true)
 	raycast_occlusion_culling.set_collision_mask_value(32, true)
 	raycast_occlusion_culling.target_position = Vector3(0, 0, -400)
+	raycast_occlusion_culling.hit_from_inside = true
+	raycast_occlusion_culling.exclude_parent = false
 	add_child(raycast_occlusion_culling)
+	# debug
+	# INFO : bikin 8 raycast_debug
+	for rd in 8:
+		var raycast_debug = raycast_occlusion_culling.duplicate()
+		raycast_debug.name = "raycast_debug_"+str(rd+1)
+		add_child(raycast_debug)
+		raycast_debug.enabled = true
 func _ready():
 	if Engine.is_editor_hint(): pass
 	else:
@@ -155,8 +168,8 @@ func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
 		# gak usah cull kalau kondisi gak berubah
-		if posisi_terakhir == pengamat.global_transform.origin and \
-			rotasi_terakhir == pengamat.global_rotation_degrees:
+		if posisi_terakhir.distance_to(pengamat.global_transform.origin) < 0.05 and \
+			rotasi_terakhir == pengamat.global_rotation_degrees: # TODO : coba bandingkan rotasi apakah perbedaannya kurang dari 2.5 derajat
 			return
 		else:
 			posisi_terakhir = pengamat.global_transform.origin
@@ -253,7 +266,6 @@ func _process(_delta):
 											potongan[pt]["m_render"] = "lod"
 										else:
 											atur_visibilitas_potongan_vegetasi(pt, false)
-											atur_visibilitas_lod_potongan_vegetasi(pt, true)
 											potongan[pt]["m_render"] = "gpu instance"
 											if gunakan_occlusion_culling and potongan[pt].get("aabb") != null:
 												var aabb_instance = potongan[pt]["aabb"]
@@ -273,12 +285,19 @@ func _process(_delta):
 												# jangan pake loop, karena gak bisa di-jeda | pake fungsi yang saling memanggil!
 												var hasil = await _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, 0)
 												
-												gunakan_occlusion_culling = false # debug
-												if not hasil:
-													Panku.notify("vegetasi %s terlihat" % [str(pt)])
-												else:
+												# debug
+												print_debug("kalkulasi occlusion culling pada potongan_" + potongan[pt]["indeks"])
+												gunakan_occlusion_culling = false
+												
+												if hasil:
 													# kalau true, berarti vegetasi terhalang
-													Panku.notify("vegetasi %s terhalang" % [str(pt)])
+													atur_visibilitas_lod_potongan_vegetasi(pt, false)
+													potongan[pt]["m_render"] = "occluded"
+													print_debug(" potongan_"+str(potongan[pt]["indeks"])+" terhalang")
+												else:
+													atur_visibilitas_lod_potongan_vegetasi(pt, true)
+													print_debug(" potongan_"+str(potongan[pt]["indeks"])+" nampak")
+											else:	atur_visibilitas_lod_potongan_vegetasi(pt, true)
 									elif jarak_render >= jarak and potongan_node.visible:
 										potongan_node.visible = false
 										potongan_fisik.disabled = true
@@ -833,12 +852,18 @@ func atur_visibilitas_lod_potongan_vegetasi(id_potongan, nilai : bool): 								
 func _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik):
 	if titik < 8:
 		raycast_occlusion_culling.global_position = aabb_instance[titik]
-		raycast_occlusion_culling.look_at(pengamat.global_position)
+		# FIXME : cek apakah arah look_at juga mengarah ke atas/bawah ? | ternyata nggak -_-
+		# apakah look_at langsung atau menunggu frame selanjutnya?
+		raycast_occlusion_culling.look_at(pengamat.global_position, Vector3(1, 1, 0))
 		raycast_occlusion_culling.force_raycast_update()
+		# raycast_debug
+		get_node("titik_debug/titik_"+str(titik+1)).global_position = aabb_instance[titik]
+		get_node("raycast_debug_"+str(titik+1)).global_position = aabb_instance[titik]
+		get_node("raycast_debug_"+str(titik+1)).look_at(pengamat.global_position, Vector3(1, 1, 0))
 		var mengenai_pengamat = await raycast_occlusion_culling.is_colliding()
 		if mengenai_pengamat:
 			var objek_raycast = raycast_occlusion_culling.get_collider()
-			if objek_raycast.get_parent() == pengamat: return false
+			if objek_raycast.get_parent() == pengamat: print_debug("raycast_"+str(titik+1)+" mengenai pengamat"); return false
 		else:
 			var hasil_1 = await self._kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik + 1)
 			return hasil_1

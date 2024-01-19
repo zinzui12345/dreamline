@@ -97,9 +97,11 @@ func _atur_overdraw(aktif):
 	if aktif:
 		$viewport_utama/viewport.debug_draw = Viewport.DEBUG_DRAW_OVERDRAW
 		$viewport_utama/viewport/lingkungan/air.visible = false
+		$viewport_utama/viewport/lingkungan/lantai.visible = false
 	else:
 		$viewport_utama/viewport.debug_draw = Viewport.DEBUG_DRAW_DISABLED
 		$viewport_utama/viewport/lingkungan/air.visible = true
+		$viewport_utama/viewport/lingkungan/lantai.visible = true
 func _atur_fov_minimap(nilai):
 	$viewport_culling/SubViewport/pengamat/Camera3D.size = nilai
 "

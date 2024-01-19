@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline beta v1.4.4 rev 17/01/24 alpha"
+const versi = "Dreamline beta v1.4.4 rev 19/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -272,6 +272,8 @@ func _notification(what):
 func uji_performa():
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://skena/perf_test.tscn")
+func uji_kode():
+	$editor_kode/CodeEdit._jalankan()
 func atur_map(nama_map : StringName = "empty"):
 	if ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;	return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
