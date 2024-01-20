@@ -88,8 +88,8 @@ var tekstur
 	"wajah"		: { "jalur_node": "wajah",	"id_material": [0, 1, 6, 7] },
 	"mata"		: { "jalur_node": "wajah",	"id_material": [5, 2] },
 	"telinga"	: { "jalur_node": "telinga","id_material": [0] },
-	"tangan"	: { "jalur_node": "rambut",	"id_material": [0] },
 	"alis"		: { "jalur_node": "",		"id_material": [4] },
+	"rambut_"	: { "jalur_node": "badan",	"id_material": [1] },
 	"rambut"	: { "jalur_node": "rambut",	"id_material": [0, 1, 2] },
 	"baju"		: { "jalur_node": "baju",	"id_material": [0] },
 	"celana"	: { "jalur_node": "celana",	"id_material": [0] },
@@ -100,16 +100,16 @@ var tekstur
 	"wajah"		: Color.WHITE,
 	"mata" 		: Color.DARK_RED,
 	"telinga"	: Color.WHITE,
-	"tangan"	: Color.WHITE,
+	"rambut_"	: Color.BLUE_VIOLET,
 	"rambut"	: Color.BLUE_VIOLET,
 	"baju"		: Color.AQUAMARINE,
 	"celana"	: Color.WHITE,
 	"sepatu"	: Color.WHITE
 } :
 	set(warna_baru):
-		warna["mata"] = warna_baru["mata"]
+		warna["mata"]	= warna_baru["mata"]
 		warna["rambut"] = warna_baru["rambut"]
-		warna["baju"] = warna_baru["baju"]
+		warna["baju"]	= warna_baru["baju"]
 		warna["celana"] = warna_baru["celana"]
 		warna["sepatu"] = warna_baru["sepatu"]
 		atur_warna()
@@ -238,8 +238,15 @@ func atur_warna():
 						#if get_parent().get_path() == server.permainan.dunia.get_node("pemain").get_path():
 							#get_node("%GeneralSkeleton/"+jlr_mtl).mesh.surface_set_material(id_mtl[mtl], null)
 					if Konfigurasi.shader_karakter or tmp_mtl is ShaderMaterial:
-						tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
-					else: tmp_mtl.albedo_color = warna[indeks_material[mt]]
+						if indeks_material[mt] == "rambut_":
+							tmp_mtl.set("shader_parameter/_Color", warna["rambut"])
+						else:
+							tmp_mtl.set("shader_parameter/_Color", warna[indeks_material[mt]])
+					else:
+						if indeks_material[mt] == "rambut_":
+							tmp_mtl.albedo_color = warna["rambut"]
+						else:
+							tmp_mtl.albedo_color = warna[indeks_material[mt]]
 func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 	if nilai and !_ragdoll:
 		var tmp_ragdoll = load("res://karakter/ragdoll.scn").instantiate()
