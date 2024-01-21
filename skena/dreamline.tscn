@@ -2610,12 +2610,27 @@ func _jalankan():
 			if pecah_bagian.size() == 1 or is_in_string(baris_eksekusi, pecah_bagian[0].length()) > -1:
 				baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
 			else:
-				baris_hasil = baris_hasil + kompilasi_kode(pecah_bagian[0], baris_eksekusi) + ':' + kompilasi_kode(pecah_bagian[1], baris_eksekusi)
+				var bagian_1 = kompilasi_kode(pecah_bagian[0], baris_eksekusi)
+				var bagian_2 = \"\"
+				if pecah_bagian[0].length() + (pecah_bagian.size() - 1) > bagian_1.length(): # jika ==> if
+					var posisi_kolom = (pecah_bagian[0].length() + (pecah_bagian.size() - 1)) - (pecah_bagian[0].length() - bagian_1.length())
+					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi, posisi_kolom + (pecah_bagian.size() - 1))
+				elif pecah_bagian[0].length() + (pecah_bagian.size() - 1) < bagian_1.length(): # notifikasi( ==> Panku.notify(
+					var posisi_kolom = (pecah_bagian[1].length() + (pecah_bagian.size() - 1)) + (bagian_1.length() - pecah_bagian[0].length())
+					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi, posisi_kolom + (pecah_bagian.size() - 1))
+				else:
+					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi)
+				baris_hasil = baris_hasil + bagian_1 + ':' + bagian_2
+				#print_debug(\"bagian 1 = %s : %s\" % [pecah_bagian[0], pecah_bagian[0].length() + (pecah_bagian.size() - 1)])
+				#print_debug(\"bagian 2 = %s : %s\" % [pecah_bagian[1], pecah_bagian[1].length()])
+				#print_debug(\"hasil bagian 1 = %s : %s\" % [bagian_1, bagian_1.length() + (pecah_bagian.size() - 1)])
+				#print_debug(\"hasil bagian 2 = %s : %s\" % [bagian_2, bagian_2.length()])
+				#print_debug(\"total bagian = %s : %s\" % [2, (pecah_bagian[0].length() + (pecah_bagian.size() - 1)) + pecah_bagian[1].length()])
 		else:
 			baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
 		
-		print_debug(\"kode sumber: \"+baris)
-		print_debug(\"hasil compile: \"+baris_hasil)
+		print_debug(\"kode sumber: \"+baris+\" [\"+str(baris.length())+\"]\")
+		print_debug(\"hasil compile: \"+baris_hasil+\" [\"+str(baris_hasil.length())+\"]\")
 
 func _on_code_completion_requested():
 	add_code_completion_option(
@@ -2650,12 +2665,15 @@ func _terjemahkan_fungsi(nama : String):
 		\"atau\":			return \"or\"
 		_:				return nama
 
-func kompilasi_kode(kode, baris_eksekusi):
+func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
 	var baris_hasil : String = \"\"
+	if kode.substr(0, 1) == \" \":
+		kode = \"\\t\" + kode.substr(1, kode.length())
+		kolom_mulai += 1
 	if kode.substr(0, 1) == \"\\t\":
 		# contoh kode : \\tnotifikasi(\"aaaaeea!\")
 		var pecah_indentasi = kode.split(\"\\t\") # [\"\",\"notifikasi(\"aaaaeea!\")\"]
-		var posisi_kolom : int = 0
+		var posisi_kolom = kolom_mulai
 		for i in pecah_indentasi:
 			if i == \"\": baris_hasil = baris_hasil + \"\\t\"; posisi_kolom += 1
 			elif i.contains('\"'):
@@ -2664,11 +2682,18 @@ func kompilasi_kode(kode, baris_eksekusi):
 				var pecah_kalimat = i.split(\"\\\"\") # [\"notifikasi(\", \"aaaaeea!\", \")\"]
 				for k in pecah_kalimat:
 					# \"notifikasi(\"
-					if is_in_string(baris_eksekusi, posisi_kolom + 1) > -1:
+					#print_debug(
+					#	\"a:: sumber : [\"+get_line(get_executing_lines()[baris_eksekusi])+\"] <= [\"+k+\"]\\n\"+
+					#	\"b:: hasil : [\"+baris_hasil+
+					#	\"]\\tposisi kolom : \"+str(posisi_kolom + 1)
+					#)
+					if is_in_string(get_executing_lines()[baris_eksekusi], posisi_kolom + 1) > -1:
 						# kalau berada dalam string #
-						baris_hasil = baris_hasil + '\"' + k
+						baris_hasil = baris_hasil + \"\\\"\" + k
+						#print_debug(\"c:: string : true\")
 					else:
 						baris_hasil = baris_hasil + _terjemahkan_fungsi(k)
+						#print_debug(\"c:: string : false\")
 					posisi_kolom += k.length()
 			else:
 				var pecah_kalimat = i.split(\" \") # [\"jika\", \"Pemain\"]
@@ -5544,7 +5569,7 @@ fungsi _mulai():
 	Pemain.teleportasi(23, 10, 12)
 	notifikasi(\"selamat datang di dreamline ^u^\")
 
-/* fungsi diwawah ini akan dipanggil setiap saat
+/* fungsi dibawah ini akan dipanggil setiap saat
 	d adalah percepatan waktu / delta
 */
 fungsi proses(d):
@@ -5552,7 +5577,9 @@ fungsi proses(d):
 	jika Pemain.posisi.y < -28: notifikasi(\"kamu terjatuh dari dunia!\")
 	
 	jika Pemain.posisi.y > 3264789266:
-		notifikasi(\"kamu pergi ke surga ^-^\")"
+		notifikasi(\"kamu pergi ke surga ^-^\")
+
+	jika Pemain.posisi.x > 12346523488: notifikasi(\"notifikasi() akan ditampilkan pada arah y\")"
 scroll_smooth = true
 minimap_draw = true
 minimap_width = 100
