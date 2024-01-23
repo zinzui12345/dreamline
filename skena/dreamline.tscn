@@ -2582,8 +2582,14 @@ keyword_colors = {
 [sub_resource type="GDScript" id="GDScript_rtonl"]
 script/source = "extends CodeEdit
 
+var sintaks_akar = [
+	# tipe						# tampilan																# format																													# warna
+	[ CodeEdit.KIND_CLASS,		\"fungsi nama_fungsi(nilai = null):\",									\"fungsi nama_fungsi():\\n\\tpass /* ganti bagian ini dengan perintah */\",														Color(\"#34eb23\") ],
+	[ CodeEdit.KIND_CLASS,		\"Permainan\",															\"Permainan\" ],
+	[ CodeEdit.KIND_CLASS,		\"Pemain\",																\"Pemain\",																													Color.AQUAMARINE ],
+	[ CodeEdit.KIND_FUNCTION,	\"notifikasi(pesan : String)\",											\"notifikasi(\\\"\\\")\" ]
+]
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	fold_all_lines()
 	add_string_delimiter(\"\\\"\", \"\\\"\")
@@ -2592,7 +2598,6 @@ func _ready():
 	syntax_highlighter.add_color_region(\"/*\", \"*/\", Color.BLUE_VIOLET)
 	syntax_highlighter.add_color_region(\"\\\"\", \"\\\"\", Color.GREEN_YELLOW)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
@@ -2601,22 +2606,26 @@ func _jalankan():
 		if is_in_comment(baris) < 0:
 			set_line_as_executing(baris, true)
 	var array_eksekusi = get_executing_lines()
+	var kode : String = \"extends Node\" # TODO : sesuaikan dengan class parentnya!
+	
 	for baris_eksekusi in array_eksekusi.size():
 		var baris = get_line(array_eksekusi[baris_eksekusi])
 		var baris_hasil : String = \"\"
 		
 		if baris.contains(':'):
 			var pecah_bagian = baris.split(':', false, 2)
-			if pecah_bagian.size() == 1 or is_in_string(baris_eksekusi, pecah_bagian[0].length()) > -1:
+			if pecah_bagian.size() == 1 or is_in_string(get_executing_lines()[baris_eksekusi], pecah_bagian[0].length()) > -1:
 				baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
 			else:
 				var bagian_1 = kompilasi_kode(pecah_bagian[0], baris_eksekusi)
 				var bagian_2 = \"\"
 				if pecah_bagian[0].length() + (pecah_bagian.size() - 1) > bagian_1.length(): # jika ==> if
 					var posisi_kolom = (pecah_bagian[0].length() + (pecah_bagian.size() - 1)) - (pecah_bagian[0].length() - bagian_1.length())
+					if pecah_bagian[1].substr(0, 1) == \"\\t\" and pecah_bagian[1].substr(1, 2) != \"\\t\": posisi_kolom += \"\\t\".length()
 					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi, posisi_kolom + (pecah_bagian.size() - 1))
 				elif pecah_bagian[0].length() + (pecah_bagian.size() - 1) < bagian_1.length(): # notifikasi( ==> Panku.notify(
 					var posisi_kolom = (pecah_bagian[1].length() + (pecah_bagian.size() - 1)) + (bagian_1.length() - pecah_bagian[0].length())
+					if pecah_bagian[1].substr(0, 1) == \"\\t\" and pecah_bagian[1].substr(1, 2) != \"\\t\": posisi_kolom += \"\\t\".length()
 					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi, posisi_kolom + (pecah_bagian.size() - 1))
 				else:
 					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi)
@@ -2629,37 +2638,43 @@ func _jalankan():
 		else:
 			baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
 		
-		print_debug(\"kode sumber: \"+baris+\" [\"+str(baris.length())+\"]\")
-		print_debug(\"hasil compile: \"+baris_hasil+\" [\"+str(baris_hasil.length())+\"]\")
+		#print_debug(\"kode sumber: \"+baris+\" [\"+str(baris.length())+\"]\")
+		#print_debug(\"hasil compile: \"+baris_hasil+\" [\"+str(baris_hasil.length())+\"]\")
+		
+		kode = kode + \"\\n\" + baris_hasil
+	
+	var eksekusi := GDScript.new()
+	eksekusi.source_code = kode
+	var galat := eksekusi.reload()
+	
+	print_debug(\"hasil compile: \\n\"+kode)
+	print_debug(galat)
+	
+	if galat == OK:
+		var jalankan : Object = eksekusi.new()
+		get_tree().get_root().add_child(jalankan)
+		jalankan.queue_free()
+	else:
+		Panku.notify(\"kode tidak valid!\")
 
 func _on_code_completion_requested():
-	add_code_completion_option(
-		CodeEdit.KIND_CLASS,
-		\"fungsi nama_fungsi(nilai = null):\",
-		\"fungsi nama_fungsi():\\n\\tpass /* ganti bagian ini dengan perintah */\",
-		Color(\"#34eb23\")
-	)
-	add_code_completion_option(
-		CodeEdit.KIND_CLASS,
-		\"Permainan\",
-		\"Permainan\"
-	)
-	add_code_completion_option(
-		CodeEdit.KIND_CLASS,
-		\"Pemain\",
-		\"Pemain\",
-		Color.AQUAMARINE
-	)
+	for sr : Array in sintaks_akar:
+		if sr.size() == 4:
+			add_code_completion_option(sr[0], sr[1], sr[2], sr[3])
+		else:
+			add_code_completion_option(sr[0], sr[1], sr[2])
 	update_code_completion_options(true)
 
 func _terjemahkan_deklarasi(nama : String):
 	match nama:
+		\"_mulai():\":	return \"_ready():\"
 		\"fungsi\":		return \"func\"
 		\"nilai\":		return \"var\"
 		_:				return nama
 func _terjemahkan_fungsi(nama : String):
 	match nama:
 		\"notifikasi(\":	return \"Panku.notify(\"
+		\"_proses(\":		return \"_process(\"
 		\"jika\":			return \"if\"
 		\"dan\":			return \"and\"
 		\"atau\":			return \"or\"
@@ -2676,25 +2691,31 @@ func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
 		var posisi_kolom = kolom_mulai
 		for i in pecah_indentasi:
 			if i == \"\": baris_hasil = baris_hasil + \"\\t\"; posisi_kolom += 1
-			elif i.contains('\"'):
+			# TODO : cek deklarasi dalam sebuah fungsi
+			elif i.contains(' '):
+				
+				pass
+			
+			if i.contains('\"'):
 				# cek, kalo ada karakter \" split dengan karakter tersebut kemudian lakukan loop lagi
 				# \"notifikasi(\"aaaaeea!\")\"
 				var pecah_kalimat = i.split(\"\\\"\") # [\"notifikasi(\", \"aaaaeea!\", \")\"]
 				for k in pecah_kalimat:
 					# \"notifikasi(\"
-					#print_debug(
-					#	\"a:: sumber : [\"+get_line(get_executing_lines()[baris_eksekusi])+\"] <= [\"+k+\"]\\n\"+
-					#	\"b:: hasil : [\"+baris_hasil+
-					#	\"]\\tposisi kolom : \"+str(posisi_kolom + 1)
-					#)
 					if is_in_string(get_executing_lines()[baris_eksekusi], posisi_kolom + 1) > -1:
 						# kalau berada dalam string #
 						baris_hasil = baris_hasil + \"\\\"\" + k
-						#print_debug(\"c:: string : true\")
+						#print_debug(\"a:: string : true\")
 					else:
 						baris_hasil = baris_hasil + _terjemahkan_fungsi(k)
-						#print_debug(\"c:: string : false\")
+						#print_debug(\"a:: string : false\")
 					posisi_kolom += k.length()
+					#print_debug(
+					#	\"b:: sumber : [\"+get_line(get_executing_lines()[baris_eksekusi])+\"] <= [\"+k+\"]\\n\"+
+					#	\"c:: hasil : [\"+baris_hasil+\"]\\tposisi kolom : \"+str(posisi_kolom + 1)
+					#)
+			# TODO : cek pemanggilan fungsi mis. notifikasi(b), jeda(0.5)
+			
 			else:
 				var pecah_kalimat = i.split(\" \") # [\"jika\", \"Pemain\"]
 				for k in pecah_kalimat:
@@ -5559,27 +5580,17 @@ theme_override_colors/background_color = Color(0, 0, 0, 0.823529)
 theme_override_colors/selection_color = Color(0, 0, 0, 0.784314)
 theme_override_colors/current_line_color = Color(0, 0, 0, 1)
 theme_override_colors/line_number_color = Color(0.815686, 0.764706, 0.494118, 1)
-text = "nilai a = 5
-nilai n : bunga_nektar
+text = "/* deklarasikan nilai disini */
+nilai a = 5
+nilai b = \"israel adalah monyet anjing babi dari kalangan yahooodie\"
 
+/* fungsi ini akan dipanggil pada saat node di-spawn */
 fungsi _mulai():
 	notifikasi(\"halo dunia!\")
 	print_debug(a + 5)
-	n = Permainan.buat_objek(\"bunga_nektar\", Vector3(88, 2, 35), Vector3.ZERO)
-	Pemain.teleportasi(23, 10, 12)
 	notifikasi(\"selamat datang di dreamline ^u^\")
-
-/* fungsi dibawah ini akan dipanggil setiap saat
-	d adalah percepatan waktu / delta
-*/
-fungsi proses(d):
-	jika n.nyawa < 50: n.nyawa = 100
-	jika Pemain.posisi.y < -28: notifikasi(\"kamu terjatuh dari dunia!\")
-	
-	jika Pemain.posisi.y > 3264789266:
-		notifikasi(\"kamu pergi ke surga ^-^\")
-
-	jika Pemain.posisi.x > 12346523488: notifikasi(\"notifikasi() akan ditampilkan pada arah y\")"
+	jika a > 1:	notifikasi(\"a lebih dari satu!\")
+	jika a > 0 dan a < 6: notifikasi(\"a diantara 0 dan 6\")"
 scroll_smooth = true
 minimap_draw = true
 minimap_width = 100

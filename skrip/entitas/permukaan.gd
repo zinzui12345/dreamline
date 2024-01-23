@@ -363,9 +363,7 @@ func hasilkan_terrain():
 				0,
 				jarak.y - ((gambar_noise.get_height() / ((gambar_noise.get_height() * 0.15) / (128 * 0.15))) * titik_offset)
 			)
-			#if y == 0: print_debug(
-			#	jarak.x - ((gambar_noise.get_width() / ((gambar_noise.get_width() * 0.15) / (128 * 0.15))) * titik_offset)
-			#)
+			
 			var vertex : Vector3 = titik_jari_jari * ukuran;
 			vertex.y = nilai_grayscale * tinggi_maks
 			var uv = Vector2()
@@ -799,6 +797,7 @@ func tempatkan_vegetasi(posisi : Vector3):
 		if total_bunga_nektar <= 0: tempatkan_vegetasi(posisi); return
 		var model_vegetasi = load("res://skena/entitas/bunga_nektar.scn")
 		var vegetation_instance = model_vegetasi.instantiate()
+		# TODO : atur nama
 		vegetation_instance.transform.origin = posisi
 		vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
 		add_child(vegetation_instance)
