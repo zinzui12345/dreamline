@@ -2691,12 +2691,7 @@ func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
 		var posisi_kolom = kolom_mulai
 		for i in pecah_indentasi:
 			if i == \"\": baris_hasil = baris_hasil + \"\\t\"; posisi_kolom += 1
-			# TODO : cek deklarasi dalam sebuah fungsi
-			elif i.contains(' '):
-				
-				pass
-			
-			if i.contains('\"'):
+			elif i.contains('\"'):
 				# cek, kalo ada karakter \" split dengan karakter tersebut kemudian lakukan loop lagi
 				# \"notifikasi(\"aaaaeea!\")\"
 				var pecah_kalimat = i.split(\"\\\"\") # [\"notifikasi(\", \"aaaaeea!\", \")\"]
@@ -2707,7 +2702,19 @@ func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
 						baris_hasil = baris_hasil + \"\\\"\" + k
 						#print_debug(\"a:: string : true\")
 					else:
-						baris_hasil = baris_hasil + _terjemahkan_fungsi(k)
+						if _terjemahkan_fungsi(k) != k:
+							baris_hasil = baris_hasil + _terjemahkan_fungsi(k)
+						elif k.contains(\" \"):
+							var pecah_sub_kalimat = k.split(\" \") # [\"nilai\", \"c\"]
+							for l in pecah_sub_kalimat:
+								if _terjemahkan_fungsi(l) != l:
+									baris_hasil = baris_hasil + _terjemahkan_fungsi(l) + \" \"
+								else:
+									baris_hasil = baris_hasil + _terjemahkan_deklarasi(l) + \" \"
+							if baris_hasil.substr(baris_hasil.length() - 1, baris_hasil.length()) == \" \":
+								baris_hasil = baris_hasil.substr(0, baris_hasil.length() - 1)
+						else:
+							baris_hasil = baris_hasil + k
 						#print_debug(\"a:: string : false\")
 					posisi_kolom += k.length()
 					#print_debug(
@@ -2719,7 +2726,12 @@ func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
 			else:
 				var pecah_kalimat = i.split(\" \") # [\"jika\", \"Pemain\"]
 				for k in pecah_kalimat:
-					baris_hasil = baris_hasil + _terjemahkan_fungsi(k) + ' '; posisi_kolom += k.length()
+					if _terjemahkan_fungsi(k) != k:
+						baris_hasil = baris_hasil + _terjemahkan_fungsi(k) + \" \"; posisi_kolom += k.length()
+					else:
+						baris_hasil = baris_hasil + _terjemahkan_deklarasi(k) + \" \"; posisi_kolom += k.length()
+				if baris_hasil.substr(baris_hasil.length() - 1, baris_hasil.length()) == \" \":
+					baris_hasil = baris_hasil.substr(0, baris_hasil.length() - 1)
 	else:
 		# terjemahkan deklarasi variabel dan fungsi
 		# hanya kalimat pertama yang diterjemahkan
@@ -5586,11 +5598,16 @@ nilai b = \"israel adalah monyet anjing babi dari kalangan yahooodie\"
 
 /* fungsi ini akan dipanggil pada saat node di-spawn */
 fungsi _mulai():
+	nilai c = b + \"\\n\" + b
 	notifikasi(\"halo dunia!\")
 	print_debug(a + 5)
 	notifikasi(\"selamat datang di dreamline ^u^\")
+	
 	jika a > 1:	notifikasi(\"a lebih dari satu!\")
-	jika a > 0 dan a < 6: notifikasi(\"a diantara 0 dan 6\")"
+	jika a > 0 dan a < 6: notifikasi(\"a diantara 0 dan 6\")
+	
+	jika c.length() > 0:
+		notifikasi(c)"
 scroll_smooth = true
 minimap_draw = true
 minimap_width = 100
