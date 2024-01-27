@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 21/01/24 alpha"
+const versi = "Dreamline v1.4.4 27/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 

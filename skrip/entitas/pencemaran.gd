@@ -31,14 +31,10 @@ func _ready():
 			"rotation_degrees": rotation_degrees
 		}
 		
-		$area_pencemaran.monitoring = true
-		$area_pencemaran.monitorable = true
 		$interval_pencemaran.wait_time = interval_pencemaran * 60
 		$interval_spawn.wait_time = interval_spawn * 60
-		$interval_pencemaran.start()
-		$interval_spawn.start()
 		
-		_ketika_interval_spawn()
+		#fungsikan(true) # TODO : hanya fungsikan pada pemain tertentu yang berada pada satu potongan
 	elif server.objek.has(str(get_path())): pass
 	else: queue_free()
 
@@ -64,3 +60,15 @@ func spawn(_posisi : Vector3, nama : StringName):
 				"rotation_degrees": rotation_degrees
 			}
 	$spawn_npc.add_child(tmp_musuh)
+func fungsikan(nilai: bool):
+	if nilai:
+		$area_pencemaran.monitoring = true
+		$area_pencemaran.monitorable = true
+		$interval_pencemaran.start()
+		$interval_spawn.start()
+		_ketika_interval_spawn()
+	else:
+		$area_pencemaran.monitoring = false
+		$area_pencemaran.monitorable = false
+		$interval_pencemaran.stop()
+		$interval_spawn.stop()

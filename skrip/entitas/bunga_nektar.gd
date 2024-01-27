@@ -19,9 +19,8 @@ func _ready():
 		}
 		
 		$interval_spawn.wait_time = interval * 60
-		$interval_spawn.start()
 		
-		_ketika_interval_spawn()
+		#fungsikan(true) # TODO : hanya fungsikan pada pemain tertentu yang berada pada satu potongan
 	elif server.objek.has(str(get_path())): pass
 	else: queue_free()
 
@@ -42,3 +41,9 @@ func spawn(_posisi : Vector3, nama : StringName):
 	tmp_nektar.posisi_awal = $posisi_spawn.global_position
 	data_spawn.append(str(tmp_nektar.get_path()))
 	total_spawn += 1
+func fungsikan(nilai: bool):
+	if nilai:
+		$interval_spawn.start()
+		_ketika_interval_spawn()
+	else:
+		$interval_spawn.stop()
