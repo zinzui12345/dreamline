@@ -1,4 +1,4 @@
-[gd_scene load_steps=240 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=243 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -242,6 +242,7 @@ border_color = Color(0, 0, 0, 1)
 [sub_resource type="Animation" id="Animation_3kb00"]
 resource_name = "tampilkan"
 length = 0.4
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -265,6 +266,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.005, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8uu1a"]
@@ -2565,6 +2578,16 @@ _data = {
 "tampilkan": SubResource("Animation_p0xgs")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klg23"]
+bg_color = Color(1, 1, 1, 0.980392)
+border_width_right = 1
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_508ro"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_right = 10
+border_color = Color(0, 0.388235, 0, 1)
+
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_0hte2"]
 number_color = Color(0.6, 0.619608, 1, 1)
 symbol_color = Color(0.796078, 0.631373, 0, 1)
@@ -2746,6 +2769,7 @@ func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
 [sub_resource type="Animation" id="Animation_jtrf2"]
 resource_name = "sembunyikan"
 length = 0.5
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -2793,6 +2817,18 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CodeEdit:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.49, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
 }
 
 [sub_resource type="Animation" id="Animation_0g66h"]
@@ -2845,6 +2881,18 @@ tracks/3/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CodeEdit:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_nq78w"]
@@ -3066,8 +3114,8 @@ border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_w2hc4"]
 resource_name = "tampilkan"
-length = 0.6
-step = 0.05
+length = 0.4
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -3075,7 +3123,7 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.6),
+"times": PackedFloat32Array(0, 0.05, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -3087,7 +3135,7 @@ tracks/1/path = NodePath("panel:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.25, 0.6),
+"times": PackedFloat32Array(0, 0.2, 0.21, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, false, true, true]
@@ -3099,10 +3147,10 @@ tracks/2/path = NodePath("latar:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.05, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_8jjes"]
@@ -3128,7 +3176,7 @@ tracks/1/path = NodePath("panel:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.14, 0.15, 0.3),
+"times": PackedFloat32Array(0, 0.09, 0.1, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -3140,10 +3188,10 @@ tracks/2/path = NodePath("latar:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mmswf"]
@@ -3170,6 +3218,9 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 85
 border_width_right = 85
 border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bl8y3"]
+bg_color = Color(1, 1, 0.976471, 0.960784)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1o77"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -5571,6 +5622,103 @@ libraries = {
 volume_db = -5.0
 bus = &"Musik Latar"
 
+[node name="setelan" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 0.312438
+anchor_bottom = 1.00033
+offset_right = 0.0639954
+offset_bottom = -0.200012
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="panel" type="Panel" parent="setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_klg23")
+
+[node name="gulir" type="ScrollContainer" parent="setelan/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0277778
+anchor_top = 0.0133333
+anchor_right = 0.972222
+anchor_bottom = 0.986667
+grow_horizontal = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="tab_setelan" type="VBoxContainer" parent="setelan/panel/gulir"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="setelan_umum" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
+layout_mode = 2
+
+[node name="label setelan" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "%setelan_umum"
+
+[node name="pemisah 1" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="label bahasa" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "bahasa"
+
+[node name="pilih_bahasa" type="OptionButton" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+item_count = 3
+selected = 0
+popup/item_0/text = "Auto"
+popup/item_0/id = 0
+popup/item_1/text = "English"
+popup/item_1/id = 1
+popup/item_2/text = "Indonesia"
+popup/item_2/id = 2
+
+[node name="pemisah 2" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="layar_penuh" type="CheckBox" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
+text = "%mode_layar_penuh"
+
+[node name="pemisah 3" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="laporkan_bug" type="Button" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "%laporkan_bug"
+
+[node name="sarankan_fitur" type="Button" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "%sarankan_fitur"
+
+[node name="animasi" type="AnimationPlayer" parent="setelan"]
+libraries = {
+"": SubResource("AnimationLibrary_8uu1a")
+}
+
 [node name="editor_kode" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -5581,6 +5729,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="CodeEdit" type="CodeEdit" parent="editor_kode"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.125
@@ -5917,17 +6066,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6os86")
 [node name="panel" type="Panel" parent="popup_konfirmasi"]
 visible = false
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -287.0
+offset_left = -288.0
 offset_top = -140.0
 offset_right = 288.0
 offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_705t2")
-metadata/_edit_use_anchors_ = true
 
 [node name="teks" type="Label" parent="popup_konfirmasi/panel"]
 layout_mode = 1
@@ -6012,6 +6162,127 @@ icon = ExtResource("28_s2n4g")
 alignment = 0
 
 [node name="animasi" type="AnimationPlayer" parent="popup_konfirmasi"]
+libraries = {
+"": SubResource("AnimationLibrary_mmswf")
+}
+
+[node name="popup_konfirmasi2" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_arhgf")
+metadata/_edit_lock_ = true
+
+[node name="latar" type="Panel" parent="popup_konfirmasi2"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_6os86")
+
+[node name="panel" type="Panel" parent="popup_konfirmasi2"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -164.0
+offset_right = 288.0
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bl8y3")
+
+[node name="teks" type="Label" parent="popup_konfirmasi2/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.609756
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 32
+text = "Tautan ini: Telegram mungkin akan mengalihkanmu dari permainan, Lanjutkan?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="panel_bawah" type="Panel" parent="popup_konfirmasi2/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.804878
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ods8j")
+metadata/_edit_use_anchors_ = true
+
+[node name="oke" type="Button" parent="popup_konfirmasi2/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.000868056
+anchor_top = 0.609951
+anchor_right = 1.00087
+anchor_bottom = 0.804878
+offset_left = -0.5
+offset_top = -0.0640106
+offset_right = -0.500244
+grow_horizontal = 2
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
+theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+text = "%lanjutkan"
+icon = ExtResource("28_s2n4g")
+metadata/_edit_use_anchors_ = true
+
+[node name="batal" type="Button" parent="popup_konfirmasi2/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.000868056
+anchor_top = 0.805073
+anchor_right = 1.00087
+anchor_bottom = 1.0
+offset_left = -0.5
+offset_top = -0.0640106
+offset_right = -0.500244
+grow_horizontal = 2
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath(".")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
+theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+text = "%batal"
+icon = ExtResource("14_xsr60")
+metadata/_edit_use_anchors_ = true
+
+[node name="animasi" type="AnimationPlayer" parent="popup_konfirmasi2"]
 libraries = {
 "": SubResource("AnimationLibrary_mmswf")
 }
@@ -6306,6 +6577,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="pressed" from="menu_utama/setelan" to="." method="_tampilkan_setelan_permainan"]
 [connection signal="pressed" from="menu_utama/keluar" to="." method="_keluar"]
 [connection signal="finished" from="pemutar_musik/AudioStreamPlayer" to="." method="_ketika_musik_latar_selesai_dimainkan"]
+[connection signal="item_selected" from="setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa" to="." method="_ketika_mengatur_bahasa"]
+[connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh" to="." method="_ketika_mengatur_mode_layar_penuh"]
 [connection signal="code_completion_requested" from="editor_kode/CodeEdit" to="editor_kode/CodeEdit" method="_on_code_completion_requested"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]

@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 27/01/24 alpha"
+const versi = "Dreamline v1.4.4 28/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -84,6 +84,10 @@ var tombol_aksi_3 = "berlari" :
 		if ikon != tombol_aksi_3:
 			get_node("kontrol_sentuh/lari").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_3 = ikon
+var _konfigurasi_awal = {
+	"bahasa": 0,
+	"mode_layar_penuh": false
+}
 #endregion
 
 #region enumerasi
@@ -102,7 +106,14 @@ enum PERAN_KARAKTER {
 #region setup
 func _enter_tree():
 	get_tree().get_root().set("min_size", Vector2(980, 600))
-	Konfigurasi.muat()
+	await Konfigurasi.muat()
+	$setelan.visible = false
+	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled = true
+	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.selected = Konfigurasi.bahasa
+	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled = false
+	$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled = true
+	$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.button_pressed = Konfigurasi.mode_layar_penuh
+	$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled = false
 func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
@@ -230,8 +241,7 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed("ui_cancel"): _kembali()
 	if Input.is_action_just_pressed("modelayar_penuh"):
-		if Konfigurasi.mode_layar_penuh: Konfigurasi.mode_layar_penuh = false
-		else: Konfigurasi.mode_layar_penuh = true
+		$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.button_pressed = not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.button_pressed
 		Panku.notify("modelayar_penuh : "+str(Konfigurasi.mode_layar_penuh))
 	
 	# jangan sembunyikan tombol tutup edit objek
@@ -1021,10 +1031,11 @@ func _tampilkan_daftar_objek():
 	karakter.kontrol = true
 	memasang_objek = true
 func _tutup_daftar_objek(paksa = false):
-	# kalau paksa berarti kendali pemain gak dikembaliin
-	$daftar_objek/animasi.play("sembunyikan")
-	if !paksa: karakter._atur_kendali(true)
-	memasang_objek = false
+	if is_instance_valid(karakter):
+		# kalau paksa berarti kendali pemain gak dikembaliin
+		$daftar_objek/animasi.play("sembunyikan")
+		if !paksa: karakter._atur_kendali(true)
+		memasang_objek = false
 func _tambah_translasi_x_objek():
 	$hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step
 	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
@@ -1130,7 +1141,20 @@ func _hapus_daftar_pemain(id_pemain):
 	$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
 	tmp_daftar.queue_free()
 func _tampilkan_setelan_permainan():
-	Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()")
+	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
+	_konfigurasi_awal = {
+		"bahasa": Konfigurasi.bahasa,
+		"mode_layar_penuh": Konfigurasi.mode_layar_penuh
+	}
+	$setelan/animasi.play("tampilkan")
+func _sembunyikan_setelan_permainan():
+	$setelan/animasi.play_backwards("tampilkan")
+	# jangan simpan kalo gak ada yang diubah
+	var indeks_konfigurasi = _konfigurasi_awal.keys()
+	for cfg in _konfigurasi_awal.size():
+		if _konfigurasi_awal[indeks_konfigurasi[cfg]] != Konfigurasi.get(indeks_konfigurasi[cfg]):
+			Konfigurasi.simpan()
+			break
 func _tampilkan_input_pesan():
 	$kontrol_sentuh/chat.release_focus()
 	if pesan:
@@ -1317,12 +1341,22 @@ func _kembali():
 		_sembunyikan_daftar_server()
 	elif $karakter.visible:
 		_sembunyikan_setelan_karakter()
+	elif $setelan.visible:
+		_sembunyikan_setelan_permainan()
 	elif !is_instance_valid(karakter):
 		_keluar()
 func _putuskan():
 	putuskan_server()
 func _keluar():
 	_tampilkan_popup_konfirmasi($menu_utama/keluar, Callable(get_tree(), "quit"), "%keluar%")
+
+# konfigurasi
+func _ketika_mengatur_mode_layar_penuh(nilai):
+	if not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled:
+		Konfigurasi.mode_layar_penuh = nilai
+func _ketika_mengatur_bahasa(nilai):
+	if not $setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled:
+		Konfigurasi.bahasa = nilai
 
 # fungsi lain
 func detikKeMenit(detik: int) -> String:

@@ -26,8 +26,8 @@ var jarak_render : int = 400
 
 enum pilih_bahasa {
 	auto,
-	indonesia,
-	english
+	english,
+	indonesia
 }
 enum kontrol_gerak {
 	analog,
@@ -36,8 +36,8 @@ enum kontrol_gerak {
 
 var kode_bahasa = [
 	TranslationServer.get_locale(),
-	"id",
-	"en"
+	"en",
+	"id"
 ]
 
 func muat():
