@@ -22,5 +22,11 @@ Cross-Platform Multiplayer Game using Godot 4
   - Storage : 1GB
   - Operating System: Android 7 or higher
 
+**Screenshots**:
+![Cuplikan layar_2024-01-27_14-27-49](https://github.com/zinzui12345/dreamline/assets/48501018/c41dbf24-5711-4a7a-af23-8549b039245a)
+
+![Cuplikan layar_2024-01-27_14-32-06](https://github.com/zinzui12345/dreamline/assets/48501018/3e9ce3ef-ff4a-4dd5-840c-d50b99b72b72)
+
+
 > [!WARNING]
 > Some assets might be copyrighted
