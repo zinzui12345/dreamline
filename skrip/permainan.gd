@@ -1107,6 +1107,31 @@ func _ketika_konfirmasi_popup_konfirmasi():
 func _tutup_popup_konfirmasi():
 	$popup_konfirmasi/animasi.play("tutup")
 	$popup_konfirmasi.penampil.grab_focus()
+func _tampilkan_popup_konfirmasi_peringatan(tombol_penampil : Button, fungsi : Callable, teks):
+	$popup_konfirmasi_peringatan.penampil = tombol_penampil
+	$popup_konfirmasi_peringatan.fungsi = fungsi
+	$popup_konfirmasi_peringatan/panel/teks.text = teks
+	$popup_konfirmasi_peringatan/panel/proses_konfirmasi.value = 0
+	$popup_konfirmasi_peringatan/animasi.play("tampilkan")
+	$popup_konfirmasi_peringatan/panel/oke.grab_focus()
+func _konfirmasi_peringatan():
+	$popup_konfirmasi_peringatan/animasi.play("proses_konfirmasi")
+func _batalkan_konfirmasi_peringatan():
+	$popup_konfirmasi_peringatan/animasi.stop()
+	$popup_konfirmasi_peringatan/animasi.get_animation("batalkan_proses_konfirmasi").track_set_key_value(
+		0,
+		0,
+		$popup_konfirmasi_peringatan/panel/proses_konfirmasi.value
+	)
+	$popup_konfirmasi_peringatan/animasi.play("batalkan_proses_konfirmasi")
+func _ketika_proses_konfirmasi_peringatan(persentase):
+	if persentase == 100:
+		$popup_konfirmasi_peringatan/animasi.play_backwards("tampilkan")
+		$popup_konfirmasi_peringatan.fungsi.call()
+		$popup_konfirmasi_peringatan.penampil.grab_focus()
+func _tutup_popup_konfirmasi_peringatan():
+	$popup_konfirmasi_peringatan/animasi.play("tutup")
+	$popup_konfirmasi_peringatan.penampil.grab_focus()
 func _mainkan_musik_latar():
 #	if $pemutar_musik/AudioStreamPlayer.stream == null:
 #		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
@@ -1203,7 +1228,9 @@ func _sembunyikan_panel_informasi():
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _ketika_menekan_link_informasi(tautan):
 	# TODO : konfirmasi tautan
-	Panku.notify(tautan)
+	#Panku.notify(tautan)
+	var fungsi_buka_tautan = Callable(OS, "shell_open")
+	_tampilkan_popup_konfirmasi_peringatan($menu_utama/info, fungsi_buka_tautan.bind(tautan), tautan)
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 func tampilkan_editor_kode(nilai):
 	if nilai:
@@ -1334,6 +1361,8 @@ func _kembali():
 		_tutup_popup_informasi()
 	elif $popup_konfirmasi.visible:
 		_tutup_popup_konfirmasi()
+	elif $popup_konfirmasi_peringatan.visible:
+		_tutup_popup_konfirmasi_peringatan()
 	elif $proses_koneksi.visible:
 		client.putuskan_server()
 		$proses_koneksi/animasi.play("sembunyikan")
