@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 28/01/24 alpha"
+const versi = "Dreamline v1.4.4 30/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -716,7 +716,9 @@ func _tampilkan_daftar_server():
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 		client.cari_server()
-		if $karakter.visible: $karakter/animasi.play("tampilkan_server")
+		if $karakter.visible:
+			$karakter/animasi.play("tampilkan_server")
+			AudioServer.set_bus_effect_enabled(1, 2, false)
 		else: $daftar_server/animasi.play("animasi_panel/tampilkan")
 		$daftar_server/panel/panel_input/batal.grab_focus()
 func _sembunyikan_daftar_server():
@@ -773,7 +775,9 @@ func _tampilkan_setelan_karakter():
 			_reset_daftar_server_lan()
 		else: $karakter/animasi.play("tampilkan")
 		$karakter/panel/batal.grab_focus()
+		AudioServer.set_bus_effect_enabled(1, 2, true)
 func _sembunyikan_setelan_karakter():
+	AudioServer.set_bus_effect_enabled(1, 2, false)
 	_pilih_tab_personalitas_karakter()
 	$karakter/animasi.play("animasi_panel/sembunyikan")
 	$menu_utama/menu/Panel/karakter.grab_focus()
@@ -893,7 +897,7 @@ func _pilih_tab_baju_karakter():
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
 				0,
 				1,
-				0
+				-0.005
 			)
 		"L":
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_baju").track_set_key_value(
@@ -1114,6 +1118,7 @@ func _tampilkan_popup_konfirmasi_peringatan(tombol_penampil : Button, fungsi : C
 	$popup_konfirmasi_peringatan/panel/proses_konfirmasi.value = 0
 	$popup_konfirmasi_peringatan/animasi.play("tampilkan")
 	$popup_konfirmasi_peringatan/panel/oke.grab_focus()
+	AudioServer.set_bus_effect_enabled(1, 1, true)
 func _konfirmasi_peringatan():
 	$popup_konfirmasi_peringatan/animasi.play("proses_konfirmasi")
 func _batalkan_konfirmasi_peringatan():
@@ -1132,19 +1137,20 @@ func _ketika_proses_konfirmasi_peringatan(persentase):
 func _tutup_popup_konfirmasi_peringatan():
 	$popup_konfirmasi_peringatan/animasi.play("tutup")
 	$popup_konfirmasi_peringatan.penampil.grab_focus()
+	AudioServer.set_bus_effect_enabled(1, 1, false)
 func _mainkan_musik_latar():
-#	if $pemutar_musik/AudioStreamPlayer.stream == null:
-#		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
-#		if musik != null:
-#			$pemutar_musik/AudioStreamPlayer.stream = musik
-#			$pemutar_musik/AudioStreamPlayer.play()
-#			$pemutar_musik/judul.text = "Holding Hands"
-#			$pemutar_musik/artis.text = "Couple N"
-#			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-#	else:
-#		$pemutar_musik/AudioStreamPlayer.play()
-#		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	pass
+	if $pemutar_musik/AudioStreamPlayer.stream == null:
+		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
+		if musik != null:
+			$pemutar_musik/AudioStreamPlayer.stream = musik
+			$pemutar_musik/AudioStreamPlayer.play()
+			$pemutar_musik/judul.text = "Holding Hands"
+			$pemutar_musik/artis.text = "Couple N"
+			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	else:
+		$pemutar_musik/AudioStreamPlayer.play()
+		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+#	pass
 func _ketika_musik_latar_selesai_dimainkan():
 	await get_tree().create_timer(10.0).timeout
 	_mainkan_musik_latar()
@@ -1166,6 +1172,7 @@ func _hapus_daftar_pemain(id_pemain):
 	$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
 	tmp_daftar.queue_free()
 func _tampilkan_setelan_permainan():
+	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
 	_konfigurasi_awal = {
 		"bahasa": Konfigurasi.bahasa,
@@ -1217,20 +1224,24 @@ func _sembunyikan_pesan():
 		_timer_tampilkan_pesan.stop()
 func _tampilkan_panel_informasi():
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
-	if $daftar_server.visible: _sembunyikan_daftar_server()
-	if $karakter.visible: _sembunyikan_setelan_karakter()
-	await get_tree().create_timer(0.4).timeout
+	if $daftar_server.visible:
+		_sembunyikan_daftar_server()
+		await get_tree().create_timer(0.6).timeout
+	if $karakter.visible: 
+		_sembunyikan_setelan_karakter()
+		await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$menu_utama/animasi.play("sembunyikan")
 	$informasi/animasi.play("tampilkan")
+	$informasi/panel/oke.grab_focus()
 func _sembunyikan_panel_informasi():
 	$informasi/animasi.play("tutup")
 	$menu_utama/animasi.play("tampilkan")
 	$menu_utama/menu/Panel/buat_server.grab_focus()
-func _ketika_menekan_link_informasi(tautan):
-	# TODO : konfirmasi tautan
-	#Panku.notify(tautan)
+func _ketika_menekan_link_informasi(tautan : String):
+	var t_inf_link = TranslationServer.translate("%tinggalkan_permainan")
 	var fungsi_buka_tautan = Callable(OS, "shell_open")
-	_tampilkan_popup_konfirmasi_peringatan($menu_utama/info, fungsi_buka_tautan.bind(tautan), tautan)
+	_tampilkan_popup_konfirmasi_peringatan($informasi/panel/oke, fungsi_buka_tautan.bind(tautan), t_inf_link % [tautan])
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 func tampilkan_editor_kode(nilai):
 	if nilai:
@@ -1372,6 +1383,8 @@ func _kembali():
 		_sembunyikan_setelan_karakter()
 	elif $setelan.visible:
 		_sembunyikan_setelan_permainan()
+	elif $informasi.visible:
+		_sembunyikan_panel_informasi()
 	elif !is_instance_valid(karakter):
 		_keluar()
 func _putuskan():

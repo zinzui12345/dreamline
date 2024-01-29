@@ -83,4 +83,4 @@ func simpan():
 	file.store_var(data)
 	file.close()
 	
-	Panku.notify("Menyimpan konfigurasi")
+	Panku.notify("%simpan_pengaturan")

@@ -4,6 +4,7 @@ BERMAIN,Petualangan,Adventure
 %buat_server,  Buat Server,  Create Server
 %gabung_server,  Gabung Server,  Join to Server
 %karakter,  Karakter,  Character
+%tentang%,Tentang,About
 PENGATURAN,Pengaturan,Settings
 KELUAR,Keluar,Exit
 ,,
@@ -77,6 +78,7 @@ PERINTAHSALAH,Perintah `%s` tidak ditemukan.,Command `%s` not found.
 %spawnpemain,spawn pemain,spawning player
 %putuskanserver,Menghentikan peladen,Stopping server
 %belum_tersedia,Fitur ini belum tersedia.,Not available yet.
+%simpan_pengaturan,Menyimpan konfigurasi,Saving configuration
 ,,
 # output debug,,
 informasi_performa,Informasi Performa,Performance Info
@@ -95,9 +97,9 @@ INPUTHAPUS,hapus,delete
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
 %putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
+%lanjutkan%,Lanjutkan,Continue
+%tinggalkan_permainan,Ini akan menutup permainan dan mengalihkan ke situs eksternal:\n%s\nLanjutkan?,This will close the game and redirect to: %s\nContinue?
 ,,
 # placeholder,,
 @author,ProgrammerIndonesia44,ProgrammerIndonesia44
 @beta_tester,Muh Farel Ilyas,Muh Farel Ilyas
-@chara_design,Asami Hikaru あさミ ひかる,Asami Hikaru あさミ ひかる
-@level_design,rulu,rulu
