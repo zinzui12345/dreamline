@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 30/01/24 alpha"
+const versi = "Dreamline v1.4.4 29/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -114,6 +114,12 @@ func _enter_tree():
 	$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled = true
 	$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.button_pressed = Konfigurasi.mode_layar_penuh
 	$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled = false
+	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable = false
+	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.value = Konfigurasi.volume_musik_latar
+	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable = true
+	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable = false
+	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.value = Konfigurasi.jarak_render
+	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable = true
 func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
@@ -220,6 +226,7 @@ func _process(delta):
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if Input.is_action_just_pressed("ui_cancel"):
 			if pesan: _tampilkan_input_pesan()
+			elif $setelan.visible: _sembunyikan_setelan_permainan()
 			elif edit_objek != null: _berhenti_mengedit_objek()
 			elif !jeda: _jeda()
 			else: _lanjutkan()
@@ -501,6 +508,7 @@ func buat_server(headless = false):
 	if $daftar_server.visible:
 		client.hentikan_pencarian_server()
 		$daftar_server/animasi.play("animasi_panel/tutup")
+	if $setelan.visible: _sembunyikan_setelan_permainan()
 	_mulai_permainan(server.map)
 func gabung_server():
 	koneksi = MODE_KONEKSI.CLIENT
@@ -1139,18 +1147,18 @@ func _tutup_popup_konfirmasi_peringatan():
 	$popup_konfirmasi_peringatan.penampil.grab_focus()
 	AudioServer.set_bus_effect_enabled(1, 1, false)
 func _mainkan_musik_latar():
-	if $pemutar_musik/AudioStreamPlayer.stream == null:
-		var musik = load("res://audio/soundtrack/Holding Hands.mp3")
-		if musik != null:
-			$pemutar_musik/AudioStreamPlayer.stream = musik
-			$pemutar_musik/AudioStreamPlayer.play()
-			$pemutar_musik/judul.text = "Holding Hands"
-			$pemutar_musik/artis.text = "Couple N"
-			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	else:
-		$pemutar_musik/AudioStreamPlayer.play()
-		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-#	pass
+	#if $pemutar_musik/AudioStreamPlayer.stream == null:
+	#	var musik = load("res://audio/soundtrack/Holding Hands.mp3")
+	#	if musik != null:
+	#		$pemutar_musik/AudioStreamPlayer.stream = musik
+	#		$pemutar_musik/AudioStreamPlayer.play()
+	#		$pemutar_musik/judul.text = "Holding Hands"
+	#		$pemutar_musik/artis.text = "Couple N"
+	#		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	#else:
+	#	$pemutar_musik/AudioStreamPlayer.play()
+	#	$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	pass
 func _ketika_musik_latar_selesai_dimainkan():
 	await get_tree().create_timer(10.0).timeout
 	_mainkan_musik_latar()
@@ -1176,7 +1184,9 @@ func _tampilkan_setelan_permainan():
 	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
 	_konfigurasi_awal = {
 		"bahasa": Konfigurasi.bahasa,
-		"mode_layar_penuh": Konfigurasi.mode_layar_penuh
+		"mode_layar_penuh": Konfigurasi.mode_layar_penuh,
+		"volume_musik_latar": Konfigurasi.volume_musik_latar,
+		"jarak_render": Konfigurasi.jarak_render
 	}
 	$setelan/animasi.play("tampilkan")
 func _sembunyikan_setelan_permainan():
@@ -1230,8 +1240,8 @@ func _tampilkan_panel_informasi():
 	if $karakter.visible: 
 		_sembunyikan_setelan_karakter()
 		await get_tree().create_timer(0.5).timeout
-	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$menu_utama/animasi.play("sembunyikan")
+	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$informasi/animasi.play("tampilkan")
 	$informasi/panel/oke.grab_focus()
 func _sembunyikan_panel_informasi():
@@ -1242,6 +1252,9 @@ func _ketika_menekan_link_informasi(tautan : String):
 	var t_inf_link = TranslationServer.translate("%tinggalkan_permainan")
 	var fungsi_buka_tautan = Callable(OS, "shell_open")
 	_tampilkan_popup_konfirmasi_peringatan($informasi/panel/oke, fungsi_buka_tautan.bind(tautan), t_inf_link % [tautan])
+func _laporkan_bug(): _ketika_menekan_link_informasi("https://github.com/zinzui12345/dreamline/issues")
+func _sarankan_fitur():
+	pass
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 func tampilkan_editor_kode(nilai):
 	if nilai:
@@ -1359,6 +1372,7 @@ func _jeda():
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.grab_focus()
 		jeda = true
 func _lanjutkan():
+	if $setelan.visible: _sembunyikan_setelan_permainan()
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if is_instance_valid(edit_objek): pass
 		else: karakter._atur_kendali(true)
@@ -1399,6 +1413,12 @@ func _ketika_mengatur_mode_layar_penuh(nilai):
 func _ketika_mengatur_bahasa(nilai):
 	if not $setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled:
 		Konfigurasi.bahasa = nilai
+func _ketika_mengatur_volume_musik_latar(nilai):
+	if $setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable:
+		Konfigurasi.volume_musik_latar = nilai
+func _ketika_mengatur_jarak_render(nilai):
+	if $setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable:
+		Konfigurasi.jarak_render = nilai
 
 # fungsi lain
 func detikKeMenit(detik: int) -> String:

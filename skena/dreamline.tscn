@@ -1,4 +1,4 @@
-[gd_scene load_steps=255 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=256 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -2591,6 +2591,10 @@ border_color = Color(0, 0, 0, 1)
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_right = 10
 border_color = Color(0, 0.388235, 0, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_hrpxb"]
+color = Color(0.203922, 0.203922, 0.203922, 1)
+thickness = 2
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_0hte2"]
 number_color = Color(0.6, 0.619608, 1, 1)
@@ -5721,6 +5725,8 @@ anchor_top = 0.0133333
 anchor_right = 0.972222
 anchor_bottom = 0.986667
 grow_horizontal = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
 metadata/_edit_use_anchors_ = true
 
 [node name="tab_setelan" type="VBoxContainer" parent="setelan/panel/gulir"]
@@ -5808,6 +5814,78 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%sarankan_fitur"
 icon = ExtResource("66_j76b2")
+
+[node name="pemisah 4" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="pemisah" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
+layout_mode = 2
+
+[node name="pemisah" type="Label" parent="setelan/panel/gulir/tab_setelan/pemisah"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxLine_hrpxb")
+
+[node name="setelan_performa" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
+layout_mode = 2
+
+[node name="label setelan" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%performa"
+
+[node name="pemisah 1" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="label jarak render" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "jarak_render"
+
+[node name="jarak_render" type="HSlider" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
+layout_mode = 2
+min_value = 100.0
+max_value = 1000.0
+value = 400.0
+
+[node name="pemisah 2" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="pemisah2" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
+layout_mode = 2
+
+[node name="pemisah" type="Label" parent="setelan/panel/gulir/tab_setelan/pemisah2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxLine_hrpxb")
+
+[node name="setelan_suara" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
+layout_mode = 2
+
+[node name="label setelan" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%audio"
+
+[node name="pemisah 1" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[node name="label bgm" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "musik_latar"
+
+[node name="volume_musik" type="HSlider" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
+layout_mode = 2
+min_value = -10.0
+max_value = 10.0
+step = 0.5
 
 [node name="animasi" type="AnimationPlayer" parent="setelan"]
 libraries = {
@@ -6485,12 +6563,14 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
-theme_override_font_sizes/font_size = 28
-text = "https://github.com/zinzui12345/dreamline
-akan mengalihkanmu dari permainan, Lanjutkan?"
+theme_override_font_sizes/font_size = 27
+text = "https://github.com/zinzui12345/dreamline/issues
+akan menutup permainan dan membuka layanan eksternal
+Lanjutkan?"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+clip_text = true
 metadata/_edit_use_anchors_ = true
 
 [node name="proses_konfirmasi" type="ProgressBar" parent="popup_konfirmasi_peringatan/panel"]
@@ -6504,7 +6584,6 @@ offset_bottom = -0.0400085
 theme_override_styles/background = SubResource("StyleBoxFlat_ods8j")
 theme_override_styles/fill = SubResource("StyleBoxFlat_v5u37")
 step = 0.1
-value = 100.0
 show_percentage = false
 
 [node name="oke" type="Button" parent="popup_konfirmasi_peringatan/panel"]
@@ -6692,6 +6771,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="finished" from="pemutar_musik/AudioStreamPlayer" to="." method="_ketika_musik_latar_selesai_dimainkan"]
 [connection signal="item_selected" from="setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa" to="." method="_ketika_mengatur_bahasa"]
 [connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh" to="." method="_ketika_mengatur_mode_layar_penuh"]
+[connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/laporkan_bug" to="." method="_laporkan_bug"]
+[connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/sarankan_fitur" to="." method="_sarankan_fitur"]
+[connection signal="value_changed" from="setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render" to="." method="_ketika_mengubah_jarak_render"]
+[connection signal="value_changed" from="setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik" to="." method="_ketika_mengatur_volume_musik_latar"]
 [connection signal="code_completion_requested" from="editor_kode/CodeEdit" to="editor_kode/CodeEdit" method="_on_code_completion_requested"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]
