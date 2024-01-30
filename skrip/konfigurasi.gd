@@ -15,7 +15,7 @@ var mode_layar_penuh = false :
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			mode_layar_penuh = nilai
 var mode_kontrol_sentuh = false
-var mode_kontrol_gerak = "analog"
+var mode_kontrol_gerak : int = 0
 var skala_kontrol_gerak = 0.8 # TODO : ini untuk ukuran D-Pad dan Analog sentuh
 var shader_karakter = false
 var volume_musik_latar : float = -3.2 :
@@ -28,10 +28,6 @@ enum pilih_bahasa {
 	auto,
 	english,
 	indonesia
-}
-enum kontrol_gerak {
-	analog,
-	dpad
 }
 
 var kode_bahasa = [

@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 29/01/24 alpha"
+const versi = "Dreamline v1.4.4 30/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -120,6 +120,12 @@ func _enter_tree():
 	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable = false
 	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.value = Konfigurasi.jarak_render
 	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable = true
+	$setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled = true
+	$setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.selected = Konfigurasi.mode_kontrol_gerak
+	$setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled = false
+	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = false
+	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.value = Konfigurasi.sensitivitasPandangan
+	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = true
 func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
@@ -648,15 +654,6 @@ func _ketika_berhenti_mengontrol_arah_pandangan():
 	if is_instance_valid(karakter): # ketika dalam permainan
 		_arah_sentuhan_touchpad = Vector2.ZERO
 		karakter.arah_pandangan = Vector2.ZERO
-func _ketika_mengubah_mode_kontrol_gerak(mode):
-	$kontrol_sentuh/kontrol_gerakan/analog.visible = false
-	$"kontrol_sentuh/kontrol_gerakan/d-pad".visible = false
-	match mode:
-		0: $kontrol_sentuh/kontrol_gerakan/analog.visible = true;	Konfigurasi.mode_kontrol_gerak = "analog"
-		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true;	Konfigurasi.mode_kontrol_gerak = "dpad"
-func _ketika_mengubah_jarak_render(jarak):
-	if is_instance_valid(dunia) and dunia.get_node_or_null("lingkungan") != null:
-		dunia.get_node("pemain/"+str(multiplayer.get_unique_id())+"/%pandangan").set("far", jarak)
 func _ketika_mengontrol_arah_gerak(arah, _analog):
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if arah.y > 0.1 and arah.y <= 1.0:
@@ -1186,8 +1183,12 @@ func _tampilkan_setelan_permainan():
 		"bahasa": Konfigurasi.bahasa,
 		"mode_layar_penuh": Konfigurasi.mode_layar_penuh,
 		"volume_musik_latar": Konfigurasi.volume_musik_latar,
-		"jarak_render": Konfigurasi.jarak_render
+		"jarak_render": Konfigurasi.jarak_render,
+		"mode_kontrol_gerak": Konfigurasi.mode_kontrol_gerak,
+		"sensitivitasPandangan": Konfigurasi.sensitivitasPandangan
 	}
+	$setelan/panel/gulir/tab_setelan/setelan_performa/info_jarak_render/nilai_jarak_render.text = str(Konfigurasi.jarak_render)+"m"
+	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(Konfigurasi.sensitivitasPandangan)
 	$setelan/animasi.play("tampilkan")
 func _sembunyikan_setelan_permainan():
 	$setelan/animasi.play_backwards("tampilkan")
@@ -1416,9 +1417,24 @@ func _ketika_mengatur_bahasa(nilai):
 func _ketika_mengatur_volume_musik_latar(nilai):
 	if $setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable:
 		Konfigurasi.volume_musik_latar = nilai
-func _ketika_mengatur_jarak_render(nilai):
+func _ketika_mengatur_jarak_render(jarak):
+	if is_instance_valid(dunia) and dunia.get_node_or_null("lingkungan") != null:
+		dunia.get_node("pemain/"+str(multiplayer.get_unique_id())+"/%pandangan").set("far", jarak)
 	if $setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable:
-		Konfigurasi.jarak_render = nilai
+		Konfigurasi.jarak_render = jarak
+	$setelan/panel/gulir/tab_setelan/setelan_performa/info_jarak_render/nilai_jarak_render.text = str(jarak)+"m"
+func _ketika_mengatur_mode_kontrol_gerak(mode):
+	$kontrol_sentuh/kontrol_gerakan/analog.visible = false
+	$"kontrol_sentuh/kontrol_gerakan/d-pad".visible = false
+	match mode:
+		0: $kontrol_sentuh/kontrol_gerakan/analog.visible = true
+		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true
+	if not $setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled:
+		Konfigurasi.mode_kontrol_gerak = mode
+func _ketika_mengatur_sensitivitas_pandangan(nilai):
+	if $setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable:
+		Konfigurasi.sensitivitasPandangan = nilai
+	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(nilai)
 
 # fungsi lain
 func detikKeMenit(detik: int) -> String:
