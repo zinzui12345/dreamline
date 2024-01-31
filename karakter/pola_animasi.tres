@@ -1,4 +1,7 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=37 format=3 uid="uid://biebpppindc77"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=40 format=3 uid="uid://biebpppindc77"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f2bv3"]
+animation = &"animasi/mendorong"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_82mvo"]
 animation = &"animasi/berjalan maju"
@@ -154,6 +157,15 @@ animation = &"animasi/melompat"
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_8svk4"]
 
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_bvgms"]
+filter_enabled = true
+filters = ["%GeneralSkeleton:Chest", "%GeneralSkeleton:Hips", "%GeneralSkeleton:LeftHand", "%GeneralSkeleton:LeftLowerArm", "%GeneralSkeleton:LeftLowerLeg", "%GeneralSkeleton:LeftShoulder", "%GeneralSkeleton:LeftUpperArm", "%GeneralSkeleton:LeftUpperLeg", "%GeneralSkeleton:RightHand", "%GeneralSkeleton:RightLowerArm", "%GeneralSkeleton:RightLowerLeg", "%GeneralSkeleton:RightShoulder", "%GeneralSkeleton:RightUpperArm", "%GeneralSkeleton:RightUpperLeg", "%GeneralSkeleton:Spine", "%GeneralSkeleton:UpperChest"]
+
+[sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_ap2pd"]
+input_0/name = "mendorong"
+input_0/auto_advance = false
+input_0/reset = true
+
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_125qw"]
 input_0/name = "normal"
 input_0/auto_advance = false
@@ -166,19 +178,21 @@ input_2/auto_advance = false
 input_2/reset = true
 
 [resource]
-graph_offset = Vector2(-297.547, 184.155)
+graph_offset = Vector2(-595.953, 29.4863)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_f2bv3")
+nodes/Animation/position = Vector2(-371.429, 542.857)
 nodes/arah_gerakan/node = SubResource("AnimationNodeBlendSpace2D_sttqg")
-nodes/arah_gerakan/position = Vector2(-266.667, 133.333)
+nodes/arah_gerakan/position = Vector2(-800, 85.7143)
 nodes/arah_jongkok/node = SubResource("AnimationNodeBlendSpace1D_e423v")
-nodes/arah_jongkok/position = Vector2(-80, 373.333)
+nodes/arah_jongkok/position = Vector2(-600, 342.857)
 nodes/arah_pandangan_horizontal/node = SubResource("AnimationNodeBlend2_r5vs3")
 nodes/arah_pandangan_horizontal/position = Vector2(720, 133.333)
 nodes/arah_pandangan_vertikal/node = SubResource("AnimationNodeBlend2_dgu0a")
-nodes/arah_pandangan_vertikal/position = Vector2(293.333, 133.333)
+nodes/arah_pandangan_vertikal/position = Vector2(-228.571, 85.7143)
 nodes/arah_x_pandangan/node = SubResource("AnimationNodeBlendSpace1D_o3ckr")
 nodes/arah_x_pandangan/position = Vector2(506.667, 373.333)
 nodes/arah_y_pandangan/node = SubResource("AnimationNodeBlendSpace1D_u5laf")
-nodes/arah_y_pandangan/position = Vector2(106.667, 373.333)
+nodes/arah_y_pandangan/position = Vector2(-428.571, 342.857)
 nodes/dibonceng_sepeda/node = SubResource("AnimationNodeAnimation_dymm5")
 nodes/dibonceng_sepeda/position = Vector2(0, 880)
 nodes/duduk_di_kursi/node = SubResource("AnimationNodeAnimation_q1vqh")
@@ -188,12 +202,16 @@ nodes/duduk_di_sepeda/position = Vector2(0, 720)
 nodes/gestur/node = SubResource("AnimationNodeTransition_3dhkw")
 nodes/gestur/position = Vector2(560, 133.333)
 nodes/jongkok/node = SubResource("AnimationNodeBlend2_06nhi")
-nodes/jongkok/position = Vector2(106.667, 133.333)
+nodes/jongkok/position = Vector2(-428.571, 85.7143)
 nodes/lompat/node = SubResource("AnimationNodeAnimation_pj3ma")
-nodes/lompat/position = Vector2(-266.667, 320)
+nodes/lompat/position = Vector2(-800, 285.714)
 nodes/melompat/node = SubResource("AnimationNodeOneShot_8svk4")
-nodes/melompat/position = Vector2(-80, 133.333)
+nodes/melompat/position = Vector2(-600, 85.7143)
+nodes/menyerang_berdiri/node = SubResource("AnimationNodeOneShot_bvgms")
+nodes/menyerang_berdiri/position = Vector2(171.429, 114.286)
+nodes/mode_menyerang_berdiri/node = SubResource("AnimationNodeTransition_ap2pd")
+nodes/mode_menyerang_berdiri/position = Vector2(-57.1429, 371.429)
 nodes/output/position = Vector2(1013.33, 133.333)
 nodes/pose_duduk/node = SubResource("AnimationNodeTransition_125qw")
 nodes/pose_duduk/position = Vector2(320, 586.667)
-node_connections = [&"arah_pandangan_horizontal", 0, &"gestur", &"arah_pandangan_horizontal", 1, &"arah_x_pandangan", &"arah_pandangan_vertikal", 0, &"jongkok", &"arah_pandangan_vertikal", 1, &"arah_y_pandangan", &"gestur", 0, &"arah_pandangan_vertikal", &"gestur", 1, &"pose_duduk", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat", &"output", 0, &"arah_pandangan_horizontal", &"pose_duduk", 0, &"duduk_di_kursi", &"pose_duduk", 1, &"duduk_di_sepeda", &"pose_duduk", 2, &"dibonceng_sepeda"]
+node_connections = [&"arah_pandangan_horizontal", 0, &"gestur", &"arah_pandangan_horizontal", 1, &"arah_x_pandangan", &"arah_pandangan_vertikal", 0, &"jongkok", &"arah_pandangan_vertikal", 1, &"arah_y_pandangan", &"gestur", 0, &"menyerang_berdiri", &"gestur", 1, &"pose_duduk", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat", &"menyerang_berdiri", 0, &"arah_pandangan_vertikal", &"menyerang_berdiri", 1, &"mode_menyerang_berdiri", &"mode_menyerang_berdiri", 0, &"Animation", &"output", 0, &"arah_pandangan_horizontal", &"pose_duduk", 0, &"duduk_di_kursi", &"pose_duduk", 1, &"duduk_di_sepeda", &"pose_duduk", 2, &"dibonceng_sepeda"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=263 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=266 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -245,6 +245,9 @@ bg_color = Color(1, 1, 1, 0.8)
 border_width_right = 1
 border_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_akc24"]
+bg_color = Color(0.8, 0.8, 0.8, 1)
+
 [sub_resource type="Animation" id="Animation_3kb00"]
 resource_name = "tampilkan"
 length = 0.4
@@ -284,30 +287,6 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("tutup:anchor_left")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.02, 0.38),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, 0.0, 1.0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("tutup:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.19, 0.2, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [false, false, true, true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8uu1a"]
@@ -469,6 +448,11 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_508ro"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_right = 10
+border_color = Color(0, 0.388235, 0, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd4q"]
 
@@ -2613,11 +2597,6 @@ bg_color = Color(1, 1, 1, 0.980392)
 border_width_right = 1
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_508ro"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_right = 10
-border_color = Color(0, 0.388235, 0, 1)
-
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_hrpxb"]
 color = Color(0.203922, 0.203922, 0.203922, 1)
 thickness = 2
@@ -2638,6 +2617,76 @@ bg_color = Color(0.219608, 0.219608, 0.219608, 1)
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_pnfmu"]
 color = Color(0.545098, 0.545098, 0.545098, 1)
 thickness = 30
+
+[sub_resource type="Animation" id="Animation_xwgds"]
+resource_name = "tampilkan"
+length = 0.4
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel:anchor_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel:anchor_right")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.005, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("tutup:anchor_left")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.02, 0.38),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("tutup:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.19, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6xkyq"]
+_data = {
+"tampilkan": SubResource("Animation_xwgds")
+}
 
 [sub_resource type="CodeHighlighter" id="CodeHighlighter_0hte2"]
 number_color = Color(0.6, 0.619608, 1, 1)
@@ -3496,13 +3545,55 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_60lyf")
 
+[node name="informasi" type="Panel" parent="hud/daftar_pemain/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.028
+anchor_top = 0.013
+anchor_right = 0.972
+anchor_bottom = 0.16
+offset_left = -0.0640144
+offset_top = 0.200026
+offset_right = 0.0634766
+offset_bottom = 0.000312805
+theme_override_styles/panel = SubResource("StyleBoxFlat_akc24")
+
+[node name="nama_server" type="Label" parent="hud/daftar_pemain/panel/informasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.029
+anchor_top = 0.091
+anchor_right = 0.971
+anchor_bottom = 0.386
+offset_left = 0.112
+offset_top = -0.00800037
+offset_right = -0.11203
+offset_bottom = 0.0319977
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 18
+text = "localhost"
+
+[node name="alamat_ip" type="Label" parent="hud/daftar_pemain/panel/informasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.029
+anchor_top = 0.386
+anchor_right = 0.559
+anchor_bottom = 0.659
+offset_left = 0.112518
+offset_top = 0.0319977
+offset_right = -0.0474854
+offset_bottom = 0.00799561
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "192.168.254.123"
+
 [node name="gulir" type="ScrollContainer" parent="hud/daftar_pemain/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0277778
-anchor_top = 0.0133333
-anchor_right = 0.972222
-anchor_bottom = 0.986667
+anchor_left = 0.0277777
+anchor_top = 0.173334
+anchor_right = 0.97222
+anchor_bottom = 0.98667
 grow_horizontal = 2
 metadata/_edit_use_anchors_ = true
 
@@ -3790,13 +3881,12 @@ text = "+"
 metadata/_edit_use_anchors_ = true
 
 [node name="properti_kustom" type="ScrollContainer" parent="hud/daftar_properti_objek/panel"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0277777
 anchor_top = 0.640002
 anchor_right = 0.972221
-anchor_bottom = 0.98667
+anchor_bottom = 0.853336
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_yy6xj")
 metadata/_edit_use_anchors_ = true
@@ -3812,7 +3902,25 @@ layout_mode = 2
 [node name="warna_2" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
+[node name="edit_skrip" type="Button" parent="hud/daftar_properti_objek/panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0277777
+anchor_top = 0.880003
+anchor_right = 0.972221
+anchor_bottom = 0.95167
+focus_neighbor_top = NodePath("../layar_penuh")
+focus_neighbor_bottom = NodePath("../sarankan_fitur")
+focus_next = NodePath("../sarankan_fitur")
+focus_previous = NodePath("../layar_penuh")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
+text = "%edit_skrip"
+icon = ExtResource("65_y0rvh")
+metadata/_edit_use_anchors_ = true
+
 [node name="DragPad" type="Panel" parent="hud/daftar_properti_objek"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = -2.556
@@ -4149,17 +4257,10 @@ icon_alignment = 1
 [node name="mode_bermain" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -64.0
-offset_top = -118.0
-offset_right = 64.0
-offset_bottom = -62.0
-grow_horizontal = 2
-grow_vertical = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 144.0
+offset_bottom = 72.0
 theme_override_constants/separation = 0
 alignment = 1
 
@@ -5743,6 +5844,7 @@ volume_db = -5.0
 bus = &"Musik Latar"
 
 [node name="setelan" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchor_right = 0.312438
 anchor_bottom = 1.00033
@@ -6040,7 +6142,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="animasi" type="AnimationPlayer" parent="setelan"]
 libraries = {
-"": SubResource("AnimationLibrary_8uu1a")
+"": SubResource("AnimationLibrary_6xkyq")
 }
 
 [node name="tutup" type="TextureButton" parent="setelan"]
@@ -6071,8 +6173,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -8.0
-offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2

@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 30/01/24 alpha"
+const versi = "Dreamline v1.4.4 31/01/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -238,12 +238,14 @@ func _process(delta):
 			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
 		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda):
+			$mode_bermain.visible = false
 			$hud/daftar_pemain/animasi.play("tampilkan")
 		if Input.is_action_just_pressed("tampilkan_pesan") and !jeda: _tampilkan_input_pesan()
 		if Input.is_action_just_pressed("ui_text_completion_accept") and pesan: _kirim_pesan()
 		
 		if Input.is_action_just_released("berbicara"): _berbicara(false)
 		if Input.is_action_just_released("daftar_pemain") and $hud/daftar_pemain/panel.anchor_left > -1:
+			$mode_bermain.visible = true
 			$hud/daftar_pemain/animasi.play_backwards("tampilkan")
 		
 		if Input.is_action_just_pressed("perdekat_pandangan") or Input.is_action_just_pressed("perjauh_pandangan"):
@@ -1367,6 +1369,7 @@ func _jeda():
 		else:
 			if memasang_objek: _tutup_daftar_objek(true)
 			karakter._atur_kendali(false)
+		$mode_bermain.visible = false
 		$kontrol_sentuh/menu.visible = false
 		$kontrol_sentuh/chat.visible = false
 		$menu_jeda/menu/animasi.play("tampilkan")
@@ -1377,6 +1380,7 @@ func _lanjutkan():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if is_instance_valid(edit_objek): pass
 		else: karakter._atur_kendali(true)
+		$mode_bermain.visible = true
 		$kontrol_sentuh/menu.visible = true
 		$kontrol_sentuh/chat.visible = true
 		$menu_jeda/menu/animasi.play("sembunyikan")

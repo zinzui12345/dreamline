@@ -21,6 +21,7 @@ var _delay_timeline 	= _interval_timeline
 var _frame_timeline_sb	= 0 # frame sebelumnya
 
 var _raycast_pemain : RayCast3D
+var _raycast_serangan_a_pemain : RayCast3D
 var _target_pemain # kondisi target raycast (true|false)
 var objek_target : Node3D
 var pos_target : Vector3 # posisi raycast
@@ -66,6 +67,7 @@ func atur_raycast(nilai):
 func _ready():
 	set_process(false)
 	_raycast_pemain = karakter.get_node("pengamat/%target")
+	_raycast_serangan_a_pemain = karakter.get_node("area_serang_a")
 	
 	# default kalo nggak di set (karakter)
 	get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
@@ -160,6 +162,10 @@ func _process(delta):
 					Permainan.PERAN_KARAKTER.Arsitek:
 						server.permainan.pasang_objek = pos_target
 						server.permainan._tampilkan_daftar_objek()
+					_:
+						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri":
+							karakter.mode_menyerang = "a"
+							karakter.set("menyerang", true)
 		if Input.is_action_just_pressed("aksi2"):
 			if _target_pemain:
 				match karakter.peran:

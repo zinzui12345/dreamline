@@ -66,6 +66,16 @@ var tekstur
 			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
 			$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 		lompat = melompat
+@export var mode_menyerang = "a"
+@export var menyerang = false : 
+	set(serang):
+		if serang:
+			match gestur:
+				"berdiri":
+					match mode_menyerang:
+						"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
+					$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+		menyerang = serang
 @export var arah_gerakan : Vector3
 @export var model = {
 	"alis"		: 0,
@@ -293,6 +303,7 @@ func _kendalikan(nilai):
 	$pengamat.aktifkan(nilai) # ini harus di set true | false untuk layer visibilitas
 	if kontrol != nilai: # gak usah  di terapin kalo nilai gak berubah
 		$pengamat.fungsikan(nilai)
+		$area_serang_a.enabled = nilai
 		kontrol = nilai
 func _atur_kendali(nilai): 
 	$pengamat.fungsikan(nilai)
