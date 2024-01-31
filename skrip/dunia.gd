@@ -6,9 +6,13 @@ func _ready():
 	var jumlah_argumen  = argumen.size()
 	for arg in jumlah_argumen:
 		if argumen[arg] == "--server":
-			if arg < jumlah_argumen - 1 and argumen[arg+1] != "":
-				server.permainan.atur_map(argumen[arg+1])
 			server.publik = true
+			if arg < jumlah_argumen - 2 and argumen[arg+1] != "" and argumen[arg+2] != "":
+				server.permainan.atur_map(argumen[arg+1])
+				server.permainan.buat_server(true, argumen[arg+2]);
+				return
+			elif arg < jumlah_argumen - 1 and argumen[arg+1] != "":
+				server.permainan.atur_map(argumen[arg+1])
 			server.permainan.buat_server(true);
 			return
 

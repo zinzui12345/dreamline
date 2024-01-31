@@ -302,7 +302,7 @@ func uji_kode():
 func atur_map(nama_map : StringName = "empty"):
 	if ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;	return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
-func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
+func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 	if $daftar_server.visible:
@@ -322,6 +322,7 @@ func _mulai_permainan(nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vec
 	$proses_memuat/panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
+	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
 	await get_tree().create_timer(1.0).timeout
 	data["posisi"] = posisi
 	data["rotasi"] = rotasi
@@ -510,14 +511,16 @@ func _berhenti_mengedit_objek():
 	karakter.get_node("PlayerInput").atur_raycast(true)
 
 # koneksi
-func buat_server(headless = false):
+func buat_server(headless = false, nama = "server"):
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
+	server.nama = nama
 	if $daftar_server.visible:
 		client.hentikan_pencarian_server()
 		$daftar_server/animasi.play("animasi_panel/tutup")
 	if $setelan.visible: _sembunyikan_setelan_permainan()
-	_mulai_permainan(server.map)
+	tampilkan_info_koneksi()
+	_mulai_permainan("localhost", server.map)
 func gabung_server():
 	koneksi = MODE_KONEKSI.CLIENT
 	var ip = $daftar_server/panel/panel_input/input_ip.text
@@ -543,6 +546,7 @@ func gabung_server():
 	$daftar_server/panel/panel_input/input_ip.grab_focus()
 	$proses_koneksi/animasi.play("tampilkan")
 	$proses_koneksi/panel/animasi.play("proses")
+	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ip
 	client.hentikan_pencarian_server()
 	client.sambungkan_server(ip, port)
 func cari_server(): 		client.cari_server()
@@ -1456,6 +1460,17 @@ func detikKeMenit(detik: int) -> String:
 		detik_terformat = "0" + detik_terformat
 
 	return menit_terformat + ":" + detik_terformat
+func tampilkan_info_koneksi():
+	# Dapatkan IP
+	var addr : Array
+	addr = IP.get_local_interfaces()
+	var ipinf: String
+	if koneksi == MODE_KONEKSI.SERVER and OS.get_name() != "Windows":
+		for dev in addr.size():
+			var addrdata = addr[dev]
+			ipinf += str(addrdata["name"]) + " : " + str(addrdata["addresses"][0]) + "\n"
+	else: ipinf = str(client.id_koneksi)
+	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ipinf
 
 # bantuan pada console
 const _HELP_alamat_ip			:= "Cek alamat IP Lokal/Publik koneksi"

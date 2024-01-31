@@ -54,12 +54,16 @@ func atur_pengendali(id):
 		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, false)
 		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, false)
 		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, false)
 	else:
 		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, true)
 func atur_raycast(nilai):
 	_raycast_pemain.enabled = nilai
 	if nilai == false: _target_pemain = false

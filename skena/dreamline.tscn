@@ -217,6 +217,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../mode_bermain:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_548c5"]
 resource_name = "tampilkan"
@@ -232,6 +244,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../mode_bermain:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6geu8"]
@@ -3519,6 +3543,11 @@ mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 bbcode_enabled = true
+text = "dsdsdfdsfsfdsf
+aaaaa
+a
+a
+a"
 scroll_active = false
 scroll_following = true
 
@@ -3576,16 +3605,19 @@ text = "localhost"
 [node name="alamat_ip" type="Label" parent="hud/daftar_pemain/panel/informasi"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.029
+anchor_left = 0.0289981
 anchor_top = 0.386
-anchor_right = 0.559
-anchor_bottom = 0.659
+anchor_right = 0.970763
+anchor_bottom = 0.909
 offset_left = 0.112518
 offset_top = 0.0319977
 offset_right = -0.0474854
 offset_bottom = 0.00799561
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "192.168.254.123"
+text = "192.168.254.123
+"
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="gulir" type="ScrollContainer" parent="hud/daftar_pemain/panel"]
 layout_mode = 1

@@ -80,10 +80,10 @@ func tambah_pemain(pemain):
 	})
 	print("spawn pemain "+str(pemain))
 
-@rpc("authority") func gabung_ke_server(nama_map, posisi, rotasi):
+@rpc("authority") func gabung_ke_server(nama_server, nama_map, posisi, rotasi):
 	print("telah terhubung ke server")
 	id_koneksi = interface.get_unique_id()
-	permainan._mulai_permainan(nama_map, posisi, rotasi)
+	permainan._mulai_permainan(nama_server, nama_map, posisi, rotasi)
 @rpc("authority") func tambahkan_pemain(daftar : Dictionary):
 	var data = daftar.keys()
 	for p in data.size(): permainan._tambahkan_pemain(int(data[p]), daftar[data[p]])
@@ -106,11 +106,12 @@ func tambah_pemain(pemain):
 		#	Panku.notify("berhasil spawn : "+str(jalur_asal))
 		#else:
 		#	Panku.notify("gagal spawn : "+str(jalur_asal))
-		instansi_node = get_node(jalur_node+'/'+nama_node)
+		instansi_node = get_node_or_null(jalur_node+'/'+nama_node)
 		var properti = data[objek[o]].keys()
-		for p in properti.size():
-			if instansi_node.get_indexed(properti[p]) != null:
-				instansi_node.set_indexed(properti[p], data[objek[o]][properti[p]])
+		if instansi_node != null:
+			for p in properti.size():
+				if instansi_node.get_indexed(properti[p]) != null:
+					instansi_node.set_indexed(properti[p], data[objek[o]][properti[p]])
 @rpc("authority") func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		permainan._edit_objek(jalur_objek);

@@ -14,6 +14,7 @@ var ip_publik
 var jumlah_pemain = 32
 var pemain_terhubung = 0
 var map = "pulau"
+var nama = "bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {
 	"data": {
@@ -80,7 +81,7 @@ func buat_koneksi():
 	client.id_koneksi = 1
 	broadcast.name = "broadcast server"
 	broadcast.broadcastPort = 10568
-	broadcast.serverInfo["nama"] = "server"
+	broadcast.serverInfo["nama"] = nama
 	broadcast.serverInfo["sys"] = permainan.data["sistem"]
 	broadcast.serverInfo["map"] = map
 	broadcast.serverInfo["jml_pemain"] = pemain_terhubung
@@ -209,6 +210,7 @@ func _pemain_bergabung(id_pemain):
 	client.rpc_id(
 		id_pemain, 
 		"gabung_ke_server", 
+		nama, 
 		map, 
 		posisi,
 		rotasi
