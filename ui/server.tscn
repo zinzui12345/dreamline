@@ -29,8 +29,8 @@ var ip
 func _pressed():
 	client._pilih_server(ip)
 
-func atur(ip, sys, nama, map, jumlah_pemain, maks_pemain):
-	self.ip = ip
+func atur(alamat_ip, sys, nama, map, jumlah_pemain, maks_pemain):
+	self.ip = alamat_ip
 	$nama.text = nama
 	$nama_map.text = map
 	$pemain.text = str(jumlah_pemain)+\"/\"+str(maks_pemain)
