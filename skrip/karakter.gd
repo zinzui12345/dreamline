@@ -69,13 +69,14 @@ var tekstur
 @export var mode_menyerang = "a"
 @export var menyerang = false : 
 	set(serang):
-		if serang:
-			match gestur:
-				"berdiri":
-					match mode_menyerang:
-						"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
-					$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-		menyerang = serang
+		if get_node_or_null("pose") != null:
+			if serang:
+				match gestur:
+					"berdiri":
+						match mode_menyerang:
+							"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
+						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+			menyerang = serang
 @export var arah_gerakan : Vector3
 @export var model = {
 	"alis"		: 0,

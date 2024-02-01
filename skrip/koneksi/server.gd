@@ -176,6 +176,11 @@ func atur_properti_objek(jalur_objek : String, nama_properti : String, nilai):
 		_edit_properti_objek(jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
 	else:
 		rpc_id(1, "_edit_properti_objek", jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
+func terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		_terapkan_percepatan_objek(jalur_objek, nilai_percepatan)
+	else:
+		rpc_id(1, "_terapkan_percepatan_objek", jalur_objek, nilai_percepatan)
 func fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array = []):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var t_objek = get_node_or_null(jalur_objek)
@@ -340,7 +345,12 @@ func _pemain_terputus(id_pemain):
 			t_objek.set("angular_velocity", Vector3.ZERO)
 			t_objek.set("linear_velocity", Vector3.ZERO)
 		t_objek.set_indexed(nama_properti, nilai_properti)
-		#Panku.notify("mengatur properti ["+nama_properti+"] pada $"+jalur_objek+" dengan nilai : "+str(nilai_properti))
+@rpc("any_peer") func _terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
+	var t_objek = get_node_or_null(jalur_objek)
+	if t_objek != null and t_objek.get("linear_velocity") != null:
+		var t_percepatan : Vector3 = t_objek.linear_velocity + nilai_percepatan
+		t_objek.set_linear_velocity(t_percepatan)
+		#Panku.notify("mengatur percepatan ["+str(nilai_percepatan)+"] pada $"+jalur_objek)
 @rpc("authority") func _fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array):
 	var objek_difungsikan = get_node_or_null(jalur_objek)
 	if objek_difungsikan != null:

@@ -28,7 +28,7 @@ class_name Permainan
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 
-const versi = "Dreamline v1.4.4 31/01/24 alpha"
+const versi = "Dreamline v1.4.4 01/02/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1464,7 +1464,7 @@ func tampilkan_info_koneksi():
 	# Dapatkan IP
 	var addr : Array
 	addr = IP.get_local_interfaces()
-	var ipinf: String
+	var ipinf: String = ""
 	if koneksi == MODE_KONEKSI.SERVER and OS.get_name() != "Windows":
 		for dev in addr.size():
 			var addrdata = addr[dev]

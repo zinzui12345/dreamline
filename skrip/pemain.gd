@@ -167,9 +167,19 @@ func _process(delta):
 						server.permainan.pasang_objek = pos_target
 						server.permainan._tampilkan_daftar_objek()
 					_:
-						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri":
-							karakter.mode_menyerang = "a"
-							karakter.set("menyerang", true)
+						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
+							var objek_target = _raycast_serangan_a_pemain.get_collider()
+							var arah_dorongan = Vector3(0, 0, 5)
+							if objek_target.get("linear_velocity") != null:
+								karakter.mode_menyerang = "a"
+								karakter.set("menyerang", true)
+								await get_tree().create_timer(0.4).timeout
+								server.terapkan_percepatan_objek(
+									objek_target.get_path(),
+									arah_dorongan.rotated(Vector3.UP, karakter.rotation.y)
+								)
+								await get_tree().create_timer(0.4).timeout
+								karakter.set("menyerang", false)
 		if Input.is_action_just_pressed("aksi2"):
 			if _target_pemain:
 				match karakter.peran:
