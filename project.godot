@@ -17,6 +17,8 @@ config/features=PackedStringArray("4.2", "Mobile")
 run/delta_smoothing=false
 boot_splash/bg_color=Color(0.34902, 0.34902, 0.34902, 1)
 config/icon="res://icon.svg"
+config/default_signal_callback_to_self_name="_ketika_{signal_name}"
+config/default_signal_callback_name="_ketika_{node_name}_{signal_name}"
 
 [audio]
 
@@ -43,9 +45,14 @@ window/stretch/aspect="keep_width"
 window/handheld/orientation=4
 window/vsync/vsync_mode=0
 
+[editor]
+
+naming/default_signal_callback_name="_ketika_{node_name}_{signal_name}"
+naming/default_signal_callback_to_self_name="_ketika_{signal_name}"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/compass/plugin.cfg", "res://addons/panku_console/plugin.cfg", "res://addons/vrm/plugin.cfg", "res://addons/wigglebone/plugin.cfg")
+enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/anthonyec.camera_preview/plugin.cfg", "res://addons/compass/plugin.cfg", "res://addons/panku_console/plugin.cfg", "res://addons/vrm/plugin.cfg", "res://addons/wigglebone/plugin.cfg")
 
 [file_customization]
 
@@ -263,3 +270,10 @@ camera/depth_of_field/depth_of_field_bokeh_shape=0
 global_illumination/sdfgi/frames_to_converge=4
 environment/defaults/default_clear_color=Color(0.501961, 0.501961, 0.501961, 1)
 lights_and_shadows/positional_shadow/atlas_quadrant_0_subdiv=1
+
+[xr]
+
+openxr/reference_space=0
+shaders/enabled=true
+openxr/enabled.mobile=true
+openxr/default_signal_callback_to_self_name="_ketika_{signal_name}"
