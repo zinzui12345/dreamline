@@ -295,6 +295,9 @@ func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 		_ragdoll = false
 
 # setup
+func _enter_tree():
+	set_process(false)
+	set_physics_process(false)
 func _ready():
 	$pose.active = true
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:

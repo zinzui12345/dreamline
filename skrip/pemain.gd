@@ -32,6 +32,7 @@ func atur_pengendali(id):
 	#print_debug("get_multiplayer_authority : "+str(get_multiplayer_authority())+" == multiplayer.get_unique_id : "+str(multiplayer.get_unique_id()))
 	#print_debug("kendali : "+str(kendali))
 	set_process(kendali)
+	set_physics_process(kendali)
 	karakter.set_process(kendali)
 	karakter.set_physics_process(kendali)
 	karakter._kendalikan(kendali) # gabisa sekedar dipindah ke baris 22
@@ -68,8 +69,10 @@ func atur_raycast(nilai):
 	_raycast_pemain.enabled = nilai
 	if nilai == false: _target_pemain = false
 
-func _ready():
+func _enter_tree():
 	set_process(false)
+	set_physics_process(false)
+func _ready():
 	_raycast_pemain = karakter.get_node("pengamat/%target")
 	_raycast_serangan_a_pemain = karakter.get_node("area_serang_a")
 	
@@ -168,16 +171,17 @@ func _process(delta):
 						server.permainan._tampilkan_daftar_objek()
 					_:
 						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
-							var objek_target = _raycast_serangan_a_pemain.get_collider()
+							objek_target = _raycast_serangan_a_pemain.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)
 							if objek_target.get("linear_velocity") != null:
 								karakter.mode_menyerang = "a"
 								karakter.set("menyerang", true)
 								await get_tree().create_timer(0.4).timeout
-								server.terapkan_percepatan_objek(
-									objek_target.get_path(),
-									arah_dorongan.rotated(Vector3.UP, karakter.rotation.y)
-								)
+								if objek_target != null:
+									server.terapkan_percepatan_objek(
+										objek_target.get_path(),
+										arah_dorongan.rotated(Vector3.UP, karakter.rotation.y)
+									)
 								await get_tree().create_timer(0.4).timeout
 								karakter.set("menyerang", false)
 		if Input.is_action_just_pressed("aksi2"):
@@ -288,7 +292,14 @@ func _process(delta):
 						"posisi":		karakter.position,
 						"rotasi":		karakter.rotation,
 						"skala":		karakter.scale,
-						#"kondisi":		
+						"kondisi":		{
+							"arah_gerakan": 	karakter.get_node("pose").get("parameters/arah_gerakan/blend_position"),
+							"arah_y_pandangan": karakter.get_node("pose").get("parameters/arah_y_pandangan/blend_position"),
+							"gestur":			karakter.gestur,
+							"lompat":			karakter.lompat,
+							"mode_menyerang": 	karakter.mode_menyerang,
+							"menyerang": 		karakter.menyerang,
+						}
 					}
 				}
 				# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya

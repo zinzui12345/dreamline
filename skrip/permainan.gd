@@ -3,32 +3,33 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 | 1.3.7 - Implementasi LAN Server berbasis Cross-Play
+# 07 Jul 2023 | 1.3.6 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.3.7 - Implementasi Timeline
 # 09 Agu 2023 | 1.3.7 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 | 1.3.8 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 11 Agu 2023 | 1.3.7 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.3.8 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.3.8 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
-# 06 Sep 2023 | 1.3.9 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 06 Sep 2023 | 1.3.8 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.3.9 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.3.9 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 1.4.0 - Penambahan entity posisi spawn pemain
+# 23 Sep 2023 | 1.3.9 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.4.0 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.0 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
-# 10 Okt 2023 | 1.4.1 - Penambahan senjata Bola salju raksasa
+# 10 Okt 2023 | 1.4.0 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.1 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.1 - Penambahan Mode Edit Objek
-# 21 Okt 2023 | 1.4.2 - Mode Edit Objek telah berhasil di-implementasikan
+# 21 Okt 2023 | 1.4.1 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.2 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.2 - Implementasi Koneksi Publik menggunakan UPnP
-# 17 Nov 2023 | 1.4.3 - Implementasi Proyektil
+# 17 Nov 2023 | 1.4.2 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.3 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 # 10 Des 2023 | 1.4.3 - Perbaikan ragdoll karakter
-# 19 Des 2023 | 1.4.4 - Tampilan bar nyawa npc_ai
+# 19 Des 2023 | 1.4.3 - Tampilan bar nyawa npc_ai
 # 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
+# 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 
-const versi = "Dreamline v1.4.4 01/02/24 alpha"
+const versi = "Dreamline v1.4.4 04/02/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -297,6 +298,9 @@ func _notification(what):
 func uji_performa():
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://skena/perf_test.tscn")
+func uji_vr():
+	if dunia != null: dunia.queue_free()
+	get_tree().change_scene_to_file("res://skena/vr_test.tscn")
 func uji_kode():
 	$editor_kode/CodeEdit._jalankan()
 func atur_map(nama_map : StringName = "empty"):
@@ -343,17 +347,65 @@ func _muat_map(file_map):
 	if koneksi == MODE_KONEKSI.SERVER:
 		# INFO : (5a) buat server
 		server.call_deferred("buat_koneksi")
-		if !server.headless:
+		if not server.headless:
 			call_deferred("_tambahkan_pemain", 1, data)
 			server.pemain_terhubung = 1
 		else:
 			call_deferred("_mulai_server_cli")
 	elif koneksi == MODE_KONEKSI.CLIENT:
-		# INFO : (5b1) kirim data pemain ke server
-		server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
-		# INFO : (5b3) request objek dari server
-		server.call_deferred("rpc_id", 1, "_kirim_objek_ke_pemain", client.id_koneksi)
-		#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
+		if not server.mode_replay:
+			# INFO : (5b1) kirim data pemain ke server
+			server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
+			# INFO : (5b3) request objek dari server
+			server.call_deferred("rpc_id", 1, "_kirim_objek_ke_pemain", client.id_koneksi)
+			#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
+		else:
+			# 04/02/24 :: ubah nilai properti menjadi keyframe animasi
+			koneksi = MODE_KONEKSI.SERVER
+			var indeks_frame = server.timeline.keys() # berisi indeks seperti nomor frame, dll
+			var alur_waktu = AnimationPlayer.new()
+			var skenario = Animation.new()
+			alur_waktu.name = "alur_waktu"
+			dunia.call_deferred("add_child", alur_waktu)
+			for frame in indeks_frame:
+				if frame is int and server.timeline[frame] != {}:
+					var indeks_entitas = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
+					#print_debug("frame ke : "+str(frame))
+					#print_debug(server.timeline[frame])
+					for entitas in indeks_entitas:
+						if server.timeline[frame][entitas] != {}:
+							var data_frame = server.timeline[frame][entitas]
+							if data_frame.tipe == "spawn":
+								if data_frame.tipe_entitas == "pemain":
+									server.timeline.trek[entitas] = {}
+									server.timeline.entitas[entitas] = "pemain"
+									call_deferred("_tambahkan_pemain", entitas, data_frame.data)
+							elif data_frame.tipe == "sinkron":
+								if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas) != null:
+									if server.timeline.entitas[entitas] == "pemain":
+										var waktu = frame / 1000
+										if server.timeline.trek[entitas].get("posisi") == null:
+											server.timeline.trek[entitas]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
+											skenario.track_set_path(server.timeline.trek[entitas]["posisi"], "pemain/"+str(entitas)+":position")
+										if server.timeline.trek[entitas].get("rotasi") == null:
+											server.timeline.trek[entitas]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas]["rotasi"], "pemain/"+str(entitas)+":rotation")
+										if server.timeline.trek[entitas].get("skala") == null:
+											server.timeline.trek[entitas]["skala"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas]["skala"], "pemain/"+str(entitas)+":scale")
+										if server.timeline.trek[entitas].get("arah_gerakan") == null:
+											server.timeline.trek[entitas]["arah_gerakan"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas]["arah_gerakan"], "pemain/"+str(entitas)+"/pose:parameters/arah_gerakan/blend_position")
+										if server.timeline.trek[entitas].get("arah_y_pandangan") == null:
+											server.timeline.trek[entitas]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas]["arah_y_pandangan"], "pemain/"+str(entitas)+"/pose:parameters/arah_y_pandangan/blend_position")
+										skenario.track_insert_key(server.timeline.trek[entitas]["posisi"],			waktu, data_frame.posisi)
+										skenario.track_insert_key(server.timeline.trek[entitas]["rotasi"],			waktu, data_frame.rotasi)
+										skenario.track_insert_key(server.timeline.trek[entitas]["skala"],			waktu, data_frame.skala)
+										skenario.track_insert_key(server.timeline.trek[entitas]["arah_gerakan"],	waktu, data_frame.kondisi.arah_gerakan)
+										skenario.track_insert_key(server.timeline.trek[entitas]["arah_y_pandangan"],waktu, data_frame.kondisi.arah_y_pandangan)
+										skenario.length = waktu
+			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
 	thread.call_deferred("wait_to_finish")
 func _mulai_server_cli():
 	print(alamat_ip())
@@ -395,14 +447,15 @@ func _tambahkan_pemain(id: int, data_pemain):
 		dunia.get_node("pemain").add_child(pemain, true)
 		
 		# Timeline : spawn pemain
-		server.timeline[server.timeline["data"]["frame"]] = {
-			id: {
-				"tipe": 		"spawn",
-				"tipe_entitas": "pemain",
-				"sumber": 		sumber,
-				"data": 		data_pemain
+		if not server.mode_replay:
+			server.timeline[server.timeline["data"]["frame"]] = {
+				id: {
+					"tipe": 		"spawn",
+					"tipe_entitas": "pemain",
+					"sumber": 		sumber,
+					"data": 		data_pemain
+				}
 			}
-		}
 		
 		# hanya pada server
 		if id == 1:
@@ -411,7 +464,8 @@ func _tambahkan_pemain(id: int, data_pemain):
 				"nama"	: pemain.nama,
 				"sistem": pemain.platform_pemain,
 				"id_sys": pemain.id_sistem,
-				"gender": pemain.gender
+				"gender": pemain.gender,
+				"gambar": await dunia.get_node("tampilan_karakter").dapatkan_tampilan(pemain)
 			})
 			
 			# INFO : (8a) mulai permainan
@@ -560,7 +614,7 @@ func putuskan_server(paksa = false):
 				_tampilkan_popup_konfirmasi($menu_utama/menu/Panel/buat_server, tmp_f_putuskan, "%putuskan_server")
 				return
 			else:
-				server.putuskan()
+				if not server.mode_replay: server.putuskan()
 				$menu_utama/menu/Panel/buat_server.grab_focus()
 		elif koneksi == MODE_KONEKSI.CLIENT:
 			client.putuskan_server()
@@ -1178,6 +1232,12 @@ func _tambah_daftar_pemain(id_pemain, data_pemain):
 	pemain.nama		= data_pemain["nama"]
 	pemain.karakter	= data_pemain["gender"]
 	pemain.name = str(id_pemain)
+	if data_pemain.get("gambar") != null:
+		pemain.atur_gambar_karakter(data_pemain["gambar"])
+func _atur_daftar_pemain(id_pemain : int, properti: String, nilai):
+	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
+	if tmp_daftar != null and tmp_daftar.get(properti) != null:
+		tmp_daftar.set(properti, nilai)
 func _hapus_daftar_pemain(id_pemain):
 	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node(str(id_pemain))
 	$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
@@ -1262,6 +1322,13 @@ func _ketika_menekan_link_informasi(tautan : String):
 func _laporkan_bug(): _ketika_menekan_link_informasi("https://github.com/zinzui12345/dreamline/issues")
 func _sarankan_fitur():
 	pass
+func _ketika_mengatur_informasi_performa(visibilitas : bool):
+	$performa.visible = visibilitas
+	$versi.visible = visibilitas
+func _buka_log():
+	var aa = Panku.module_manager.get_module("native_logger")
+	aa.open_window()
+func _tampilkan_konsol(): Panku.toggle_console_action_just_pressed.emit()
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 func tampilkan_editor_kode(nilai):
 	if nilai:
@@ -1471,6 +1538,19 @@ func tampilkan_info_koneksi():
 			ipinf += str(addrdata["name"]) + " : " + str(addrdata["addresses"][0]) + "\n"
 	else: ipinf = str(client.id_koneksi)
 	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ipinf
+func mainkan_replay():
+	if FileAccess.file_exists(server.file_replay):
+		var file_rekaman = FileAccess.open(server.file_replay, FileAccess.READ)
+		if file_rekaman != null:
+			var rekaman = file_rekaman.get_var()
+			server.timeline = rekaman
+			server.timeline["entitas"] = {}
+			server.timeline["trek"] = {}
+			server.mode_replay = true
+			koneksi = MODE_KONEKSI.CLIENT
+			_mulai_permainan("replay", rekaman.data.map)
+			$hud/daftar_pemain/panel/informasi/alamat_ip.text = "-"
+	else: return "tidak ada file rekaman permainan!"
 
 # bantuan pada console
 const _HELP_alamat_ip			:= "Cek alamat IP Lokal/Publik koneksi"

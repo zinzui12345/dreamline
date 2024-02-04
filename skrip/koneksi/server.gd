@@ -16,12 +16,9 @@ var pemain_terhubung = 0
 var map = "pulau"
 var nama = "bebas"
 var pemain : Dictionary
-var timeline : Dictionary = {
-	"data": {
-		"mulai": -1,
-		"frame": 0
-	}
-}
+var timeline : Dictionary = {}
+var mode_replay = false
+var file_replay = "user://rekaman.dreamline_replay"
 var objek : Dictionary = {}
 
 # .: Timeline :.
@@ -63,7 +60,7 @@ var objek : Dictionary = {}
 const POSISI_SPAWN_RANDOM := 5.0
 
 func _process(_delta):
-	if permainan != null:
+	if !mode_replay and permainan != null:
 		if permainan.dunia != null and permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
 			timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 
@@ -88,7 +85,13 @@ func buat_koneksi():
 	broadcast.serverInfo["max_pemain"] = jumlah_pemain
 	permainan.add_child(broadcast)
 	# setup timeline
-	timeline["data"]["mulai"] = Time.get_ticks_msec()
+	timeline = {
+		"data": {
+			"map":	 map,
+			"mulai": Time.get_ticks_msec(),
+			"frame": 0
+		}
+	}
 	set_process(true)
 	if publik: # koneksi publik
 		upnp = UPNP.new()
@@ -131,7 +134,9 @@ func putuskan():
 	pemain_terhubung = 0
 	# setup timeline
 	set_process(false)
-	timeline["data"]["frame"] = 0
+	var file = FileAccess.open(file_replay, FileAccess.WRITE)
+	file.store_var(timeline)
+	file.close()
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
 
