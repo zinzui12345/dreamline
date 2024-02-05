@@ -82,6 +82,8 @@ func _ready():
 	get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
 	get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
 	get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, true)
+	get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, true)
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -170,6 +172,7 @@ func _process(delta):
 						server.permainan.pasang_objek = pos_target
 						server.permainan._tampilkan_daftar_objek()
 					_:
+						_sinkronkan_timeline()
 						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
 							objek_target = _raycast_serangan_a_pemain.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)
