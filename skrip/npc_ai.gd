@@ -22,7 +22,7 @@ enum grup {
 
 ## setup ##
 func _ready():
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
 		server.objek[str(get_path())] = \
 		{
 			"pemilik": 1,

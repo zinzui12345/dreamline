@@ -29,7 +29,7 @@ class_name Permainan
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 
-const versi = "Dreamline v1.4.4 04/02/24 alpha"
+const versi = "Dreamline v1.4.4 05/02/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -380,6 +380,8 @@ func _muat_map(file_map):
 									server.timeline.trek[entitas] = {}
 									server.timeline.entitas[entitas] = "pemain"
 									call_deferred("_tambahkan_pemain", entitas, data_frame.data)
+									# TODO : matikan visibilitas pemain hingga di-sinkron
+									# TODO : matikan visibilitas daftar pemain hingga di-sinkron
 							elif data_frame.tipe == "sinkron":
 								if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas) != null:
 									if server.timeline.entitas[entitas] == "pemain":
@@ -402,9 +404,9 @@ func _muat_map(file_map):
 										if server.timeline.trek[entitas].get("arah_y_pandangan") == null:
 											server.timeline.trek[entitas]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas]["arah_y_pandangan"], "pemain/"+str(entitas)+"/pose:parameters/arah_y_pandangan/blend_position")
-										if server.timeline.trek[entitas].get("gestur") == null:
-											server.timeline.trek[entitas]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas]["gestur"], "pemain/"+str(entitas)+":gestur")
+										#if server.timeline.trek[entitas].get("gestur") == null:
+										#	server.timeline.trek[entitas]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
+										#	skenario.track_set_path(server.timeline.trek[entitas]["gestur"], "pemain/"+str(entitas)+":gestur")
 										if server.timeline.trek[entitas].get("lompat") == null:
 											server.timeline.trek[entitas]["lompat?"] = false
 											server.timeline.trek[entitas]["lompat"] = skenario.add_track(Animation.TYPE_VALUE)
@@ -412,18 +414,49 @@ func _muat_map(file_map):
 											skenario.track_set_interpolation_type(server.timeline.trek[entitas]["lompat"],Animation.INTERPOLATION_NEAREST)
 											skenario.value_track_set_update_mode(server.timeline.trek[entitas]["lompat"], Animation.UPDATE_DISCRETE)
 											skenario.track_insert_key(server.timeline.trek[entitas]["lompat"],		0.0, AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
+										if server.timeline.trek[entitas].get("mode_menyerang_berdiri") == null:
+											server.timeline.trek[entitas]["mode_menyerang_berdiri?"] = ""
+											server.timeline.trek[entitas]["mode_menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas]["mode_menyerang_berdiri"], "pemain/"+str(entitas)+"/pose:parameters/mode_menyerang_berdiri/current_state")
+											skenario.track_set_interpolation_type(server.timeline.trek[entitas]["mode_menyerang_berdiri"], Animation.INTERPOLATION_CUBIC)
+										if server.timeline.trek[entitas].get("menyerang_berdiri") == null:
+											server.timeline.trek[entitas]["menyerang_berdiri?"] = false
+											server.timeline.trek[entitas]["menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas]["menyerang_berdiri"], "pemain/"+str(entitas)+"/pose:parameters/menyerang_berdiri/request")
+											skenario.track_set_interpolation_type(server.timeline.trek[entitas]["menyerang_berdiri"],Animation.INTERPOLATION_NEAREST)
+											skenario.value_track_set_update_mode(server.timeline.trek[entitas]["menyerang_berdiri"], Animation.UPDATE_DISCRETE)
+											skenario.track_insert_key(server.timeline.trek[entitas]["menyerang_berdiri"],		0.0, AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
 										skenario.track_insert_key(server.timeline.trek[entitas]["posisi"],			waktu, data_frame.posisi)
 										skenario.track_insert_key(server.timeline.trek[entitas]["rotasi"],			waktu, data_frame.rotasi)
 										skenario.track_insert_key(server.timeline.trek[entitas]["skala"],			waktu, data_frame.skala)
 										skenario.track_insert_key(server.timeline.trek[entitas]["arah_gerakan"],	waktu, data_frame.kondisi.arah_gerakan)
 										skenario.track_insert_key(server.timeline.trek[entitas]["arah_y_pandangan"],waktu, data_frame.kondisi.arah_y_pandangan)
-										skenario.track_insert_key(server.timeline.trek[entitas]["gestur"],			waktu, data_frame.kondisi.gestur)
+										#skenario.track_insert_key(server.timeline.trek[entitas]["gestur"],			waktu, data_frame.kondisi.gestur)
 										if data_frame.kondisi.lompat and not server.timeline.trek[entitas]["lompat?"]:
 											skenario.track_insert_key(server.timeline.trek[entitas]["lompat"],		waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 											server.timeline.trek[entitas]["lompat?"] = true
 										elif not data_frame.kondisi.lompat and server.timeline.trek[entitas]["lompat?"]:
 											skenario.track_insert_key(server.timeline.trek[entitas]["lompat"],		waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 											server.timeline.trek[entitas]["lompat?"] = false
+										if data_frame.kondisi.menyerang:
+											match data_frame.kondisi.gestur:
+												"berdiri":
+													match data_frame.kondisi.mode_menyerang:
+														"a":
+															if server.timeline.trek[entitas]["mode_menyerang_berdiri?"] != "mendorong":
+																skenario.track_insert_key(server.timeline.trek[entitas]["mode_menyerang_berdiri"], waktu, "mendorong")
+																server.timeline.trek[entitas]["mode_menyerang_berdiri?"] = "mendorong"
+															if not server.timeline.trek[entitas]["menyerang_berdiri?"]:
+																skenario.track_insert_key(server.timeline.trek[entitas]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+																server.timeline.trek[entitas]["menyerang_berdiri?"] = true
+										elif not data_frame.kondisi.menyerang:
+											match data_frame.kondisi.gestur:
+												"berdiri":
+													match data_frame.kondisi.mode_menyerang:
+														"a":
+															if server.timeline.trek[entitas]["menyerang_berdiri?"]:
+																skenario.track_insert_key(server.timeline.trek[entitas]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
+																server.timeline.trek[entitas]["menyerang_berdiri?"] = false
 										skenario.length = waktu
 			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
 	thread.call_deferred("wait_to_finish")

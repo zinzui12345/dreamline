@@ -20,7 +20,7 @@ func _ready():
 		
 		$interval_spawn.wait_time = interval * 60
 		
-		#fungsikan(true) # TODO : hanya fungsikan pada pemain tertentu yang berada pada satu potongan
+		#if not server.mode_replay: fungsikan(true) # TODO : hanya fungsikan pada pemain tertentu yang berada pada satu potongan
 	elif server.objek.has(str(get_path())): pass
 	else: queue_free()
 
