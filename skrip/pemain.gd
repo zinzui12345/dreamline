@@ -282,30 +282,8 @@ func _process(delta):
 	# Timeline : sinkronkan pemain (rekam)
 	if _delay_timeline <= 0.0:
 		# perekaman hanya dilakukan di server dan ketika waktu berjalan
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
-			if server.timeline.has(server.timeline["data"]["frame"]): pass
-			else:
-				var frame_sekarang = server.timeline["data"]["frame"]
-				server.timeline[frame_sekarang] = {
-					karakter.id_pemain: {
-						"tipe": 		"sinkron",
-						"posisi":		karakter.position,
-						"rotasi":		karakter.rotation,
-						"skala":		karakter.scale,
-						"kondisi":		{
-							"arah_gerakan": 	karakter.get_node("pose").get("parameters/arah_gerakan/blend_position"),
-							"arah_y_pandangan": karakter.get_node("pose").get("parameters/arah_y_pandangan/blend_position"),
-							"gestur":			karakter.gestur,
-							"lompat":			karakter.lompat,
-							"mode_menyerang": 	karakter.mode_menyerang,
-							"menyerang": 		karakter.menyerang,
-						}
-					}
-				}
-				# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya
-				if server.timeline[_frame_timeline_sb].has(karakter.id_pemain) and server.timeline[_frame_timeline_sb][karakter.id_pemain] == server.timeline[frame_sekarang][karakter.id_pemain]:
-					server.timeline[_frame_timeline_sb].erase(karakter.id_pemain)
-				_frame_timeline_sb = frame_sekarang
+		_sinkronkan_timeline()
+		
 		# reset delay
 		_delay_timeline = _interval_timeline
 	elif karakter.id_pemain > 0: _delay_timeline -= delta
@@ -361,7 +339,34 @@ func _physics_process(delta):
 				elif karakter.is_on_floor():
 					karakter.set("lompat", true)
 					karakter.arah.y = 150 * delta
+					_sinkronkan_timeline()
 				lompat = true
+
+func _sinkronkan_timeline():
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
+		if server.timeline.has(server.timeline["data"]["frame"]): pass
+		else:
+			var frame_sekarang = server.timeline["data"]["frame"]
+			server.timeline[frame_sekarang] = {
+				karakter.id_pemain: {
+					"tipe": 		"sinkron",
+					"posisi":		karakter.position,
+					"rotasi":		karakter.rotation_degrees,
+					"skala":		karakter.scale,
+					"kondisi":		{
+						"arah_gerakan": 	karakter.get_node("pose").get("parameters/arah_gerakan/blend_position"),
+						"arah_y_pandangan": karakter.get_node("pose").get("parameters/arah_y_pandangan/blend_position"),
+						"gestur":			karakter.gestur,
+						"lompat":			karakter.lompat,
+						"mode_menyerang": 	karakter.mode_menyerang,
+						"menyerang": 		karakter.menyerang,
+					}
+				}
+			}
+			# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya
+			if server.timeline[_frame_timeline_sb].has(karakter.id_pemain) and server.timeline[_frame_timeline_sb][karakter.id_pemain] == server.timeline[frame_sekarang][karakter.id_pemain]:
+				server.timeline[_frame_timeline_sb].erase(karakter.id_pemain)
+			_frame_timeline_sb = frame_sekarang
 
 # debug
 const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"

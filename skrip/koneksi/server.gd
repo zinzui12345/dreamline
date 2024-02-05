@@ -135,6 +135,10 @@ func putuskan():
 	# setup timeline
 	set_process(false)
 	var file = FileAccess.open(file_replay, FileAccess.WRITE)
+	var indeks_timeline = timeline.keys() # jangan langsug stor, hapus dulu frame yang kosong!
+	for frame in indeks_timeline.size(): 
+		if timeline[indeks_timeline[frame]].size() < 1:
+			timeline.erase(indeks_timeline[frame])
 	file.store_var(timeline)
 	file.close()
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
