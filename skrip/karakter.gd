@@ -321,7 +321,12 @@ func _atur_kendali(nilai):
 	$PlayerInput.arah_gerakan = Vector2.ZERO
 	kontrol = nilai
 func _hapus():
-	# TODO : buat frame timeline untuk menon-aktifkan karakter
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var frame_sekarang = server.timeline["data"]["frame"]
+		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
+		server.timeline[frame_sekarang][id_pemain] = {
+			"tipe": "hapus"
+		}
 	set_physics_process(false)
 	set_process(false)
 	kontrol = false

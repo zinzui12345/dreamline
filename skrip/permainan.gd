@@ -463,6 +463,9 @@ func _muat_map(file_map):
 																skenario.track_insert_key(server.timeline.trek[entitas]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 																server.timeline.trek[entitas]["menyerang_berdiri?"] = false
 										skenario.length = waktu
+							elif data_frame.tipe == "hapus":
+								if server.timeline.entitas[entitas] == "pemain": # HACK : apa nantinya harus di-cek tipenya?? bukannya tiap entitas sama-sama punya visibilitas?
+									skenario.track_insert_key(server.timeline.trek[entitas]["visibilitas"], waktu, false)
 			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
 	thread.call_deferred("wait_to_finish")
 func _mulai_server_cli():
