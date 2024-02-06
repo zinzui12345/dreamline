@@ -16,9 +16,6 @@ var _frame_saat_ini = 0 # frame ketika backward ataupun forward
 var _tween_posisi_karakter : Tween
 var _tween_rotasi_karakter : Tween
 var _tween_durasi_timeline : Tween
-var _interval_timeline	= 0.05
-var _delay_timeline 	= _interval_timeline
-var _frame_timeline_sb	= 0 # frame sebelumnya
 
 var _raycast_pemain : RayCast3D
 var _raycast_serangan_a_pemain : RayCast3D
@@ -33,7 +30,8 @@ func atur_pengendali(id):
 	#print_debug("kendali : "+str(kendali))
 	set_process(kendali)
 	set_physics_process(kendali)
-	karakter.set_process(kendali)
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+		karakter.set_process(kendali) # jangan atur/disable ini di server karena untuk timeline
 	karakter.set_physics_process(kendali)
 	karakter._kendalikan(kendali) # gabisa sekedar dipindah ke baris 22
 	#print("skibidi bop bop yes yes yes")
@@ -172,7 +170,6 @@ func _process(delta):
 						server.permainan.pasang_objek = pos_target
 						server.permainan._tampilkan_daftar_objek()
 					_:
-						_sinkronkan_timeline()
 						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
 							objek_target = _raycast_serangan_a_pemain.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)
@@ -281,15 +278,7 @@ func _process(delta):
 		karakter.global_transform.origin = posisi_awal
 		karakter.rotation		 		= rotasi_awal
 		Panku.notify("re-spawn")
-	
-	# Timeline : sinkronkan pemain (rekam)
-	if _delay_timeline <= 0.0:
-		# perekaman hanya dilakukan di server dan ketika waktu berjalan
-		_sinkronkan_timeline()
-		
-		# reset delay
-		_delay_timeline = _interval_timeline
-	elif karakter.id_pemain > 0: _delay_timeline -= delta
+
 func _physics_process(delta):
 	# fungsi raycast
 	_target_pemain = _raycast_pemain.is_colliding()
@@ -342,34 +331,7 @@ func _physics_process(delta):
 				elif karakter.is_on_floor():
 					karakter.set("lompat", true)
 					karakter.arah.y = 150 * delta
-					_sinkronkan_timeline()
 				lompat = true
-
-func _sinkronkan_timeline():
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
-		if server.timeline.has(server.timeline["data"]["frame"]): pass
-		else:
-			var frame_sekarang = server.timeline["data"]["frame"]
-			server.timeline[frame_sekarang] = {
-				karakter.id_pemain: {
-					"tipe": 		"sinkron",
-					"posisi":		karakter.position,
-					"rotasi":		karakter.rotation_degrees,
-					"skala":		karakter.scale,
-					"kondisi":		{
-						"arah_gerakan": 	karakter.get_node("pose").get("parameters/arah_gerakan/blend_position"),
-						"arah_y_pandangan": karakter.get_node("pose").get("parameters/arah_y_pandangan/blend_position"),
-						"gestur":			karakter.gestur,
-						"lompat":			karakter.lompat,
-						"mode_menyerang": 	karakter.mode_menyerang,
-						"menyerang": 		karakter.menyerang,
-					}
-				}
-			}
-			# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya
-			if server.timeline[_frame_timeline_sb].has(karakter.id_pemain) and server.timeline[_frame_timeline_sb][karakter.id_pemain] == server.timeline[frame_sekarang][karakter.id_pemain]:
-				server.timeline[_frame_timeline_sb].erase(karakter.id_pemain)
-			_frame_timeline_sb = frame_sekarang
 
 # debug
 const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"

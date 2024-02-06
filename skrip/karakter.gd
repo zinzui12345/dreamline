@@ -22,6 +22,9 @@ var _ragdoll = false :
 		_ragdoll = nilai
 var _timer_ragdoll : Timer
 var tekstur
+var _interval_timeline	= 0.05
+var _delay_timeline 	= _interval_timeline
+var _frame_timeline_sb	= 0 # frame sebelumnya
 
 @export var kontrol = false
 @export var nama := ""+OS.get_model_name() :
@@ -57,15 +60,17 @@ var tekstur
 			pose_duduk = ubah
 @export var lompat = false : 
 	set(melompat):
-		if melompat:
-			# track dan keyframe belum ada
-			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
-			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
-			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
-			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 5, true)
-			#$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
-			$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-		lompat = melompat
+		if get_node_or_null("pose") != null:
+			if melompat:
+				# track dan keyframe belum ada
+				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
+				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
+				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
+				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 5, true)
+				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
+				$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+			lompat = melompat
+			_sinkronkan_timeline()
 @export var mode_menyerang = "a"
 @export var menyerang = false : 
 	set(serang):
@@ -77,6 +82,7 @@ var tekstur
 							"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
 						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			menyerang = serang
+			_sinkronkan_timeline()
 @export var arah_gerakan : Vector3
 @export var model = {
 	"alis"		: 0,
@@ -296,13 +302,14 @@ func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 
 # setup
 func _enter_tree():
-	set_process(false)
 	set_physics_process(false)
 func _ready():
 	$pose.active = true
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		$area_tabrak.monitoring = true
 		$area_tabrak.connect("body_entered", _ketika_ditabrak)
+	elif server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+		set_process(false) # jangan disable di server karena untuk timeline
 func _kendalikan(nilai):
 	$pengamat.aktifkan(nilai) # ini harus di set true | false untuk layer visibilitas
 	if kontrol != nilai: # gak usah  di terapin kalo nilai gak berubah
@@ -314,6 +321,7 @@ func _atur_kendali(nilai):
 	$PlayerInput.arah_gerakan = Vector2.ZERO
 	kontrol = nilai
 func _hapus():
+	# TODO : buat frame timeline untuk menon-aktifkan karakter
 	set_physics_process(false)
 	set_process(false)
 	kontrol = false
@@ -342,7 +350,7 @@ func _physics_process(_delta):
 		# terapkan gerakan
 		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-arah_gerakan.x, arah_gerakan.z / 2)) # TODO : clamp arah gerak z > 0.25
 		$pose.set("parameters/arah_jongkok/blend_position", arah_gerakan.z)
-func _process(_delta):
+func _process(delta):
 	# kalkulasi gerakan
 	arah.x = $PlayerInput.arah_gerakan.x
 	arah.z = $PlayerInput.arah_gerakan.y
@@ -359,6 +367,16 @@ func _process(_delta):
 		$pengamat/kamera.position.x = 0
 		$pengamat.position.y 		= get_node("%mata_kiri").position.y
 		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
+	
+	# Timeline : sinkronkan pemain (rekam)
+	if _delay_timeline <= 0.0:
+		# perekaman hanya dilakukan di server dan ketika waktu berjalan
+		_sinkronkan_timeline()
+		
+		# reset delay
+		_delay_timeline = _interval_timeline
+	elif id_pemain > 0: _delay_timeline -= delta
+
 func _ketika_ditabrak(node):
 	var percepatan = node.get_linear_velocity()
 	var hantaman = 0
@@ -410,3 +428,26 @@ func _ketika_bangkit(): # bangkit kembali setelah menjadi ragdoll
 			_timer_ragdoll.stop()
 			atur_ragdoll(false, global_position)
 			server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])
+
+func _sinkronkan_timeline():
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
+		var frame_sekarang = server.timeline["data"]["frame"]
+		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
+		server.timeline[frame_sekarang][id_pemain] = {
+			"tipe": 		"sinkron",
+			"posisi":		position,
+			"rotasi":		rotation_degrees,
+			"skala":		scale,
+			"kondisi":		{
+				"arah_gerakan": 	get_node("pose").get("parameters/arah_gerakan/blend_position"),
+				"arah_y_pandangan": get_node("pose").get("parameters/arah_y_pandangan/blend_position"),
+				"gestur":			gestur,
+				"lompat":			lompat,
+				"mode_menyerang": 	mode_menyerang,
+				"menyerang": 		menyerang,
+			}
+		}
+		# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya
+		if server.timeline[_frame_timeline_sb].has(id_pemain) and server.timeline[_frame_timeline_sb][id_pemain] == server.timeline[frame_sekarang][id_pemain]:
+			server.timeline[_frame_timeline_sb].erase(id_pemain)
+		_frame_timeline_sb = frame_sekarang

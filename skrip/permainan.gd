@@ -29,7 +29,7 @@ class_name Permainan
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 
-const versi = "Dreamline v1.4.4 05/02/24 alpha"
+const versi = "Dreamline v1.4.4 06/02/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -370,8 +370,7 @@ func _muat_map(file_map):
 			for frame in indeks_frame:
 				if frame is int and server.timeline[frame] != {}:
 					var indeks_entitas = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
-					#print_debug("frame ke : "+str(frame))
-					#print_debug(server.timeline[frame])
+					var waktu = frame * 0.001 # konversi ke satuan milidetik (float)
 					for entitas in indeks_entitas:
 						if server.timeline[frame][entitas] != {}:
 							var data_frame = server.timeline[frame][entitas]
@@ -380,12 +379,17 @@ func _muat_map(file_map):
 									server.timeline.trek[entitas] = {}
 									server.timeline.entitas[entitas] = "pemain"
 									call_deferred("_tambahkan_pemain", entitas, data_frame.data)
-									# TODO : matikan visibilitas pemain hingga di-sinkron
+									# matikan visibilitas pemain hingga di-sinkron
+									server.timeline.trek[entitas]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
+									skenario.track_set_path(server.timeline.trek[entitas]["visibilitas"], "pemain/"+str(entitas)+":visible")
+									skenario.track_set_interpolation_type(server.timeline.trek[entitas]["visibilitas"], Animation.INTERPOLATION_NEAREST)
+									skenario.value_track_set_update_mode(server.timeline.trek[entitas]["visibilitas"], Animation.UPDATE_DISCRETE)
+									skenario.track_insert_key(server.timeline.trek[entitas]["visibilitas"], 0.0, false)
+									skenario.track_insert_key(server.timeline.trek[entitas]["visibilitas"], waktu, true)
 									# TODO : matikan visibilitas daftar pemain hingga di-sinkron
 							elif data_frame.tipe == "sinkron":
 								if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas) != null:
 									if server.timeline.entitas[entitas] == "pemain":
-										var waktu = frame * 0.001
 										if server.timeline.trek[entitas].get("posisi") == null:
 											server.timeline.trek[entitas]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
 											skenario.track_set_path(server.timeline.trek[entitas]["posisi"], "pemain/"+str(entitas)+":position")
@@ -401,6 +405,7 @@ func _muat_map(file_map):
 											server.timeline.trek[entitas]["arah_gerakan"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas]["arah_gerakan"], "pemain/"+str(entitas)+"/pose:parameters/arah_gerakan/blend_position")
 											skenario.track_set_interpolation_type(server.timeline.trek[entitas]["arah_gerakan"], Animation.INTERPOLATION_CUBIC)
+											skenario.value_track_set_update_mode(server.timeline.trek[entitas]["arah_gerakan"], Animation.UPDATE_DISCRETE)
 										if server.timeline.trek[entitas].get("arah_y_pandangan") == null:
 											server.timeline.trek[entitas]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas]["arah_y_pandangan"], "pemain/"+str(entitas)+"/pose:parameters/arah_y_pandangan/blend_position")
