@@ -1,4 +1,4 @@
-@tool
+#@tool
 extends Node3D
 
 # TODO : tambah model pohon
@@ -127,6 +127,7 @@ var total_batu = 0
 var total_pencemaran = 0
 var total_bunga_nektar = 0
 
+var shader_air : MeshInstance3D
 var fisik : StaticBody3D
 var posisi_terakhir : Vector3
 var rotasi_terakhir : Vector3
@@ -164,12 +165,15 @@ func _enter_tree():
 			if ResourceLoader.exists("res://model/permukaan.scn"):
 				var data = load("res://model/permukaan.scn").instantiate()
 				data.name = "placeholder_permukaan"
+				print("membuat tampilan permukaan")
 				add_child(data)
 func _ready():
 	if Engine.is_editor_hint(): pass
 	else:
 		if is_instance_valid(server.permainan): server.permainan.permukaan = self
 		muat_terrain()
+		if get_node_or_null("air") != null and get_node_or_null("air/shader_air") != null:
+			shader_air = get_node("air/shader_air")
 func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
@@ -323,6 +327,11 @@ func _process(_delta):
 						atur_visibilitas_potongan_vegetasi(pt, true)
 						atur_visibilitas_lod_potongan_vegetasi(pt, false)
 						potongan[pt]["m_render"] = "detail"
+		
+		# posisikan shader air (kalau ada) mengikuti posisi horizontal pengamat
+		if shader_air != null:
+			shader_air.global_position.x = pengamat.global_position.x
+			shader_air.global_position.z = pengamat.global_position.z
 func _exit_tree():
 	if Engine.is_editor_hint():
 		if get_node_or_null("placeholder_permukaan") != null:
@@ -694,7 +703,7 @@ func muat_terrain():
 			}
 			
 			# jangan tambahkan spawner di client
-			if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 				for ptv in potongan_yang_memiliki_vegetasi:
 					distribusi_posisi_spawner_pada_potongan["pencemaran"] = []
 					distribusi_posisi_spawner_pada_potongan["bunga_nektar"] = []
@@ -935,7 +944,7 @@ func atur_visibilitas_lod_potongan_vegetasi(id_potongan, nilai : bool): 								
 				RenderingServer.instance_set_visible(potongan[id_potongan]["instance"][indeks_instance[i]]["instance"], nilai)
 				potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] = nilai
 func atur_fisik_potongan(id_potongan : int, nilai : bool):
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: pass
+	if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: pass
 	else: get_node("fisik/fisik_" + potongan[id_potongan]["indeks"]).disabled = !nilai
 
 func _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik):
