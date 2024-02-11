@@ -332,6 +332,14 @@ func _process(_delta):
 		if shader_air != null:
 			shader_air.global_position.x = pengamat.global_position.x
 			shader_air.global_position.z = pengamat.global_position.z
+			shader_air.get_surface_override_material(0).set_shader_parameter(
+				"posisi_offset",
+				Vector2(
+					-shader_air.position.x,
+					-shader_air.position.z
+				)
+			)
+			#print_debug(shader_air.get_surface_override_material(0).get_shader_parameter("posisi_offset"))
 func _exit_tree():
 	if Engine.is_editor_hint():
 		if get_node_or_null("placeholder_permukaan") != null:
@@ -434,8 +442,8 @@ func hasilkan_terrain():
 	bentuk.mesh = arr_mesh
 	bentuk.material_override = load("res://material/permukaan.material")
 	var mat = bentuk.get_active_material(0)
-	mat.set_shader_parameter("min_height",0)
-	mat.set_shader_parameter("max_height",1)
+	mat.set_shader_parameter("ketinggian_rumput",0)
+	mat.set_shader_parameter("ketinggian_akhir_pasir",1)
 	
 	# buat fisik
 	if hasilkan_fisik:
