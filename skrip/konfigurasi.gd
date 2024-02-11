@@ -47,7 +47,7 @@ func muat():
 	var file = FileAccess.open(data_konfigurasi, FileAccess.READ)
 	var data = file.get_var()
 	
-	if data != null:
+	if data != null and data is Dictionary:
 		if data.get("bahasa") != null:						bahasa = data["bahasa"]
 		if data.get("mode_layar_penuh") != null:			mode_layar_penuh = data["mode_layar_penuh"]
 		
@@ -59,6 +59,7 @@ func muat():
 		if data.get("shader_karakter") != null:				shader_karakter = data["shader_karakter"]
 		
 		if data.get("volume_musik_latar") != null:			volume_musik_latar = data["volume_musik_latar"]
+	else: simpan()
 	file.close()
 func simpan():
 	var file = FileAccess.open(data_konfigurasi, FileAccess.WRITE)
