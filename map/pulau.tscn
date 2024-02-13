@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=15 format=3 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
 [ext_resource type="ArrayMesh" uid="uid://d0ylp0id374jd" path="res://model/detail_air.res" id="4_dha2v"]
@@ -26,18 +26,18 @@ size = Vector2(1500, 1500)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_du3w3"]
 albedo_color = Color(0, 0.266667, 0.533333, 1)
 roughness = 0.0
-proximity_fade_enabled = true
 proximity_fade_distance = 25.0
-distance_fade_min_distance = 5.0
+distance_fade_mode = 1
+distance_fade_min_distance = 2.5
+distance_fade_max_distance = 15.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_camcf"]
 render_priority = 0
 shader = ExtResource("4_hpns3")
 shader_parameter/ColorParameter = Color(0, 0.266667, 0.533333, 1)
+shader_parameter/posisi_offset = Vector2(0, 0)
 
 [sub_resource type="BoxMesh" id="BoxMesh_njgt3"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_583rv"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ilglt"]
 points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
@@ -9815,6 +9815,7 @@ vegetasi = [{
 
 [node name="air" type="MeshInstance3D" parent="permukaan"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+cast_shadow = 0
 mesh = SubResource("PlaneMesh_nopol")
 skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_du3w3")
@@ -9823,12 +9824,24 @@ surface_material_override/0 = SubResource("StandardMaterial3D_du3w3")
 editor_description = "visibility range end  = 5 m
 visibility range end margin = 25 m
 visibility range fade mode = depedencies"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0)
 cast_shadow = 0
 visibility_range_end = 5.0
 visibility_range_end_margin = 25.0
 visibility_range_fade_mode = 2
 mesh = ExtResource("4_dha2v")
 surface_material_override/0 = SubResource("ShaderMaterial_camcf")
+
+[node name="bayangan_air" type="MeshInstance3D" parent="permukaan/air/shader_air"]
+editor_description = "visibility range end  = 5 m
+visibility range end margin = 25 m
+visibility range fade mode = depedencies"
+cast_shadow = 3
+visibility_range_end = 5.0
+visibility_range_end_margin = 25.0
+visibility_range_fade_mode = 2
+mesh = ExtResource("4_dha2v")
+skeleton = NodePath("../..")
 
 [node name="debug" type="Control" parent="."]
 visible = false
@@ -9864,7 +9877,6 @@ can_sleep = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
 mesh = SubResource("BoxMesh_njgt3")
-surface_material_override/0 = SubResource("StandardMaterial3D_583rv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
 shape = SubResource("ConvexPolygonShape3D_ilglt")
