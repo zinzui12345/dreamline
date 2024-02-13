@@ -275,5 +275,4 @@ lights_and_shadows/positional_shadow/atlas_quadrant_0_subdiv=1
 
 openxr/reference_space=0
 shaders/enabled=true
-openxr/enabled.mobile=true
 openxr/default_signal_callback_to_self_name="_ketika_{signal_name}"

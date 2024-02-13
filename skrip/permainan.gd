@@ -29,7 +29,7 @@ class_name Permainan
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 
-const versi = "Dreamline v1.4.4 06/02/24 alpha"
+const versi = "Dreamline v1.4.4 13/02/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
