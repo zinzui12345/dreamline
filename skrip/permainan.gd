@@ -194,24 +194,25 @@ func _ready():
 
 func _process(delta):
 	# tampilan karakter di setelan karakter
-	_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
-	_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
-	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -360:
-		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 360
-	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 360:
-		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 360
-	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y <= -180:
-		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 90 * 4
-	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y >= 180:
-		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 90 * 4
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= _rotasi_tampilan_karakter.y
-	if $karakter/panel/pilih_tab_wajah.button_pressed and _rotasi_tampilan_karakter.y != 0:
-		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y = clampf(
-			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y,
-			-60, 60
-		)
-	$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
-	$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
+	if $karakter.visible:
+		_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
+		_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
+		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -360:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 360
+		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 360:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 360
+		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y <= -180:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 90 * 4
+		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y >= 180:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= 90 * 4
+		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y -= _rotasi_tampilan_karakter.y
+		if $karakter/panel/pilih_tab_wajah.button_pressed and _rotasi_tampilan_karakter.y != 0:
+			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y = clampf(
+				$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y,
+				-60, 60
+			)
+		$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
+		$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
 	
 	# pemutar musik
 	if $pemutar_musik.visible:

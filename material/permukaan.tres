@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=19 format=3 uid="uid://cwm4k318wpp4e"]
+[gd_resource type="VisualShader" load_steps=24 format=3 uid="uid://cwm4k318wpp4e"]
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_aeoe4"]
 parameter_name = "ketinggian_rumput"
@@ -32,10 +32,28 @@ parameter_name = "skala"
 default_value_enabled = true
 default_value = 1.0
 
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_c2136"]
+parameter_name = "warna_pasir_basah"
+texture_type = 1
+texture_repeat = 1
+
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_vb60n"]
 parameter_name = "warna_pasir"
 texture_type = 1
 texture_repeat = 1
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_1lu2g"]
+source = 5
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_e0rs7"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+op_type = 3
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_itime"]
+parameter_name = "ketinggian_pasir_basah"
+
+[sub_resource type="VisualShaderNodeSmoothStep" id="VisualShaderNodeSmoothStep_h3t00"]
+default_input_values = [0, 0.0, 1, 0.75, 2, 0.35]
 
 [sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_ypdsx"]
 parameter_name = "normal_pasir"
@@ -75,7 +93,9 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_s
 varying float posisi_y;
 
 uniform float skala = 1;
+uniform sampler2D warna_pasir_basah : source_color, repeat_enable;
 uniform sampler2D warna_pasir : source_color, repeat_enable;
+uniform float ketinggian_pasir_basah;
 uniform sampler2D warna_rumput : source_color, repeat_enable;
 uniform float ketinggian_rumput;
 uniform float ketinggian_akhir_pasir;
@@ -106,9 +126,31 @@ void fragment() {
 	vec2 n_out17p0 = (UV - n_in17p2) * vec2(n_out18p0) + n_in17p2;
 
 
+	vec4 n_out20p0;
+// Texture2D:20
+	n_out20p0 = texture(warna_pasir_basah, n_out17p0);
+
+
 	vec4 n_out6p0;
 // Texture2D:6
 	n_out6p0 = texture(warna_pasir, n_out17p0);
+
+
+// FloatParameter:22
+	float n_out22p0 = ketinggian_pasir_basah;
+
+
+// VaryingGetter:12
+	float n_out12p0 = posisi_y;
+
+
+// SmoothStep:23
+	float n_in23p0 = 0.00000;
+	float n_out23p0 = smoothstep(n_in23p0, n_out22p0, n_out12p0);
+
+
+// Mix:21
+	vec3 n_out21p0 = mix(vec3(n_out20p0.xyz), vec3(n_out6p0.xyz), vec3(n_out23p0));
 
 
 	vec4 n_out9p0;
@@ -124,16 +166,12 @@ void fragment() {
 	float n_out11p0 = ketinggian_akhir_pasir;
 
 
-// VaryingGetter:12
-	float n_out12p0 = posisi_y;
-
-
 // SmoothStep:4
 	float n_out4p0 = smoothstep(n_out10p0, n_out11p0, n_out12p0);
 
 
 // Mix:5
-	vec3 n_out5p0 = mix(vec3(n_out6p0.xyz), vec3(n_out9p0.xyz), vec3(n_out4p0));
+	vec3 n_out5p0 = mix(n_out21p0, vec3(n_out9p0.xyz), vec3(n_out4p0));
 
 
 	vec4 n_out14p0;
@@ -157,6 +195,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-490.653, 303.564)
 varyings/posisi_y = "0,0"
 nodes/vertex/2/node = SubResource("VisualShaderNodeVaryingSetter_y1ulm")
 nodes/vertex/2/position = Vector2(260, 160)
@@ -165,23 +204,23 @@ nodes/vertex/3/position = Vector2(20, 160)
 nodes/vertex/connections = PackedInt32Array(3, 2, 2, 0)
 nodes/fragment/0/position = Vector2(320, 920)
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture2DParameter_vb60n")
-nodes/fragment/2/position = Vector2(-400, 500)
+nodes/fragment/2/position = Vector2(-400, 360)
 nodes/fragment/3/node = SubResource("VisualShaderNodeTexture2DParameter_ypdsx")
 nodes/fragment/3/position = Vector2(-400, 1460)
 nodes/fragment/4/node = SubResource("VisualShaderNodeSmoothStep_4gob5")
-nodes/fragment/4/position = Vector2(-120, 1100)
+nodes/fragment/4/position = Vector2(-120, 960)
 nodes/fragment/5/node = SubResource("VisualShaderNodeMix_0405q")
-nodes/fragment/5/position = Vector2(100, 900)
+nodes/fragment/5/position = Vector2(100, 760)
 nodes/fragment/6/node = SubResource("VisualShaderNodeTexture_clj0u")
-nodes/fragment/6/position = Vector2(-140, 600)
+nodes/fragment/6/position = Vector2(-140, 460)
 nodes/fragment/8/node = SubResource("VisualShaderNodeTexture2DParameter_dc4ib")
-nodes/fragment/8/position = Vector2(-400, 800)
+nodes/fragment/8/position = Vector2(-400, 660)
 nodes/fragment/9/node = SubResource("VisualShaderNodeTexture_w15er")
-nodes/fragment/9/position = Vector2(-140, 800)
+nodes/fragment/9/position = Vector2(-140, 660)
 nodes/fragment/10/node = SubResource("VisualShaderNodeFloatParameter_aeoe4")
-nodes/fragment/10/position = Vector2(-400, 1040)
+nodes/fragment/10/position = Vector2(-400, 900)
 nodes/fragment/11/node = SubResource("VisualShaderNodeFloatParameter_w7w2s")
-nodes/fragment/11/position = Vector2(-400, 1180)
+nodes/fragment/11/position = Vector2(-400, 1040)
 nodes/fragment/12/node = SubResource("VisualShaderNodeVaryingGetter_5cpwn")
 nodes/fragment/12/position = Vector2(-340, 1340)
 nodes/fragment/13/node = SubResource("VisualShaderNodeTexture2DParameter_od8bl")
@@ -196,4 +235,14 @@ nodes/fragment/17/node = SubResource("VisualShaderNodeUVFunc_b1012")
 nodes/fragment/17/position = Vector2(-740, 1320)
 nodes/fragment/18/node = SubResource("VisualShaderNodeFloatParameter_f6e8w")
 nodes/fragment/18/position = Vector2(-1020, 1320)
-nodes/fragment/connections = PackedInt32Array(4, 0, 5, 2, 6, 0, 5, 0, 2, 0, 6, 2, 9, 0, 5, 1, 8, 0, 9, 2, 10, 0, 4, 0, 11, 0, 4, 1, 12, 0, 4, 2, 3, 0, 14, 2, 14, 0, 15, 0, 4, 0, 15, 2, 16, 0, 15, 1, 13, 0, 16, 2, 15, 0, 0, 9, 5, 0, 0, 0, 17, 0, 9, 0, 17, 0, 6, 0, 17, 0, 14, 0, 17, 0, 16, 0, 18, 0, 17, 1)
+nodes/fragment/19/node = SubResource("VisualShaderNodeTexture2DParameter_c2136")
+nodes/fragment/19/position = Vector2(-400, 100)
+nodes/fragment/20/node = SubResource("VisualShaderNodeTexture_1lu2g")
+nodes/fragment/20/position = Vector2(-140, 220)
+nodes/fragment/21/node = SubResource("VisualShaderNodeMix_e0rs7")
+nodes/fragment/21/position = Vector2(100, 320)
+nodes/fragment/22/node = SubResource("VisualShaderNodeFloatParameter_itime")
+nodes/fragment/22/position = Vector2(-400, 1180)
+nodes/fragment/23/node = SubResource("VisualShaderNodeSmoothStep_h3t00")
+nodes/fragment/23/position = Vector2(-120, 1160)
+nodes/fragment/connections = PackedInt32Array(4, 0, 5, 2, 2, 0, 6, 2, 9, 0, 5, 1, 8, 0, 9, 2, 10, 0, 4, 0, 12, 0, 4, 2, 3, 0, 14, 2, 14, 0, 15, 0, 4, 0, 15, 2, 16, 0, 15, 1, 13, 0, 16, 2, 15, 0, 0, 9, 5, 0, 0, 0, 17, 0, 9, 0, 17, 0, 6, 0, 17, 0, 14, 0, 17, 0, 16, 0, 18, 0, 17, 1, 19, 0, 20, 2, 17, 0, 20, 0, 20, 0, 21, 0, 6, 0, 21, 1, 21, 0, 5, 0, 11, 0, 4, 1, 12, 0, 23, 2, 23, 0, 21, 2, 22, 0, 23, 1)

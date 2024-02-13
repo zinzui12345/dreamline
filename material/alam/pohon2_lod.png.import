@@ -3,21 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcn87soljc5lb"
-path.s3tc="res://.godot/imported/pohon2_lod.png-582b10f1b690269c04b7a932ed8d820c.s3tc.ctex"
-path.etc2="res://.godot/imported/pohon2_lod.png-582b10f1b690269c04b7a932ed8d820c.etc2.ctex"
+path="res://.godot/imported/pohon2_lod.png-582b10f1b690269c04b7a932ed8d820c.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc", "etc2_astc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://material/alam/pohon2_lod.png"
-dest_files=["res://.godot/imported/pohon2_lod.png-582b10f1b690269c04b7a932ed8d820c.s3tc.ctex", "res://.godot/imported/pohon2_lod.png-582b10f1b690269c04b7a932ed8d820c.etc2.ctex"]
+dest_files=["res://.godot/imported/pohon2_lod.png-582b10f1b690269c04b7a932ed8d820c.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
