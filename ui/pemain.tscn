@@ -58,7 +58,7 @@ extends Panel
 		karakter = karakternya
 
 func atur_gambar_karakter(gambar : Image):
-	$ikon.texture = gambar
+	$ikon.texture = ImageTexture.create_from_image(gambar)
 "
 
 [node name="pemain" type="Panel"]
