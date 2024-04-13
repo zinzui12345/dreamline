@@ -274,7 +274,7 @@ func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 		_ragdoll = true
 		$pose.active = false
 		$fisik.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
-		$pengamat.atur_mode(3)
+		if id_pemain == client.id_koneksi: $pengamat.atur_mode(3)
 		#$area_tabrak/area.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
 		$"%GeneralSkeleton".physical_bones_start_simulation()
 		$"%GeneralSkeleton/fisik kerangka".apply_central_impulse(percepatan)
@@ -291,7 +291,7 @@ func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 				_timer_ragdoll.connect("timeout", _ketika_bangkit)
 			_timer_ragdoll.start()
 	elif !nilai and _ragdoll:
-		$pengamat.atur_mode(1)
+		if id_pemain == client.id_koneksi: $pengamat.atur_mode(1)
 		$"%GeneralSkeleton".physical_bones_stop_simulation()
 		$"%GeneralSkeleton".get_node("fisik kerangka").queue_free()
 		$pose.active = true

@@ -44,25 +44,16 @@ func atur_pengendali(id):
 		Panku.notify(TranslationServer.translate("%spawnpemain"))
 		if server.permainan.permukaan != null:
 			server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
+		karakter.get_node("pengamat").atur_mode(1)
 		client.permainan.karakter = karakter
 		client.permainan._tampilkan_permainan()
 		
 		# INFO : atur layer visibilitas model
-		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, false)
-		get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, false)
+		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, true)
+		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, false)
 	else:
-		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, true)
-		get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, false)
+		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, true)
 func atur_raycast(nilai):
 	_raycast_pemain.enabled = nilai
 	if nilai == false: _target_pemain = false
