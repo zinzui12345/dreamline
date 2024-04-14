@@ -1,16 +1,21 @@
 extends Node3D
 
 @export var kontrol = false
-@export var mode_kontrol = 1
+@export var mode_kontrol = 3
 var gerakan : Vector2
+var _gerakan : Vector2
 var rotasi : Vector3
 var putaranMinVertikalPandangan : float = -85.0
 var putaranMaxVertikalPandangan : float = 90.0
+var posisiAwalVertikalPandangan : float
 
-var _karakter
+var _karakter : Node
 
 func  _ready():
-	if get_parent() is Karakter: _karakter = get_parent(); get_node("%pandangan").set("far", Konfigurasi.jarak_render)
+	if get_parent() is Karakter:
+		_karakter = get_parent();
+		get_node("%pandangan").set("far", Konfigurasi.jarak_render);
+		posisiAwalVertikalPandangan = position.y
 	else: _karakter = $posisi_mata
 
 func _process(delta):
@@ -18,58 +23,65 @@ func _process(delta):
 		if _karakter.get("arah_pandangan") != null: gerakan = _karakter.arah_pandangan
 		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitasPandangan * delta
 		
-		# pindah ke karakter.gd process()
-		#if _karakter.get_node_or_null("model/Root/Skeleton3D/dada") != null:
-		#	global_position.y = _karakter.get_node_or_null("model/Root/Skeleton3D/dada").global_position.y
-		
-		match mode_kontrol:
-			1:
-				get_node("%pandangan").rotation_degrees.x -= rotasi.x
-				get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, putaranMinVertikalPandangan, putaranMaxVertikalPandangan)
-				get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
-				_karakter.rotation_degrees.y -= rotasi.y
-				gerakan = Vector2.ZERO
-				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
-				if _karakter.get("arah_p_pandangan") != null:
-					# FIXME : leher terlihat ketika delay | coba kurangi presisi?
-					if get_node("%pandangan").rotation_degrees.x > 0:
-						_karakter.arah_p_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
-					elif get_node("%pandangan").rotation_degrees.x < 0:
-						_karakter.arah_p_pandangan.y = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
-			2:
-				get_node("%pandangan").rotation_degrees.x -= rotasi.x
-				get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -38, putaranMaxVertikalPandangan)
-				get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
-				if _karakter.gestur == "berdiri" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
-					_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
-					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
+		if gerakan != _gerakan:
+			match mode_kontrol:
+				1:
+					get_node("%pandangan").rotation_degrees.x -= rotasi.x
+					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, putaranMinVertikalPandangan, putaranMaxVertikalPandangan)
+					get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
 					_karakter.rotation_degrees.y -= rotasi.y
-				elif _karakter.arah.z != 2:
-					$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.005 * delta)
-				else:
-					$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y
-					$kamera/rotasi_vertikal.rotation_degrees.y = clamp($kamera/rotasi_vertikal.rotation_degrees.y, -70, 70)
-				gerakan = Vector2.ZERO
-				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
-				if _karakter.get("arah_p_pandangan") != null:
-					if $kamera/rotasi_vertikal.rotation_degrees.y > 0:
-						_karakter.arah_p_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
-					elif $kamera/rotasi_vertikal.rotation_degrees.y < 0:
-						_karakter.arah_p_pandangan.x = $kamera/rotasi_vertikal.rotation_degrees.y / -70
+					gerakan = Vector2.ZERO
+					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
+					if _karakter.get("arah_p_pandangan") != null:
+						if get_node("%pandangan").rotation_degrees.x > 0:
+							_karakter.arah_p_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
+						elif get_node("%pandangan").rotation_degrees.x < 0:
+							var arah_pandangan = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
+							var persentase_arah = abs(arah_pandangan)
+							#var perbedaan_posisi_y_akhir = 0.064 * persentase_arah
+							var perbedaan_posisi_z_akhir = 0.237 * persentase_arah
+							#position.y = posisiAwalVertikalPandangan - perbedaan_posisi_y_akhir # gak usah dipake karena bakalan offset ketika pemain jongkok
+							get_node("%pandangan").position.z = 0 + perbedaan_posisi_z_akhir
+							_karakter.arah_p_pandangan.y = arah_pandangan
+				2:
+					get_node("%pandangan").rotation_degrees.x -= rotasi.x
+					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -38, putaranMaxVertikalPandangan)
+					get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
+					if _karakter.gestur == "berdiri" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
+						_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
+						$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
+						_karakter.rotation_degrees.y -= rotasi.y
+					elif _karakter.arah.z != 2:
+						$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.005 * delta)
 					else:
-						_karakter.arah_p_pandangan.x = 0
-			3:
-				$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
-				$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
-				get_node("%target").rotation_degrees.x = 0
-				if (_karakter.arah.x != 0 or (_karakter.arah.z != 0 and _karakter.is_on_floor())) and _karakter.get_node("pose").active:
-					_karakter.rotation.y = lerp_angle(_karakter.rotation.y, global_rotation.y, 0.4)
-					rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
-					_karakter.rotation_degrees.y -= rotasi.y
-				else: rotation_degrees.y -= rotasi.y
-				gerakan = Vector2.ZERO
-				if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
-				if _karakter.get("arah_p_pandangan") != null: _karakter.arah_p_pandangan = Vector2.ZERO # TODO : arah x
+						$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y
+						$kamera/rotasi_vertikal.rotation_degrees.y = clamp($kamera/rotasi_vertikal.rotation_degrees.y, -70, 70)
+					gerakan = Vector2.ZERO
+					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
+					if _karakter.get("arah_p_pandangan") != null:
+						if $kamera/rotasi_vertikal.rotation_degrees.y > 0:
+							_karakter.arah_p_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
+						elif $kamera/rotasi_vertikal.rotation_degrees.y < 0:
+							_karakter.arah_p_pandangan.x = $kamera/rotasi_vertikal.rotation_degrees.y / -70
+						else:
+							_karakter.arah_p_pandangan.x = 0
+				3:
+					$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
+					$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
+					get_node("%target").rotation_degrees.x = 0
+					if (_karakter.arah.x != 0 or (_karakter.arah.z != 0 and _karakter.is_on_floor())) and _karakter.get_node("pose").active:
+						_karakter.rotation.y = lerp_angle(_karakter.rotation.y, global_rotation.y, 0.4)
+						rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
+						_karakter.rotation_degrees.y -= rotasi.y
+					else: rotation_degrees.y -= rotasi.y
+					if rotation_degrees.y < -360:	rotation_degrees.y += 360
+					if rotation_degrees.y > 360:	rotation_degrees.y -= 360
+					if rotation_degrees.y <= -270:	rotation_degrees.y += 90 * 4
+					if rotation_degrees.y >= 270:	rotation_degrees.y -= 90 * 4
+					gerakan = Vector2.ZERO
+					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
+					if _karakter.get("arah_p_pandangan") != null: _karakter.arah_p_pandangan = Vector2.ZERO # TODO : arah x
+			_gerakan = gerakan
 
 func aktifkan(nilai = true, vr = false):
 	if vr:	pass
