@@ -79,6 +79,7 @@ PERINTAHSALAH,Perintah `%s` tidak ditemukan.,Command `%s` not found.
 %putuskanserver,Menghentikan peladen,Stopping server
 %belum_tersedia,Fitur ini belum tersedia.,Not available yet.
 %simpan_pengaturan,Menyimpan konfigurasi,Saving configuration
+%simpan_karakter,Menyimpan Karakter,Saving Character
 ,,
 # output debug,,
 informasi_performa,Informasi Performa,Performance Info
@@ -102,4 +103,3 @@ INPUTHAPUS,hapus,delete
 ,,
 # placeholder,,
 @author,ProgrammerIndonesia44,ProgrammerIndonesia44
-@beta_tester,Muh Farel Ilyas,Muh Farel Ilyas

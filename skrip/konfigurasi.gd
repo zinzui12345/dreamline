@@ -1,6 +1,7 @@
 extends Node
 
 var data_konfigurasi = "user://konfigurasi.dreamline"
+var data_pemain = "user://data.dreamline"
 var bahasa = 0 :
 	set(pilih):
 		TranslationServer.set_locale(kode_bahasa[pilih])

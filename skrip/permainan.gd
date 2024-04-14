@@ -4,30 +4,31 @@ class_name Permainan
 
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.6 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 1.3.7 - Implementasi Timeline
+# 04 Agu 2023 | 1.3.6 - Implementasi Timeline
 # 09 Agu 2023 | 1.3.7 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.3.7 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 1.3.8 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 14 Agu 2023 | 1.3.7 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.3.8 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.3.8 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 1.3.9 - Implementasi shader karakter menggunakan MToon
+# 18 Sep 2023 | 1.3.8 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.3.9 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.3.9 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 1.4.0 - Penambahan Text Chat
+# 25 Sep 2023 | 1.3.9 - Penambahan Text Chat
 # 09 Okt 2023 | 1.4.0 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.0 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 1.4.1 - Tombol Sentuh Fleksibel
+# 12 Okt 2023 | 1.4.0 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.1 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.1 - Mode Edit Objek telah berhasil di-implementasikan
-# 31 Okt 2023 | 1.4.2 - Perbaikan kesalahan kontrol sentuh
+# 31 Okt 2023 | 1.4.1 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.2 - Implementasi Koneksi Publik menggunakan UPnP
 # 17 Nov 2023 | 1.4.2 - Implementasi Proyektil
-# 27 Nov 2023 | 1.4.3 - Penambahan kemampuan penghindaran npc terhadap musuhnya
+# 27 Nov 2023 | 1.4.2 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 # 10 Des 2023 | 1.4.3 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.3 - Tampilan bar nyawa npc_ai
-# 04 Jan 2024 | 1.4.4 - Implementasi GPU Instancing pada Vegetasi Terrain
+# 04 Jan 2024 | 1.4.3 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
+# 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 
 const versi = "Dreamline v1.4.4 14/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
@@ -131,6 +132,11 @@ func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
 		get_tree().get_root().call_deferred("add_child", dunia)
+	# Muat data karakter
+	if FileAccess.file_exists(Konfigurasi.data_pemain):
+		var file = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
+		data = file.get_var()
+		file.close()
 	# INFO : (1) non-aktifkan proses untuk placeholder karakter
 	get_node("%karakter/lulu").set_process(false)
 	get_node("%karakter/lulu").set_physics_process(false)
@@ -896,17 +902,26 @@ func _tampilkan_setelan_karakter():
 	if $karakter.visible: _sembunyikan_setelan_karakter()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
-		# gaperlu karena beda world
-		#if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") == null:
-		#	$karakter/panel/tampilan/SubViewportContainer/SubViewport.add_child(
-		#		load("res://pencahayaan_karakter.scn").instantiate()
-		#	)
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = false
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible == false:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = true
+			# sesuaikan pilihan dengan data
+			$karakter/panel/tab/tab_personalitas/input_nama.set("text", data["nama"])
 			match data["gender"]: # INFO : aktifkan visibilitas placeholder karakter berdasarkan data
-				"P": get_node("%karakter/lulu").visible = true
-				"L": get_node("%karakter/reno").visible = true
+				"P": get_node("%karakter/lulu").visible = true; $karakter/panel/tab/tab_personalitas/pilih_gender.selected = 0
+				"L": get_node("%karakter/reno").visible = true; $karakter/panel/tab/tab_personalitas/pilih_gender.selected = 1
+			$karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_alis.selected = data["alis"]
+			$karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_bulu_mata.selected = data["garis_mata"]
+			$karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_bola_mata.selected = data["mata"]
+			$karakter/panel/tab/tab_wajah/ScrollContainer/Control/pemilih_warna.atur_penyesuaian_warna(data["warna_mata"])
+			$karakter/panel/tab/tab_rambut/pilih_rambut.selected = data["rambut"]
+			$karakter/panel/tab/tab_rambut/pemilih_warna.atur_penyesuaian_warna(data["warna_rambut"])
+			$karakter/panel/tab/tab_baju/pilih_baju.selected = data["baju"]
+			$karakter/panel/tab/tab_baju/pemilih_warna.atur_penyesuaian_warna(data["warna_baju"])
+			$karakter/panel/tab/tab_celana/pilih_celana.selected = data["celana"]
+			$karakter/panel/tab/tab_celana/pemilih_warna.atur_penyesuaian_warna(data["warna_celana"])
+			$karakter/panel/tab/tab_sepatu/pilih_sepatu.selected = data["sepatu"]
+			$karakter/panel/tab/tab_sepatu/pemilih_warna.atur_penyesuaian_warna(data["warna_sepatu"])
 		if $daftar_server.visible:
 			$daftar_server/animasi.play("tampilkan_karakter")
 			client.hentikan_pencarian_server()
@@ -1505,6 +1520,11 @@ func _ketika_mengubah_warna_sepatu_karakter(warna):
 	get_node("%karakter/lulu").atur_warna()
 	get_node("%karakter/reno").warna["sepatu"] = tmp_warna
 	get_node("%karakter/reno").atur_warna()
+func _ketika_menyimpan_data_karakter():
+	var file = FileAccess.open(Konfigurasi.data_pemain, FileAccess.WRITE)
+	file.store_var(data)
+	file.close()
+	Panku.notify("%simpan_karakter")
 
 # menu
 func _jeda():
@@ -1540,12 +1560,12 @@ func _kembali():
 	elif $proses_koneksi.visible:
 		client.putuskan_server()
 		$proses_koneksi/animasi.play("sembunyikan")
+	elif $setelan.visible:
+		_sembunyikan_setelan_permainan()
 	elif $daftar_server.visible:
 		_sembunyikan_daftar_server()
 	elif $karakter.visible:
 		_sembunyikan_setelan_karakter()
-	elif $setelan.visible:
-		_sembunyikan_setelan_permainan()
 	elif $informasi.visible:
 		_sembunyikan_panel_informasi()
 	elif !is_instance_valid(karakter):

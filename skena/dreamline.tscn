@@ -4809,6 +4809,8 @@ render_target_update_mode = 0
 
 [node name="karakter" type="Node3D" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport"]
 unique_name_in_owner = true
+editor_description = "ini visible-nya harus false pada awal supaya pilihan di set dengan data"
+visible = false
 
 [node name="lulu" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter" instance=ExtResource("12_mhmg0")]
 visible = false
@@ -7114,6 +7116,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="resized" from="karakter/panel/tampilan" to="." method="_ketika_ukuran_tampilan_karakter_diubah"]
 [connection signal="touch_move" from="karakter/panel/tampilan/Touchpad" to="." method="_ketika_mengubah_arah_tampilan_karakter"]
 [connection signal="pressed" from="karakter/panel/batal" to="." method="_sembunyikan_setelan_karakter"]
+[connection signal="pressed" from="karakter/panel/simpan" to="." method="_ketika_menyimpan_data_karakter"]
 [connection signal="text_changed" from="karakter/panel/tab/tab_personalitas/input_nama" to="." method="_ketika_mengubah_nama_karakter"]
 [connection signal="item_selected" from="karakter/panel/tab/tab_personalitas/pilih_gender" to="." method="_ketika_mengubah_gender_karakter"]
 [connection signal="item_selected" from="karakter/panel/tab/tab_wajah/ScrollContainer/Control/pilih_alis" to="." method="_ketika_mengubah_alis_karakter"]
