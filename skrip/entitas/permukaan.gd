@@ -1,4 +1,4 @@
-#@tool
+@tool
 extends Node3D
 
 # TODO : tambah model pohon
@@ -114,7 +114,7 @@ var semak = [
  load("res://model/alam/placeholder_semak.tres")
 ]
 var batu = [
- load("res://model/alam/placeholder_batu.tres"),
+ load("res://model/alam/batu1.res"),
  load("res://model/alam/placeholder_batu.tres"),
  load("res://model/alam/placeholder_batu.tres"),
  load("res://model/alam/placeholder_batu.tres"),
@@ -166,7 +166,7 @@ func _enter_tree():
 				var data = load("res://model/permukaan.scn").instantiate()
 				data.name = "placeholder_permukaan"
 				print("membuat tampilan permukaan")
-				add_child(data)
+				$tanah.add_child(data)
 func _ready():
 	if Engine.is_editor_hint(): pass
 	else:
@@ -206,13 +206,13 @@ func _process(_delta):
 					posisi_pengamat = pengamat.position
 				
 				# cek pengamat mengarah kemana?, potongan mana saja yang harus visible dan invisible?
-				if get_node_or_null("bentuk_" + potongan[pt]["indeks"]) != null:
+				if get_node_or_null("tanah/bentuk_" + potongan[pt]["indeks"]) != null:
 					if gunakan_frustum_culling:
 						# kalo pengamat berada pada potongan, render potongan tersebut
 						if posisi_pengamat.x >= posisi.x and posisi_pengamat.x <= (posisi.x + batas.x) and \
 							posisi_pengamat.z >= posisi.y and posisi_pengamat.z <= (posisi.y + batas.y):
 							
-							get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
+							get_node("tanah/bentuk_" + potongan[pt]["indeks"]).visible = true
 							atur_fisik_potongan(pt, true)
 							
 							#get_parent().get_node("debug_pos_chunk").transform.origin = Vector3(
@@ -227,7 +227,7 @@ func _process(_delta):
 						
 						# hanya render potongan yang terlihat di pandangan pengamat
 						else:
-							var potongan_node = get_node("bentuk_" + potongan[pt]["indeks"])
+							var potongan_node = get_node("tanah/bentuk_" + potongan[pt]["indeks"])
 							
 							# atur arah arah_target_pengamat ke potongan_node dengan look_at()
 							# tentukan batas sudut arah_target_pengamat berdasarkan jarak titik tengah potongan_node
@@ -321,8 +321,8 @@ func _process(_delta):
 									potongan[pt]["m_render"] = ""
 								arah_target_pengamat.rotation_degrees.y = 0
 					else:
-						if !get_node("bentuk_" + potongan[pt]["indeks"]).visible:
-							get_node("bentuk_" + potongan[pt]["indeks"]).visible = true
+						if !get_node("tanah/bentuk_" + potongan[pt]["indeks"]).visible:
+							get_node("tanah/bentuk_" + potongan[pt]["indeks"]).visible = true
 							atur_fisik_potongan(pt, true)
 						atur_visibilitas_potongan_vegetasi(pt, true)
 						atur_visibilitas_lod_potongan_vegetasi(pt, false)
@@ -341,10 +341,10 @@ func _process(_delta):
 			)
 func _exit_tree():
 	if Engine.is_editor_hint():
-		if get_node_or_null("placeholder_permukaan") != null:
+		if $tanah.get_node_or_null("placeholder_permukaan") != null:
 			print("menghapus tampilan permukaan")
-			var tmp = get_node("placeholder_permukaan")
-			remove_child(tmp)
+			var tmp = $tanah.get_node("placeholder_permukaan")
+			$tanah.remove_child(tmp)
 			tmp.queue_free()
 	else: hapus_vegetasi()
 
@@ -436,7 +436,7 @@ func hasilkan_terrain():
 	# terapkan bentuk dan material
 	print("menghasilkan bentuk dan material")
 	var bentuk = MeshInstance3D.new()
-	add_child(bentuk)
+	$tanah.add_child(bentuk)
 	bentuk.name = "bentuk"
 	bentuk.mesh = arr_mesh
 	bentuk.material_override = load("res://material/permukaan.material")
@@ -452,7 +452,7 @@ func hasilkan_terrain():
 		fisik = bentuk.get_child(0)
 		fisik.name = "fisik"
 		bentuk.remove_child(fisik)
-		add_child(fisik)
+		$tanah.add_child(fisik)
 	
 	# potong menjadi beberapa bagian
 	if hasilkan_potongan:
@@ -519,7 +519,7 @@ func muat_terrain():
 	if ResourceLoader.exists("res://model/permukaan.scn"):
 		var data = load("res://model/permukaan.scn").instantiate()
 		for isi_data in data.get_children():
-			add_child(isi_data.duplicate())
+			$tanah.add_child(isi_data.duplicate())
 		data.queue_free()
 		
 		if vegetasi.size() > 0:
@@ -761,10 +761,10 @@ func muat_terrain():
 
 func slice_terrain(gambar_noise, material):
 	# Hapus child bentuk yang ada sebelumnya
-	if has_node("bentuk"): get_node("bentuk").queue_free()
+	if $tanah.has_node("bentuk"): $tanah.get_node("bentuk").queue_free()
 
 	# Mendapatkan mesh yang ada pada terrain
-	var terrain_mesh = $bentuk.mesh
+	var terrain_mesh = $tanah/bentuk.mesh
 	var terrain_surface = terrain_mesh.surface_get_arrays(0)
 
 	# Mendapatkan informasi resolusi gambar
@@ -793,7 +793,7 @@ func slice_terrain(gambar_noise, material):
 			new_instance.material_override = material
 			new_instance.lod_bias = 2.0
 			print("menambahkan bentuk potongan")
-			add_child(new_instance)
+			$tanah.add_child(new_instance)
 			
 			# INFO : buat fisik chunk
 			if hasilkan_fisik:
@@ -953,7 +953,7 @@ func atur_visibilitas_lod_potongan_vegetasi(id_potongan, nilai : bool): 								
 				potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] = nilai
 func atur_fisik_potongan(id_potongan : int, nilai : bool):
 	if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: pass
-	else: get_node("fisik/fisik_" + potongan[id_potongan]["indeks"]).disabled = !nilai
+	else: get_node("tanah/fisik/fisik_" + potongan[id_potongan]["indeks"]).disabled = !nilai
 
 func _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik):
 	if titik < 8:

@@ -29,7 +29,7 @@ class_name Permainan
 # 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 
-const versi = "Dreamline v1.4.4 13/02/24 alpha"
+const versi = "Dreamline v1.4.4 14/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -142,9 +142,11 @@ func _ready():
 	get_node("%karakter/lulu").warna["rambut"] 		= data["warna_rambut"]
 	get_node("%karakter/lulu").model["baju"] 		= data["baju"]
 	get_node("%karakter/lulu").warna["baju"] 		= data["warna_baju"]
+	get_node("%karakter/lulu").model["celana"] 		= data["celana"]
 	get_node("%karakter/lulu").warna["celana"] 		= data["warna_celana"]
 	get_node("%karakter/lulu").model["sepatu"] 		= data["sepatu"]
 	get_node("%karakter/lulu").warna["sepatu"] 		= data["warna_sepatu"]
+	get_node("%karakter/lulu").atur_model()
 	get_node("%karakter/lulu").atur_warna()
 	get_node("%karakter/reno").set_process(false)
 	get_node("%karakter/reno").set_physics_process(false)
@@ -156,9 +158,11 @@ func _ready():
 	get_node("%karakter/reno").warna["rambut"] 		= data["warna_rambut"]
 	get_node("%karakter/reno").model["baju"] 		= data["baju"]
 	get_node("%karakter/reno").warna["baju"] 		= data["warna_baju"]
+	get_node("%karakter/reno").model["celana"] 		= data["celana"]
 	get_node("%karakter/reno").warna["celana"] 		= data["warna_celana"]
 	get_node("%karakter/reno").model["sepatu"] 		= data["sepatu"]
 	get_node("%karakter/reno").warna["sepatu"] 		= data["warna_sepatu"]
+	get_node("%karakter/reno").atur_model()
 	get_node("%karakter/reno").atur_warna()
 	match data["gender"]: # di dunia ini cuman ada 2 gender!
 		'P': $karakter/panel/tab/tab_personalitas/pilih_gender.select(0); _ketika_mengubah_gender_karakter(0)
@@ -196,7 +200,6 @@ func _process(delta):
 	# tampilan karakter di setelan karakter
 	if $karakter.visible:
 		_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
-		_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -360:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 360
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 360:
@@ -211,8 +214,11 @@ func _process(delta):
 				$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y,
 				-60, 60
 			)
-		$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
-		$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
+	
+	# kontrol rotasi pandangan ketika mengedit objek
+	_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
+	$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
+	$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
 	
 	# pemutar musik
 	if $pemutar_musik.visible:
@@ -581,6 +587,7 @@ func _kirim_pesan():
 func _edit_objek(jalur): 
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
+	karakter.get_node("pengamat").set("kontrol", true)
 	karakter.get_node("PlayerInput").atur_raycast(false)
 	$pengamat/kamera/rotasi_vertikal/pandangan.make_current()
 	$kontrol_sentuh/menu.visible = false
@@ -697,9 +704,11 @@ func putuskan_server(paksa = false):
 		get_node("%karakter/lulu").warna["rambut"] 		= data["warna_rambut"]
 		get_node("%karakter/lulu").model["baju"] 		= data["baju"]
 		get_node("%karakter/lulu").warna["baju"] 		= data["warna_baju"]
+		get_node("%karakter/lulu").model["celana"] 		= data["celana"]
 		get_node("%karakter/lulu").warna["celana"] 		= data["warna_celana"]
 		get_node("%karakter/lulu").model["sepatu"] 		= data["sepatu"]
 		get_node("%karakter/lulu").warna["sepatu"] 		= data["warna_sepatu"]
+		get_node("%karakter/lulu").atur_model()
 		get_node("%karakter/lulu").atur_warna()
 		get_node("%karakter/lulu").set_process(false)
 		get_node("%karakter/lulu").set_physics_process(false)
@@ -712,9 +721,11 @@ func putuskan_server(paksa = false):
 		get_node("%karakter/reno").warna["rambut"] 		= data["warna_rambut"]
 		get_node("%karakter/reno").model["baju"] 		= data["baju"]
 		get_node("%karakter/reno").warna["baju"] 		= data["warna_baju"]
+		get_node("%karakter/reno").model["celana"] 		= data["celana"]
 		get_node("%karakter/reno").warna["celana"] 		= data["warna_celana"]
 		get_node("%karakter/reno").model["sepatu"] 		= data["sepatu"]
 		get_node("%karakter/reno").warna["sepatu"] 		= data["warna_sepatu"]
+		get_node("%karakter/reno").atur_model()
 		get_node("%karakter/reno").atur_warna()
 		get_node("%karakter/reno").set_process(false)
 		get_node("%karakter/reno").set_physics_process(false)
@@ -770,7 +781,7 @@ func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
 		elif $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
 			# selama kontrol_sentuh visible, ini gak work karena _touchpad_disentuh : true, apalagi karena posisinya dibelakang kontrol_sentuh
 			_arah_gestur_tampilan_objek = arah
-		#Panku.notify("sentuh [harus false] : "+str(_touchpad_disentuh)+" -- arah_gestur_objek : "+str(_arah_gestur_tampilan_objek))
+		#Panku.notify("sentuh [harus true] : "+str($hud/daftar_properti_objek/DragPad.visible)+" -- arah_gestur_objek : "+str(_arah_gestur_tampilan_objek))
 func _ketika_berhenti_mengontrol_arah_pandangan():
 	_touchpad_disentuh = false
 	if is_instance_valid(karakter): # ketika dalam permainan
