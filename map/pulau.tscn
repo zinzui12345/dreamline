@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=16 format=3 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
 [ext_resource type="ArrayMesh" uid="uid://d0ylp0id374jd" path="res://model/detail_air.res" id="4_dha2v"]
 [ext_resource type="Shader" uid="uid://bbo1abph4arco" path="res://material/air.tres" id="4_hpns3"]
 [ext_resource type="Image" uid="uid://bllj5hw6hqn7k" path="res://map/pulau/pulau.png" id="4_kp02e"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="4_v0af0"]
+[ext_resource type="PackedScene" uid="uid://bhgg2rss6262a" path="res://tmp/mercusar.glb" id="7_cn3py"]
 [ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_batu.scn" id="7_mxxfs"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fu78a"]
@@ -9843,6 +9844,8 @@ visibility_range_fade_mode = 2
 mesh = ExtResource("4_dha2v")
 skeleton = NodePath("../..")
 
+[node name="tanah" type="Node3D" parent="permukaan"]
+
 [node name="debug" type="Control" parent="."]
 visible = false
 layout_mode = 3
@@ -9880,3 +9883,6 @@ mesh = SubResource("BoxMesh_njgt3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
 shape = SubResource("ConvexPolygonShape3D_ilglt")
+
+[node name="mercusar" parent="." instance=ExtResource("7_cn3py")]
+transform = Transform3D(128, 0, 0, 0, 128, 0, 0, 0, 128, 303, 23.379, 107.35)
