@@ -30,7 +30,7 @@ class_name Permainan
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 
-const versi = "Dreamline v1.4.4 14/04/24 alpha"
+const versi = "Dreamline v1.4.4 15/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -554,17 +554,17 @@ func _tambahkan_pemain(id: int, data_pemain):
 				"data": 		data_pemain
 			}
 		
+		# INFO : tambah info pemain (server) ke daftar pemain
+		_tambah_daftar_pemain(pemain.id_pemain, {
+			"nama"	: pemain.nama,
+			"sistem": pemain.platform_pemain,
+			"id_sys": pemain.id_sistem,
+			"gender": pemain.gender,
+			"gambar": await dunia.get_node("tampilan_karakter").dapatkan_tampilan(pemain)
+		})
+		
 		# hanya pada server
 		if id == 1:
-			# INFO : tambah info pemain (server) ke daftar pemain
-			_tambah_daftar_pemain(pemain.id_pemain, {
-				"nama"	: pemain.nama,
-				"sistem": pemain.platform_pemain,
-				"id_sys": pemain.id_sistem,
-				"gender": pemain.gender,
-				"gambar": await dunia.get_node("tampilan_karakter").dapatkan_tampilan(pemain)
-			})
-			
 			# INFO : (8a) mulai permainan
 			karakter = pemain
 			pemain._kendalikan(true)

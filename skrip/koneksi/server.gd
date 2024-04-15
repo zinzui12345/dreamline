@@ -335,7 +335,6 @@ func _pemain_terputus(id_pemain):
 			}
 		permainan._tambahkan_pemain(id_pemain, data_pemain)
 		print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
-	permainan._tambah_daftar_pemain(id_pemain, data_pemain)
 @rpc("any_peer") func _terima_suara_pemain(id_pemain : int, data_suara : PackedByteArray, ukuran_buffer : int):
 	print("pemain [%s] berbicara (%s)" % [str(id_pemain), str(ukuran_buffer)])
 	# dekompresi dan simpan data suara ke array yang kemudian dimainkan pada thread

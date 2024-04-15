@@ -76,7 +76,8 @@ func tambah_pemain(pemain):
 		"nama"	: pemain.nama,
 		"sistem": pemain.platform_pemain,
 		"id_sys": str(pemain.id_pemain),
-		"gender": pemain.gender
+		"gender": pemain.gender,
+		"gambar": await server.permainan.dunia.get_node("tampilan_karakter").dapatkan_tampilan(pemain)
 	})
 	print("spawn pemain "+str(pemain))
 
