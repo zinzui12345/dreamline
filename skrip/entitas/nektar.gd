@@ -32,9 +32,11 @@ var id_pengangkat = -1:
 			$CollisionShape3D.disabled = true
 			# otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
 			if get_node_or_null("pos_tangan_kanan") != null and server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null:
+				# FIXME : Cannot get path of node as it is not in a scene tree.
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node(get_node("pos_tangan_kanan").get_path())
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
 			if get_node_or_null("pos_tangan_kiri") != null and server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null:
+				# FIXME : Cannot get path of node as it is not in a scene tree.
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node(get_node("pos_tangan_kiri").get_path())
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
 			call("add_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
@@ -84,6 +86,13 @@ func fokus():
 func gunakan(id_pemain):
 	if id_pengangkat == id_pemain:					server.gunakan_entitas(name, "_lepas")
 	elif id_pengangkat == -1: 						server.gunakan_entitas(name, "_angkat")
+func hapus(): # ketika tampilan dihapus
+	if id_pengangkat != -1 and server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) != null:
+		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").set_target_node("")
+		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").stop()
+		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").set_target_node("")
+		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").stop()
+	queue_free()
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengangkat == multiplayer.get_unique_id() and server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)).kontrol:
 		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
@@ -125,6 +134,12 @@ func _angkat(id):
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+	# ubah pemroses pada server
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.entitas.get(name) != null:
+		server.entitas[name]["id_proses"] = id
+		server.sinkronkan_kondisi_entitas(-1, name, [["id_proses", id]])
+		server._sesuaikan_kondisi_entitas(id, name, [["id_pengangkat", id]])
+	# atur id_pengangkat
 	id_pengangkat = id
 func _lepas(id):
 	if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id)) != null:
@@ -132,6 +147,13 @@ func _lepas(id):
 	call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(true)
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# reset pemroses pada server
+		if server.entitas.get(name) != null:
+			server.entitas[name]["id_proses"] = -1
+			server.sinkronkan_kondisi_entitas(-1, name, [["id_proses", -1]])
+			server._sesuaikan_kondisi_entitas(-1, name, [["id_pengangkat", -1]])
+	# atur ulang id_pengangkat
 	id_pengangkat = -1
 func _lempar(pelempar):
 	var kekuatan = 400
@@ -150,5 +172,12 @@ func _lempar(pelempar):
 	if id_pengangkat == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/PlayerInput").atur_raycast(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# reset pemroses pada server
+		if server.entitas.get(name) != null:
+			server.entitas[name]["id_proses"] = -1
+			server.sinkronkan_kondisi_entitas(-1, name, [["id_proses", -1]])
+			server._sesuaikan_kondisi_entitas(-1, name, [["id_pengangkat", -1]])
+	# atur ulang id_pengangkat dan id_pelempar
 	id_pengangkat = -1
 	id_pelempar = pelempar

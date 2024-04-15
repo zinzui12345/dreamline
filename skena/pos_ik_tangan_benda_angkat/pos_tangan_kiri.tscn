@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://qglj4orh3gox"]
+
+[sub_resource type="GDScript" id="GDScript_psllm"]
+script/source = "extends Marker3D
+
+func _ready():
+	if get_parent().id_pengangkat != -1 and server.permainan.dunia.get_node_or_null(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\") != null:
+		server.permainan.dunia.get_node(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\").set_target_node(get_path())
+		server.permainan.dunia.get_node(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\").start()
+	set_process(false)
+"
+
+[node name="pos_tangan_kiri" type="Marker3D"]
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0, 0)
+script = SubResource("GDScript_psllm")
