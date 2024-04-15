@@ -23,7 +23,7 @@ var objek : Dictionary = {}
 var entitas : Dictionary = {} # FIXME : apa bedanya dengan objek???
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 
-const jarak_render_entitas = 10
+const jarak_render_entitas = 10 # FIXME : set ke 50
 
 # .: Timeline :.
 # frame : Int
@@ -223,7 +223,7 @@ func gunakan_entitas(nama_entitas : String, fungsi : String):
 		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
 	else:
 		rpc_id(1, "_gunakan_entitas", nama_entitas, multiplayer.get_unique_id(), fungsi)
-func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak_render_entitas = 100) -> bool:
+func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak_render_objek = 100) -> bool:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var ref_pemain : Karakter = permainan.dunia.get_node_or_null("pemain/"+str(id_pemain))
 		var ref_entitas : Node3D  = get_node_or_null(jalur_objek)
@@ -244,7 +244,7 @@ func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak
 			
 			# periksa apakah jarak pemain cukup dekat atau sudut kurang dari FOV pemain
 			if jarak_pemain <= 15: return true
-			elif jarak_pemain > (jarak_render_entitas + 5): return false
+			elif jarak_pemain > (jarak_render_objek + 5): return false
 			else: return sudut <= (ref_pemain.get_node("%pandangan").fov / 2) + 5
 		else:
 			return false
@@ -368,13 +368,14 @@ func _pemain_terputus(id_pemain):
 			# atur posisi awal entitas, ini untuk re-spawn ketika keluar dari dunia
 			# properti.append(["posisi_awal", posisi])
 			# INFO : tambahin entitas ke array pool_entitas
-			entitas["entitas_"+str(permainan.dunia.get_node("entitas").get_child_count()+1)] = {
+			entitas["entitas_"+str(entitas.size()+1)] = {
 				"jalur_instance": jalur_skena,
 				"id_proses" : -1,
 				"posisi"	: posisi,
 				"rotasi"	: rotasi,
 				"kondisi"	: properti
 			}
+			print_debug(properti)
 		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
@@ -398,6 +399,7 @@ func _pemain_terputus(id_pemain):
 			else:
 				for k in entitas[nama_entitas]["kondisi"].size():
 					if entitas[nama_entitas]["kondisi"][k][0] == kondisi_entitas[p][0]:
+						#print_debug("properti ["+nama_entitas+"] : "+kondisi_entitas[p][0]+" -> "+type_string(typeof(entitas[nama_entitas]["kondisi"][k][1]))+" << "+type_string(typeof(kondisi_entitas[p][1])))
 						entitas[nama_entitas]["kondisi"][k][1] = kondisi_entitas[p][1]
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for p in permainan.dunia.get_node("pemain").get_child_count():
