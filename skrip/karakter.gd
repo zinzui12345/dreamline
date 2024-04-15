@@ -321,6 +321,7 @@ func _atur_kendali(nilai):
 	$PlayerInput.arah_gerakan = Vector2.ZERO
 	kontrol = nilai
 func _hapus():
+	# Timeline : hapus pemain
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var frame_sekarang = server.timeline["data"]["frame"]
 		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}

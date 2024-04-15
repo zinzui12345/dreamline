@@ -400,6 +400,26 @@ func _muat_map(file_map):
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
 									# TODO : matikan visibilitas daftar pemain hingga di-sinkron
+								elif data_frame.tipe_entitas == "entitas":
+									server.timeline.trek[entitas_] = {}
+									server.timeline.entitas[entitas_] = "entitas"
+									server.call_deferred("_tambahkan_entitas", data_frame.sumber, data_frame.posisi, data_frame.rotasi, data_frame.properti)
+									# buat track animasi
+									server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
+									server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
+									server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
+									# atur track animasi
+									skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "entitas/"+str(entitas_)+":visible")
+									skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "entitas/"+str(entitas_)+":position")
+									skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "entitas/"+str(entitas_)+":rotation")
+									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
+									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
+									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
+									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
+									# atur nilai default animasi
+									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, true)
+									skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
+									skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
 							elif data_frame.tipe == "sinkron":
 								if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas_) != null:
 									if server.timeline.entitas[entitas_] == "pemain":
@@ -476,9 +496,12 @@ func _muat_map(file_map):
 																skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 																server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
 										skenario.length = waktu
+									elif server.timeline.entitas[entitas_] == "entitas":
+										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
+										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
+										skenario.length = waktu
 							elif data_frame.tipe == "hapus":
-								if server.timeline.entitas[entitas_] == "pemain": # HACK : apa nantinya harus di-cek tipenya?? bukannya tiap entitas sama-sama punya visibilitas?
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
+								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
 			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
 	thread.call_deferred("wait_to_finish")
 func _mulai_server_cli():
@@ -522,13 +545,13 @@ func _tambahkan_pemain(id: int, data_pemain):
 		
 		# Timeline : spawn pemain
 		if not server.mode_replay:
-			server.timeline[server.timeline["data"]["frame"]] = {
-				id: {
-					"tipe": 		"spawn",
-					"tipe_entitas": "pemain",
-					"sumber": 		sumber,
-					"data": 		data_pemain
-				}
+			if not server.timeline.has(server.timeline["data"]["frame"]):
+				server.timeline[server.timeline["data"]["frame"]] = {}
+			server.timeline[server.timeline["data"]["frame"]][id] = {
+				"tipe": 		"spawn",
+				"tipe_entitas": "pemain",
+				"sumber": 		sumber,
+				"data": 		data_pemain
 			}
 		
 		# hanya pada server

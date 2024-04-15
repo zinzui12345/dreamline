@@ -33,9 +33,15 @@ func proses(_waktu_delta : float):
 	pass
 # fungsi untuk menghapus entitas, menghilangkan dari dunia dan server
 func hilangkan():
-	# hapus dari dictionary entitas pada server
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# hapus dari dictionary entitas pada server
 		server.entitas.erase(name)
+		# Timeline : hapus entitas
+		var frame_sekarang = server.timeline["data"]["frame"]
+		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
+		server.timeline[frame_sekarang][name] = {
+			"tipe": "hapus"
+		}
 	# hapus instance
 	queue_free()
 

@@ -11,6 +11,18 @@ const sinkron_kondisi = [
 	["id_pengangkat", -1]
 ]
 
+# sama seperti musuh, ini di-spawn dari bunga dengan interval 2X lipat dari pencemaran
+# ini gak bisa didekati musuh (npc_jamur) tapi bisa dihancurkan oleh tembakan racunnya
+# pemain bisa mengangkat dan melempar ini dengan jarak rendah
+# ketika dilempar;
+#  jika mengenai musuh, maka musuh akan langsung mati tak peduli berapapun nyawa dan serangannya
+#  kemudian ini hancur
+# ketika mengenai pencemaran;
+#  maka nyawa pencemaran akan dikurangi dengan nyawa * 10 ditambah dengan percepatan (velocity) [jika dilempar]
+#  kemudian ini hancur
+# ketika diangkat pemain;
+#  kalau pemain diserang, kurangi nyawa nektar sampai hancur
+
 var nyawa = 70
 var id_pelempar = -1
 var id_pengangkat = -1:

@@ -365,17 +365,27 @@ func _pemain_terputus(id_pemain):
 @rpc("any_peer") func _tambahkan_entitas(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
-			# atur posisi awal entitas, ini untuk re-spawn ketika keluar dari dunia
-			# properti.append(["posisi_awal", posisi])
-			# INFO : tambahin entitas ke array pool_entitas
-			entitas["entitas_"+str(entitas.size()+1)] = {
+			var nama_entitas = "entitas_"+str(entitas.size()+1) # FIXME : gimana kalau ada entitas yang terhapus?
+			# INFO : tambahkan entitas ke array pool_entitas
+			entitas[nama_entitas] = {
 				"jalur_instance": jalur_skena,
 				"id_proses" : -1,
 				"posisi"	: posisi,
 				"rotasi"	: rotasi,
 				"kondisi"	: properti
 			}
-			print_debug(properti)
+			# Timeline : spawn entitas
+			if not server.mode_replay:
+				if not server.timeline.has(server.timeline["data"]["frame"]):
+					server.timeline[server.timeline["data"]["frame"]] = {}
+				server.timeline[server.timeline["data"]["frame"]][nama_entitas] = {
+					"tipe": 		"spawn",
+					"tipe_entitas": "entitas",
+					"sumber": 		jalur_skena,
+					"posisi":		posisi,
+					"rotasi":		rotasi,
+					"properti":		properti,
+				}
 		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
@@ -401,6 +411,16 @@ func _pemain_terputus(id_pemain):
 					if entitas[nama_entitas]["kondisi"][k][0] == kondisi_entitas[p][0]:
 						#print_debug("properti ["+nama_entitas+"] : "+kondisi_entitas[p][0]+" -> "+type_string(typeof(entitas[nama_entitas]["kondisi"][k][1]))+" << "+type_string(typeof(kondisi_entitas[p][1])))
 						entitas[nama_entitas]["kondisi"][k][1] = kondisi_entitas[p][1]
+		# Timeline : sinkronkan entitas (rekam)
+		if not server.mode_replay:
+			if not server.timeline.has(server.timeline["data"]["frame"]):
+				server.timeline[server.timeline["data"]["frame"]] = {}
+			server.timeline[server.timeline["data"]["frame"]][nama_entitas] = {
+				"tipe": 		"sinkron",
+				"posisi":		entitas[nama_entitas]["posisi"],
+				"rotasi":		entitas[nama_entitas]["rotasi"],
+				"properti":		entitas[nama_entitas]["kondisi"],
+			}
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for p in permainan.dunia.get_node("pemain").get_child_count():
 			if permainan.dunia.get_node("pemain").get_child(p).id_pemain != id_pengatur:
