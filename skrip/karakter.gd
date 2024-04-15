@@ -250,10 +250,8 @@ func atur_warna():
 						if get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f") != null\
 						 and id_mtl[mtl] < get_node_or_null("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").mesh.get_surface_count():
 							get_node("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").set_surface_override_material(id_mtl[mtl], tmp_mtl)
-							#if get_parent().get_path() == server.permainan.dunia.get_node("pemain").get_path():
-							#	get_node("%GeneralSkeleton/"+jlr_mtl+"/"+jlr_mtl+"_f").mesh.surface_set_material(id_mtl[mtl], null)
-						#if get_parent().get_path() == server.permainan.dunia.get_node("pemain").get_path():
-							#get_node("%GeneralSkeleton/"+jlr_mtl).mesh.surface_set_material(id_mtl[mtl], null)
+						if jlr_mtl == "badan" and id_mtl[mtl] < get_node_or_null("%GeneralSkeleton/tangan").mesh.get_surface_count():
+							get_node("%GeneralSkeleton/tangan").set_surface_override_material(id_mtl[mtl], tmp_mtl)
 					if Konfigurasi.shader_karakter or tmp_mtl is ShaderMaterial:
 						if indeks_material[mt] == "rambut_":
 							tmp_mtl.set("shader_parameter/_Color", warna["rambut"])
