@@ -33,7 +33,7 @@ func dapatkan_tampilan(karakter : Karakter) -> Image:
 		#set_physics_process(false)
 		visible = false
 		target_karakter = null
-		Panku.notify("mengatur gambar ikon karakter")
+		#Panku.notify("mengatur gambar ikon karakter")
 		return hasil
 	else:
 		return Image.new()
