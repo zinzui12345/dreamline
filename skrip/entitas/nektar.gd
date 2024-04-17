@@ -76,10 +76,13 @@ func proses(_waktu_delta : float):
 			# jatuhkan jika pengangkatnya menjadi ragdoll
 			if pengangkat._ragdoll:
 				server.gunakan_entitas(name, "_lepas")
-	elif id_pengangkat != -1 and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+	elif id_pengangkat != -1 and id_proses == client.id_koneksi:
 		# kalo pengangkatnya terputus, lepas
 		if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) == null:
-			server._gunakan_entitas(name, 1, "_lepas")
+			if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+				server._gunakan_entitas(name, -1, "_lepas")
+			else:
+				server.rpc("_gunakan_entitas", name, 1, "_lepas")
 
 func fokus():
 	server.permainan.set("tombol_aksi_2", "angkat_sesuatu")
@@ -130,31 +133,32 @@ func _hancur(): # ketika hancur (musnah)
 
 func _angkat(id):
 	# cek id_pengangkat dengan client.id_koneksi, kalau pemain utama, jangan non-aktifkan visibilitas tombol aksi_2, non-aktifkan raycast pemain, begitupula pada _lepas()
-	if id_pengangkat == client.id_koneksi:
+	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-	# ubah pemroses pada server
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.entitas.get(name) != null:
-		server.entitas[name]["id_proses"] = id
-		server.sinkronkan_kondisi_entitas(-1, name, [["id_proses", id]])
-		server._sesuaikan_kondisi_entitas(id, name, [["id_pengangkat", id]])
-	# atur id_pengangkat
+		
+		# ubah pemroses pada server
+		var tmp_kondisi = [["id_proses", id], ["id_pengangkat", id]]
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
+		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+	# atur id_pengangkat dan id_proses
 	id_pengangkat = id
+	id_proses = id
 func _lepas(id):
 	if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id)) != null:
 		call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 	call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(true)
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		
 		# reset pemroses pada server
-		if server.entitas.get(name) != null:
-			server.entitas[name]["id_proses"] = -1
-			server.sinkronkan_kondisi_entitas(-1, name, [["id_proses", -1]])
-			server._sesuaikan_kondisi_entitas(-1, name, [["id_pengangkat", -1]])
-	# atur ulang id_pengangkat
+		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
+		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+	# atur ulang id_pengangkat dan id_proses
 	id_pengangkat = -1
+	id_proses = -1
 func _lempar(pelempar):
 	var kekuatan = 400
 	if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) != null:
@@ -168,16 +172,19 @@ func _lempar(pelempar):
 			kekuatan = kekuatan * server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)).arah_gerakan.y
 			$halangan_navigasi.avoidance_enabled = false
 	var gaya : Vector3 = Vector3(0, 0, kekuatan).rotated(Vector3.LEFT, rotation.x)
+	if server.permainan.dunia.get_node("pemain").get_node_or_null(str(pelempar)) != null:
+		call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(pelempar)))
 	call("apply_central_force", gaya.rotated(Vector3.UP, rotation.y))
 	if id_pengangkat == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/PlayerInput").atur_raycast(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		
 		# reset pemroses pada server
-		if server.entitas.get(name) != null:
-			server.entitas[name]["id_proses"] = -1
-			server.sinkronkan_kondisi_entitas(-1, name, [["id_proses", -1]])
-			server._sesuaikan_kondisi_entitas(-1, name, [["id_pengangkat", -1]])
-	# atur ulang id_pengangkat dan id_pelempar
+		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
+		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+	# atur ulang id_pengangkat dan id_proses
 	id_pengangkat = -1
+	id_proses = -1
+	# atur id_pelempar
 	id_pelempar = pelempar
