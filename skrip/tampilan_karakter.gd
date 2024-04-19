@@ -29,7 +29,7 @@ func dapatkan_tampilan(karakter : Karakter) -> Image:
 		#$SubViewport.get_texture().get_image().save_png("user://uji_pp.png")
 		$SubViewport/arah/latar.visible = false
 		$lantai/CollisionShape3D.disabled = true
-		if target_karakter.id_pemain == client.id_koneksi: get_tree().paused = false
+		if target_karakter.id_pemain == client.id_koneksi: get_tree().paused = false # FIXME : bug kalo pemain bergabung secara bersamaan target_karakter : Nil
 		#set_physics_process(false)
 		visible = false
 		target_karakter = null

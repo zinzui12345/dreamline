@@ -1,4 +1,4 @@
-[gd_scene load_steps=266 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=267 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -20,7 +20,6 @@
 [ext_resource type="Texture2D" uid="uid://drpqx4dyihtlx" path="res://ui/ikon/ikon_posisi_objek.svg" id="6_eofx6"]
 [ext_resource type="Texture2D" uid="uid://dbltu38krgfjg" path="res://ui/ikon/ikon_tombol_setelan.svg" id="6_ps5t2"]
 [ext_resource type="Texture2D" uid="uid://bilfr77a8syp3" path="res://ui/frekuensi-mikrofon.svg" id="6_tsv27"]
-[ext_resource type="Texture2D" uid="uid://d4k6wdhe83ase" path="res://ui/ikon/ikon_entitas_selis.png" id="6_v16kx"]
 [ext_resource type="Texture2D" uid="uid://bc0g7tkpje5k0" path="res://ui/ikon/ikon_tombol_server.svg" id="7_ayqde"]
 [ext_resource type="Texture2D" uid="uid://u5qa5utnccrr" path="res://ui/ikon/ikon_rotasi_objek.svg" id="7_o72dh"]
 [ext_resource type="Texture2D" uid="uid://7v57f8qv74uo" path="res://ui/ikon/ikon_tombol_menu.svg" id="8_gqe5w"]
@@ -73,6 +72,8 @@
 [ext_resource type="Texture2D" uid="uid://rbbpim0jwhdx" path="res://ui/ikon/ikon_lampu.svg" id="66_j76b2"]
 [ext_resource type="Texture2D" uid="uid://b5frug6id5d0s" path="res://ui/ikon/ikon_analog.svg" id="67_5s073"]
 [ext_resource type="Texture2D" uid="uid://bowie8rndsrl3" path="res://ui/ikon/ikon_d-pad.svg" id="68_a41ut"]
+[ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
+[ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
@@ -1615,7 +1616,7 @@ corner_radius_bottom_left = 10
 [sub_resource type="Animation" id="Animation_s2c4a"]
 resource_name = "tampilkan"
 length = 0.4
-step = 0.01
+step = 0.005
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -1623,7 +1624,7 @@ tracks/0/path = NodePath("panel:anchor_top")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4),
+"times": PackedFloat32Array(0, 0.205, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0]
@@ -1636,7 +1637,7 @@ tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "clips": PackedStringArray("lipat"),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0.005)
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -4010,6 +4011,62 @@ libraries = {
 "": SubResource("AnimationLibrary_ss8fo")
 }
 
+[node name="bantuan_input" type="VBoxContainer" parent="hud"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.173
+anchor_right = 0.984
+anchor_bottom = 0.4
+offset_left = -6.10352e-05
+offset_top = 0.199997
+offset_right = 0.383972
+offset_bottom = -72.0
+
+[node name="aksi1" type="TextureRect" parent="hud/bantuan_input"]
+visible = false
+layout_mode = 2
+texture = ExtResource("73_p1pas")
+stretch_mode = 4
+script = ExtResource("73_6hd07")
+action_name = &"aksi1"
+metadata/_edit_use_anchors_ = true
+
+[node name="teks" type="Label" parent="hud/bantuan_input/aksi1"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -24.0
+offset_right = 240.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 21
+text = "dorong"
+vertical_alignment = 1
+
+[node name="aksi2" type="TextureRect" parent="hud/bantuan_input"]
+visible = false
+layout_mode = 2
+texture = ExtResource("73_p1pas")
+stretch_mode = 4
+script = ExtResource("73_6hd07")
+action_name = &"aksi2"
+metadata/_edit_use_anchors_ = true
+
+[node name="teks" type="Label" parent="hud/bantuan_input/aksi2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -24.0
+offset_right = 240.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 21
+text = "dorong"
+vertical_alignment = 1
+
 [node name="timeline" type="Panel" parent="hud"]
 unique_name_in_owner = true
 visible = false
@@ -4362,11 +4419,6 @@ columns = 2
 [node name="placeholder_entitas" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
 
-[node name="selis" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
-layout_mode = 2
-texture_normal = ExtResource("6_v16kx")
-metadata/jalur_objek = "res://skena/entitas/selis.tscn"
-
 [node name="tutup" type="TextureButton" parent="daftar_objek"]
 visible = false
 layout_mode = 1
@@ -4388,6 +4440,15 @@ texture_normal = ExtResource("32_clll1")
 texture_pressed = ExtResource("33_ovk4l")
 shape = SubResource("CircleShape2D_2jlpn")
 action = "aksi2"
+
+[node name="dialog" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="menu_jeda" type="Control" parent="."]
 visible = false
@@ -6272,6 +6333,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
