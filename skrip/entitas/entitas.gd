@@ -2,7 +2,10 @@
 extends Node3D
 class_name entitas
 
-var id_proses = -1			# id peer/pemain yang memproses entitas ini
+var id_proses = -1:			# id peer/pemain yang memproses entitas ini
+	set(id):
+		atur_pemroses(id)
+		id_proses = id
 var cek_kondisi = {}		# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 #const sinkron_kondisi = []	# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
 #const jalur_instance = ""	# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
@@ -30,6 +33,9 @@ func mulai():
 	pass
 # fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
 func proses(_waktu_delta : float):
+	pass
+# fungsi yang akan dipanggil ketika id_proses diubah
+func atur_pemroses(_id_pemroses : int):
 	pass
 # fungsi untuk menghapus entitas, menghilangkan dari dunia dan server
 func hilangkan():

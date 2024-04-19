@@ -53,7 +53,7 @@ naming/default_signal_callback_to_self_name="_ketika_{signal_name}"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/anthonyec.camera_preview/plugin.cfg", "res://addons/compass/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/panku_console/plugin.cfg", "res://addons/vrm/plugin.cfg", "res://addons/wigglebone/plugin.cfg")
+enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/anthonyec.camera_preview/plugin.cfg", "res://addons/awesome_input_icons/plugin.cfg", "res://addons/compass/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/panku_console/plugin.cfg", "res://addons/vrm/plugin.cfg", "res://addons/wigglebone/plugin.cfg")
 
 [file_customization]
 
@@ -241,7 +241,7 @@ pointing/emulate_mouse_from_touch.mobile=true
 [internationalization]
 
 locale/translations=PackedStringArray("res://ui/bahasa/translasi.en.translation", "res://ui/bahasa/translasi.id.translation")
-locale/translations_pot_files=PackedStringArray("res://ui/dialog/test.dialogue")
+locale/translations_pot_files=PackedStringArray("res://ui/dialog/test.dialogue", "res://ui/dialog/intro.dialogue")
 
 [layer_names]
 

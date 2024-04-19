@@ -65,8 +65,8 @@ const jarak_render_entitas = 10 # FIXME : set ke 50
 const POSISI_SPAWN_RANDOM := 5.0
 
 func _process(_delta):
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		if permainan != null and permainan.dunia != null:
+	if permainan != null and permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if permainan.dunia != null:
 			# atur frame timeline
 			if !mode_replay:
 				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
