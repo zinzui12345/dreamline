@@ -5,32 +5,33 @@ class_name Permainan
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.6 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.3.6 - Implementasi Timeline
-# 09 Agu 2023 | 1.3.7 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 09 Agu 2023 | 1.3.6 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.3.7 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.3.7 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 | 1.3.8 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 15 Agu 2023 | 1.3.7 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.3.8 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.3.8 - Implementasi shader karakter menggunakan MToon
-# 21 Sep 2023 | 1.3.9 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 21 Sep 2023 | 1.3.8 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.3.9 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.3.9 - Penambahan Text Chat
-# 09 Okt 2023 | 1.4.0 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 09 Okt 2023 | 1.3.9 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.4.0 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.0 - Tombol Sentuh Fleksibel
-# 14 Okt 2023 | 1.4.1 - Penambahan Mode Edit Objek
+# 14 Okt 2023 | 1.4.0 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.1 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.1 - Perbaikan kesalahan kontrol sentuh
-# 08 Nov 2023 | 1.4.2 - Implementasi Koneksi Publik menggunakan UPnP
+# 08 Nov 2023 | 1.4.1 - Implementasi Koneksi Publik menggunakan UPnP
 # 17 Nov 2023 | 1.4.2 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.2 - Penambahan kemampuan penghindaran npc terhadap musuhnya
-# 10 Des 2023 | 1.4.3 - Perbaikan ragdoll karakter
+# 10 Des 2023 | 1.4.2 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.3 - Tampilan bar nyawa npc_ai
 # 04 Jan 2024 | 1.4.3 - Implementasi GPU Instancing pada Vegetasi Terrain
-# 14 Jan 2024 | 1.4.4 - Penambahan Editor Kode
+# 14 Jan 2024 | 1.4.3 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
+# 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 15/04/24 alpha"
+const versi = "Dreamline v1.4.4 19/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -195,6 +196,8 @@ func _ready():
 		Konfigurasi.mode_kontrol_sentuh = true
 		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
 		dunia.get_node("matahari").directional_shadow_max_distance /= 2
+	# setup dialog
+	DialogueManager.dialogue_ended.connect(tutup_dialog)
 	# INFO : (3) tampilkan menu utama
 	$menu_utama/animasi.play("tampilkan")
 	$menu_utama/menu/Panel/buat_server.grab_focus()
@@ -874,6 +877,7 @@ func _sembunyikan_antarmuka_permainan():
 	$kontrol_sentuh/menu.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = false
 	if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
+	if $dialog.get_node_or_null("ExampleBalloon") != null: $dialog.get_node("ExampleBalloon").queue_free()
 	jeda = false
 func _tampilkan_pemutar_musik():
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
@@ -1457,6 +1461,19 @@ func tampilkan_editor_kode(nilai):
 		#$menu_utama/animasi.play("perluas")
 		
 		$editor_kode/animasi.play("sembunyikan")
+func tampilkan_dialog(file_dialog : DialogueResource):
+	var penampil_dialog: Node = load("res://ui/dialog.tscn").instantiate()
+	$dialog.add_child(penampil_dialog)
+	penampil_dialog.start(file_dialog, "0", [])
+	if is_instance_valid(karakter):
+		karakter._atur_kendali(false)
+		karakter.get_node("pengamat").set("kontrol", true)
+		karakter.get_node("PlayerInput").atur_raycast(false)
+func tutup_dialog(_file_dialog):
+	if is_instance_valid(karakter):
+		if Input.is_action_pressed("lompat"): Input.action_release("lompat")
+		karakter._kendalikan(true)
+		karakter.get_node("PlayerInput").atur_raycast(true)
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama
@@ -1555,6 +1572,8 @@ func _jeda():
 		if $pengamat/kamera/rotasi_vertikal/pandangan.current: pass
 		else:
 			if memasang_objek: _tutup_daftar_objek(true)
+			if $dialog.get_node_or_null("ExampleBalloon") != null:
+				$dialog.get_node("ExampleBalloon").fade_out()
 			karakter._atur_kendali(false)
 		$mode_bermain.visible = false
 		$kontrol_sentuh/menu.visible = false
@@ -1566,6 +1585,8 @@ func _lanjutkan():
 	if $setelan.visible: _sembunyikan_setelan_permainan()
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if is_instance_valid(edit_objek): pass
+		elif $dialog.get_node_or_null("ExampleBalloon") != null:
+			$dialog.get_node("ExampleBalloon").fade_in()
 		else: karakter._atur_kendali(true)
 		$mode_bermain.visible = true
 		$kontrol_sentuh/menu.visible = true
