@@ -107,3 +107,9 @@ tc6ded773c4,Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kam
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
+%putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
+%lanjutkan%,Lanjutkan,Continue
+%tinggalkan_permainan,Ini akan menutup permainan dan mengalihkan ke situs eksternal:\n%s\nLanjutkan?,This will close the game and redirect to: %s\nContinue?
+,,
+# placeholder,,
+@author,ProgrammerIndonesia44,ProgrammerIndonesia44
