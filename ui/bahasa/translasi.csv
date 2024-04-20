@@ -95,15 +95,15 @@ INPUTSPASI,spasi,space
 INPUTHAPUS,hapus,delete
 %inputperintah%,Masukkan perintah disini...,Input expression here...
 ,,
+# aksi,,
+%edit,Edit,Edit
+%angkat,Angkat,Pickup
+%jatuhkan,Jatuhkan,Drop
+%bantuan,Bantuan,Help
+,,
 # dialog,,
 t5d0f95face,Selamat datang di dreamline!,Welcome to dreamline!
 tc6ded773c4,Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa bermain bersama siapapun dengan perangkat apapun,This is a Sandbox [b]Multiplayer Cross-Platform[/b] game where you can play with anyone with any platform
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
-%putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
-%lanjutkan%,Lanjutkan,Continue
-%tinggalkan_permainan,Ini akan menutup permainan dan mengalihkan ke situs eksternal:\n%s\nLanjutkan?,This will close the game and redirect to: %s\nContinue?
-,,
-# placeholder,,
-@author,ProgrammerIndonesia44,ProgrammerIndonesia44

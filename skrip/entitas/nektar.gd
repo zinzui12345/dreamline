@@ -136,7 +136,9 @@ func _angkat(id):
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
+		server.permainan.set("tombol_aksi_2", "jatuhkan_sesuatu")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+		server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 		
 		# ubah pemroses pada server
 		var tmp_kondisi = [["id_proses", id], ["id_pengangkat", id]]
@@ -151,6 +153,8 @@ func _lepas(id):
 	call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(true)
+		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+		server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]

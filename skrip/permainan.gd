@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 19/04/24 alpha"
+const versi = "Dreamline v1.4.4 20/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -82,6 +82,11 @@ var tombol_aksi_2 = "angkat_sesuatu" :
 		if ikon != tombol_aksi_2:
 			get_node("kontrol_sentuh/aksi_2").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_2 = ikon
+		match ikon:
+			"edit_objek":		$hud/bantuan_input/aksi2/teks.text = "%edit"
+			"angkat_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%angkat"
+			"jatuhkan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
+			"tanyakan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%bantuan"
 var tombol_aksi_3 = "berlari" :
 	set(ikon):
 		if ikon != tombol_aksi_3:
@@ -194,6 +199,8 @@ func _ready():
 	if OS.get_distribution_name() == "Android":
 		# aktifkan otomatis kontrol sentuh di android
 		Konfigurasi.mode_kontrol_sentuh = true
+		# non-aktifkan bantuan tombol aksi
+		$hud/bantuan_input.visible = false
 		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
 		dunia.get_node("matahari").directional_shadow_max_distance /= 2
 	# setup dialog

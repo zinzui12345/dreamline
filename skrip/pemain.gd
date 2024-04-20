@@ -284,6 +284,7 @@ func _physics_process(delta):
 					if objek_target.has_method("fokus"): objek_target.fokus()
 					if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
 			if !server.permainan.dunia.get_node("bar_nyawa").visible:
 				server.permainan.dunia.get_node("bar_nyawa").visible = true
@@ -296,6 +297,7 @@ func _physics_process(delta):
 			server.permainan.dunia.get_node("bar_nyawa").value = objek_target.nyawa
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 		match karakter.peran:
 			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
 				if !server.permainan.dunia.get_node("kursor_objek").visible:
@@ -305,6 +307,7 @@ func _physics_process(delta):
 		objek_target = null
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 		if server.permainan.dunia.get_node("kursor_objek").visible:
 			server.permainan.dunia.get_node("kursor_objek").visible = false
 		if server.permainan.dunia.get_node("bar_nyawa").visible:

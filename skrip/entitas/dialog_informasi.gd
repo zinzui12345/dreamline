@@ -29,6 +29,7 @@ var properti_dialog : Dictionary :
 func fokus():
 	if not $AnimationPlayer.is_playing():
 		$AnimationPlayer.play("fokus")
+	server.permainan.set("tombol_aksi_2", "tanyakan_sesuatu")
 func gunakan(id_pengguna):
 	if id_pengguna == client.id_koneksi:
 		if dialog != null:
