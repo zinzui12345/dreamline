@@ -12,7 +12,7 @@ func _input(_event):
 	if get_node(\"%pandangan\").current:
 		if is_instance_valid(server.permainan.edit_objek):
 			if Input.is_action_just_pressed(\"aksi2\"):		# berhenti mengedit
-				var jalur_node = server.permainan.edit_objek.get_path()
+				var jalur_node = server.permainan.edit_objek.name
 				await get_tree().create_timer(0.1).timeout
 				server.edit_objek(jalur_node, false)
 func _process(delta):

@@ -116,8 +116,6 @@ func tambah_pemain(pemain):
 @rpc("authority") func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		permainan._edit_objek(jalur_objek);
-		if permainan.edit_objek is VehicleBody3D: pass
-		else: server.atur_properti_objek(permainan.edit_objek.get_path(), "freeze", true)
 		Panku.notify("mengedit objek : "+jalur_objek)
 	else:
 		permainan._berhenti_mengedit_objek();

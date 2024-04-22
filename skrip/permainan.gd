@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 20/04/24 alpha"
+const versi = "Dreamline v1.4.4 22/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -257,7 +257,7 @@ func _process(delta):
 		if Input.is_action_just_pressed("ui_cancel"):
 			if pesan: _tampilkan_input_pesan()
 			elif $setelan.visible: _sembunyikan_setelan_permainan()
-			elif edit_objek != null: _berhenti_mengedit_objek()
+			elif edit_objek != null: server.edit_objek(edit_objek.name, false)
 			elif !jeda: _jeda()
 			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
@@ -309,7 +309,7 @@ func _notification(what):
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if is_instance_valid(karakter): # ketika dalam permainan
 			if pesan: _tampilkan_input_pesan()
-			elif edit_objek != null: _berhenti_mengedit_objek()
+			elif edit_objek != null: server.edit_objek(edit_objek.name, false)
 			elif !jeda: _jeda()
 			else: _lanjutkan()
 		else: _kembali()
@@ -379,8 +379,6 @@ func _muat_map(file_map):
 		if not server.mode_replay:
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
-			# INFO : (5b3) request objek dari server
-			server.call_deferred("rpc_id", 1, "_kirim_objek_ke_pemain", client.id_koneksi)
 			#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
 		else:
 			# 04/02/24 :: ubah nilai properti menjadi keyframe animasi
@@ -642,7 +640,7 @@ func _edit_objek(jalur):
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "tutup_panel_objek"
 	_touchpad_disentuh = false
-	# dapetin properti lain objek; mis. warna, kondisi
+	# TODO : dapetin properti kustom objek; mis. warna, kondisi
 	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
 	if edit_objek.get("warna_1") != null:
 		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
@@ -1251,31 +1249,31 @@ func _ketika_translasi_x_objek_diubah(nilai):
 		if edit_objek != null:
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:x", nilai)
+				edit_objek.set_indexed("global_transform:origin:x", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:x", nilai)
+				edit_objek.set_indexed("rotation_degrees:x", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "scale:x", nilai)
+				edit_objek.set_indexed("scale:x", nilai)
 func _ketika_translasi_y_objek_diubah(nilai):
 	if $hud/daftar_properti_objek/panel/translasi_y.editable:
 		if edit_objek != null:
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:y", nilai)
+				edit_objek.set_indexed("global_transform:origin:y", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:y", nilai)
+				edit_objek.set_indexed("rotation_degrees:y", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "scale:y", nilai)
+				edit_objek.set_indexed("scale:y", nilai)
 func _ketika_translasi_z_objek_diubah(nilai):
 	if $hud/daftar_properti_objek/panel/translasi_z.editable:
 		if edit_objek != null:
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "global_transform:origin:z", nilai)
+				edit_objek.set_indexed("global_transform:origin:z", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "rotation_degrees:z", nilai)
+				edit_objek.set_indexed("rotation_degrees:z", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-				server.atur_properti_objek(edit_objek.get_path(), "scale:z", nilai)
+				edit_objek.set_indexed("scale:z", nilai)
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi

@@ -181,10 +181,10 @@ func _process(delta):
 					Permainan.PERAN_KARAKTER.Arsitek:
 						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
 						elif objek_target.has_method("gunakan") or objek_target.is_in_group("dapat_diedit"):
-							server.edit_objek(objek_target.get_path(), true)
+							server.edit_objek(objek_target.name, true)
 						elif objek_target.name == "bidang_raycast" and \
 						 objek_target.get_parent().has_method("gunakan"):
-							server.edit_objek(objek_target.get_parent().get_path(), true)
+							server.edit_objek(objek_target.get_parent().name, true)
 					_:
 						if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
 						elif objek_target.name == "bidang_raycast" and \

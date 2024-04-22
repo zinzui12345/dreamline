@@ -19,9 +19,8 @@ var pemain : Dictionary
 var timeline : Dictionary = {}
 var mode_replay = false
 var file_replay = "user://rekaman.dreamline_replay"
-var objek : Dictionary = {}
 var jumlah_entitas = 0
-var pool_entitas : Dictionary = {} # FIXME : apa bedanya dengan objek???
+var pool_entitas : Dictionary = {}
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 
 const jarak_render_entitas = 10 # FIXME : set ke 50
@@ -39,28 +38,28 @@ const jarak_render_entitas = 10 # FIXME : set ke 50
 # timeline[12][1] = { "hapus" }
 
 # .: Objek :.
-# objek[jalur]["pemilik"] = id_pengubah
-# objek[jalur]["sumber"] = jalur sumber skena (hanya jika node tidak ada di dunia)
-# objek[jalur][nama_properti] = nilai_properti
-# objek{
-# 	"/root/dunia/entitas/entitas_1" : {
-#		"pemilik": 0,
+# pool_entitas[nama_entitas]["id_pengubah"] = id_pengubah
+# pool_entitas[nama_entitas][nama_properti] = nilai_properti
+# pool_entitas{
+# 	"entitas_1" : {
+#		"id_proses": -1,
+#		"id_pengubah": 0,
 # 		"posisi" : Vector3i(988, 4, 75),
-# 		"rotasi" : Vector3(25.7, 90, 6)
+# 		"rotasi" : Vector3(25.7, 90, 6),
+#		"kondisi": {}
 # 	},
-# 	"/root/dunia/entitas/entitas_2" : {
-#		"pemilik": 0,
+# 	"entitas_2" : {
+#		"id_proses": -1,
+#		"id_pengubah": 0,
 # 		"posisi" : Vector3i(64, 443, 8),
-# 		"rotasi" : Vector3(11.9, 88, 0)
+# 		"rotasi" : Vector3(11.9, 88, 0),
+#		"kondisi": {}
 # 	}
 # }
-# data objek{} akan dikirim oleh server ke pemain yang bergabung
-# kalau objek[jalur] belum ada, maka buat dengan pemilik pengubahnya
-# kalau objek[jalur]["pemilik"] == 0, ubah objek[jalur]["pemilik"] menjadi id_pengubah
-# kalau objek[jalur]["pemilik"] == id_pengubah, maka pengubah mendapat akses untuk mengatur properti
-# ketika pengubah berhenti mengedit objek, atur objek[jalur]["pemilik"] menjadi 0
-# terapkan nilai atur_properti() kalau objek[jalur]["pemilik"] == id_pengubah
-# atur_properti_objek() memanggil _edit_properti_objek() di server, kemudian server memanggil _atur_properti_objek() ke semua peer
+# kalau pool_entitas[nama_entitas]["id_pengubah"] == 0, ubah pool_entitas[nama_entitas]["id_pengubah"] menjadi id_pengubah
+# kalau pool_entitas[nama_entitas]["id_pengubah"] == id_pengubah, maka pengubah mendapat akses untuk mengatur properti
+# ketika pengubah berhenti mengedit pool_entitas, atur pool_entitas[nama_entitas]["id_pengubah"] menjadi 0
+# terapkan nilai atur_properti() kalau pool_entitas[nama_entitas]["id_pengubah"] == id_pengubah
 
 const POSISI_SPAWN_RANDOM := 5.0
 
@@ -91,18 +90,20 @@ func _process(_delta):
 								cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] = "hapus"
 							# jika jarak pemain lebih dari jarak render entitas
 							if jarak_pemain > jarak_render_entitas:
-								# cek jika id_proses telah diatur dan pemain saat ini adalah pemroses
-								if pool_entitas[nama_entitas]["id_proses"] != -1 and pool_entitas[nama_entitas]["id_proses"] == b_pemain.id_pemain:
-									# rpc atur -1 sebagai pemroses entitas ke semua peer
-									sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
-									# atur id_proses dengan -1
-									pool_entitas[nama_entitas]["id_proses"] = -1
-								# hanya hapus jika pool telah di-spawn
-								if cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] == "spawn":
-									# rpc hapus pool_entitas
-									hapus_pool_entitas(b_pemain.id_pemain, nama_entitas)
-									# ubah visibilitas pool agar jangan rpc lagi
-									cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] = "hapus"
+								# pastikan pemain saat ini tidak mengubah entitas
+								if pool_entitas[nama_entitas]["id_pengubah"] != b_pemain.id_pemain:
+									# cek jika id_proses telah diatur dan pemain saat ini adalah pemroses
+									if pool_entitas[nama_entitas]["id_proses"] != -1 and pool_entitas[nama_entitas]["id_proses"] == b_pemain.id_pemain:
+										# rpc atur -1 sebagai pemroses entitas ke semua peer
+										sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
+										# atur id_proses dengan -1
+										pool_entitas[nama_entitas]["id_proses"] = -1
+									# hanya hapus jika pool telah di-spawn
+									if cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] == "spawn":
+										# rpc hapus pool_entitas
+										hapus_pool_entitas(b_pemain.id_pemain, nama_entitas)
+										# ubah visibilitas pool agar jangan rpc lagi
+										cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] = "hapus"
 							# jika jarak pemain kurang dari jarak render entitas
 							else:
 								# hanya spawn jika pool belum di-spawn
@@ -250,16 +251,11 @@ func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak
 		else:
 			return false
 	else:	return false
-func edit_objek(jalur_objek : String, fungsi : bool):
+func edit_objek(nama_objek : String, fungsi : bool):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		_edit_objek(jalur_objek, multiplayer.get_unique_id(), fungsi)
+		_edit_objek(nama_objek, multiplayer.get_unique_id(), fungsi)
 	else:
-		rpc_id(1, "_edit_objek", jalur_objek, multiplayer.get_unique_id(), fungsi)
-func atur_properti_objek(jalur_objek : String, nama_properti : String, nilai):
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		_edit_properti_objek(jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
-	else:
-		rpc_id(1, "_edit_properti_objek", jalur_objek, multiplayer.get_unique_id(), nama_properti, nilai)
+		rpc_id(1, "_edit_objek", nama_objek, multiplayer.get_unique_id(), fungsi)
 func terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
 	#if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 	#	_terapkan_percepatan_objek(jalur_objek, nilai_percepatan)
@@ -271,12 +267,9 @@ func fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var t_objek = get_node_or_null(jalur_objek)
 		if t_objek != null: rpc("_fungsikan_objek", jalur_objek, nama_fungsi, parameter)
-func sinkronkan_properti_objek(id_klien, jalur_objek, nama_properti, nilai_properti):
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var t_objek = get_node_or_null(jalur_objek)
-		if t_objek != null: rpc_id(id_klien, "_atur_properti_objek", jalur_objek, nama_properti, nilai_properti)
 func hapus_objek(jalur_objek):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# TODO : hapus dari pool_entitas kalo ada!
 		_hapus_objek(jalur_objek)
 		rpc("_hapus_objek", jalur_objek)
 
@@ -371,6 +364,7 @@ func _pemain_terputus(id_pemain):
 			pool_entitas[nama_entitas] = {
 				"jalur_instance": jalur_skena,
 				"id_proses" : -1,
+				"id_pengubah": 0,
 				"posisi"	: posisi,
 				"rotasi"	: rotasi,
 				"kondisi"	: properti
@@ -454,44 +448,37 @@ func _pemain_terputus(id_pemain):
 				permainan.dunia.get_node("entitas").get_node(nama_entitas).hapus()
 			else:
 				permainan.dunia.get_node("entitas").get_node(nama_entitas).queue_free()
-@rpc("any_peer") func _kirim_objek_ke_pemain(id_pemain):
-	# INFO (5b4) kirim objek ke pemain 
-	client.rpc_id(id_pemain, "dapatkan_objek", objek)
-@rpc("any_peer") func _edit_objek(jalur_objek, id_pengubah, fungsi):
+@rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var t_objek = get_node_or_null(jalur_objek)
-		if t_objek != null:
-			if objek.get(jalur_objek) != null:
-				if objek[jalur_objek]["pemilik"] == id_pengubah:
-					if !fungsi:
-						_edit_properti_objek(jalur_objek, id_pengubah, "freeze", false) # FIXME : instance_set_transform: Condition "!v.is_finite()" is true. [cuma di kendaraan (VehicleBody3D) yang ada roda-nya (VehicleWheel3D)]
-						# solusi sementara : client.gd ==> @rpc func edit_objek(fungsi : bool, jalur_objek = ""):
-						#						if fungsi:
-						#							server.permainan._edit_objek(jalur_objek);
-						#							if permainan.edit_objek is VehicleBody3D: pass
-						objek[jalur_objek]["pemilik"] = 0
-				elif objek[jalur_objek]["pemilik"] == 0:
-					if fungsi: objek[jalur_objek]["pemilik"] = id_pengubah
-				else: return
-			elif fungsi:
-				objek[jalur_objek] = { "pemilik": id_pengubah }
-		if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek)
-		else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek)
-@rpc("any_peer") func _edit_properti_objek(jalur_objek, id_pengubah, nama_properti, nilai_properti):
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var t_objek = get_node_or_null(jalur_objek)
-		if t_objek != null:
-			if objek[jalur_objek]["pemilik"] == id_pengubah:
-				_atur_properti_objek(jalur_objek, nama_properti, nilai_properti)
-				rpc("_atur_properti_objek", jalur_objek, nama_properti, nilai_properti)
-				objek[jalur_objek][nama_properti] = nilai_properti
-@rpc("any_peer") func _atur_properti_objek(jalur_objek, nama_properti, nilai_properti):
-	var t_objek = get_node_or_null(jalur_objek)
-	if t_objek != null and t_objek.get_indexed(nama_properti) != null:
-		if nama_properti == "freeze":
-			t_objek.set("angular_velocity", Vector3.ZERO)
-			t_objek.set("linear_velocity", Vector3.ZERO)
-		t_objek.set_indexed(nama_properti, nilai_properti)
+		if pool_entitas.has(nama_objek):
+			if pool_entitas[nama_objek]["id_pengubah"] == id_pengubah:
+				if !fungsi:
+					# rpc atur ulang id_pengubah di semua peer
+					sinkronkan_kondisi_entitas(-1, nama_objek, [
+						["id_proses", -1],
+						["id_pengubah", 0]
+					])
+					# atur ulang id_pengubah
+					pool_entitas[nama_objek]["id_pengubah"] = 0
+					# atur ulang id_proses
+					pool_entitas[nama_objek]["id_proses"] = -1
+			elif pool_entitas[nama_objek]["id_pengubah"] == 0:
+				if fungsi:
+					# rpc atur id_pengubah sebagai pemroses entitas dan pengubah objek ke semua peer
+					sinkronkan_kondisi_entitas(-1, nama_objek, [
+						["id_proses", id_pengubah],
+						["id_pengubah", id_pengubah]
+					])
+					# atur id_pengubah dengan id_pengubah
+					pool_entitas[nama_objek]["id_pengubah"] = id_pengubah
+					# atur id_proses dengan id_pengubah
+					pool_entitas[nama_objek]["id_proses"] = id_pengubah
+			else: return
+		
+		var jalur_objek = "/root/dunia/entitas/"
+		# TODO : kirim properti kustom yang bisadi-edit mis: skala, warna, dll..
+		if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
+		else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)
 @rpc("any_peer") func _terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
 	var t_objek = get_node_or_null(jalur_objek)
 	if t_objek != null and t_objek.get("linear_velocity") != null:
@@ -511,7 +498,6 @@ func _pemain_terputus(id_pemain):
 		panggil_fungsi.call()
 @rpc("authority") func _hapus_objek(jalur_objek : NodePath):
 	var objek_dihapus = get_node_or_null(jalur_objek)
-	if objek_dihapus != null and objek.get(str(jalur_objek)) != null:
-		objek.erase(str(jalur_objek))
+	if objek_dihapus != null:
 		objek_dihapus.queue_free()
 	#else: Panku.notify("error")
