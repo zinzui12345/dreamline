@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cok36wfitg4po"]
+[gd_scene load_steps=3 format=3 uid="uid://cok36wfitg4po"]
+
+[ext_resource type="PackedScene" uid="uid://qm0b0o4vfuvs" path="res://skena/kursor_objek.scn" id="1_jin47"]
 
 [sub_resource type="GDScript" id="GDScript_hcnrk"]
 script/source = "extends Node3D
@@ -22,6 +24,7 @@ func _process(delta):
 			if fungsi_zoom:
 				if Input.is_action_just_pressed(\"perdekat_pandangan\"): 	get_node(\"%pandangan\").position.z += 1 * delta
 				if Input.is_action_just_pressed(\"perjauh_pandangan\"):	get_node(\"%pandangan\").position.z -= 1 * delta
+			$\"../kamera/rotasi_vertikal/kursor_objek\".global_rotation = Vector3.ZERO
 			get_node(\"%pandangan\").position.z = clamp(get_node(\"%pandangan\").position.z, -Konfigurasi.jarak_render, -0.5)
 "
 
@@ -47,3 +50,6 @@ unique_name_in_owner = true
 enabled = false
 target_position = Vector3(0, 0, 2)
 collision_mask = 7
+
+[node name="kursor_objek" parent="kamera/rotasi_vertikal" instance=ExtResource("1_jin47")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -1, 0)

@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 22/04/24 alpha"
+const versi = "Dreamline v1.4.4 23/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -70,6 +70,7 @@ var jeda = false
 var pesan = false				# ketika input pesan ditampilkan
 var _posisi_tab_koneksi = "LAN" # | "Internet"
 var _rotasi_tampilan_karakter : Vector3
+var _mode_pandangan_sblm_edit_objek = 1
 var _rotasi_tampilan_objek : Vector3
 var _arah_gestur_tampilan_karakter : Vector2
 var _arah_gestur_tampilan_objek : Vector2
@@ -184,6 +185,9 @@ func _ready():
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
 	$hud/daftar_properti_objek/DragPad.visible = false
+	# non-aktifkan pengamat objek
+	$pengamat.set_process(false)
+	$pengamat.visible = false
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
 	_timer_kirim_suara.wait_time = 2.0
@@ -625,8 +629,13 @@ func _edit_objek(jalur):
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
+	if karakter.get_node("pengamat").mode_kontrol != 3:
+		_mode_pandangan_sblm_edit_objek = karakter.get_node("pengamat").mode_kontrol
+		karakter.get_node("pengamat").atur_mode(3)
 	karakter.get_node("PlayerInput").atur_raycast(false)
 	$pengamat/kamera/rotasi_vertikal/pandangan.make_current()
+	$pengamat.set_process(true)
+	$pengamat.visible = true
 	$kontrol_sentuh/menu.visible = false
 	$kontrol_sentuh/chat.visible = false
 	$kontrol_sentuh/lari.visible = false
@@ -667,7 +676,10 @@ func _berhenti_mengedit_objek():
 	$kontrol_sentuh/kontrol_pandangan.visible = true
 	edit_objek = null
 	$pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
+	$pengamat.set_process(false)
+	$pengamat.visible = false
 	karakter._kendalikan(true)
+	karakter.get_node("pengamat").atur_mode(_mode_pandangan_sblm_edit_objek)
 	karakter.get_node("PlayerInput").atur_raycast(true)
 
 # koneksi
@@ -726,6 +738,10 @@ func putuskan_server(paksa = false):
 			client.putuskan_server()
 			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
+		
+		# non-aktifkan pengamat objek
+		$pengamat.set_process(false)
+		$pengamat.visible = false
 		
 		_sembunyikan_antarmuka_permainan()
 		# INFO : (9) tampilkan kembali menu utama
