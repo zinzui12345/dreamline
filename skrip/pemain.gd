@@ -299,10 +299,16 @@ func _physics_process(delta):
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 		match karakter.peran:
-			Permainan.PERAN_KARAKTER.Arsitek: # atur posisi pointer
+			Permainan.PERAN_KARAKTER.Arsitek:
+				# atur posisi pointer
 				if !server.permainan.dunia.get_node("kursor_objek").visible:
 					server.permainan.dunia.get_node("kursor_objek").visible = true
 				server.permainan.dunia.get_node("kursor_objek").global_transform.origin = pos_target
+				# tampilkan tombol edit objek
+				if objek_target.is_in_group("dapat_diedit"):
+					server.permainan.set("tombol_aksi_2", "edit_objek")
+					server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+					server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 	elif is_instance_valid(objek_target):
 		objek_target = null
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
