@@ -69,9 +69,11 @@ func proses(_waktu_delta : float):
 					if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
 					else: server.gunakan_entitas(name, "_lempar")
 			
-			# jangan biarkan tombol lepas disable
+			# jangan biarkan tombol lepas disable / bantuan input tersembunyi
 			if !server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 				server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			if !server.permainan.get_node("hud/bantuan_input/aksi2").visible:
+				server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 			
 			# jatuhkan jika pengangkatnya menjadi ragdoll
 			if pengangkat._ragdoll:
