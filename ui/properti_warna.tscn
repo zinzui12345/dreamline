@@ -10,7 +10,7 @@ func _ready():
 func atur_nilai(warna):
 	$ColorPickerButton.color = warna
 func _ubah_nilai(warna):
-	if visible: server.atur_properti_objek(server.permainan.edit_objek.get_path(), name, warna)
+	if visible: server.permainan.edit_objek.set(name, warna)
 "
 
 [node name="warna" type="HSplitContainer"]

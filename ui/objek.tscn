@@ -16,7 +16,7 @@ func pilih():
 			server.permainan.pasang_objek,
 			Vector3.ZERO,
 			[
-				[\"modulate\", Color(randf(), randf(), randf(), 1)]
+				[\"warna_1\", Color(randf(), randf(), randf(), 1)]
 			]
 		)
 	else:
@@ -27,7 +27,7 @@ func pilih():
 			server.permainan.pasang_objek,
 			Vector3.ZERO,
 			[
-				[\"modulate\", Color(randf(), randf(), randf(), 1)]
+				[\"warna_1\", Color(randf(), randf(), randf(), 1)]
 			]
 		)
 	server.permainan._tutup_daftar_objek()
