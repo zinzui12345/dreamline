@@ -103,15 +103,17 @@ func atur_mode(nilai):
 	var tween_pandangan_2a = get_tree().create_tween()
 	var tween_pandangan_3a = get_tree().create_tween()
 	var tween_pandangan_3b = get_tree().create_tween()
-	tween_pandangan_1a.tween_property($kamera/rotasi_vertikal/pandangan, "rotation_degrees:x", 0, 0.4)	# reset pandangan 1
-	tween_pandangan_2a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:y", 0, 0.4)			# reset pandangan 2
-	tween_pandangan_3a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:x", 0, 0.5)			# reset pandangan 3
-	tween_pandangan_3b.tween_property(self, "rotation_degrees:y", 0, 0.5)								# reset pandangan 3
+	tween_pandangan_1a.tween_property($kamera/rotasi_vertikal/pandangan, "rotation_degrees:x", 0, 0.2)	# reset pandangan 1
+	tween_pandangan_2a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:y", 0, 0.2)			# reset pandangan 2
+	tween_pandangan_3a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:x", 0, 0.25)			# reset pandangan 3
+	tween_pandangan_3b.tween_property(self, "rotation_degrees:y", 0, 0.25)								# reset pandangan 3
 	tween_pandangan_1a.play()
 	tween_pandangan_2a.play()
 	tween_pandangan_3a.play()
 	tween_pandangan_3b.play()
 	if !ubah: mode_kontrol = nilai; return
+	if _karakter.kontrol:	$kamera/transisi.visible = true
+	else:					$kamera/transisi.visible = false
 	match nilai:
 		1:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 1); $animasi.play("pandangan_utama")
 		2:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 2); $animasi.play("pandangan_utama")
