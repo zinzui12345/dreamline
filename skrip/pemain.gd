@@ -276,6 +276,13 @@ func _physics_process(delta):
 	if _target_pemain:
 		pos_target = _raycast_pemain.get_collision_point()
 		objek_target = _raycast_pemain.get_collider()
+		if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and objek_target == _raycast_serangan_a_pemain.get_collider():
+			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		else:
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
 		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
 			match karakter.peran:
 				Permainan.PERAN_KARAKTER.Arsitek:
@@ -311,6 +318,9 @@ func _physics_process(delta):
 					server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 	elif is_instance_valid(objek_target):
 		objek_target = null
+		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false

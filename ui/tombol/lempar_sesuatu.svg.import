@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b25pr88ub8p26"
-path="res://.godot/imported/aksi_1.svg-dc7e6fba3d5886301a2de2e4cb0e542f.ctex"
+path="res://.godot/imported/lempar_sesuatu.svg-ae34d74cf8476348074c9d4d5b255527.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/tombol/aksi_1.svg"
-dest_files=["res://.godot/imported/aksi_1.svg-dc7e6fba3d5886301a2de2e4cb0e542f.ctex"]
+source_file="res://ui/tombol/lempar_sesuatu.svg"
+dest_files=["res://.godot/imported/lempar_sesuatu.svg-ae34d74cf8476348074c9d4d5b255527.ctex"]
 
 [params]
 

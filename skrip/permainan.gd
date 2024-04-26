@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 26/04/24 alpha"
+const versi = "Dreamline v1.4.4 27/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -78,6 +78,14 @@ var _touchpad_disentuh = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara = Timer.new()
 var _timer_tampilkan_pesan = Timer.new()
+var tombol_aksi_1 = "dorong_sesuatu" :
+	set(ikon):
+		if ikon != tombol_aksi_1:
+			get_node("kontrol_sentuh/aksi_1/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			tombol_aksi_1 = ikon
+		match ikon:
+			"dorong_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%dorong"
+			"lempar_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%lempar"
 var tombol_aksi_2 = "angkat_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_2:

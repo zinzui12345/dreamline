@@ -97,7 +97,9 @@ INPUTHAPUS,hapus,delete
 ,,
 # aksi,,
 %edit,Edit,Edit
+%dorong,Dorong,Push
 %angkat,Angkat,Pickup
+%lempar,Lempar,Throw
 %jatuhkan,Jatuhkan,Drop
 %bantuan,Bantuan,Help
 ,,

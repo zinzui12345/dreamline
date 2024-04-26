@@ -54,7 +54,7 @@
 [ext_resource type="Texture2D" uid="uid://dbngqyysbphw6" path="res://ui/ikon/ikon_tab_rambut.svg" id="20_x7tnp"]
 [ext_resource type="Texture2D" uid="uid://bkbtjgpe4ucul" path="res://ui/spinner_menghubungkan.svg" id="21_lgrqm"]
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
-[ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/aksi_1.svg" id="23_p8sf0"]
+[ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/lempar_sesuatu.svg" id="23_p8sf0"]
 [ext_resource type="Texture2D" uid="uid://xf60ppb2l5u2" path="res://ui/tombol/aksi_1_tekan.svg" id="24_5vy8q"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
 [ext_resource type="Texture2D" uid="uid://bdbbtd3gddyws" path="res://ui/tombol/jongkok.svg" id="25_umeh2"]
@@ -4353,7 +4353,7 @@ action_mode = 0
 stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
 texture_normal = ExtResource("23_p8sf0")
 texture_pressed = ExtResource("24_5vy8q")
 shape = SubResource("CircleShape2D_tw50u")

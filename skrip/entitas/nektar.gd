@@ -69,9 +69,13 @@ func proses(_waktu_delta : float):
 					if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
 					else: server.gunakan_entitas(name, "_lempar")
 			
-			# jangan biarkan tombol lepas disable / bantuan input tersembunyi
+			# jangan biarkan tombol lempar, lepas disable / bantuan input tersembunyi
+			if !server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
+				server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			if !server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 				server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			if !server.permainan.get_node("hud/bantuan_input/aksi1").visible:
+				server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 			if !server.permainan.get_node("hud/bantuan_input/aksi2").visible:
 				server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 			
@@ -138,6 +142,9 @@ func _angkat(id):
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
+		server.permainan.set("tombol_aksi_1", "lempar_sesuatu")
+		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+		server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 		server.permainan.set("tombol_aksi_2", "jatuhkan_sesuatu")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
@@ -155,7 +162,9 @@ func _lepas(id):
 	call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(true)
+		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
 		server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 		
 		# reset pemroses pada server
@@ -183,7 +192,10 @@ func _lempar(pelempar):
 	call("apply_central_force", gaya.rotated(Vector3.UP, rotation.y))
 	if id_pengangkat == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/PlayerInput").atur_raycast(true)
+		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+		server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]
