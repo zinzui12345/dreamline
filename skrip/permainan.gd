@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 24/04/24 alpha"
+const versi = "Dreamline v1.4.4 26/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -633,7 +633,7 @@ func _edit_objek(jalur):
 		_mode_pandangan_sblm_edit_objek = karakter.get_node("pengamat").mode_kontrol
 		karakter.get_node("pengamat").atur_mode(3)
 	karakter.get_node("PlayerInput").atur_raycast(false)
-	$pengamat/kamera/rotasi_vertikal/pandangan.make_current()
+	$pengamat.get_node("%pandangan").make_current()
 	$pengamat.set_process(true)
 	$pengamat.visible = true
 	$kontrol_sentuh/menu.visible = false
@@ -645,6 +645,9 @@ func _edit_objek(jalur):
 	$kontrol_sentuh/kontrol_pandangan.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
+	$hud/daftar_properti_objek/panel/pilih_tab_skala.disabled = true
+	#$hud/daftar_properti_objek/panel_2/perdekat_objek.min_value = -Konfigurasi.jarak_render
+	$hud/daftar_properti_objek/panel_2/perdekat_objek.value = $pengamat.get_node("%pandangan").position.z
 	$mode_bermain.visible = false
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "tutup_panel_objek"
@@ -659,6 +662,8 @@ func _edit_objek(jalur):
 		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.atur_nilai(edit_objek.get("warna_2"))
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.visible = true
+	if edit_objek.get("skala") != null:
+		$hud/daftar_properti_objek/panel/pilih_tab_skala.disabled = false
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
@@ -1220,13 +1225,13 @@ func _pilih_tab_skala_objek():
 		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 100
-		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.scale.x
+		$hud/daftar_properti_objek/panel/translasi_x.value = edit_objek.skala.x
 		$hud/daftar_properti_objek/panel/translasi_y.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_y.max_value = 100
-		$hud/daftar_properti_objek/panel/translasi_y.value = edit_objek.scale.y
+		$hud/daftar_properti_objek/panel/translasi_y.value = edit_objek.skala.y
 		$hud/daftar_properti_objek/panel/translasi_z.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_z.max_value = 100
-		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.scale.z
+		$hud/daftar_properti_objek/panel/translasi_z.value = edit_objek.skala.z
 		$hud/daftar_properti_objek/panel/translasi_x.editable = true
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
 		$hud/daftar_properti_objek/panel/translasi_z.editable = true
@@ -1242,7 +1247,7 @@ func _tutup_daftar_objek(paksa = false):
 		if !paksa: karakter._atur_kendali(true)
 		memasang_objek = false
 func _tambah_translasi_x_objek():
-	$hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step
+	$hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step # TODO : jangan tambah dari step
 	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
 func _kurang_translasi_x_objek():
 	$hud/daftar_properti_objek/panel/translasi_x.value -= $hud/daftar_properti_objek/panel/translasi_x.step
@@ -1269,7 +1274,7 @@ func _ketika_translasi_x_objek_diubah(nilai):
 			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
 				edit_objek.set_indexed("rotation_degrees:x", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-				edit_objek.set_indexed("scale:x", nilai)
+				edit_objek.set_indexed("skala:x", nilai)
 func _ketika_translasi_y_objek_diubah(nilai):
 	if $hud/daftar_properti_objek/panel/translasi_y.editable:
 		if edit_objek != null:
@@ -1279,7 +1284,7 @@ func _ketika_translasi_y_objek_diubah(nilai):
 			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
 				edit_objek.set_indexed("rotation_degrees:y", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-				edit_objek.set_indexed("scale:y", nilai)
+				edit_objek.set_indexed("skala:y", nilai)
 func _ketika_translasi_z_objek_diubah(nilai):
 	if $hud/daftar_properti_objek/panel/translasi_z.editable:
 		if edit_objek != null:
@@ -1289,7 +1294,11 @@ func _ketika_translasi_z_objek_diubah(nilai):
 			elif $hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed:
 				edit_objek.set_indexed("rotation_degrees:z", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
-				edit_objek.set_indexed("scale:z", nilai)
+				edit_objek.set_indexed("skala:z", nilai)
+func _ketika_mengubah_jarak_pandangan_objek(jarak):
+	if edit_objek != null:
+		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
+			$pengamat.get_node("%pandangan").position.z = jarak
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi

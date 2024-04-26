@@ -22,10 +22,13 @@ func _process(delta):
 		if is_instance_valid(server.permainan.edit_objek):
 			get_parent().global_transform.origin = server.permainan.edit_objek.global_transform.origin
 			if fungsi_zoom:
-				if Input.is_action_just_pressed(\"perdekat_pandangan\"): 	get_node(\"%pandangan\").position.z += 1 * delta
-				if Input.is_action_just_pressed(\"perjauh_pandangan\"):	get_node(\"%pandangan\").position.z -= 1 * delta
-			$\"../kamera/rotasi_vertikal/kursor_objek\".global_rotation = Vector3.ZERO
+				if Input.is_action_just_pressed(\"perdekat_pandangan\"): 	get_node(\"%pandangan\").position.z += 1 * delta; get_node(\"../../hud/daftar_properti_objek/panel_2/perdekat_objek\").set(\"value\", get_node(\"%pandangan\").position.z)
+				if Input.is_action_just_pressed(\"perjauh_pandangan\"):	get_node(\"%pandangan\").position.z -= 1 * delta; get_node(\"../../hud/daftar_properti_objek/panel_2/perdekat_objek\").set(\"value\", get_node(\"%pandangan\").position.z)
+			# TODO : coba nanti kalo mode skala rotasinya ngikut sama rotasi objek
+			$\"../kamera/rotasi_vertikal/pandangan/kursor_objek\".global_rotation = Vector3.ZERO
 			get_node(\"%pandangan\").position.z = clamp(get_node(\"%pandangan\").position.z, -Konfigurasi.jarak_render, -0.5)
+			# TODO : sesuaikan posisi x kamera
+			# mis. posisi pandangan z == -0.5 maka posisi x kamera = -0.25
 "
 
 [node name="pengamat" type="Node3D"]
@@ -45,11 +48,11 @@ transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.5, 
 cull_mask = 1048573
 far = 400.0
 
+[node name="kursor_objek" parent="kamera/rotasi_vertikal/pandangan" instance=ExtResource("1_jin47")]
+transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -2.1, -1, -2)
+
 [node name="target" type="RayCast3D" parent="kamera/rotasi_vertikal"]
 unique_name_in_owner = true
 enabled = false
 target_position = Vector3(0, 0, 2)
 collision_mask = 7
-
-[node name="kursor_objek" parent="kamera/rotasi_vertikal" instance=ExtResource("1_jin47")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, -1, 0)

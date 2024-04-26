@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://df2034e3s77u4"]
+
+[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_2o5fq"]
+
+[sub_resource type="GDScript" id="GDScript_5ucs2"]
+script/source = "extends entitas
+
+const sinkron_kondisi = [[\"skala\", Vector3(1, 1, 1)]]
+const jalur_instance = \"res://skena/entitas/placeholder_objek.tscn\"
+
+var mat : Material
+
+func mulai():
+	mat = $bentuk.get_surface_override_material(0).duplicate()
+	$bentuk.set_surface_override_material(0, mat)
+
+var skala : Vector3 = Vector3(1, 1, 1) :
+	set(ubah_skala):
+		$bentuk.mesh.size = ubah_skala
+		$fisik.shape.size = ubah_skala
+		mat.uv1_offset = ubah_skala / 2
+		skala = ubah_skala
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_kqjb5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pjrsv"]
+albedo_texture = ExtResource("1_2o5fq")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xjedm"]
+
+[node name="placeholder_objek" type="StaticBody3D" groups=["dapat_diedit"]]
+script = SubResource("GDScript_5ucs2")
+
+[node name="bentuk" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_kqjb5")
+surface_material_override/0 = SubResource("StandardMaterial3D_pjrsv")
+
+[node name="fisik" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_xjedm")
