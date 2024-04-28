@@ -77,7 +77,7 @@ func tambah_pemain(pemain):
 		"sistem": pemain.platform_pemain,
 		"id_sys": str(pemain.id_pemain),
 		"gender": pemain.gender,
-		"gambar": await server.permainan.dunia.get_node("tampilan_karakter").dapatkan_tampilan(pemain)
+		"gambar": pemain.gambar_potret
 	})
 	print("spawn pemain "+str(pemain))
 
@@ -116,10 +116,10 @@ func tambah_pemain(pemain):
 @rpc("authority") func edit_objek(fungsi : bool, jalur_objek = ""):
 	if fungsi:
 		permainan._edit_objek(jalur_objek);
-		Panku.notify("mengedit objek : "+jalur_objek)
+		#Panku.notify("mengedit objek : "+jalur_objek)
 	else:
 		permainan._berhenti_mengedit_objek();
-		Panku.notify("berhenti mengedit objek")
+		#Panku.notify("berhenti mengedit objek")
 @rpc("authority") func dapatkan_posisi_entitas(nama_entitas : String, posisi : Vector3, rotasi : Vector3):
 	var t_entitas : Node3D = permainan.dunia.get_node("entitas/" + nama_entitas)
 	if t_entitas != null:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=268 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=269 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -65,6 +65,7 @@
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
 [ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="32_clll1"]
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
+[ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
 [ext_resource type="PackedScene" uid="uid://cok36wfitg4po" path="res://skena/pengamat_objek.tscn" id="54_kqfbn"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english.svg" id="63_r5flb"]
 [ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia.svg" id="64_gnps4"]
@@ -4990,6 +4991,8 @@ directional_shadow_max_distance = 20.0
 
 [node name="pencahayaan_karakter" type="WorldEnvironment" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport"]
 environment = SubResource("Environment_35sy4")
+
+[node name="tampilan_karakter" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport" instance=ExtResource("49_gj3rl")]
 
 [node name="Touchpad" parent="karakter/panel/tampilan" instance=ExtResource("14_tax0q")]
 

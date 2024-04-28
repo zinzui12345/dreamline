@@ -37,7 +37,7 @@ const jarak_render_entitas = 10 # FIXME : set ke 50
 # timeline[12][1] = { "sinkron", "posisi": Vec3(12, 1, 10), "rotasi": Vec3(0, 122, 0), "skala": Vec3(1, 1, 1), "kondisi": { "arah_gerak": Vec3(0.33, 0, 1.5) } }
 # timeline[12][1] = { "hapus" }
 
-# .: Objek :.
+# .: Entitas :.
 # pool_entitas[nama_entitas]["id_pengubah"] = id_pengubah
 # pool_entitas[nama_entitas][nama_properti] = nilai_properti
 # pool_entitas{
@@ -61,6 +61,13 @@ const jarak_render_entitas = 10 # FIXME : set ke 50
 # ketika pengubah berhenti mengedit pool_entitas, atur pool_entitas[nama_entitas]["id_pengubah"] menjadi 0
 # terapkan nilai atur_properti() kalau pool_entitas[nama_entitas]["id_pengubah"] == id_pengubah
 
+# .: Objek :.
+# objek berbeda dengan entitas
+# objek tidak menmerlukan pemroses tetapi tetap memiliki id_pengubah
+# pool_objek spawn hanya ketika berada di dekat pemain dan di didepan pemain
+# pool_objek spawn dan de-spawn secara batch di client
+# client dapat me-non-aktifkan culling pool_objek untuk tech demo
+
 const POSISI_SPAWN_RANDOM := 5.0
 
 func _process(_delta):
@@ -68,7 +75,7 @@ func _process(_delta):
 		if permainan.dunia != null:
 			# atur frame timeline
 			if !mode_replay:
-				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
+				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
 					timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 			
 			# tentukan visibilitas entitas pada tiap pemain
@@ -476,7 +483,7 @@ func _pemain_terputus(id_pemain):
 			else: return
 		
 		var jalur_objek = "/root/dunia/entitas/"
-		# TODO : kirim properti kustom yang bisadi-edit mis: skala, warna, dll..
+		# TODO : kirim properti kustom yang bisa di-edit mis: skala, warna, dll..
 		if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
 		else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)
 @rpc("any_peer") func _terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):

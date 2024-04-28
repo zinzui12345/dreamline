@@ -34,6 +34,7 @@ var _frame_timeline_sb	= 0 # frame sebelumnya
 		if namaa != "":
 			nama = namaa
 @export var gender := "P"
+@export var gambar_potret : Dictionary
 @export var peran = Permainan.PERAN_KARAKTER.Arsitek
 @export var id_sistem = ""
 @export var platform_pemain := "Linux"
