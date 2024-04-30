@@ -78,7 +78,7 @@ var _touchpad_disentuh = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara = Timer.new()
 var _timer_tampilkan_pesan = Timer.new()
-var tombol_aksi_1 = "dorong_sesuatu" :
+var tombol_aksi_1 = "lempar_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_1:
 			get_node("kontrol_sentuh/aksi_1/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
