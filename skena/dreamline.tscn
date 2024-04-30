@@ -4497,7 +4497,7 @@ layout_mode = 2
 
 [node name="placeholder_objek" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
-metadata/jalur_objek = "res://skena/entitas/placeholder_objek.tscn"
+metadata/jalur_objek = "res://skena/objek/placeholder_objek.tscn"
 
 [node name="tutup" type="TextureButton" parent="daftar_objek"]
 visible = false

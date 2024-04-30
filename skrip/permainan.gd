@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 28/04/24 alpha"
+const versi = "Dreamline v1.4.4 30/04/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -193,14 +193,6 @@ func _ready():
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
 	$hud/daftar_properti_objek/DragPad.visible = false
-	# INFO : ambil screenshot placeholder karakter berdasarkan data kemudian simpan sebagai gambar
-	get_node("%karakter").visible = true
-	var gambar_karakter : Image
-	match data["gender"]:
-		"L": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/reno"))
-		"P": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/lulu"))
-	if gambar_karakter != null: data["gambar"] = gambar_karakter.data
-	get_node("%karakter").visible = false
 	# non-aktifkan pengamat objek
 	$pengamat.set_process(false)
 	$pengamat.visible = false
@@ -357,10 +349,6 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 		_reset_daftar_server_lan()
 	if $karakter.visible:
 		$karakter/animasi.play("animasi_panel/tutup")
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = false
-	if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") != null:
-		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
-	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
 	if $proses_koneksi.visible:
 		_sembunyikan_proses_koneksi()
 	$menu_utama/animasi.play("sembunyikan")
@@ -369,7 +357,21 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
 	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
-	await get_tree().create_timer(1.0).timeout
+	# INFO : ambil screenshot placeholder karakter berdasarkan data kemudian simpan sebagai gambar
+	get_node("%karakter").visible = true
+	var gambar_karakter : Image
+	match data["gender"]:
+		"L": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/reno"))
+		"P": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/lulu"))
+	if gambar_karakter != null: data["gambar"] = gambar_karakter.data
+	get_node("%karakter").visible = false
+	_atur_persentase_memuat(1)
+	# hapus placeholder karakter untuk menghemat memori
+	if $karakter/panel/tampilan/SubViewportContainer/SubViewport.get_node_or_null("pencahayaan_karakter") != null:
+		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
+	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
+	_atur_persentase_memuat(5)
+	await get_tree().create_timer(0.5).timeout
 	data["posisi"] = posisi
 	data["rotasi"] = rotasi
 	var tmp_perintah = Callable(self, "_muat_map")
@@ -932,14 +934,6 @@ func _tampilkan_daftar_server():
 		if $karakter.visible:
 			$karakter/animasi.play("tampilkan_server")
 			AudioServer.set_bus_effect_enabled(1, 2, false)
-			# INFO : ambil screenshot placeholder karakter ketika mengubah karakter berdasarkan data kemudian simpan sebagai gambar
-			get_node("%karakter").visible = true
-			var gambar_karakter
-			match data["gender"]:
-				"L": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/reno"))
-				"P": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/lulu"))
-			data["gambar"] = gambar_karakter.data
-			get_node("%karakter").visible = false
 		else: $daftar_server/animasi.play("animasi_panel/tampilkan")
 		$daftar_server/panel/panel_input/batal.grab_focus()
 func _sembunyikan_daftar_server():
@@ -1011,14 +1005,6 @@ func _sembunyikan_setelan_karakter():
 	_pilih_tab_personalitas_karakter()
 	$karakter/animasi.play("animasi_panel/sembunyikan")
 	$menu_utama/menu/Panel/karakter.grab_focus()
-	# INFO : ambil screenshot placeholder karakter ketika mengubah karakter berdasarkan data kemudian simpan sebagai gambar
-	get_node("%karakter").visible = true
-	var gambar_karakter
-	match data["gender"]:
-		"L": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/reno"))
-		"P": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/lulu"))
-	data["gambar"] = gambar_karakter.data
-	get_node("%karakter").visible = false
 func _ketika_ukuran_tampilan_karakter_diubah():
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport.size = $karakter/panel/tampilan.size
 func _ketika_mengubah_arah_tampilan_karakter(arah, _touchpad):
