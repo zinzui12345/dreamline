@@ -656,9 +656,11 @@ func _edit_objek(jalur):
 	$pengamat.visible = true
 	$kontrol_sentuh/menu.visible = false
 	$kontrol_sentuh/chat.visible = false
+	$kontrol_sentuh/mic.visible = false
 	$kontrol_sentuh/lari.visible = false
 	$kontrol_sentuh/aksi_1.visible = false
 	$kontrol_sentuh/lompat.visible = false
+	$kontrol_sentuh/jongkok.visible = false
 	$kontrol_sentuh/kontrol_gerakan.visible = false
 	$kontrol_sentuh/kontrol_pandangan.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
@@ -691,10 +693,11 @@ func _berhenti_mengedit_objek():
 	tombol_aksi_2 = "edit_objek"
 	$mode_bermain.visible = true
 	$kontrol_sentuh/chat.visible = true
+	$kontrol_sentuh/mic.visible = true
 	$kontrol_sentuh/menu.visible = true
 	$kontrol_sentuh/lari.visible = true
-	$kontrol_sentuh/aksi_1.visible = true
 	$kontrol_sentuh/lompat.visible = true
+	$kontrol_sentuh/jongkok.visible = true
 	$kontrol_sentuh/kontrol_gerakan.visible = true
 	$kontrol_sentuh/kontrol_pandangan.visible = true
 	edit_objek = null
