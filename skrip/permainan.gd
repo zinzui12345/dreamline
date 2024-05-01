@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 30/04/24 alpha"
+const versi = "Dreamline v1.4.4 01/05/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -344,6 +344,8 @@ func atur_map(nama_map : StringName = "empty"):
 func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
+	if $buat_server.visible:
+		$buat_server/animasi.play("animasi_panel/tutup")
 	if $daftar_server.visible:
 		$daftar_server/animasi.play("animasi_panel/tutup")
 		_reset_daftar_server_lan()
@@ -709,7 +711,7 @@ func _berhenti_mengedit_objek():
 	karakter.get_node("PlayerInput").atur_raycast(true)
 
 # koneksi
-func buat_server(headless = false, nama = "server"):
+func mulai_server(headless = false, nama = "server"):
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
 	server.nama = nama
@@ -718,7 +720,11 @@ func buat_server(headless = false, nama = "server"):
 		$daftar_server/animasi.play("animasi_panel/tutup")
 	if $setelan.visible: _sembunyikan_setelan_permainan()
 	tampilkan_info_koneksi()
-	_mulai_permainan("localhost", server.map)
+	var nama_server = "localhost"
+	if $buat_server/panel/panel_input/nama_server.text != "":
+		nama_server = $buat_server/panel/panel_input/nama_server.text
+	server.jumlah_pemain = $buat_server/panel/panel_input/jumlah_pemain.value
+	_mulai_permainan(nama_server, server.map)
 func gabung_server():
 	koneksi = MODE_KONEKSI.CLIENT
 	var ip = $daftar_server/panel/panel_input/input_ip.text
@@ -929,15 +935,35 @@ func _sembunyikan_antarmuka_permainan():
 func _tampilkan_pemutar_musik():
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	else: $pemutar_musik/animasi.play("tampilkan")
+func _tampilkan_konfigurasi_server():
+	if $buat_server.visible:
+		_sembunyikan_konfigurasi_server()
+	else:
+		if $pemutar_musik.visible:	$pemutar_musik/animasi.play("sembunyikan")
+		if $daftar_server.visible:
+			$daftar_server/animasi.play("tampilkan_buat_server")
+		elif $karakter.visible:
+			$karakter/animasi.play("tampilkan_buat_server")
+		else:
+			$buat_server/animasi.play("animasi_panel/tampilkan")
+		$buat_server/panel/batal.grab_focus()
+func _tambah_jumlah_pemain_server():	$buat_server/panel/panel_input/jumlah_pemain.value += $buat_server/panel/panel_input/jumlah_pemain.step
+func _kurang_jumlah_pemain_server():	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
+func _sembunyikan_konfigurasi_server():
+	$buat_server/animasi.play("animasi_panel/sembunyikan")
+	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _tampilkan_daftar_server():
 	if $daftar_server.visible: _sembunyikan_daftar_server()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 		client.cari_server()
-		if $karakter.visible:
+		if $buat_server.visible:
+			$buat_server/animasi.play("tampilkan_daftar_server")
+		elif $karakter.visible:
 			$karakter/animasi.play("tampilkan_server")
 			AudioServer.set_bus_effect_enabled(1, 2, false)
-		else: $daftar_server/animasi.play("animasi_panel/tampilkan")
+		else:
+			$daftar_server/animasi.play("animasi_panel/tampilkan")
 		$daftar_server/panel/panel_input/batal.grab_focus()
 func _sembunyikan_daftar_server():
 	client.hentikan_pencarian_server()
@@ -996,7 +1022,9 @@ func _tampilkan_setelan_karakter():
 			$karakter/panel/tab/tab_celana/pemilih_warna.atur_penyesuaian_warna(data["warna_celana"])
 			$karakter/panel/tab/tab_sepatu/pilih_sepatu.selected = data["sepatu"]
 			$karakter/panel/tab/tab_sepatu/pemilih_warna.atur_penyesuaian_warna(data["warna_sepatu"])
-		if $daftar_server.visible:
+		if $buat_server.visible:
+			$buat_server/animasi.play("tampilkan_karakter")
+		elif $daftar_server.visible:
 			$daftar_server/animasi.play("tampilkan_karakter")
 			client.hentikan_pencarian_server()
 			_reset_daftar_server_lan()
@@ -1659,6 +1687,8 @@ func _kembali():
 		$proses_koneksi/animasi.play("sembunyikan")
 	elif $setelan.visible:
 		_sembunyikan_setelan_permainan()
+	elif $buat_server.visible:
+		_sembunyikan_konfigurasi_server()
 	elif $daftar_server.visible:
 		_sembunyikan_daftar_server()
 	elif $karakter.visible:

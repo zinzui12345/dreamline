@@ -9,11 +9,11 @@ func _ready():
 			server.publik = true
 			if arg < jumlah_argumen - 2 and argumen[arg+1] != "" and argumen[arg+2] != "":
 				server.permainan.atur_map(argumen[arg+1])
-				server.permainan.buat_server(true, argumen[arg+2]);
+				server.permainan.mulai_server(true, argumen[arg+2]);
 				return
 			elif arg < jumlah_argumen - 1 and argumen[arg+1] != "":
 				server.permainan.atur_map(argumen[arg+1])
-			server.permainan.buat_server(true);
+			server.permainan.mulai_server(true);
 			return
 
 func hapus_map():

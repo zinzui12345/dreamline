@@ -12,6 +12,7 @@ KELUAR,Keluar,Exit
 %oke,  Oke,  Ok
 %batal,  Batal,  Cancel
 %sambungkan,  Sambungkan,  Connect
+%mulai, Mulai, Start
 %simpan,  Simpan,  Save
 %tutup,Tutup,Close
 %konfirmasi,Konfirmasi,Confirm
@@ -19,6 +20,8 @@ KELUAR,Keluar,Exit
 # koneksi,,
 %internet,  Internet,  Internet
 %lan,  Jaringan Lokal,  LAN
+%lokal, Lokal, Local
+%publik, Publik, Public
 %menghubungkan, Menghubungkan, Connecting
 ,,
 # karakter,,
@@ -58,6 +61,9 @@ SKALARESOLUSI,Skala Resolusi,Resolution Scale
 %sarankan_fitur,Request/Sarankan Fitur,Suggest Features
 %tampilkan_log,Tampilkan Log,Show Log
 %tampilkan_konsol,Tampilkan Konsol Debug,Show Debug Console
+%nama_server,Nama Server,Server Name
+%jumlah_pemain,Jumlah Pemain,Max Player
+%akses,Akses,Access
 ,,
 # menu jeda,,
 %lanjutkan,  Lanjutkan,  Resume
