@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 01/05/24 alpha"
+const versi = "Dreamline v1.4.4 02/05/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -344,9 +344,12 @@ func atur_map(nama_map : StringName = "empty"):
 func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
+	if $setelan.visible:
+		_sembunyikan_setelan_permainan()
 	if $buat_server.visible:
 		$buat_server/animasi.play("animasi_panel/tutup")
 	if $daftar_server.visible:
+		client.hentikan_pencarian_server()
 		$daftar_server/animasi.play("animasi_panel/tutup")
 		_reset_daftar_server_lan()
 	if $karakter.visible:
@@ -715,10 +718,6 @@ func mulai_server(headless = false, nama = "server"):
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
 	server.nama = nama
-	if $daftar_server.visible:
-		client.hentikan_pencarian_server()
-		$daftar_server/animasi.play("animasi_panel/tutup")
-	if $setelan.visible: _sembunyikan_setelan_permainan()
 	tampilkan_info_koneksi()
 	var nama_server = "localhost"
 	if $buat_server/panel/panel_input/nama_server.text != "":

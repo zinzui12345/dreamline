@@ -10,28 +10,55 @@ script/source = "extends TextureButton
 func _ready(): connect(\"pressed\", pilih)
 
 func pilih():
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		server._tambahkan_entitas(
-			get_meta(\"jalur_objek\"),
-			server.permainan.pasang_objek,
-			Vector3.ZERO,
-			[
-				[\"warna_1\", Color(randf(), randf(), randf(), 1)]
-			]
-		)
+	var jalur_objek = get_meta(\"jalur_objek\")
+	if jalur_objek != \"\" and ResourceLoader.exists(jalur_objek):
+		var cek_tipe_objek = load(jalur_objek).instantiate()
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			if cek_tipe_objek is entitas:
+				server._tambahkan_entitas(
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					[
+						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
+					]
+				)
+			elif cek_tipe_objek is objek:
+				server._tambahkan_objek(
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					[
+						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
+					]
+				)
+		else:
+			if cek_tipe_objek is entitas:
+				server.rpc_id(
+					1,
+					\"_tambahkan_entitas\",
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					[
+						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
+					]
+				)
+			elif cek_tipe_objek is objek:
+				server.rpc_id(
+					1,
+					\"_tambahkan_objek\",
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					[
+						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
+					]
+				)
+		server.permainan._tutup_daftar_objek()
+		release_focus()
 	else:
-		server.rpc_id(
-			1,
-			\"_tambahkan_entitas\",
-			get_meta(\"jalur_objek\"),
-			server.permainan.pasang_objek,
-			Vector3.ZERO,
-			[
-				[\"warna_1\", Color(randf(), randf(), randf(), 1)]
-			]
-		)
-	server.permainan._tutup_daftar_objek()
-	release_focus()
+		server.permainan._tampilkan_popup_informasi(\"tidak ada objek!\", self)
 "
 
 [node name="pilih_objek" type="TextureButton"]

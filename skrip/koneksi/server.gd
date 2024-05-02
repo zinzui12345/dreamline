@@ -13,15 +13,18 @@ var publik = false
 var ip_publik
 var jumlah_pemain = 32
 var pemain_terhubung = 0
-var map = "empty"
+var map = "pulau"
 var nama = "bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
 var mode_replay = false
 var file_replay = "user://rekaman.dreamline_replay"
 var jumlah_entitas = 0
+var jumlah_objek = 0
 var pool_entitas : Dictionary = {}
+var pool_objek : Dictionary = {}
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
+var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
 
 const jarak_render_entitas = 10 # FIXME : set ke 50
 
@@ -63,10 +66,25 @@ const jarak_render_entitas = 10 # FIXME : set ke 50
 
 # .: Objek :.
 # objek berbeda dengan entitas
-# objek tidak menmerlukan pemroses tetapi tetap memiliki id_pengubah
-# pool_objek spawn hanya ketika berada di dekat pemain dan di didepan pemain
+# objek tidak memerlukan pemroses tetapi tetap memiliki id_pengubah
+# pool_objek spawn hanya ketika berada di dekat pemain dan di didepan pemain (culling)
 # pool_objek spawn dan de-spawn secara batch di client
 # client dapat me-non-aktifkan culling pool_objek untuk tech demo
+# tiap objek pool_objek memiliki jarak rendernya masing-masing
+# pool_objek{
+# 	"objek_1" : {
+#		"id_pengubah": 0,
+# 		"posisi" : Vector3i(988, 4, 75),
+# 		"rotasi" : Vector3(25.7, 90, 6),
+#		"properti": {}
+# 	},
+# 	"objek_2" : {
+#		"id_pengubah": 0,
+# 		"posisi" : Vector3i(64, 443, 8),
+# 		"rotasi" : Vector3(11.9, 88, 0),
+#		"properti": {}
+# 	}
+# }
 
 const POSISI_SPAWN_RANDOM := 5.0
 
@@ -78,7 +96,7 @@ func _process(_delta):
 				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
 					timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 			
-			# tentukan visibilitas entitas pada tiap pemain
+			# tentukan visibilitas entitas pada tiap pemain # TODO : tentukan juga visibilitas objek
 			if permainan.dunia.get_node("pemain").get_child_count() > 0:
 				# loop array pemain
 				for p in permainan.dunia.get_node("pemain").get_child_count():
@@ -213,6 +231,11 @@ func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas
 		#Panku.notify("spawn pool entitas [%s] pada pemain %s" % [str(jalur_instance_entitas), str(id_pemain)])
 		if id_pemain == 1: _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
 		else: rpc_id(id_pemain, "_spawn_visibilitas_entitas", jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
+func spawn_pool_objek(id_pemain, nama_objek : String, jalur_instance_objek, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		Panku.notify("spawn pool objek [%s] pada pemain %s" % [str(jalur_instance_objek), str(id_pemain)])
+		if id_pemain == 1: _spawn_visibilitas_objek(jalur_instance_objek, nama_objek, posisi_objek, rotasi_objek, properti_objek)
+		else: rpc_id(id_pemain, "_spawn_visibilitas_objek", jalur_instance_objek, nama_objek, posisi_objek, rotasi_objek, properti_objek)
 func sinkronkan_kondisi_entitas(id_pemain, nama_entitas : String, kondisi_entitas : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if id_pemain == 1:
@@ -222,11 +245,25 @@ func sinkronkan_kondisi_entitas(id_pemain, nama_entitas : String, kondisi_entita
 			rpc("_sinkronkan_kondisi_entitas", nama_entitas, kondisi_entitas)
 		else:
 			rpc_id(id_pemain, "_sinkronkan_kondisi_entitas", nama_entitas, kondisi_entitas)
+func sinkronkan_kondisi_objek(id_pemain, nama_objek : String, kondisi_objek : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if id_pemain == 1:
+			_sinkronkan_kondisi_objek(nama_objek, kondisi_objek)
+		elif id_pemain == -1:
+			_sinkronkan_kondisi_objek(nama_objek, kondisi_objek)
+			rpc("_sinkronkan_kondisi_objek", nama_objek, kondisi_objek)
+		else:
+			rpc_id(id_pemain, "_sinkronkan_kondisi_objek", nama_objek, kondisi_objek)
 func hapus_pool_entitas(id_pemain, nama_entitas : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("menghapus pool entitas [%s] pada pemain %s" % [nama_entitas, str(id_pemain)])
 		if id_pemain == 1: _hapus_visibilitas_entitas(nama_entitas)
 		else: rpc_id(id_pemain, "_hapus_visibilitas_entitas", nama_entitas)
+func hapus_pool_objek(id_pemain, nama_objek : String):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		Panku.notify("menghapus pool objek [%s] pada pemain %s" % [nama_objek, str(id_pemain)])
+		if id_pemain == 1: _hapus_visibilitas_objek(nama_objek)
+		else: rpc_id(id_pemain, "_hapus_visibilitas_objek", nama_objek)
 func gunakan_entitas(nama_entitas : String, fungsi : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
@@ -390,6 +427,33 @@ func _pemain_terputus(id_pemain):
 				}
 		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
+@rpc("any_peer") func _tambahkan_objek(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if load(jalur_skena) != null:
+			jumlah_objek += 1
+			var nama_objek = "objek_"+str(jumlah_objek)
+			# INFO : tambahkan objek ke array pool_objek
+			pool_objek[nama_objek] = {
+				"jalur_instance": jalur_skena,
+				"id_pengubah": 0,
+				"posisi"	: posisi,
+				"rotasi"	: rotasi,
+				"properti"	: properti
+			}
+			# Timeline : spawn objek
+			if not server.mode_replay:
+				if not server.timeline.has(server.timeline["data"]["frame"]):
+					server.timeline[server.timeline["data"]["frame"]] = {}
+				server.timeline[server.timeline["data"]["frame"]][nama_objek] = {
+					"tipe": 		"spawn",
+					"tipe_objek":	"objek",
+					"sumber": 		jalur_skena,
+					"posisi":		posisi,
+					"rotasi":		rotasi,
+					"properti":		properti,
+				}
+		else: print("[Galat] objek %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
+	else: print("[Galat] fungsi [tambahkan_objek] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = permainan.dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null and t_entitas.has_method(fungsi):
@@ -429,6 +493,32 @@ func _pemain_terputus(id_pemain):
 			if permainan.dunia.get_node("pemain").get_child(p).id_pemain != id_pengatur:
 				if cek_visibilitas_pool_entitas[permainan.dunia.get_node("pemain").get_child(p).id_pemain][nama_entitas] == "spawn":
 					sinkronkan_kondisi_entitas(permainan.dunia.get_node("pemain").get_child(p).id_pemain, nama_entitas, kondisi_entitas)
+@rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:
+		for p in properti_objek.size():
+			if properti_objek[p][0] == "position":		pool_objek[nama_objek]["posisi"] = properti_objek[p][1]
+			elif properti_objek[p][0] == "rotation":	pool_objek[nama_objek]["rotasi"] = properti_objek[p][1]
+			elif pool_objek[nama_objek].get(properti_objek[p][0]) != null:
+				pool_objek[nama_objek][properti_objek[p][0]] = properti_objek[p][1]
+			else:
+				for k in pool_objek[nama_objek]["properti"].size():
+					if pool_objek[nama_objek]["properti"][k][0] == properti_objek[p][0]:
+						pool_objek[nama_objek]["properti"][k][1] = properti_objek[p][1]
+		# Timeline : sinkronkan objek (rekam)
+		if not server.mode_replay:
+			if not server.timeline.has(server.timeline["data"]["frame"]):
+				server.timeline[server.timeline["data"]["frame"]] = {}
+			server.timeline[server.timeline["data"]["frame"]][nama_objek] = {
+				"tipe": 		"sinkron",
+				"posisi":		pool_objek[nama_objek]["posisi"],
+				"rotasi":		pool_objek[nama_objek]["rotasi"],
+				"properti":		pool_objek[nama_objek]["properti"],
+			}
+		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
+		for p in permainan.dunia.get_node("pemain").get_child_count():
+			if permainan.dunia.get_node("pemain").get_child(p).id_pemain != id_pengatur:
+				if cek_visibilitas_pool_objek[permainan.dunia.get_node("pemain").get_child(p).id_pemain][nama_objek] == "spawn":
+					sinkronkan_kondisi_objek(permainan.dunia.get_node("pemain").get_child(p).id_pemain, nama_objek, properti_objek)
 @rpc("authority") func _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemroses_entitas : int, nama_entitas : String, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) == null and load(jalur_instance_entitas) != null:
@@ -442,12 +532,30 @@ func _pemain_terputus(id_pemain):
 			permainan.dunia.get_node("entitas").add_child(tmp_entitas, true)
 			tmp_entitas.global_transform.origin = posisi_entitas
 			tmp_entitas.rotation = rotasi_entitas
+@rpc("authority") func _spawn_visibilitas_objek(jalur_instance_objek, nama_objek : String, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array):
+	if permainan != null and permainan.dunia != null:
+		if permainan.dunia.get_node("objek").get_node_or_null(nama_objek) == null and load(jalur_instance_objek) != null:
+			var tmp_objek : Node3D = load(jalur_instance_objek).instantiate()
+			var tmp_nama = tmp_objek.name
+			tmp_objek.name = nama_objek
+			for p in properti_objek.size():
+				if tmp_objek.get(properti_objek[p][0]) != null: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
+				else: print("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
+			permainan.dunia.get_node("objek").add_child(tmp_objek, true)
+			tmp_objek.global_transform.origin = posisi_objek
+			tmp_objek.rotation = rotasi_objek
 @rpc("authority") func _sinkronkan_kondisi_entitas(nama_entitas : String, kondisi_entitas : Array):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) != null:
 			for p in kondisi_entitas.size():
 				if permainan.dunia.get_node("entitas").get_node(nama_entitas).get(kondisi_entitas[p][0]) != null:
 					permainan.dunia.get_node("entitas").get_node(nama_entitas).set(kondisi_entitas[p][0], kondisi_entitas[p][1])
+@rpc("authority") func _sinkronkan_kondisi_objek(nama_objek : String, kondisi_objek : Array):
+	if permainan != null and permainan.dunia != null:
+		if permainan.dunia.get_node("objek").get_node_or_null(nama_objek) != null:
+			for p in kondisi_objek.size():
+				if permainan.dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
+					permainan.dunia.get_node("objek").get_node(nama_objek).set(kondisi_objek[p][0], kondisi_objek[p][1])
 @rpc("authority") func _hapus_visibilitas_entitas(nama_entitas : String):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) != null:
@@ -455,9 +563,18 @@ func _pemain_terputus(id_pemain):
 				permainan.dunia.get_node("entitas").get_node(nama_entitas).hapus()
 			else:
 				permainan.dunia.get_node("entitas").get_node(nama_entitas).queue_free()
+@rpc("authority") func _hapus_visibilitas_objek(nama_objek : String):
+	if permainan != null and permainan.dunia != null:
+		if permainan.dunia.get_node("objek").get_node_or_null(nama_objek) != null:
+			if permainan.dunia.get_node("objek").get_node(nama_objek).has_method("hapus"):
+				permainan.dunia.get_node("objek").get_node(nama_objek).hapus()
+			else:
+				permainan.dunia.get_node("objek").get_node(nama_objek).queue_free()
 @rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi):
+	var jalur_objek = ""
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if pool_entitas.has(nama_objek):
+			jalur_objek = "/root/dunia/entitas/"
 			if pool_entitas[nama_objek]["id_pengubah"] == id_pengubah:
 				if !fungsi:
 					# rpc atur ulang id_pengubah di semua peer
@@ -481,8 +598,22 @@ func _pemain_terputus(id_pemain):
 					# atur id_proses dengan id_pengubah
 					pool_entitas[nama_objek]["id_proses"] = id_pengubah
 			else: return
+		elif pool_objek.has(nama_objek):
+			jalur_objek = "/root/dunia/objek/"
+			if pool_objek[nama_objek]["id_pengubah"] == id_pengubah:
+				if !fungsi:
+					# rpc atur ulang id_pengubah di semua peer
+					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", 0]])
+					# atur ulang id_pengubah
+					pool_objek[nama_objek]["id_pengubah"] = 0
+			elif pool_objek[nama_objek]["id_pengubah"] == 0:
+				if fungsi:
+					# rpc atur id_pengubah sebagai pengubah objek ke semua peer
+					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", id_pengubah]])
+					# atur id_pengubah dengan id_pengubah
+					pool_objek[nama_objek]["id_pengubah"] = id_pengubah
+			else: return
 		
-		var jalur_objek = "/root/dunia/entitas/"
 		# TODO : kirim properti kustom yang bisa di-edit mis: skala, warna, dll..
 		if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
 		else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)

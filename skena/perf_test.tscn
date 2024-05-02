@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://dodo3q7h6ujaa"]
 
 [ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
-[ext_resource type="Script" path="res://skrip/entitas/free_look_camera.gd" id="1_n5sj6"]
+[ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
 [ext_resource type="PackedScene" uid="uid://dfoyqfg2gqaff" path="res://map/pulau.tscn" id="2_gor8n"]
 
 [sub_resource type="GDScript" id="GDScript_5cxiv"]

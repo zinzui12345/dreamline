@@ -1,7 +1,10 @@
 # 01/11/23
-extends Node3D
+extends entitas
 
 class_name pencemaran
+
+const jalur_instance = "res://skena/entitas/pencemaran.scn"
+const sinkron_kondisi = []
 
 var ketahanan = 9999			# resistansi/nyawa
 var serangan = 7				# kerusakan/damage
@@ -21,22 +24,10 @@ var radius_pencemaran = 0.3		# jarak penambahan area pencemaran di tiap interval
 #  ketahanan dikurangi dengan jumlah serangan_penyerang selama ketahanan > 0
 #  luas area_pencemaran akan berkurang dengan jumlah (serangan_penyerang * radius_pencemaran) selama luas area_pencemaran > 1
 
-func _ready():
+func mulai():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		server.objek[str(get_path())] = \
-		{
-			"pemilik": 0,
-			"sumber": "res://skena/entitas/pencemaran.scn",
-			"global_transform:origin": global_transform.origin,
-			"rotation_degrees": rotation_degrees
-		}
-		
 		$interval_pencemaran.wait_time = interval_pencemaran * 60
 		$interval_spawn.wait_time = interval_spawn * 60
-		
-		#if not server.mode_replay: fungsikan(true) # TODO : hanya fungsikan pada pemain tertentu yang berada pada satu potongan
-	elif server.objek.has(str(get_path())): pass
-	else: queue_free()
 
 func _ketika_interval_pencemaran(): pass
 func _ketika_interval_spawn():
