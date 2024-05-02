@@ -362,6 +362,7 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
 	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
+	await get_tree().create_timer(0.25).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	# INFO : ambil screenshot placeholder karakter berdasarkan data kemudian simpan sebagai gambar
 	get_node("%karakter").visible = true
 	var gambar_karakter : Image
@@ -376,7 +377,7 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
 	_atur_persentase_memuat(5)
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.25).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	data["posisi"] = posisi
 	data["rotasi"] = rotasi
 	var tmp_perintah = Callable(self, "_muat_map")
