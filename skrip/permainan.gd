@@ -1496,13 +1496,22 @@ func _sembunyikan_pesan():
 		$hud/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
 func _tampilkan_panel_informasi():
-	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
-	if $daftar_server.visible:
-		_sembunyikan_daftar_server()
-		await get_tree().create_timer(0.6).timeout
-	if $karakter.visible: 
-		_sembunyikan_setelan_karakter()
-		await get_tree().create_timer(0.5).timeout
+	if $pemutar_musik.visible:
+		$pemutar_musik/animasi.play("sembunyikan")
+		await get_tree().create_timer($pemutar_musik/animasi.current_animation_length).timeout
+	if $setelan.visible:
+		_sembunyikan_setelan_permainan()
+	if $buat_server.visible:
+		$buat_server/animasi.play("animasi_panel/tutup")
+		await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
+	elif $daftar_server.visible:
+		client.hentikan_pencarian_server()
+		$daftar_server/animasi.play("animasi_panel/tutup")
+		_reset_daftar_server_lan()
+		await get_tree().create_timer($daftar_server/animasi.current_animation_length).timeout
+	elif $karakter.visible:
+		$karakter/animasi.play("animasi_panel/tutup")
+		await get_tree().create_timer($karakter/animasi.current_animation_length).timeout
 	$menu_utama/animasi.play("sembunyikan")
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$informasi/animasi.play("tampilkan")
@@ -1512,9 +1521,10 @@ func _sembunyikan_panel_informasi():
 	$menu_utama/animasi.play("tampilkan")
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _ketika_menekan_link_informasi(tautan : String):
-	var t_inf_link = TranslationServer.translate("%tinggalkan_permainan")
-	var fungsi_buka_tautan = Callable(OS, "shell_open")
-	_tampilkan_popup_konfirmasi_peringatan($informasi/panel/oke, fungsi_buka_tautan.bind(tautan), t_inf_link % [tautan])
+	if tautan != "":
+		var t_inf_link = TranslationServer.translate("%tinggalkan_permainan")
+		var fungsi_buka_tautan = Callable(OS, "shell_open")
+		_tampilkan_popup_konfirmasi_peringatan($informasi/panel/oke, fungsi_buka_tautan.bind(tautan), t_inf_link % [tautan])
 func _laporkan_bug(): _ketika_menekan_link_informasi("https://github.com/zinzui12345/dreamline/issues")
 func _sarankan_fitur():
 	pass

@@ -1,4 +1,4 @@
-[gd_scene load_steps=282 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=288 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -1145,22 +1145,22 @@ border_width_right = 2
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bb8i"]
-bg_color = Color(0.4, 0.4, 0.4, 1)
-border_width_left = 8
+bg_color = Color(0.419608, 1, 0.596078, 1)
+border_width_left = 90
 border_width_right = 8
-border_color = Color(0.4, 0.4, 0.4, 1)
+border_color = Color(0.419608, 1, 0.596078, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0irj"]
-bg_color = Color(0.247059, 0.247059, 0.247059, 1)
-border_width_left = 8
+bg_color = Color(0.21, 0.7, 0.357, 1)
+border_width_left = 90
 border_width_right = 8
-border_color = Color(0.247059, 0.247059, 0.247059, 1)
+border_color = Color(0.21, 0.7, 0.357, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tsova"]
-bg_color = Color(0.584314, 0.584314, 0.584314, 1)
-border_width_left = 10
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 90
 border_width_right = 10
-border_color = Color(0.584314, 0.584314, 0.584314, 1)
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pg4ow"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -4196,7 +4196,7 @@ _data = {
 bg_color = Color(0, 0, 0, 0.8)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_705t2"]
-bg_color = Color(1, 1, 0.976471, 0.8)
+bg_color = Color(1, 1, 1, 0.980392)
 
 [sub_resource type="Animation" id="Animation_261f6"]
 resource_name = "proses"
@@ -4289,7 +4289,7 @@ script/source = "extends Control
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ods8j"]
-bg_color = Color(0.45098, 0.45098, 0.439216, 1)
+bg_color = Color(0.211765, 0.701961, 0.356863, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1kttg"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -4309,7 +4309,7 @@ border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_w2hc4"]
 resource_name = "tampilkan"
-length = 0.4
+length = 0.6
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -4318,7 +4318,7 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.4),
+"times": PackedFloat32Array(0, 0.01, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -4330,7 +4330,7 @@ tracks/1/path = NodePath("panel:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.21, 0.4),
+"times": PackedFloat32Array(0, 0.19, 0.2, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, false, true, true]
@@ -4342,10 +4342,22 @@ tracks/2/path = NodePath("latar:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.3, 0.4),
+"times": PackedFloat32Array(0, 0.01, 0.4, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.2, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_8jjes"]
@@ -4403,16 +4415,22 @@ script/source = "extends Control
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphea"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(1, 0.575, 0.5, 1)
 border_width_left = 80
 border_width_right = 80
-border_color = Color(0.8, 0.8, 0.8, 0)
+border_color = Color(1, 0.576471, 0.501961, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mf4jx"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0.85, 0.380375, 0.2975, 1)
 border_width_left = 85
 border_width_right = 85
-border_color = Color(0.8, 0.8, 0.8, 0)
+border_color = Color(0.85098, 0.380392, 0.298039, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6ho3"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 80
+border_width_right = 10
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1o77"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -4425,18 +4443,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 corner_detail = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8da81"]
-bg_color = Color(0.2, 0.2, 0.2, 1)
-border_width_left = 15
-border_width_top = 10
-border_width_right = 15
-border_width_bottom = 10
-border_color = Color(0.2, 0.2, 0.2, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5sdqg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffx2c"]
 bg_color = Color(0.815686, 0.815686, 0.815686, 1)
@@ -4448,11 +4455,31 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p2ley"]
+bg_color = Color(0.419608, 1, 0.596078, 1)
+border_width_left = 32
+border_width_right = 8
+border_color = Color(0.419608, 1, 0.596078, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3vnvs"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 32
+border_width_right = 8
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bl8y3"]
 bg_color = Color(1, 1, 0.976471, 0.960784)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5u37"]
-bg_color = Color(0.188235, 0.188235, 0.188235, 1)
+bg_color = Color(0.419608, 1, 0.596078, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2vfcn"]
 bg_color = Color(0.4, 0.4, 0.4, 0)
@@ -4460,11 +4487,11 @@ border_width_left = 8
 border_width_right = 8
 border_color = Color(0.4, 0.4, 0.4, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gme35"]
-bg_color = Color(0.4, 0.4, 0.4, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6txo"]
+bg_color = Color(0.470588, 1, 0.470588, 0.501961)
 border_width_left = 8
 border_width_right = 8
-border_color = Color(0.4, 0.4, 0.4, 0)
+border_color = Color(0.470588, 1, 0.470588, 0.501961)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vc703"]
 bg_color = Color(0.4, 0.4, 0.4, 0)
@@ -4478,22 +4505,23 @@ border_width_left = 8
 border_width_right = 8
 border_color = Color(0.4, 0.4, 0.4, 0)
 
-[sub_resource type="Animation" id="Animation_wueqj"]
-resource_name = "batalkan_proses_konfirmasi"
-length = 0.35
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("panel/proses_konfirmasi:value")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.35),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [88.0, 0.0]
-}
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wouw"]
+bg_color = Color(0.85098, 0.380392, 0.298039, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.85098, 0.380392, 0.298039, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qapco"]
+bg_color = Color(1, 0.576471, 0.501961, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(1, 0.576471, 0.501961, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndue1"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="Animation" id="Animation_0p4r8"]
 resource_name = "proses_konfirmasi"
@@ -4511,10 +4539,123 @@ tracks/0/keys = {
 "update": 0,
 "values": [0.0, 100.0]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel/oke:theme_override_colors/font_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel/oke:theme_override_colors/font_pressed_color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel/oke:theme_override_colors/icon_normal_color")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel/oke:theme_override_colors/icon_pressed_color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_ixdyn"]
+resource_name = "proses_konfirmasi"
+length = 0.35
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel/proses_konfirmasi:value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [100.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel/oke:theme_override_colors/font_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.08, 0.19, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel/oke:theme_override_colors/font_pressed_color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.08, 0.19, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel/oke:theme_override_colors/icon_normal_color")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel/oke:theme_override_colors/icon_pressed_color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_n5ce4"]
 _data = {
-"batalkan_proses_konfirmasi": SubResource("Animation_wueqj"),
+"batalkan_proses_konfirmasi": SubResource("Animation_ixdyn"),
 "proses_konfirmasi": SubResource("Animation_0p4r8"),
 "tampilkan": SubResource("Animation_w2hc4"),
 "tutup": SubResource("Animation_8jjes")
@@ -8082,24 +8223,28 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.771
-anchor_right = 0.567826
+anchor_right = 0.498
 anchor_bottom = 1.0
-offset_top = 0.120041
-offset_right = 0.5
-offset_bottom = 6.10352e-05
+offset_top = 0.119995
+offset_right = 1.15198
 grow_horizontal = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath(".")
 focus_neighbor_right = NodePath("../oke")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath("../oke")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_bphea")
 theme_override_styles/hover = SubResource("StyleBoxFlat_mf4jx")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_bphea")
-theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_g6ho3")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 alignment = 0
@@ -8107,14 +8252,13 @@ alignment = 0
 [node name="oke" type="Button" parent="popup_konfirmasi/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.50087
+anchor_left = 0.502
 anchor_top = 0.771
 anchor_right = 1.00087
 anchor_bottom = 1.0
-offset_left = 39.0
-offset_top = 0.120041
-offset_right = -0.5
-offset_bottom = 6.10352e-05
+offset_left = -0.152008
+offset_top = 0.119995
+offset_right = -0.501099
 grow_horizontal = 2
 focus_neighbor_left = NodePath("../batal")
 focus_neighbor_top = NodePath(".")
@@ -8122,7 +8266,12 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath("../batal")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
@@ -8183,20 +8332,24 @@ anchor_bottom = 0.121
 offset_right = 6.10352e-05
 offset_bottom = 0.112
 grow_horizontal = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_8da81")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5sdqg")
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="informasi/panel/panel_atas"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.125
+anchor_right = 0.969643
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 28
 text = "%tentang%"
-horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="tentang" type="RichTextLabel" parent="informasi/panel"]
 layout_mode = 1
@@ -8298,14 +8451,20 @@ focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
 theme_override_colors/font_color = Color(0.164706, 0.207843, 0.180392, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_normal_color = Color(0.188235, 0.231373, 0.203922, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_ffx2c")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p2ley")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3vnvs")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%oke"
 icon = ExtResource("28_s2n4g")
@@ -8403,10 +8562,15 @@ focus_neighbor_bottom = NodePath("../batal")
 focus_next = NodePath("../batal")
 focus_previous = NodePath(".")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_2vfcn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_gme35")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r6txo")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vc703")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_p3ulh")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -8433,11 +8597,18 @@ focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath("../oke")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5wouw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qapco")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ndue1")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%batal"
 icon = ExtResource("14_xsr60")
