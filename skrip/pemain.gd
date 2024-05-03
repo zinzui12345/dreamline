@@ -164,6 +164,7 @@ func _process(delta):
 						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
 							objek_target = _raycast_serangan_a_pemain.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)
+							# TODO : dorong pemain lain
 							if objek_target.get("linear_velocity") != null:
 								karakter.mode_menyerang = "a"
 								karakter.set("menyerang", true)
@@ -276,20 +277,32 @@ func _physics_process(delta):
 	if _target_pemain:
 		pos_target = _raycast_pemain.get_collision_point()
 		objek_target = _raycast_pemain.get_collider()
-		if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and objek_target == _raycast_serangan_a_pemain.get_collider():
+		if karakter.peran == Permainan.PERAN_KARAKTER.Arsitek:
+			# atur posisi pointer
+			if !server.permainan.dunia.get_node("kursor_objek").visible:
+				server.permainan.dunia.get_node("kursor_objek").visible = true
+			server.permainan.dunia.get_node("kursor_objek").global_transform.origin = pos_target
+			# tampilkan tombol buat objek
+			server.permainan.set("tombol_aksi_1", "pasang_objek")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		elif _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and objek_target == _raycast_serangan_a_pemain.get_collider():
 			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
-		if objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
-			match karakter.peran:
-				Permainan.PERAN_KARAKTER.Arsitek:
-					server.permainan.set("tombol_aksi_2", "edit_objek")
-				_:
-					if objek_target.has_method("fokus"): objek_target.fokus()
-					if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
+		if karakter.peran == Permainan.PERAN_KARAKTER.Arsitek and objek_target.is_in_group("dapat_diedit"):
+			server.permainan.set("tombol_aksi_2", "edit_objek")
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+		elif objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
+			if karakter.peran == Permainan.PERAN_KARAKTER.Arsitek:
+				server.permainan.set("tombol_aksi_2", "edit_objek")
+			else:
+				if objek_target.has_method("fokus"): objek_target.fokus()
+				if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
@@ -305,17 +318,7 @@ func _physics_process(delta):
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
-		match karakter.peran:
-			Permainan.PERAN_KARAKTER.Arsitek:
-				# atur posisi pointer
-				if !server.permainan.dunia.get_node("kursor_objek").visible:
-					server.permainan.dunia.get_node("kursor_objek").visible = true
-				server.permainan.dunia.get_node("kursor_objek").global_transform.origin = pos_target
-				# tampilkan tombol edit objek
-				if objek_target.is_in_group("dapat_diedit"):
-					server.permainan.set("tombol_aksi_2", "edit_objek")
-					server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-					server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+	
 	elif is_instance_valid(objek_target):
 		objek_target = null
 		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:

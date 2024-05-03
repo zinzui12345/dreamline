@@ -84,6 +84,7 @@ var tombol_aksi_1 = "lempar_sesuatu" :
 			get_node("kontrol_sentuh/aksi_1/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_1 = ikon
 		match ikon:
+			"pasang_objek":		$hud/bantuan_input/aksi1/teks.text = "%pasang"
 			"dorong_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%dorong"
 			"lempar_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%lempar"
 var tombol_aksi_2 = "angkat_sesuatu" :
