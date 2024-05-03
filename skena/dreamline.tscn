@@ -1,4 +1,4 @@
-[gd_scene load_steps=288 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=303 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -1144,23 +1144,23 @@ border_width_left = 1
 border_width_right = 2
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bb8i"]
-bg_color = Color(0.419608, 1, 0.596078, 1)
-border_width_left = 90
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_otp41"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_width_left = 10
 border_width_right = 8
-border_color = Color(0.419608, 1, 0.596078, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0irj"]
-bg_color = Color(0.21, 0.7, 0.357, 1)
-border_width_left = 90
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8a76m"]
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
+border_width_left = 10
 border_width_right = 8
-border_color = Color(0.21, 0.7, 0.357, 1)
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tsova"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 90
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sa70y"]
+bg_color = Color(0.517647, 0.12549, 0.160784, 1)
+border_width_left = 10
 border_width_right = 10
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0.517647, 0.12549, 0.160784, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pg4ow"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -1170,10 +1170,29 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ssrga"]
+bg_color = Color(0.0509804, 0.431373, 0.992157, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.0509804, 0.431373, 0.992157, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4jonv"]
+bg_color = Color(0.0392157, 0.345098, 0.792157, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.0392157, 0.345098, 0.792157, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpwwp"]
+bg_color = Color(0.0313726, 0.258824, 0.596078, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.0313726, 0.258824, 0.596078, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_etfwu"]
 bg_color = Color(1, 1, 1, 1)
 border_width_left = 1
-border_width_right = 2
+border_width_top = 1
+border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0, 0, 0, 1)
 
@@ -1237,7 +1256,7 @@ corner_radius_bottom_left = 3
 
 [sub_resource type="Animation" id="Animation_3dia6"]
 resource_name = "tampilkan_daftar_server"
-length = 0.6
+length = 0.4
 step = 0.005
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1246,7 +1265,7 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, false]
@@ -1258,7 +1277,7 @@ tracks/1/path = NodePath("panel/panel_input:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -1270,7 +1289,7 @@ tracks/2/path = NodePath("panel:anchor_top")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, -1.0, -1.0]
@@ -1282,7 +1301,7 @@ tracks/3/path = NodePath("panel:anchor_bottom")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0, 0.0]
@@ -1294,7 +1313,7 @@ tracks/4/path = NodePath("panel:grow_vertical")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -1306,7 +1325,7 @@ tracks/5/path = NodePath("../menu_utama/menu/Panel/gabung_server:disabled")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.595, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.395, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, false, false]
@@ -1318,7 +1337,7 @@ tracks/6/path = NodePath("../daftar_server:visible")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -1330,7 +1349,7 @@ tracks/7/path = NodePath("../daftar_server/panel:anchor_top")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0, 0.0]
@@ -1342,7 +1361,7 @@ tracks/8/path = NodePath("../daftar_server/panel:anchor_bottom")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [2.0, 2.0, 1.0, 1.0]
@@ -1354,7 +1373,7 @@ tracks/9/path = NodePath("../daftar_server/panel:grow_vertical")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
@@ -1366,7 +1385,7 @@ tracks/10/path = NodePath("../menu_utama/menu/Panel/buat_server:disabled")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.595, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.395, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -1378,7 +1397,7 @@ tracks/11/path = NodePath("../menu_utama/menu/Panel/karakter:disabled")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.595, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.395, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -1386,7 +1405,7 @@ tracks/11/keys = {
 
 [sub_resource type="Animation" id="Animation_6ksid"]
 resource_name = "tampilkan_daftar_server"
-length = 0.6
+length = 0.4
 step = 0.005
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1395,7 +1414,7 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.295, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.38, 0.385, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -1407,7 +1426,7 @@ tracks/1/path = NodePath("panel/panel_input:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -1419,7 +1438,7 @@ tracks/2/path = NodePath("panel:anchor_top")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.385, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, -1.0, -1.0]
@@ -1431,7 +1450,7 @@ tracks/3/path = NodePath("panel:anchor_bottom")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.385, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0, 0.0]
@@ -1443,7 +1462,7 @@ tracks/4/path = NodePath("panel:grow_vertical")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -1455,7 +1474,7 @@ tracks/5/path = NodePath("../menu_utama/menu/Panel/karakter:disabled")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.595, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.395, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, false, false]
@@ -1467,7 +1486,7 @@ tracks/6/path = NodePath("../karakter:visible")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -1479,7 +1498,7 @@ tracks/7/path = NodePath("../karakter/panel:anchor_top")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.385, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [1.0, 1.0, 0.0, 0.0]
@@ -1491,7 +1510,7 @@ tracks/8/path = NodePath("../karakter/panel:anchor_bottom")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.385, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [2.0, 2.0, 1.0, 1.0]
@@ -1503,7 +1522,7 @@ tracks/9/path = NodePath("../karakter/panel:grow_vertical")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
@@ -1515,7 +1534,7 @@ tracks/10/path = NodePath("../menu_utama/menu/Panel/buat_server:disabled")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.595, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.395, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -1527,7 +1546,7 @@ tracks/11/path = NodePath("../menu_utama/menu/Panel/gabung_server:disabled")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 0.005, 0.595, 0.6),
+"times": PackedFloat32Array(0, 0.005, 0.395, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -1845,6 +1864,24 @@ _data = {
 "tutup": SubResource("Animation_1vkyc")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d10v8"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbtue"]
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2qeoj"]
+bg_color = Color(0.517647, 0.12549, 0.160784, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.517647, 0.12549, 0.160784, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pl8u"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
 border_width_left = 15
@@ -1945,7 +1982,7 @@ _data = {
 
 [sub_resource type="Animation" id="Animation_dccsk"]
 resource_name = "sembunyikan"
-length = 0.6
+length = 0.4
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1954,7 +1991,7 @@ tracks/0/path = NodePath("panel:anchor_top")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.37, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0]
@@ -1966,7 +2003,7 @@ tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.31, 0.6),
+"times": PackedFloat32Array(0, 0.37, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -1978,7 +2015,7 @@ tracks/2/path = NodePath("panel:anchor_bottom")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.37, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 2.0, 2.0]
@@ -1990,7 +2027,7 @@ tracks/3/path = NodePath("panel:grow_vertical")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
@@ -2002,7 +2039,7 @@ tracks/4/path = NodePath("../menu_utama/menu/Panel/buat_server:disabled")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.35, 0.36, 0.6),
+"times": PackedFloat32Array(0, 0.01, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
@@ -2014,7 +2051,7 @@ tracks/5/path = NodePath("../buat_server/panel:anchor_top")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.37, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [-1.0, 0.0, 0.0]
@@ -2026,7 +2063,7 @@ tracks/6/path = NodePath("../buat_server/panel:anchor_bottom")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.6),
+"times": PackedFloat32Array(0, 0.37, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0]
@@ -2038,7 +2075,7 @@ tracks/7/path = NodePath("../buat_server/panel:grow_vertical")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2050,7 +2087,7 @@ tracks/8/path = NodePath("../buat_server:visible")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.6),
+"times": PackedFloat32Array(0, 0.01, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -2062,7 +2099,7 @@ tracks/9/path = NodePath("../buat_server/panel/panel_input:visible")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.6),
+"times": PackedFloat32Array(0, 0.05, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -2074,7 +2111,7 @@ tracks/10/path = NodePath("../buat_server/panel/batal:visible")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, true]
@@ -2086,7 +2123,7 @@ tracks/11/path = NodePath("../buat_server/panel/mulai:visible")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, true]
@@ -2098,7 +2135,7 @@ tracks/12/path = NodePath("../menu_utama/menu/Panel/gabung_server:disabled")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.35, 0.36, 0.6),
+"times": PackedFloat32Array(0, 0.01, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
@@ -2110,7 +2147,7 @@ tracks/13/path = NodePath("../menu_utama/menu/Panel/karakter:disabled")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.35, 0.36, 0.6),
+"times": PackedFloat32Array(0, 0.01, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
@@ -2118,7 +2155,7 @@ tracks/13/keys = {
 
 [sub_resource type="Animation" id="Animation_bxgbk"]
 resource_name = "tampilkan_karakter"
-length = 0.8
+length = 0.4
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -2127,7 +2164,7 @@ tracks/0/path = NodePath(".:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.39, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.37, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -2139,7 +2176,7 @@ tracks/1/path = NodePath("panel:grow_vertical")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2151,7 +2188,7 @@ tracks/2/path = NodePath("panel:anchor_top")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, -1.0, -1.0]
@@ -2163,7 +2200,7 @@ tracks/3/path = NodePath("panel:anchor_bottom")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 0.0, 0.0]
@@ -2175,7 +2212,7 @@ tracks/4/path = NodePath("../karakter:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -2187,7 +2224,7 @@ tracks/5/path = NodePath("../karakter/panel:grow_vertical")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2199,7 +2236,7 @@ tracks/6/path = NodePath("../karakter/panel:anchor_top")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 0.0, 0.0]
@@ -2211,7 +2248,7 @@ tracks/7/path = NodePath("../karakter/panel:anchor_bottom")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [2.0, 1.0, 1.0]
@@ -2223,7 +2260,7 @@ tracks/8/path = NodePath("../menu_utama/menu/Panel/karakter:disabled")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.39, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.37, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
@@ -2235,7 +2272,7 @@ tracks/9/path = NodePath("../menu_utama/menu/Panel/buat_server:disabled")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.4, 0.41, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
@@ -2247,7 +2284,7 @@ tracks/10/path = NodePath("../menu_utama/menu/Panel/gabung_server:disabled")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.4, 0.41, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
@@ -2462,6 +2499,42 @@ ambient_light_color = Color(0.776471, 0.776471, 0.776471, 1)
 ambient_light_sky_contribution = 0.0
 tonemap_mode = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ruhgq"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aax07"]
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_swl0v"]
+bg_color = Color(0.517647, 0.12549, 0.160784, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.517647, 0.12549, 0.160784, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8b42g"]
+bg_color = Color(0.423529, 0.458824, 0.490196, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.423529, 0.458824, 0.490196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bq6he"]
+bg_color = Color(0.286275, 0.313726, 0.341176, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.286275, 0.313726, 0.341176, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_db4a1"]
+bg_color = Color(0.203922, 0.227451, 0.25098, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.203922, 0.227451, 0.25098, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a0684"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpycx"]
@@ -2586,7 +2659,7 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_ptimv"]
 resource_name = "tampilkan_server"
-length = 0.8
+length = 0.4
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -2595,7 +2668,7 @@ tracks/0/path = NodePath("panel:anchor_top")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0]
@@ -2607,7 +2680,7 @@ tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.41, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -2619,7 +2692,7 @@ tracks/2/path = NodePath("panel:anchor_bottom")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 2.0, 2.0]
@@ -2631,7 +2704,7 @@ tracks/3/path = NodePath("panel:grow_vertical")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
@@ -2643,7 +2716,7 @@ tracks/4/path = NodePath("../buat_server:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -2655,7 +2728,7 @@ tracks/5/path = NodePath("../buat_server/panel:grow_vertical")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2667,7 +2740,7 @@ tracks/6/path = NodePath("../buat_server/panel:anchor_bottom")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0]
@@ -2679,7 +2752,7 @@ tracks/7/path = NodePath("../menu_utama/menu/Panel/gabung_server:disabled")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.79, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -2691,7 +2764,7 @@ tracks/8/path = NodePath("../buat_server/panel:anchor_top")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [-1.0, 0.0, 0.0]
@@ -2703,7 +2776,7 @@ tracks/9/path = NodePath("../menu_utama/menu/Panel/buat_server:disabled")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.79, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -2715,7 +2788,7 @@ tracks/10/path = NodePath("../menu_utama/menu/Panel/karakter:disabled")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.79, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -2727,7 +2800,7 @@ tracks/11/path = NodePath("../buat_server/panel/batal:visible")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, true]
@@ -2739,7 +2812,7 @@ tracks/12/path = NodePath("../buat_server/panel/mulai:visible")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, true]
@@ -2751,7 +2824,7 @@ tracks/13/path = NodePath("../buat_server/panel/panel_input:visible")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 0.09, 0.1, 0.8),
+"times": PackedFloat32Array(0, 0.09, 0.1, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, false, true, true]
@@ -2759,7 +2832,7 @@ tracks/13/keys = {
 
 [sub_resource type="Animation" id="Animation_vesl1"]
 resource_name = "tampilkan_server"
-length = 0.8
+length = 0.4
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -2768,7 +2841,7 @@ tracks/0/path = NodePath("panel:anchor_top")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0]
@@ -2780,7 +2853,7 @@ tracks/1/path = NodePath(".:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.41, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
@@ -2792,7 +2865,7 @@ tracks/2/path = NodePath("panel:anchor_bottom")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 2.0, 2.0]
@@ -2804,7 +2877,7 @@ tracks/3/path = NodePath("panel:grow_vertical")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [1, 1]
@@ -2816,7 +2889,7 @@ tracks/4/path = NodePath("../daftar_server:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -2828,7 +2901,7 @@ tracks/5/path = NodePath("../daftar_server/panel:grow_vertical")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.8),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 0]
@@ -2840,7 +2913,7 @@ tracks/6/path = NodePath("../daftar_server/panel:anchor_bottom")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [0.0, 1.0, 1.0]
@@ -2852,7 +2925,7 @@ tracks/7/path = NodePath("../menu_utama/menu/Panel/gabung_server:disabled")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.79, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -2864,7 +2937,7 @@ tracks/8/path = NodePath("../daftar_server/panel:anchor_top")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.8),
+"times": PackedFloat32Array(0, 0.38, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [-1.0, 0.0, 0.0]
@@ -2876,7 +2949,7 @@ tracks/9/path = NodePath("../menu_utama/menu/Panel/buat_server:disabled")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.79, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -2888,7 +2961,7 @@ tracks/10/path = NodePath("../menu_utama/menu/Panel/karakter:disabled")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.79, 0.8),
+"times": PackedFloat32Array(0, 0.01, 0.39, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false]
@@ -4289,17 +4362,18 @@ script/source = "extends Control
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ods8j"]
-bg_color = Color(0.211765, 0.701961, 0.356863, 1)
+bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1kttg"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7ji0"]
-bg_color = Color(0.258824, 0.258824, 0.258824, 1)
-border_color = Color(0.8, 0.8, 0.8, 0)
+bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
+border_color = Color(0.258824, 0.258824, 0.258824, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nas3a"]
+bg_color = Color(0.0588235, 0.317647, 0.196078, 1)
 border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bk8sk"]
@@ -4415,22 +4489,40 @@ script/source = "extends Control
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphea"]
-bg_color = Color(1, 0.575, 0.5, 1)
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
 border_width_left = 80
 border_width_right = 80
-border_color = Color(1, 0.576471, 0.501961, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mf4jx"]
-bg_color = Color(0.85, 0.380375, 0.2975, 1)
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
 border_width_left = 85
 border_width_right = 85
-border_color = Color(0.85098, 0.380392, 0.298039, 1)
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6ho3"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.517647, 0.12549, 0.160784, 1)
 border_width_left = 80
 border_width_right = 10
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0.517647, 0.12549, 0.160784, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bb8i"]
+bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
+border_width_left = 90
+border_width_right = 8
+border_color = Color(0.0980392, 0.529412, 0.329412, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0irj"]
+bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
+border_width_left = 90
+border_width_right = 8
+border_color = Color(0.0784314, 0.423529, 0.262745, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tsova"]
+bg_color = Color(0.0588235, 0.317647, 0.196078, 1)
+border_width_left = 90
+border_width_right = 10
+border_color = Color(0.0588235, 0.317647, 0.196078, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1o77"]
 bg_color = Color(0, 0, 0, 0.588235)
@@ -4446,30 +4538,30 @@ corner_detail = 10
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5sdqg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffx2c"]
-bg_color = Color(0.815686, 0.815686, 0.815686, 1)
+bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
 border_width_left = 32
 border_width_right = 8
-border_color = Color(0.803922, 0.803922, 0.803922, 1)
+border_color = Color(0.0980392, 0.529412, 0.329412, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p2ley"]
-bg_color = Color(0.419608, 1, 0.596078, 1)
+bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
 border_width_left = 32
 border_width_right = 8
-border_color = Color(0.419608, 1, 0.596078, 1)
+border_color = Color(0.0784314, 0.423529, 0.262745, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3vnvs"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.0588235, 0.317647, 0.196078, 1)
 border_width_left = 32
 border_width_right = 8
-border_color = Color(1, 1, 1, 1)
+border_color = Color(0.0588235, 0.317647, 0.196078, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -4479,7 +4571,7 @@ corner_radius_bottom_left = 5
 bg_color = Color(1, 1, 0.976471, 0.960784)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5u37"]
-bg_color = Color(0.419608, 1, 0.596078, 1)
+bg_color = Color(0.0588235, 0.317647, 0.196078, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2vfcn"]
 bg_color = Color(0.4, 0.4, 0.4, 0)
@@ -4488,10 +4580,10 @@ border_width_right = 8
 border_color = Color(0.4, 0.4, 0.4, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6txo"]
-bg_color = Color(0.470588, 1, 0.470588, 0.501961)
+bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
 border_width_left = 8
 border_width_right = 8
-border_color = Color(0.470588, 1, 0.470588, 0.501961)
+border_color = Color(0.0784314, 0.423529, 0.262745, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vc703"]
 bg_color = Color(0.4, 0.4, 0.4, 0)
@@ -4506,87 +4598,22 @@ border_width_right = 8
 border_color = Color(0.4, 0.4, 0.4, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wouw"]
-bg_color = Color(0.85098, 0.380392, 0.298039, 1)
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
 border_width_left = 10
 border_width_right = 8
-border_color = Color(0.85098, 0.380392, 0.298039, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qapco"]
-bg_color = Color(1, 0.576471, 0.501961, 1)
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
 border_width_left = 10
 border_width_right = 8
-border_color = Color(1, 0.576471, 0.501961, 1)
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ndue1"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.517647, 0.12549, 0.160784, 1)
 border_width_left = 10
 border_width_right = 10
-border_color = Color(1, 1, 1, 1)
-
-[sub_resource type="Animation" id="Animation_0p4r8"]
-resource_name = "proses_konfirmasi"
-length = 0.75
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("panel/proses_konfirmasi:value")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.75),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 100.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("panel/oke:theme_override_colors/font_color")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.5, 0.75),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("panel/oke:theme_override_colors/font_pressed_color")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3, 0.5, 0.75),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("panel/oke:theme_override_colors/icon_normal_color")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.15, 0.75),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("panel/oke:theme_override_colors/icon_pressed_color")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.15, 0.75),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(0, 0, 0, 1), Color(0, 0, 0, 1)]
-}
+border_color = Color(0.517647, 0.12549, 0.160784, 1)
 
 [sub_resource type="Animation" id="Animation_ixdyn"]
 resource_name = "proses_konfirmasi"
@@ -4604,53 +4631,22 @@ tracks/0/keys = {
 "update": 0,
 "values": [100.0, 0.0]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("panel/oke:theme_override_colors/font_color")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.08, 0.19, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+
+[sub_resource type="Animation" id="Animation_0p4r8"]
+resource_name = "proses_konfirmasi"
+length = 0.75
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel/proses_konfirmasi:value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.75),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("panel/oke:theme_override_colors/font_pressed_color")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.08, 0.19, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("panel/oke:theme_override_colors/icon_normal_color")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1)]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("panel/oke:theme_override_colors/icon_pressed_color")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 1), Color(1, 1, 1, 1)]
+"values": [0.0, 100.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_n5ce4"]
@@ -5842,66 +5838,80 @@ grow_vertical = 2
 [node name="panel" type="Panel" parent="buat_server"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = -1.0
-anchor_right = 1.003
-offset_bottom = -0.200001
-grow_vertical = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 2.0
+offset_bottom = -0.200012
 theme_override_styles/panel = SubResource("StyleBoxFlat_ard0c")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="buat_server/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_bottom = 0.14
+anchor_top = 0.062
+anchor_bottom = 0.155
 offset_left = 40.0
-offset_top = 39.0
-offset_right = 251.0
+offset_top = -0.187599
+offset_right = 282.0
+offset_bottom = 0.0309982
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 text = "%buat_server"
+vertical_alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="batal" type="Button" parent="buat_server/panel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
+anchor_top = 0.108
 anchor_right = 1.0
+anchor_bottom = 0.108
 offset_left = -450.376
-offset_top = 34.0
+offset_top = -27.7784
 offset_right = -257.706
-offset_bottom = 90.0
+offset_bottom = 28.2216
 focus_neighbor_right = NodePath("../mulai")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_otp41")
+theme_override_styles/hover = SubResource("StyleBoxFlat_8a76m")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_sa70y")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 alignment = 0
-metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="mulai" type="Button" parent="buat_server/panel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
+anchor_top = 0.108
 anchor_right = 1.0
-offset_left = -226.376
-offset_top = 34.0
-offset_right = -33.376
-offset_bottom = 90.0
+anchor_bottom = 0.108
+offset_left = -225.0
+offset_top = -27.7784
+offset_right = -31.9999
+offset_bottom = 28.2216
 focus_neighbor_left = NodePath("../batal")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ssrga")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4jonv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dpwwp")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%mulai"
 icon = ExtResource("43_p021k")
 alignment = 0
+metadata/_edit_lock_ = true
 
 [node name="panel_input" type="Panel" parent="buat_server/panel"]
 visible = false
@@ -5917,6 +5927,7 @@ offset_right = -0.376038
 offset_bottom = 44.156
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_etfwu")
+metadata/_edit_lock_ = true
 
 [node name="label_nama" type="Label" parent="buat_server/panel/panel_input"]
 layout_mode = 1
@@ -6104,11 +6115,11 @@ mouse_filter = 2
 custom_minimum_size = Vector2(755, 600)
 layout_mode = 1
 anchors_preset = -1
-anchor_top = -1.0
+anchor_top = 1.0
 anchor_right = 1.00253
+anchor_bottom = 2.0
 offset_right = -2.0
 grow_horizontal = 2
-grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ard0c")
 
 [node name="panel_input" type="Panel" parent="daftar_server/panel"]
@@ -6121,24 +6132,26 @@ offset_left = -0.792004
 offset_bottom = -57.2
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_etfwu")
+metadata/_edit_lock_ = true
 
 [node name="batal" type="Button" parent="daftar_server/panel/panel_input"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.001
 anchor_top = 0.536
-anchor_right = 0.283
+anchor_right = 0.001
 anchor_bottom = 0.536
 offset_left = 31.208
 offset_top = -28.032
-offset_right = -0.136017
+offset_right = 223.209
 offset_bottom = 27.968
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_d10v8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bbtue")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_2qeoj")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%batal"
 icon = ExtResource("14_xsr60")
@@ -6149,13 +6162,13 @@ metadata/_edit_use_anchors_ = true
 layout_direction = 2
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.323
+anchor_left = 0.96
 anchor_top = 0.536
-anchor_right = 0.646
+anchor_right = 1.0
 anchor_bottom = 0.536
-offset_left = 0.18399
+offset_left = -504.322
 offset_top = -28.032
-offset_right = 0.367981
+offset_right = -280.001
 offset_bottom = 27.968
 grow_horizontal = 2
 grow_vertical = 2
@@ -6175,20 +6188,21 @@ caret_blink = true
 [node name="sambungkan" type="Button" parent="daftar_server/panel/panel_input"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.687
+anchor_left = 1.0
 anchor_top = 0.536
 anchor_right = 1.0
 anchor_bottom = 0.536
-offset_left = -0.104004
+offset_left = -248.001
 offset_top = -28.0321
 offset_right = -33.0
 offset_bottom = 27.9679
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ssrga")
+theme_override_styles/hover = SubResource("StyleBoxFlat_4jonv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dpwwp")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%sambungkan"
 icon = ExtResource("9_qt3gh")
@@ -6417,21 +6431,22 @@ environment = SubResource("Environment_35sy4")
 [node name="batal" type="Button" parent="karakter/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.456
+anchor_left = 0.997
 anchor_top = 0.1
-anchor_right = 0.699
+anchor_right = 0.997
 anchor_bottom = 0.1
-offset_left = -0.240021
+offset_left = -428.628
 offset_top = -28.0
-offset_right = -0.210022
+offset_right = -236.628
 offset_bottom = 28.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ruhgq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_aax07")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_swl0v")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%batal"
 icon = ExtResource("14_xsr60")
@@ -6441,21 +6456,22 @@ metadata/_edit_lock_ = true
 [node name="simpan" type="Button" parent="karakter/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.729
+anchor_left = 0.997
 anchor_top = 0.1
-anchor_right = 0.972
+anchor_right = 0.997
 anchor_bottom = 0.1
-offset_left = 0.0899658
+offset_left = -212.628
 offset_top = -28.0
-offset_right = 0.119934
+offset_right = -19.6277
 offset_bottom = 28.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
-theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8b42g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bq6he")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_db4a1")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 text = "%simpan"
 icon = ExtResource("11_rwow7")
@@ -7157,6 +7173,7 @@ anchor_bottom = 1.0
 offset_right = 0.000549316
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_itixd")
+metadata/_edit_lock_ = true
 
 [node name="buat_server" type="Button" parent="menu_utama/menu/Panel"]
 layout_mode = 1
@@ -8141,6 +8158,7 @@ focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_1kttg")
@@ -8223,22 +8241,18 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.771
-anchor_right = 0.498
+anchor_right = 0.5
 anchor_bottom = 1.0
 offset_top = 0.119995
-offset_right = 1.15198
+offset_right = -3.05176e-05
 grow_horizontal = 2
 focus_neighbor_left = NodePath(".")
 focus_neighbor_top = NodePath(".")
 focus_neighbor_right = NodePath("../oke")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath("../oke")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_bphea")
@@ -8252,11 +8266,10 @@ alignment = 0
 [node name="oke" type="Button" parent="popup_konfirmasi/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.502
+anchor_left = 0.5
 anchor_top = 0.771
 anchor_right = 1.00087
 anchor_bottom = 1.0
-offset_left = -0.152008
 offset_top = 0.119995
 offset_right = -0.501099
 grow_horizontal = 2
@@ -8266,12 +8279,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath("../batal")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
@@ -8344,7 +8353,7 @@ anchor_right = 0.969643
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.0196078, 0.105882, 0.0666667, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 28
 text = "%tentang%"
@@ -8450,22 +8459,14 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
-theme_override_colors/font_color = Color(0.164706, 0.207843, 0.180392, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(0.188235, 0.231373, 0.203922, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_ffx2c")
 theme_override_styles/hover = SubResource("StyleBoxFlat_p2ley")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_3vnvs")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
 text = "%oke"
 icon = ExtResource("28_s2n4g")
 alignment = 0
@@ -8542,6 +8543,7 @@ offset_bottom = -0.0400085
 theme_override_styles/background = SubResource("StyleBoxFlat_ods8j")
 theme_override_styles/fill = SubResource("StyleBoxFlat_v5u37")
 step = 0.1
+value = 37.3
 show_percentage = false
 
 [node name="oke" type="Button" parent="popup_konfirmasi_peringatan/panel"]
@@ -8563,10 +8565,8 @@ focus_next = NodePath("../batal")
 focus_previous = NodePath(".")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_2vfcn")
@@ -8597,13 +8597,7 @@ focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath("../oke")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_5wouw")

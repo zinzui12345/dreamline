@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 02/05/24 alpha"
+const versi = "Dreamline v1.4.4 03/05/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -219,6 +219,7 @@ func _ready():
 	DialogueManager.dialogue_ended.connect(tutup_dialog)
 	# INFO : (3) tampilkan menu utama
 	$menu_utama/animasi.play("tampilkan")
+	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 	$latar.tampilkan()
 	_mainkan_musik_latar()
@@ -362,7 +363,7 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
 	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
-	await get_tree().create_timer(0.25).timeout # tunda beberapa milidetik supaya animasi ui smooth
+	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	# INFO : ambil screenshot placeholder karakter berdasarkan data kemudian simpan sebagai gambar
 	get_node("%karakter").visible = true
 	var gambar_karakter : Image
@@ -951,6 +952,7 @@ func _tambah_jumlah_pemain_server():	$buat_server/panel/panel_input/jumlah_pemai
 func _kurang_jumlah_pemain_server():	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
 func _sembunyikan_konfigurasi_server():
 	$buat_server/animasi.play("animasi_panel/sembunyikan")
+	await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _tampilkan_daftar_server():
 	if $daftar_server.visible: _sembunyikan_daftar_server()
@@ -959,16 +961,20 @@ func _tampilkan_daftar_server():
 		client.cari_server()
 		if $buat_server.visible:
 			$buat_server/animasi.play("tampilkan_daftar_server")
+			await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
 		elif $karakter.visible:
 			$karakter/animasi.play("tampilkan_server")
 			AudioServer.set_bus_effect_enabled(1, 2, false)
+			await get_tree().create_timer($karakter/animasi.current_animation_length).timeout
 		else:
 			$daftar_server/animasi.play("animasi_panel/tampilkan")
+			await get_tree().create_timer($daftar_server/animasi.current_animation_length).timeout
 		$daftar_server/panel/panel_input/batal.grab_focus()
 func _sembunyikan_daftar_server():
 	client.hentikan_pencarian_server()
 	_reset_daftar_server_lan()
 	$daftar_server/animasi.play("animasi_panel/sembunyikan")
+	await get_tree().create_timer($daftar_server/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/gabung_server.grab_focus()
 func _tambah_server_lan(ip, sys, nama, nama_map, jml_pemain, max_pemain):
 	var server_lan = load("res://ui/server.tscn").instantiate()
@@ -1355,6 +1361,7 @@ func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi/panel/tutup.grab_focus()
 func _tutup_popup_informasi():
 	$popup_informasi/animasi.play("tutup")
+	await get_tree().create_timer($popup_informasi/animasi.current_animation_length).timeout
 	$popup_informasi/panel/teks.text = ""+str(randf())
 	$popup_informasi.target_fokus_setelah.grab_focus()
 func _tampilkan_popup_konfirmasi(tombol_penampil : Button, fungsi : Callable, teks):
@@ -1519,6 +1526,7 @@ func _tampilkan_panel_informasi():
 func _sembunyikan_panel_informasi():
 	$informasi/animasi.play("tutup")
 	$menu_utama/animasi.play("tampilkan")
+	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
 func _ketika_menekan_link_informasi(tautan : String):
 	if tautan != "":
