@@ -359,12 +359,13 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 	if $proses_koneksi.visible:
 		_sembunyikan_proses_koneksi()
 	$menu_utama/animasi.play("sembunyikan")
+	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	$proses_memuat/panel_bawah/animasi.play("tampilkan")
 	$proses_memuat/panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
 	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
-	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout # tunda beberapa milidetik supaya animasi ui smooth
+	await get_tree().create_timer($proses_memuat/panel_bawah/animasi.current_animation_length).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	# INFO : ambil screenshot placeholder karakter berdasarkan data kemudian simpan sebagai gambar
 	get_node("%karakter").visible = true
 	var gambar_karakter : Image
@@ -717,14 +718,16 @@ func _berhenti_mengedit_objek():
 	karakter.get_node("PlayerInput").atur_raycast(true)
 
 # koneksi
-func mulai_server(headless = false, nama = "server"):
+func mulai_server(headless = false, nama = ""):
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
-	server.nama = nama
 	tampilkan_info_koneksi()
 	var nama_server = "localhost"
-	if $buat_server/panel/panel_input/nama_server.text != "":
+	if nama != "":
+		nama_server = nama
+	elif $buat_server/panel/panel_input/nama_server.text != "":
 		nama_server = $buat_server/panel/panel_input/nama_server.text
+	server.nama = nama_server
 	server.jumlah_pemain = $buat_server/panel/panel_input/jumlah_pemain.value
 	_mulai_permainan(nama_server, server.map)
 func gabung_server():

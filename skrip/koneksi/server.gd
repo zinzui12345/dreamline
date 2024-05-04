@@ -271,7 +271,7 @@ func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas
 		else: rpc_id(id_pemain, "_spawn_visibilitas_entitas", jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
 func spawn_pool_objek(id_pemain, nama_objek : String, jalur_instance_objek, id_pengubah, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		Panku.notify("spawn pool objek [%s] pada pemain %s" % [str(jalur_instance_objek), str(id_pemain)])
+		#Panku.notify("spawn pool objek [%s] pada pemain %s" % [str(jalur_instance_objek), str(id_pemain)])
 		if id_pemain == 1: _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek)
 		else: rpc_id(id_pemain, "_spawn_visibilitas_objek", jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek)
 func sinkronkan_kondisi_entitas(id_pemain, nama_entitas : String, kondisi_entitas : Array):
@@ -299,7 +299,7 @@ func hapus_pool_entitas(id_pemain, nama_entitas : String):
 		else: rpc_id(id_pemain, "_hapus_visibilitas_entitas", nama_entitas)
 func hapus_pool_objek(id_pemain, nama_objek : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		Panku.notify("menghapus pool objek [%s] pada pemain %s" % [nama_objek, str(id_pemain)])
+		#Panku.notify("menghapus pool objek [%s] pada pemain %s" % [nama_objek, str(id_pemain)])
 		if id_pemain == 1: _hapus_visibilitas_objek(nama_objek)
 		else: rpc_id(id_pemain, "_hapus_visibilitas_objek", nama_objek)
 func gunakan_entitas(nama_entitas : String, fungsi : String):

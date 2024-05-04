@@ -64,6 +64,7 @@ func _process(delta):
 		
 		# cek apakah kondisi berubah
 		if cek_properti["posisi"] != position:	perubahan_kondisi.append(["position", position])
+		if cek_properti["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		if cek_properti["jarak_render"] != jarak_render:	perubahan_kondisi.append(["jarak_render", jarak_render])
 		
 		# cek kondisi properti kustom
