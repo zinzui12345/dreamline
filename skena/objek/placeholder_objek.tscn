@@ -12,13 +12,15 @@ var mat : Material
 
 func mulai():
 	mat = $bentuk.get_surface_override_material(0).duplicate()
+	mat.uv1_offset = skala / 2
 	$bentuk.set_surface_override_material(0, mat)
 
 var skala : Vector3 = Vector3(1, 1, 1) :
 	set(ubah_skala):
 		$bentuk.mesh.size = ubah_skala
 		$fisik.shape.size = ubah_skala
-		mat.uv1_offset = ubah_skala / 2
+		if mat != null: mat.uv1_offset = ubah_skala / 2
+		jarak_render = max(ubah_skala.x, ubah_skala.y, ubah_skala.z) * 10
 		skala = ubah_skala
 "
 

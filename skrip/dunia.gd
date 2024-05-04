@@ -22,6 +22,9 @@ func hapus_map():
 	if $entitas.get_child_count() > 0:
 		for _entitas in $entitas.get_children():
 			_entitas.queue_free()
+	if $objek.get_child_count() > 0:
+		for _objek in $objek.get_children():
+			_objek.queue_free()
 func hapus_instance_pemain():
 	var jumlah_pemain = $pemain.get_child_count()
 	for p in jumlah_pemain:

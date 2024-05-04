@@ -12,6 +12,7 @@ var id_pengubah = -1:		# id peer/pemain yang mengubah objek ini
 var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 #const properti = []		# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
 #const jalur_instance = ""	# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
+var jarak_render = 10		# jarak maks render
 
 func _ready(): call_deferred("_setup")
 func _setup():
@@ -22,6 +23,7 @@ func _setup():
 				get("jalur_instance"),
 				global_transform.origin,
 				rotation,
+				jarak_render,
 				get("properti").duplicate(true)
 			)
 		queue_free()
@@ -58,10 +60,11 @@ func _process(delta):
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_properti.get("posisi") == null:	cek_properti["posisi"] = Vector3.ZERO
 		if cek_properti.get("rotasi") == null:	cek_properti["rotasi"] = rotation
+		if cek_properti.get("jarak_render") == null:	cek_properti["jarak_render"] = jarak_render
 		
 		# cek apakah kondisi berubah
 		if cek_properti["posisi"] != position:	perubahan_kondisi.append(["position", position])
-		if cek_properti["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
+		if cek_properti["jarak_render"] != jarak_render:	perubahan_kondisi.append(["jarak_render", jarak_render])
 		
 		# cek kondisi properti kustom
 		for p in sinkron_kondisi.size():
@@ -81,6 +84,7 @@ func _process(delta):
 		# simpan perubahan kondisi untuk di-cek lagi
 		cek_properti["posisi"] = position
 		cek_properti["rotasi"] = rotation
+		cek_properti["jarak_render"] = jarak_render
 		
 		# simpan perubahan kondisi properti kustom untuk di-cek lagi
 		for p in sinkron_kondisi.size():

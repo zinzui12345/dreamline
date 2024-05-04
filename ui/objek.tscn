@@ -28,9 +28,8 @@ func pilih():
 					jalur_objek,
 					server.permainan.pasang_objek,
 					Vector3.ZERO,
-					[
-						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
-					]
+					cek_tipe_objek.jarak_render,
+					cek_tipe_objek.properti.duplicate(true)
 				)
 		else:
 			if cek_tipe_objek is entitas:
@@ -51,9 +50,8 @@ func pilih():
 					jalur_objek,
 					server.permainan.pasang_objek,
 					Vector3.ZERO,
-					[
-						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
-					]
+					cek_tipe_objek.jarak_render,
+					cek_tipe_objek.properti.duplicate(true)
 				)
 		server.permainan._tutup_daftar_objek()
 		release_focus()

@@ -4,6 +4,9 @@ var kendaraan : VehicleBody3D
 var jongkok = false
 var lompat 	= false
 
+@export var gunakan_frustum_culling : bool = true
+@export var gunakan_occlusion_culling : bool = true
+
 @export var arah_gerakan := Vector2()
 @export var arah_pandangan := 0.0
 
