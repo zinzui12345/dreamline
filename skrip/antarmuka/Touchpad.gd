@@ -102,7 +102,6 @@ func extract_pointer_index(event):
 		return INACTIVE_IDX
 		
 func process_input(event):
-	# TODO : cek perubahan posisi, kalau posisi sama dari posisi sebelumya, lerp nilai parameter ke 0 atau set self.global_position ke posisi
 	calculate_force(event.position.x - self.global_position.x, event.position.y - self.global_position.y)
 	updateBallPos()
 	
