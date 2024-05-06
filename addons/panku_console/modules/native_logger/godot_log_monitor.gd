@@ -28,13 +28,14 @@ func _ready():
 
 
 func _read_data():
-	while godot_log.get_position() < godot_log.get_length():
-		var new_line = godot_log.get_line()
-		if new_line.begins_with(IGNORE_PREFIX):
-			continue
-		if new_line.begins_with(ERROR_MSG_PREFIX):
-			error_msg_received.emit(new_line.trim_prefix(ERROR_MSG_PREFIX))
-		elif new_line.begins_with(WARNING_MSG_PREFIX):
-			warning_msg_received.emit(new_line.trim_prefix(WARNING_MSG_PREFIX))
-		else:
-			info_msg_received.emit(new_line)
+	if godot_log != null:
+		while godot_log.get_position() < godot_log.get_length():
+			var new_line = godot_log.get_line()
+			if new_line.begins_with(IGNORE_PREFIX):
+				continue
+			if new_line.begins_with(ERROR_MSG_PREFIX):
+				error_msg_received.emit(new_line.trim_prefix(ERROR_MSG_PREFIX))
+			elif new_line.begins_with(WARNING_MSG_PREFIX):
+				warning_msg_received.emit(new_line.trim_prefix(WARNING_MSG_PREFIX))
+			else:
+				info_msg_received.emit(new_line)
