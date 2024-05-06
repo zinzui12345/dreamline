@@ -256,11 +256,14 @@ func putuskan():
 	for frame in indeks_timeline.size(): 
 		if timeline[indeks_timeline[frame]].size() < 1:
 			timeline.erase(indeks_timeline[frame])
+	indeks_timeline.clear()
 	file.store_var(timeline)
 	file.close()
 	# setup pool
 	pool_entitas.clear()
 	pool_objek.clear()
+	cek_visibilitas_pool_entitas.clear()
+	cek_visibilitas_pool_objek.clear()
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
 
@@ -453,7 +456,7 @@ func _pemain_terputus(id_pemain):
 					server.timeline[server.timeline["data"]["frame"]] = {}
 				server.timeline[server.timeline["data"]["frame"]][nama_entitas] = {
 					"tipe": 		"spawn",
-					"tipe_entitas": "entitas",
+					"tipe_objek":	"entitas",
 					"sumber": 		jalur_skena,
 					"posisi":		posisi,
 					"rotasi":		rotasi,

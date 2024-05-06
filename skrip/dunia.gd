@@ -19,6 +19,7 @@ func _ready():
 func hapus_map():
 	if get_node_or_null("lingkungan") != null:
 		get_node("lingkungan").queue_free()
+	server.permainan.map.free()
 	if $entitas.get_child_count() > 0:
 		for _entitas in $entitas.get_children():
 			_entitas.queue_free()

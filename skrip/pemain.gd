@@ -27,36 +27,40 @@ var objek_target : Node3D
 var pos_target : Vector3 # posisi raycast
 
 func atur_pengendali(id):
-	set_multiplayer_authority(id)
-	var kendali = (get_multiplayer_authority() == multiplayer.get_unique_id())
-	#print_debug("get_multiplayer_authority : "+str(get_multiplayer_authority())+" == multiplayer.get_unique_id : "+str(multiplayer.get_unique_id()))
-	#print_debug("kendali : "+str(kendali))
-	set_process(kendali)
-	set_physics_process(kendali)
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
-		karakter.set_process(kendali) # jangan atur/disable ini di server karena untuk timeline
-	karakter.set_physics_process(kendali)
-	karakter._kendalikan(kendali) # gabisa sekedar dipindah ke baris 22
-	#print("skibidi bop bop yes yes yes")
 	await karakter.atur_model()
-	#print("skibidi bop-bop mim mim!")
-	karakter.atur_warna() # ini harus cuma bisa di set kalo proses atur_model udah selesai
-	# INFO : (8b) mulai permainan
-	if kendali:
-		Panku.gd_exprenv.register_env("pemain", self)
-		Panku.notify(TranslationServer.translate("%spawnpemain"))
-		if server.permainan.permukaan != null:
-			server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
-		karakter.get_node("pengamat").atur_mode(1)
-		client.permainan.karakter = karakter
-		client.permainan._tampilkan_permainan()
+	karakter.atur_warna()
+	if not server.mode_replay:
+		set_multiplayer_authority(id)
+		var kendali = (get_multiplayer_authority() == multiplayer.get_unique_id())
+		#print_debug("get_multiplayer_authority : "+str(get_multiplayer_authority())+" == multiplayer.get_unique_id : "+str(multiplayer.get_unique_id()))
+		#print_debug("kendali : "+str(kendali))
+		set_process(kendali)
+		set_physics_process(kendali)
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
+			karakter.set_process(kendali) # jangan atur/disable ini di server karena untuk timeline
+		karakter.set_physics_process(kendali)
+		karakter._kendalikan(kendali) # gabisa sekedar dipindah ke baris 22
 		
-		# INFO : atur layer visibilitas model
-		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, true)
-		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, false)
+		# INFO : (8b) mulai permainan
+		if kendali:
+			Panku.gd_exprenv.register_env("pemain", self)
+			Panku.notify(TranslationServer.translate("%spawnpemain"))
+			if server.permainan.permukaan != null:
+				server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
+			karakter.get_node("pengamat").atur_mode(1)
+			client.permainan.karakter = karakter
+			client.permainan._tampilkan_permainan()
+			
+			# INFO : atur layer visibilitas model
+			get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, true)
+			get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, false)
+		else:
+			get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, false)
+			get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, true)
 	else:
-		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, false)
-		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, true)
+		karakter.set_process(false)
+		karakter.set_physics_process(false)
+		set_multiplayer_authority(1)
 func atur_raycast(nilai):
 	_raycast_pemain.enabled = nilai
 	if nilai == false: _target_pemain = false

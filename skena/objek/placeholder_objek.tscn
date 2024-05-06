@@ -15,7 +15,7 @@ func mulai():
 	mat.uv1_offset = skala / 2
 	$bentuk.set_surface_override_material(0, mat)
 
-var skala : Vector3 = Vector3(1, 1, 1) :
+@export var skala : Vector3 = Vector3(1, 1, 1) :
 	set(ubah_skala):
 		$bentuk.mesh.size = ubah_skala
 		$fisik.shape.size = ubah_skala

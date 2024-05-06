@@ -31,7 +31,7 @@ class_name Permainan
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 
-const versi = "Dreamline v1.4.4 04/05/24 alpha"
+const versi = "Dreamline v1.4.4 06/05/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -74,6 +74,7 @@ var _mode_pandangan_sblm_edit_objek = 1
 var _rotasi_tampilan_objek : Vector3
 var _arah_gestur_tampilan_karakter : Vector2
 var _arah_gestur_tampilan_objek : Vector2
+var _gerakan_gestur_tampilan_objek : Vector2
 var _touchpad_disentuh = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara = Timer.new()
@@ -246,9 +247,13 @@ func _process(delta):
 			)
 	
 	# kontrol rotasi pandangan ketika mengedit objek
-	_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
-	$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
-	$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
+	if $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
+		_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * Konfigurasi.sensitivitasPandangan * delta
+		if _arah_gestur_tampilan_objek != _gerakan_gestur_tampilan_objek:
+			$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
+			$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
+			_arah_gestur_tampilan_objek = Vector2.ZERO
+			_gerakan_gestur_tampilan_objek = _arah_gestur_tampilan_objek
 	
 	# pemutar musik
 	if $pemutar_musik.visible:
@@ -287,7 +292,7 @@ func _process(delta):
 			$hud/daftar_pemain/animasi.play_backwards("tampilkan")
 		
 		if Input.is_action_just_pressed("perdekat_pandangan") or Input.is_action_just_pressed("perjauh_pandangan"):
-			if $hud/daftar_properti_objek/DragPad.kontrol:
+			if _touchpad_disentuh:
 				$pengamat/posisi_mata.fungsi_zoom = true
 			else:
 				$pengamat/posisi_mata.fungsi_zoom = false
@@ -416,8 +421,14 @@ func _muat_map(file_map):
 			var indeks_frame = server.timeline.keys() # berisi indeks seperti nomor frame, dll
 			var alur_waktu = AnimationPlayer.new()
 			var skenario = Animation.new()
+			var pengamat = Camera3D.new()
+			var _fungsi_pengamat : GDScript = load("res://skrip/objek/free_look_camera.gd")
 			alur_waktu.name = "alur_waktu"
+			pengamat.name = "pengamat"
+			pengamat.current = true
+			pengamat.set_script(_fungsi_pengamat)
 			dunia.call_deferred("add_child", alur_waktu)
+			dunia.call_deferred("add_child", pengamat)
 			for frame in indeks_frame:
 				if frame is int and server.timeline[frame] != {}:
 					var indeks_entitas = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
@@ -426,7 +437,7 @@ func _muat_map(file_map):
 						if server.timeline[frame][entitas_] != {}:
 							var data_frame = server.timeline[frame][entitas_]
 							if data_frame.tipe == "spawn":
-								if data_frame.tipe_entitas == "pemain":
+								if data_frame.tipe_objek == "pemain":
 									server.timeline.trek[entitas_] = {}
 									server.timeline.entitas[entitas_] = "pemain"
 									call_deferred("_tambahkan_pemain", entitas_, data_frame.data)
@@ -438,10 +449,10 @@ func _muat_map(file_map):
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
 									# TODO : matikan visibilitas daftar pemain hingga di-sinkron
-								elif data_frame.tipe_entitas == "entitas":
+								elif data_frame.tipe_objek == "entitas":
 									server.timeline.trek[entitas_] = {}
 									server.timeline.entitas[entitas_] = "entitas"
-									server.call_deferred("_tambahkan_entitas", data_frame.sumber, data_frame.posisi, data_frame.rotasi, data_frame.properti)
+									server.call_deferred("spawn_pool_entitas", 1, entitas_, data_frame.sumber, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
 									# buat track animasi
 									server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
 									server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
@@ -540,6 +551,10 @@ func _muat_map(file_map):
 										skenario.length = waktu
 							elif data_frame.tipe == "hapus":
 								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
+			var pustaka_animasi = AnimationLibrary.new()
+			pustaka_animasi.add_animation("skenario", skenario)
+			alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
+			# $root.dunia.get_node("alur_waktu").play("alur_waktu/skenario")
 			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
 	thread.call_deferred("wait_to_finish")
 func _mulai_server_cli():
@@ -588,7 +603,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 				server.timeline[server.timeline["data"]["frame"]] = {}
 			server.timeline[server.timeline["data"]["frame"]][id] = {
 				"tipe": 		"spawn",
-				"tipe_entitas": "pemain",
+				"tipe_objek":	"pemain",
 				"sumber": 		sumber,
 				"data": 		data_pemain
 			}
@@ -606,7 +621,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 		if id == 1:
 			# INFO : (8a) mulai permainan
 			karakter = pemain
-			pemain._kendalikan(true)
+			# sembunyikan proses memuat
 			_tampilkan_permainan()
 		
 	else: print("tidak dapat menambahkan pemain sebelum memuat dunia!")
@@ -770,6 +785,9 @@ func putuskan_server(paksa = false):
 				return
 			else:
 				if not server.mode_replay: server.putuskan()
+				else:
+					dunia.get_node("alur_waktu").queue_free()
+					dunia.get_node("pengamat").queue_free()
 				$menu_utama/menu/Panel/buat_server.grab_focus()
 		elif koneksi == MODE_KONEKSI.CLIENT:
 			client.putuskan_server()
@@ -844,39 +862,36 @@ func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
 		if _touchpad_disentuh:
 			if _arah_sentuhan_touchpad.x == 0:
 				karakter.arah_pandangan.x = 0
+				_arah_gestur_tampilan_objek.x = 0
 				_arah_sentuhan_touchpad.x = arah.x
 			else:
-				if arah.x < _arah_sentuhan_touchpad.x:
-					karakter.arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
-					_arah_sentuhan_touchpad.x = arah.x
-				else:
-					karakter.arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
-					_arah_sentuhan_touchpad.x = arah.x
+				karakter.arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
+				_arah_gestur_tampilan_objek.x = arah.x - _arah_sentuhan_touchpad.x
+				_arah_sentuhan_touchpad.x = arah.x
 			
 			if _arah_sentuhan_touchpad.y == 0:
 				karakter.arah_pandangan.y = 0
+				_arah_gestur_tampilan_objek.y = 0
 				_arah_sentuhan_touchpad.y = arah.y
 			else:
-				if arah.y < _arah_sentuhan_touchpad.y:
-					karakter.arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
-					_arah_sentuhan_touchpad.y = arah.y
-				else:
-					karakter.arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
-					_arah_sentuhan_touchpad.y = arah.y
+				karakter.arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
+				_arah_gestur_tampilan_objek.y = arah.y - _arah_sentuhan_touchpad.y
+				_arah_sentuhan_touchpad.y = arah.y
 			
 			karakter.arah_pandangan.x =  karakter.arah_pandangan.x * 100
 			karakter.arah_pandangan.x = ceil(karakter.arah_pandangan.x)
 			karakter.arah_pandangan.y = -karakter.arah_pandangan.y * 100
 			karakter.arah_pandangan.y = ceil(karakter.arah_pandangan.y)
-		elif $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
-			# selama kontrol_sentuh visible, ini gak work karena _touchpad_disentuh : true, apalagi karena posisinya dibelakang kontrol_sentuh
-			_arah_gestur_tampilan_objek = arah
-		#Panku.notify("sentuh [harus true] : "+str($hud/daftar_properti_objek/DragPad.visible)+" -- arah_gestur_objek : "+str(_arah_gestur_tampilan_objek))
+			_arah_gestur_tampilan_objek.x =  _arah_gestur_tampilan_objek.x * 50
+			_arah_gestur_tampilan_objek.x = ceil(_arah_gestur_tampilan_objek.x)
+			_arah_gestur_tampilan_objek.y = -_arah_gestur_tampilan_objek.y * 50
+			_arah_gestur_tampilan_objek.y = ceil(_arah_gestur_tampilan_objek.y)
 func _ketika_berhenti_mengontrol_arah_pandangan():
 	_touchpad_disentuh = false
 	if is_instance_valid(karakter): # ketika dalam permainan
 		_arah_sentuhan_touchpad = Vector2.ZERO
 		karakter.arah_pandangan = Vector2.ZERO
+		_arah_gestur_tampilan_objek = Vector2.ZERO
 func _ketika_mengontrol_arah_gerak(arah, _analog):
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if arah.y > 0.1 and arah.y <= 1.0:

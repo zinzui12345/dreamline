@@ -5220,10 +5220,10 @@ offset_bottom = 0.00201416
 grow_horizontal = 0
 mouse_default_cursor_shape = 13
 theme_override_styles/panel = SubResource("StyleBoxEmpty_uwd4q")
-script = ExtResource("28_iksfn")
 metadata/_edit_use_anchors_ = true
 
 [node name="Touchpad" parent="hud/daftar_properti_objek/DragPad" instance=ExtResource("14_tax0q")]
+analogName = "arah_pandangan_objek"
 
 [node name="panel_2" type="Panel" parent="hud/daftar_properti_objek"]
 visible = false
@@ -7952,7 +7952,7 @@ offset_top = -48.0
 offset_right = 832.0
 offset_bottom = 16.0
 grow_vertical = 2
-text = "Memuat Dunia...."
+text = "..."
 label_settings = SubResource("LabelSettings_pu4s5")
 vertical_alignment = 1
 
@@ -7986,6 +7986,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/background = SubResource("StyleBoxFlat_e63jo")
 theme_override_styles/fill = SubResource("StyleBoxFlat_n7apc")
+value = 90.0
 show_percentage = false
 metadata/_edit_lock_ = true
 
@@ -8673,8 +8674,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="value_changed" from="hud/daftar_properti_objek/panel/translasi_z" to="." method="_ketika_translasi_z_objek_diubah"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/kurangi_translasi_z" to="." method="_kurang_translasi_z_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/tambah_translasi_z" to="." method="_tambah_translasi_z_objek"]
-[connection signal="gerakan" from="hud/daftar_properti_objek/DragPad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_move" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
+[connection signal="touch_start" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
+[connection signal="touch_stop" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
 [connection signal="value_changed" from="hud/daftar_properti_objek/panel_2/perdekat_objek" to="." method="_ketika_mengubah_jarak_pandangan_objek"]
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
