@@ -744,14 +744,12 @@ func muat_terrain():
 								"pencemaran":
 									var model_vegetasi = load("res://skena/entitas/pencemaran.scn")
 									var vegetation_instance = model_vegetasi.instantiate()
-									# TODO : atur nama
 									vegetation_instance.transform.origin = posisi_distribusi
 									vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
 									add_child(vegetation_instance)
 								"bunga_nektar":
 									var model_vegetasi = load("res://skena/entitas/bunga_nektar.scn")
 									var vegetation_instance = model_vegetasi.instantiate()
-									# TODO : atur nama
 									vegetation_instance.transform.origin = posisi_distribusi
 									vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
 									add_child(vegetation_instance)

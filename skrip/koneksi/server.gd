@@ -99,7 +99,7 @@ func _process(_delta):
 				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
 					timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 			
-			# tentukan visibilitas entitas pada tiap pemain # TODO : tentukan juga visibilitas objek
+			# tentukan visibilitas entitas dan objek pada tiap pemain
 			if permainan.dunia.get_node("pemain").get_child_count() > 0:
 				# loop array pemain
 				for p in permainan.dunia.get_node("pemain").get_child_count():

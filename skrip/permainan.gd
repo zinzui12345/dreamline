@@ -3,35 +3,36 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 | 1.3.6 - Implementasi LAN Server berbasis Cross-Play
+# 07 Jul 2023 | 1.3.5 - Implementasi LAN Server berbasis Cross-Play
 # 04 Agu 2023 | 1.3.6 - Implementasi Timeline
 # 09 Agu 2023 | 1.3.6 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 | 1.3.7 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 11 Agu 2023 | 1.3.6 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
 # 14 Agu 2023 | 1.3.7 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.3.7 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
-# 06 Sep 2023 | 1.3.8 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 06 Sep 2023 | 1.3.7 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 1.3.8 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.3.8 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 1.3.9 - Penambahan entity posisi spawn pemain
+# 23 Sep 2023 | 1.3.8 - Penambahan entity posisi spawn pemain
 # 25 Sep 2023 | 1.3.9 - Penambahan Text Chat
 # 09 Okt 2023 | 1.3.9 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
-# 10 Okt 2023 | 1.4.0 - Penambahan senjata Bola salju raksasa
+# 10 Okt 2023 | 1.3.9 - Penambahan senjata Bola salju raksasa
 # 12 Okt 2023 | 1.4.0 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.0 - Penambahan Mode Edit Objek
-# 21 Okt 2023 | 1.4.1 - Mode Edit Objek telah berhasil di-implementasikan
+# 21 Okt 2023 | 1.4.0 - Mode Edit Objek telah berhasil di-implementasikan
 # 31 Okt 2023 | 1.4.1 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.1 - Implementasi Koneksi Publik menggunakan UPnP
-# 17 Nov 2023 | 1.4.2 - Implementasi Proyektil
+# 17 Nov 2023 | 1.4.1 - Implementasi Proyektil
 # 27 Nov 2023 | 1.4.2 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 # 10 Des 2023 | 1.4.2 - Perbaikan ragdoll karakter
-# 19 Des 2023 | 1.4.3 - Tampilan bar nyawa npc_ai
+# 19 Des 2023 | 1.4.2 - Tampilan bar nyawa npc_ai
 # 04 Jan 2024 | 1.4.3 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.3 - Penambahan Editor Kode
-# 04 Feb 2024 | 1.4.4 - Penerapan pemutar ulang Timeline
+# 04 Feb 2024 | 1.4.3 - Penerapan pemutar ulang Timeline
 # 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
+# 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 
-const versi = "Dreamline v1.4.4 06/05/24 alpha"
+const versi = "Dreamline v1.4.4 10/05/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -149,6 +150,7 @@ func _ready():
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
 		get_tree().get_root().call_deferred("add_child", dunia)
+		dunia.set_process(false)
 	# Muat data karakter
 	if FileAccess.file_exists(Konfigurasi.data_pemain):
 		var file = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
@@ -402,6 +404,7 @@ func _muat_map(file_map):
 	call_deferred("_atur_persentase_memuat", 70)
 	await get_tree().create_timer(0.5).timeout
 	dunia.call_deferred("add_child", map)
+	dunia.call_deferred("set_process", true)
 	if koneksi == MODE_KONEKSI.SERVER:
 		# INFO : (5a) buat server
 		server.call_deferred("buat_koneksi")
@@ -843,6 +846,7 @@ func putuskan_server(paksa = false):
 		
 		koneksi = MODE_KONEKSI.CLIENT
 		karakter = null
+		dunia.set_process(false)
 		dunia.hapus_map()
 		dunia.hapus_instance_pemain()
 		

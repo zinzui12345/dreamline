@@ -10,7 +10,7 @@ var id_pengubah = -1:		# id peer/pemain yang mengubah objek ini
 			set_process(false)
 		id_pengubah = id
 var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membandingkan perubahan
-#const properti = []		# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
+#const properti = []		# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ]) | properti harus di @export!
 #const jalur_instance = ""	# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
 var jarak_render = 10		# jarak maks render
 
