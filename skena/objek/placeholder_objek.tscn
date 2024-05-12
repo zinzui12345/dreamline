@@ -8,9 +8,12 @@ script/source = "extends objek
 const properti = [[\"skala\", Vector3(1, 1, 1)]]
 const jalur_instance = \"res://skena/objek/placeholder_objek.tscn\"
 
-var mat : Material
+@export var mat : Material
+
+# FIXME : $bentuk.mesh duplikat di setiap instance
 
 func mulai():
+	hasilkan_titik_sudut()
 	mat = $bentuk.get_surface_override_material(0).duplicate()
 	mat.uv1_offset = skala / 2
 	$bentuk.set_surface_override_material(0, mat)
@@ -35,6 +38,7 @@ uv1_triplanar = true
 
 [node name="placeholder_objek" type="StaticBody3D" groups=["dapat_diedit"]]
 script = SubResource("GDScript_5ucs2")
+wilayah_render = AABB(-0.5, -0.5, -0.5, 1, 1, 1)
 
 [node name="bentuk" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_kqjb5")

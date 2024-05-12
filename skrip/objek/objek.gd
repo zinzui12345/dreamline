@@ -12,7 +12,12 @@ var id_pengubah = -1:		# id peer/pemain yang mengubah objek ini
 var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 #const properti = []		# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ]) | properti harus di @export!
 #const jalur_instance = ""	# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
-var jarak_render = 10		# jarak maks render
+
+@export var wilayah_render : AABB
+@export var jarak_render = 10		# jarak maks render
+@export var titik_sudut = []		# titik tiap sudut AABB untuk occlusion culling
+@export var cek_titik = 0
+@export var terhalang = false		# simpan kondisi occlusion culling
 
 func _ready(): call_deferred("_setup")
 func _setup():
@@ -29,6 +34,20 @@ func _setup():
 		queue_free()
 	else:
 		mulai()
+
+# hasilkan titik (AABB)
+func hasilkan_titik_sudut():
+	var tmp_aabb = []
+	for titik in 8:
+		var tmp_vektor = wilayah_render.get_endpoint(titik)
+		# sesuaikan posisi AABB dengan titik tengah
+		tmp_vektor.x += wilayah_render.size.x / 2
+		tmp_vektor.z += wilayah_render.size.z / 2
+		# ubah posisi abb menjadi posisi global
+		tmp_vektor = global_position + tmp_vektor
+		# terapkan ke array
+		tmp_aabb.append(tmp_vektor)
+	titik_sudut = tmp_aabb
 
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
 func mulai():

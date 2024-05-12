@@ -39,17 +39,6 @@ extends Node3D
 @export var pengamat : Camera3D :
 	set(kamera):
 		if is_instance_valid(kamera):
-			var tmp_bb_fisik_pengamat = BoxShape3D.new()
-			var tmp_b_fisik_pengamat = CollisionShape3D.new()
-			var tmp_fisik_pengamat = StaticBody3D.new()
-			tmp_fisik_pengamat.name = "target_raycast_culling"
-			kamera.add_child(tmp_fisik_pengamat)
-			tmp_fisik_pengamat.set_collision_layer_value(1, false)
-			tmp_fisik_pengamat.set_collision_layer_value(32, true)
-			tmp_b_fisik_pengamat.name = "fisik"
-			tmp_b_fisik_pengamat.shape = tmp_bb_fisik_pengamat
-			tmp_fisik_pengamat.add_child(tmp_b_fisik_pengamat)
-			tmp_bb_fisik_pengamat.size = Vector3(0.5, 0.5, 0.5)
 			posisi_terakhir = kamera.global_transform.origin
 			rotasi_terakhir = kamera.global_rotation_degrees
 			pengamat = kamera

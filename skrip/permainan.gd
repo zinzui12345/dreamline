@@ -32,7 +32,7 @@ class_name Permainan
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 
-const versi = "Dreamline v1.4.4 10/05/24 alpha"
+const versi = "Dreamline v1.4.4 12/05/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
