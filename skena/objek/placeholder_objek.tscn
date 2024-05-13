@@ -8,20 +8,21 @@ script/source = "extends objek
 const properti = [[\"skala\", Vector3(1, 1, 1)]]
 const jalur_instance = \"res://skena/objek/placeholder_objek.tscn\"
 
+@export var mesh : Mesh
 @export var mat : Material
 
-# FIXME : $bentuk.mesh duplikat di setiap instance
-
 func mulai():
-	hasilkan_titik_sudut()
+	mesh = $bentuk.mesh.duplicate()
 	mat = $bentuk.get_surface_override_material(0).duplicate()
 	mat.uv1_offset = skala / 2
+	$bentuk.mesh = mesh
 	$bentuk.set_surface_override_material(0, mat)
 
 @export var skala : Vector3 = Vector3(1, 1, 1) :
 	set(ubah_skala):
 		$bentuk.mesh.size = ubah_skala
 		$fisik.shape.size = ubah_skala
+		wilayah_render = $bentuk.get_aabb()
 		if mat != null: mat.uv1_offset = ubah_skala / 2
 		jarak_render = max(ubah_skala.x, ubah_skala.y, ubah_skala.z) * 10
 		skala = ubah_skala

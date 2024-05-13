@@ -128,6 +128,7 @@ func _process(delta):
 					raycast_occlusion_culling.look_at(pengamat.global_position)
 					raycast_occlusion_culling.force_raycast_update()
 					var mengenai_sesuatu = await raycast_occlusion_culling.is_colliding()
+					# FIXME : jangan cull ketika posisi pengamat berada didekat objek / titik
 					# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
 					if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == pengamat:
 						m_objek.cek_titik = 0
