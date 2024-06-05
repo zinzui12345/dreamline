@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhj7kwjut5nhm"]
+
+[sub_resource type="Theme" id="Theme_2w82y"]
+LineEdit/font_sizes/font_size = 22
+
+[node name="parameter_3" type="HBoxContainer"]
+
+[node name="nama_parameter" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "x3"
+
+[node name="pemisah" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "
+ "
+
+[node name="nilai_parameter" type="ColorPickerButton" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_2w82y")
+text = "ini warna"
+
+[node name="pemisah2" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = " "

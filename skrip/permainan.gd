@@ -4,35 +4,36 @@ class_name Permainan
 
 ## ChangeLog ##
 # 07 Jul 2023 | 1.3.5 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 1.3.6 - Implementasi Timeline
+# 04 Agu 2023 | 1.3.5 - Implementasi Timeline
 # 09 Agu 2023 | 1.3.6 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
 # 11 Agu 2023 | 1.3.6 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 1.3.7 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 14 Agu 2023 | 1.3.6 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
 # 15 Agu 2023 | 1.3.7 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
 # 06 Sep 2023 | 1.3.7 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 1.3.8 - Implementasi shader karakter menggunakan MToon
+# 18 Sep 2023 | 1.3.7 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 1.3.8 - Perbaikan karakter dan penempatan posisi kamera First Person
 # 23 Sep 2023 | 1.3.8 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 1.3.9 - Penambahan Text Chat
+# 25 Sep 2023 | 1.3.8 - Penambahan Text Chat
 # 09 Okt 2023 | 1.3.9 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
 # 10 Okt 2023 | 1.3.9 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 1.4.0 - Tombol Sentuh Fleksibel
+# 12 Okt 2023 | 1.3.9 - Tombol Sentuh Fleksibel
 # 14 Okt 2023 | 1.4.0 - Penambahan Mode Edit Objek
 # 21 Okt 2023 | 1.4.0 - Mode Edit Objek telah berhasil di-implementasikan
-# 31 Okt 2023 | 1.4.1 - Perbaikan kesalahan kontrol sentuh
+# 31 Okt 2023 | 1.4.0 - Perbaikan kesalahan kontrol sentuh
 # 08 Nov 2023 | 1.4.1 - Implementasi Koneksi Publik menggunakan UPnP
 # 17 Nov 2023 | 1.4.1 - Implementasi Proyektil
-# 27 Nov 2023 | 1.4.2 - Penambahan kemampuan penghindaran npc terhadap musuhnya
+# 27 Nov 2023 | 1.4.1 - Penambahan kemampuan penghindaran npc terhadap musuhnya
 # 10 Des 2023 | 1.4.2 - Perbaikan ragdoll karakter
 # 19 Des 2023 | 1.4.2 - Tampilan bar nyawa npc_ai
-# 04 Jan 2024 | 1.4.3 - Implementasi GPU Instancing pada Vegetasi Terrain
+# 04 Jan 2024 | 1.4.2 - Implementasi GPU Instancing pada Vegetasi Terrain
 # 14 Jan 2024 | 1.4.3 - Penambahan Editor Kode
 # 04 Feb 2024 | 1.4.3 - Penerapan pemutar ulang Timeline
-# 14 Apr 2024 | 1.4.4 - Implementasi Object Pooling pada entitas
+# 14 Apr 2024 | 1.4.3 - Implementasi Object Pooling pada entitas
 # 18 Apr 2024 | 1.4.4 - Penambahan Dialog Informasi
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
+# 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 12/05/24 alpha"
+const versi = "Dreamline v1.4.4 05/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1567,22 +1568,21 @@ func _buka_log():
 	aa.open_window()
 func _tampilkan_konsol(): Panku.toggle_console_action_just_pressed.emit()
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-func tampilkan_editor_kode(nilai):
-	if nilai:
-		# cek apakah berada di menu atau dalam permainan
-		#if $pemutar_musik.visible:
-		#	$pemutar_musik/animasi.play("sembunyikan")
-		#if $daftar_server.visible:
-		#	$daftar_server/animasi.play("animasi_panel/tutup")
-		#if $karakter.visible:
-		#	$karakter/animasi.play("animasi_panel/tutup")
-		#$menu_utama/animasi.play("lipat")
-		
-		$editor_kode/animasi.play("tampilkan")
-	else:
-		#$menu_utama/animasi.play("perluas")
-		
-		$editor_kode/animasi.play("sembunyikan")
+func tampilkan_editor_kode():
+	if !is_instance_valid(karakter):
+		if $pemutar_musik.visible:
+			$pemutar_musik/animasi.play("sembunyikan")
+		if $daftar_server.visible:
+			$daftar_server/animasi.play("animasi_panel/tutup")
+		if $karakter.visible:
+			$karakter/animasi.play("animasi_panel/tutup")
+		$menu_utama/animasi.play("lipat")
+	$blok_kode/animasi.play("tampilkan")
+func tutup_editor_kode():
+	# TODO : hapus node blok kode untuk menguragi penggunaan memori
+	if !is_instance_valid(karakter):
+		$menu_utama/animasi.play("perluas")
+	$blok_kode/animasi.play("sembunyikan")
 func tampilkan_dialog(file_dialog : DialogueResource):
 	var penampil_dialog: Node = load("res://ui/dialog.tscn").instantiate()
 	$dialog.add_child(penampil_dialog)

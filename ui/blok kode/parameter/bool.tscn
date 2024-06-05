@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8gurhpwxpmvj"]
+
+[sub_resource type="GDScript" id="GDScript_r4m4r"]
+script/source = "extends HBoxContainer
+
+func atur_nilai(nilai : bool):
+	if nilai:	$teks_nilai.text = \"benar\"
+	else:		$teks_nilai.text = \"salah\"
+"
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dsvxx"]
+
+[node name="parameter_7" type="HBoxContainer"]
+script = SubResource("GDScript_r4m4r")
+
+[node name="nama_parameter" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "x7"
+
+[node name="pemisah" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = " "
+
+[node name="nilai_parameter" type="CheckButton" parent="."]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_dsvxx")
+
+[node name="teks_nilai" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.132679, 8.39099e-05, 0.185816, 1)
+theme_override_font_sizes/font_size = 22
+text = "salah"
+vertical_alignment = 1
+
+[node name="pemisah2" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = " "
+
+[connection signal="toggled" from="nilai_parameter" to="." method="atur_nilai"]

@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtc8ppx2pysyy"]
+
+[sub_resource type="Theme" id="Theme_2w82y"]
+LineEdit/font_sizes/font_size = 22
+
+[node name="parameter_4" type="HBoxContainer"]
+
+[node name="nama_parameter" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "x4"
+
+[node name="pemisah" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = " "
+
+[node name="nilai_parameter" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_2w82y")
+editable = false
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+drag_and_drop_selection_enabled = false
+
+[node name="pemisah2" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = " "

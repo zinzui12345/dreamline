@@ -1,0 +1,108 @@
+[gd_scene load_steps=7 format=3 uid="uid://rsf7vgy50fpk"]
+
+[ext_resource type="Script" path="res://skrip/blok kode/aksi.gd" id="1_dir5u"]
+[ext_resource type="StyleBox" uid="uid://cdajf56g1psex" path="res://ui/blok kode/warna/aksi.stylebox" id="1_t6cy6"]
+[ext_resource type="Script" path="res://skrip/blok kode/parameter_aksi.gd" id="2_ljb6u"]
+[ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="4_loywf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hckmw"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 0.686275)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n3vc4"]
+
+[node name="aksi" type="Button"]
+theme_override_colors/font_color = Color(0, 0, 0, 0)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = ExtResource("1_t6cy6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_hckmw")
+text = "                                        "
+script = ExtResource("1_dir5u")
+
+[node name="pemisah_vertikal" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="data_aksi" type="VBoxContainer" parent="pemisah_vertikal"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="nama_fungsi_n" type="Label" parent="pemisah_vertikal/data_aksi"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "fungsi"
+vertical_alignment = 1
+
+[node name="nama_fungsi" type="Label" parent="pemisah_vertikal/data_aksi"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = " fungsi(p: Vector3)"
+vertical_alignment = 1
+
+[node name="parameter" type="HBoxContainer" parent="pemisah_vertikal/data_aksi"]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_ljb6u")
+
+[node name="nama" type="Label" parent="pemisah_vertikal/data_aksi/parameter"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = " x"
+vertical_alignment = 1
+
+[node name="data" type="LineEdit" parent="pemisah_vertikal/data_aksi/parameter"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 8
+text = "(0, 9, 0)"
+editable = false
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+
+[node name="edit" type="Button" parent="pemisah_vertikal/data_aksi/parameter"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+theme_override_styles/focus = SubResource("StyleBoxEmpty_n3vc4")
+text = "  edit  "
+
+[node name="geser_keatas" type="Button" parent="pemisah_vertikal"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_loywf")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_n3vc4")
+text = "  ]  "
+
+[node name="geser_kebawah" type="Button" parent="pemisah_vertikal"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_loywf")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_n3vc4")
+text = "  [  "
+
+[node name="hapus" type="Button" parent="pemisah_vertikal"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_loywf")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_n3vc4")
+text = "  x  "
+
+[connection signal="focus_entered" from="." to="." method="pilih"]
+[connection signal="pressed" from="pemisah_vertikal/data_aksi/parameter/edit" to="." method="edit_nilai"]
+[connection signal="pressed" from="pemisah_vertikal/geser_keatas" to="." method="geser_keatas"]
+[connection signal="pressed" from="pemisah_vertikal/geser_kebawah" to="." method="geser_kebawah"]
+[connection signal="pressed" from="pemisah_vertikal/hapus" to="." method="hapus"]

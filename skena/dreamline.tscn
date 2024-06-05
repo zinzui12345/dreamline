@@ -1,4 +1,4 @@
-[gd_scene load_steps=303 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=307 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -74,6 +74,7 @@
 [ext_resource type="Texture2D" uid="uid://rbbpim0jwhdx" path="res://ui/ikon/ikon_lampu.svg" id="66_j76b2"]
 [ext_resource type="Texture2D" uid="uid://b5frug6id5d0s" path="res://ui/ikon/ikon_analog.svg" id="67_5s073"]
 [ext_resource type="Texture2D" uid="uid://bowie8rndsrl3" path="res://ui/ikon/ikon_d-pad.svg" id="68_a41ut"]
+[ext_resource type="PackedScene" uid="uid://d2k86ht18kg0d" path="res://ui/blok kode/panel_kode.tscn" id="72_fg215"]
 [ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 
@@ -4169,6 +4170,94 @@ _data = {
 "tampilkan": SubResource("Animation_0g66h")
 }
 
+[sub_resource type="Animation" id="Animation_mfb3i"]
+resource_name = "sembunyikan"
+length = 0.36
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:anchor_top")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.36),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:anchor_bottom")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.36),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 2.0, 2.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.35, 0.36),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
+}
+
+[sub_resource type="Animation" id="Animation_usbi0"]
+resource_name = "tampilkan"
+length = 0.36
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:anchor_top")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.36),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 1.0, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:anchor_bottom")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.36),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [2.0, 2.0, 1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.36),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hdbku"]
+_data = {
+"sembunyikan": SubResource("Animation_mfb3i"),
+"tampilkan": SubResource("Animation_usbi0")
+}
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6u3l"]
 bg_color = Color(0, 0, 0, 0.568627)
 border_width_top = 1
@@ -7910,6 +7999,25 @@ libraries = {
 "": SubResource("AnimationLibrary_nq78w")
 }
 
+[node name="blok_kode" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="panel_kode" parent="blok_kode" instance=ExtResource("72_fg215")]
+layout_mode = 1
+offset_left = 0.0
+
+[node name="animasi" type="AnimationPlayer" parent="blok_kode"]
+libraries = {
+"": SubResource("AnimationLibrary_hdbku")
+}
+
 [node name="proses_memuat" type="Control" parent="."]
 visible = false
 layout_direction = 2
@@ -8753,6 +8861,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_log" to="." method="_buka_log"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_konsol" to="." method="_tampilkan_konsol"]
 [connection signal="code_completion_requested" from="editor_kode/CodeEdit" to="editor_kode/CodeEdit" method="_on_code_completion_requested"]
+[connection signal="tutup_panel" from="blok_kode/panel_kode" to="." method="tutup_editor_kode"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/oke" to="." method="_ketika_konfirmasi_popup_konfirmasi"]

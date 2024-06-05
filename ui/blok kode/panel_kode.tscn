@@ -1,0 +1,563 @@
+[gd_scene load_steps=13 format=3 uid="uid://d2k86ht18kg0d"]
+
+[ext_resource type="Script" path="res://skrip/blok kode/panel_kode.gd" id="1_0xc42"]
+[ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="2_7ls2e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0s0w"]
+bg_color = Color(0.266667, 0.266667, 0.266667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3jyl"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snqoi"]
+bg_color = Color(0, 0, 0, 0.501961)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x7axr"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hoi8r"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uno7o"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+
+[sub_resource type="Animation" id="Animation_e74s2"]
+resource_name = "perkecil"
+length = 0.35
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:anchor_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.175, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 0.3, 0.5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("wilayah_deklarasi:anchor_left")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.175, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.112, 0.157, 0.223]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("wilayah_deklarasi:anchor_right")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("perluas_ukuran:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, false, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("perluas_ukuran:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, false, true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("perkecil_ukuran:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("perkecil_ukuran:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
+}
+
+[sub_resource type="Animation" id="Animation_8ch00"]
+resource_name = "perluas"
+length = 0.35
+step = 0.025
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:anchor_left")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.225, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.5, 0.184, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("wilayah_deklarasi:anchor_left")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.225, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.223, 0.141, 0.112]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("wilayah_deklarasi:anchor_right")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("perluas_ukuran:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("perluas_ukuran:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, true, false, false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("perkecil_ukuran:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.25, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [false, true, true, false, false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("perkecil_ukuran:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, false, true, true]
+}
+
+[sub_resource type="Animation" id="Animation_uvnph"]
+resource_name = "tampilkan_panel_edit"
+length = 0.2
+step = 0.005
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("perluas_ukuran:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.175, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, true, true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("perkecil_ukuran:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.175, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [false, true, true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel_edit:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("panel_edit/Panel:pivot_offset")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(192, 112), Vector2(192, 112)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("panel_edit/Panel:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1, 1), Vector2(1, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("panel_edit:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.025, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("panel_edit/Panel:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.065, 0.15, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hfk2v"]
+_data = {
+"perkecil": SubResource("Animation_e74s2"),
+"perluas": SubResource("Animation_8ch00"),
+"tampilkan_panel_edit": SubResource("Animation_uvnph")
+}
+
+[node name="panel_kode" type="Panel"]
+clip_contents = true
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.512085
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o0s0w")
+script = ExtResource("1_0xc42")
+metadata/_edit_lock_ = true
+
+[node name="kontrol_skala" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.031
+anchor_right = 1.0
+anchor_bottom = 0.031
+offset_left = -376.0
+offset_top = -20.088
+offset_bottom = 19.912
+grow_horizontal = 0
+metadata/_edit_lock_ = true
+
+[node name="nilai_skala" type="Label" parent="kontrol_skala"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.000446812
+anchor_top = 0.2
+anchor_right = 0.105
+anchor_bottom = 0.8
+offset_left = -0.168001
+offset_right = 0.519997
+text = "1.0"
+horizontal_alignment = 2
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="pengatur_skala" type="HSlider" parent="kontrol_skala"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.149
+anchor_top = 0.2
+anchor_right = 0.659638
+anchor_bottom = 0.8
+offset_left = -0.0240021
+offset_right = -0.0240173
+min_value = 1.0
+max_value = 5.0
+step = 0.5
+value = 1.0
+metadata/_edit_use_anchors_ = true
+
+[node name="tambah_skala" type="Button" parent="kontrol_skala"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.809
+anchor_top = 0.1
+anchor_right = 0.894
+anchor_bottom = 0.9
+offset_left = -0.184021
+offset_right = -0.144012
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("2_7ls2e")
+theme_override_font_sizes/font_size = 24
+text = "y"
+metadata/_edit_use_anchors_ = true
+
+[node name="kurangi_skala" type="Button" parent="kontrol_skala"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.702277
+anchor_top = 0.1
+anchor_right = 0.787277
+anchor_bottom = 0.9
+offset_left = -0.0560303
+offset_right = -0.0160217
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("2_7ls2e")
+theme_override_font_sizes/font_size = 24
+text = "z"
+metadata/_edit_use_anchors_ = true
+
+[node name="tutup" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 33.0
+offset_top = -3.0
+offset_right = 137.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("2_7ls2e")
+theme_override_font_sizes/font_size = 32
+text = "/"
+metadata/_edit_lock_ = true
+
+[node name="uji_tambah_aksi" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.148
+anchor_bottom = 0.148
+offset_left = 32.5121
+offset_top = -31.904
+offset_right = 136.513
+offset_bottom = 32.096
+text = "cetak(teks)"
+
+[node name="wilayah_deklarasi" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.223
+anchor_top = 0.062
+anchor_right = 1.0
+anchor_bottom = 0.988
+offset_left = -0.0501099
+offset_top = -0.176003
+offset_right = -11.277
+offset_bottom = -0.223999
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v3jyl")
+metadata/_edit_lock_ = true
+
+[node name="area_deklarasi" type="VBoxContainer" parent="wilayah_deklarasi"]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_lock_ = true
+
+[node name="panel_edit" type="Panel" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_snqoi")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="panel_edit"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.513
+anchor_right = 0.513
+anchor_bottom = 1.0
+offset_left = -192.239
+offset_top = 192.0
+offset_right = 191.761
+offset_bottom = -232.0
+grow_horizontal = 2
+scale = Vector2(1e-05, 1e-05)
+pivot_offset = Vector2(192, 112)
+theme_override_styles/panel = SubResource("StyleBoxFlat_x7axr")
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="panel_edit/Panel"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 97.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 18
+text = "Ubah nilai"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="panel_edit/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0416667
+anchor_top = 0.178571
+anchor_right = 0.958333
+anchor_bottom = 0.785714
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="panel_edit/Panel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="batal" type="Button" parent="panel_edit/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.833
+anchor_top = 0.964
+anchor_right = 0.833
+anchor_bottom = 0.964
+offset_left = -47.872
+offset_top = -30.936
+offset_right = 0.127991
+offset_bottom = 0.0639954
+grow_horizontal = 2
+grow_vertical = 0
+text = "batal"
+
+[node name="oke" type="Button" parent="panel_edit/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.979
+anchor_top = 0.964
+anchor_right = 0.979
+anchor_bottom = 0.964
+offset_left = -47.936
+offset_top = -30.936
+offset_right = 0.0639954
+offset_bottom = 0.0639954
+grow_horizontal = 2
+grow_vertical = 0
+text = "oke"
+
+[node name="perluas_ukuran" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_right = 19.0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_7ls2e")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_hoi8r")
+text = "<"
+
+[node name="perkecil_ukuran" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_right = 19.0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_7ls2e")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_uno7o")
+text = ">
+"
+
+[node name="terapkan" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.883
+anchor_bottom = 0.883
+offset_left = 48.5121
+offset_top = -36.184
+offset_right = 120.512
+offset_bottom = 35.8159
+grow_vertical = 0
+pivot_offset = Vector2(36, 36)
+text = "compile"
+
+[node name="animasi" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_hfk2v")
+}
+
+[connection signal="value_changed" from="kontrol_skala/pengatur_skala" to="." method="_ketika_mengatur_skala"]
+[connection signal="pressed" from="kontrol_skala/tambah_skala" to="." method="_tambah_skala"]
+[connection signal="pressed" from="kontrol_skala/kurangi_skala" to="." method="_kurang_skala"]
+[connection signal="pressed" from="tutup" to="." method="_ketika_menutup_panel"]
+[connection signal="pressed" from="uji_tambah_aksi" to="." method="_uji_tambah_aksi"]
+[connection signal="pressed" from="panel_edit/Panel/batal" to="." method="batal_ubah_nilai_aksi"]
+[connection signal="pressed" from="panel_edit/Panel/oke" to="." method="terapkan_nilai_aksi"]
+[connection signal="pressed" from="perluas_ukuran" to="." method="_perluas_tampilan"]
+[connection signal="pressed" from="perkecil_ukuran" to="." method="_perkecil_tampilan"]
+[connection signal="pressed" from="terapkan" to="." method="kompilasi_blok_kode"]
