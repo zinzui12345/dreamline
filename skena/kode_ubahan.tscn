@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://s864l67ghqjj"]
+
+[ext_resource type="Script" path="res://skrip/kode_ubahan.gd" id="1_6kgdy"]
+
+[node name="kode_ubahan" type="Node3D"]
+script = ExtResource("1_6kgdy")
