@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://df2034e3s77u4"]
+[gd_scene load_steps=7 format=3 uid="uid://df2034e3s77u4"]
 
 [ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_mb6uj"]
+[ext_resource type="PackedScene" uid="uid://s864l67ghqjj" path="res://skena/kode_ubahan.tscn" id="2_56r60"]
 
 [sub_resource type="GDScript" id="GDScript_5ucs2"]
 script/source = "extends objek
@@ -47,3 +48,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_pjrsv")
 
 [node name="fisik" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_xjedm")
+
+[node name="kode_ubahan" parent="." instance=ExtResource("2_56r60")]

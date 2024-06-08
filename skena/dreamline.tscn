@@ -5286,6 +5286,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="edit_skrip" type="Button" parent="hud/daftar_properti_objek/panel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0277777
@@ -8782,6 +8783,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 [connection signal="value_changed" from="hud/daftar_properti_objek/panel/translasi_z" to="." method="_ketika_translasi_z_objek_diubah"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/kurangi_translasi_z" to="." method="_kurang_translasi_z_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/tambah_translasi_z" to="." method="_tambah_translasi_z_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/edit_skrip" to="." method="_ketika_mengubah_kode_objek"]
 [connection signal="touch_move" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]

@@ -70,6 +70,13 @@ func buat_blok_kode(kode : String):
 				indentasi = 0
 				cabang = null
 				fungsi.tambahkan_aksi(baris.substr(indentasi + 1))
+func hapus_blok_kode():
+	for kode in $wilayah_deklarasi/area_deklarasi.get_children():
+		kode.queue_free()
+	# atur ulang nilai skala
+	$kontrol_skala/nilai_skala.text = "1"
+	$kontrol_skala/pengatur_skala.value = 1.0
+	$wilayah_deklarasi/area_deklarasi.custom_minimum_size.x = 414
 func tambah_blok_aksi(baris_kode : String):
 	# kalau pilih_aksi belum di set, tambah ke fungsi pertama
 	if pilih_scope != null and pilih_aksi != null:
@@ -91,14 +98,24 @@ func tambah_blok_aksi(baris_kode : String):
 		tambah_aksi.urutan = urutan_aksi_dipilih + 1
 		tambah_aksi.cek_urutan()
 		# pindahin urutan aksi[urutan_aksi_dipilih + 1] ke + 2; seterusnya sampai urutan_aksi_terakhir
-		for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
-			var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 2
-			var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
-			if cek_aksiaksi.get("urutan") != null:
-				cek_aksiaksi.urutan = urutan_cek_aksi
-			if cek_aksiaksi.has_method("cek_urutan"):
-				cek_aksiaksi.cek_urutan()
-		print_debug(tambah_aksi.get_parent().get_children())
+		if pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1) is blok_pass\
+		 and pilih_aksi.get_parent().get_child_count() > (urutan_aksi_dipilih + 2):
+			for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
+				var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 2
+				var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
+				if cek_aksiaksi.get("urutan") != null:
+					cek_aksiaksi.urutan = urutan_cek_aksi
+				if cek_aksiaksi.has_method("cek_urutan"):
+					cek_aksiaksi.cek_urutan()
+		elif pilih_aksi.get_parent().get_child_count() > (urutan_aksi_dipilih + 1):
+			for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
+				var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 1
+				var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
+				if cek_aksiaksi.get("urutan") != null:
+					cek_aksiaksi.urutan = urutan_cek_aksi
+				if cek_aksiaksi.has_method("cek_urutan"):
+					cek_aksiaksi.cek_urutan()
+		#print_debug(tambah_aksi.get_parent().get_children())
 func hapus_blok_aksi():
 	if pilih_scope != null and pilih_aksi != null:
 		var urutan_aksi_dihapus = pilih_aksi.urutan
@@ -113,26 +130,28 @@ func hapus_blok_aksi():
 		pilih_aksi.queue_free()
 		pilih_aksi = null
 		#print_debug("aksi terakhir : " + str(urutan_aksi_terakhir))
-		if urutan_aksi_dihapus == urutan_aksi_terakhir and urutan_aksi_dihapus > 0:
+		if urutan_aksi_dihapus == urutan_aksi_terakhir and urutan_aksi_dihapus > 0 and (urutan_aksi_dihapus - 1) < induk_aksi.get_child_count():
 			var cek_aksiaksi = induk_aksi.get_child(urutan_aksi_dihapus - 1)
 			#print_debug("cek : " + str(urutan_aksi_dihapus - 1) + " << " + cek_aksiaksi.name)
 			if cek_aksiaksi.get("urutan") != null:
 				cek_aksiaksi.urutan = urutan_aksi_dihapus - 1
 			if cek_aksiaksi.has_method("cek_urutan"):
 				cek_aksiaksi.cek_urutan()
-		elif urutan_aksi_dihapus == urutan_aksi_terakhir and urutan_aksi_dihapus == 0:
+		elif urutan_aksi_dihapus == 0 and urutan_aksi_dihapus == urutan_aksi_terakhir:
 			# jangan cek apapun, cukup tambahin pass
+			# FIXME : 07/06/24 :: jangan tambahin pass kalo udah ada!
 			pilih_scope.tambahkan_aksi("pass")
 		else:
-			for idx_cek_aksi in (urutan_aksi_terakhir - (urutan_aksi_dihapus - 1)):
+			for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dihapus):
 				var urutan_cek_aksi = urutan_aksi_dihapus + idx_cek_aksi
-				var cek_aksiaksi = induk_aksi.get_child(urutan_cek_aksi)
-				if cek_aksiaksi != null:
-					#print_debug("cek : " + str(urutan_cek_aksi) + " << " + cek_aksiaksi.name)
-					if cek_aksiaksi.get("urutan") != null:
-						cek_aksiaksi.urutan = urutan_cek_aksi
-					if cek_aksiaksi.has_method("cek_urutan"):
-						cek_aksiaksi.cek_urutan()
+				if (urutan_cek_aksi - 1) < induk_aksi.get_child_count():
+					var cek_aksiaksi = induk_aksi.get_child(urutan_cek_aksi)
+					#print_debug("cek : " + str(urutan_cek_aksi) + " << " + str(cek_aksiaksi))
+					if cek_aksiaksi != null:
+						if cek_aksiaksi.get("urutan") != null:
+							cek_aksiaksi.urutan = urutan_cek_aksi
+						if cek_aksiaksi.has_method("cek_urutan"):
+							cek_aksiaksi.cek_urutan()
 func kompilasi_blok_kode():
 	var hasil_kode = ""
 	for b_deklarasi in $wilayah_deklarasi/area_deklarasi.get_children():

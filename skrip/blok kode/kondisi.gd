@@ -16,6 +16,10 @@ func cek_urutan():
 	if node_induk is blok_fungsi:
 		if urutan == 0:
 			$pemisah_vertikal/geser_keatas.disabled = true
+			if urutan == (get_parent().get_child_count() - 1):
+				$pemisah_vertikal/geser_kebawah.disabled = true
+			else:
+				$pemisah_vertikal/geser_kebawah.disabled = false
 		elif urutan == (get_parent().get_child_count() - 2) and get_parent().get_child(urutan + 1) is blok_pass:
 			$pemisah_vertikal/geser_kebawah.disabled = true
 			get_parent().get_child(urutan - 1).cek_urutan()

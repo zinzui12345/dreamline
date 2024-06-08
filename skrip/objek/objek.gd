@@ -15,18 +15,19 @@ var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membanding
 
 @export var wilayah_render : AABB :
 	set(aabb):
-		# TODO : reset otomatis ketika posisi/rotasi diubah
-		var tmp_aabb = []
-		for titik in 8:
-			var tmp_vektor = wilayah_render.get_endpoint(titik)
-			# sesuaikan posisi AABB dengan titik tengah
-			tmp_vektor.x += wilayah_render.size.x / 2
-			tmp_vektor.z += wilayah_render.size.z / 2
-			# ubah posisi abb menjadi posisi global
-			tmp_vektor = global_position + tmp_vektor
-			# terapkan ke array
-			tmp_aabb.append(tmp_vektor)
-		titik_sudut = tmp_aabb
+		if is_inside_tree():
+			# TODO : reset otomatis ketika posisi/rotasi diubah
+			var tmp_aabb = []
+			for titik in 8:
+				var tmp_vektor = wilayah_render.get_endpoint(titik)
+				# sesuaikan posisi AABB dengan titik tengah
+				tmp_vektor.x += wilayah_render.size.x / 2
+				tmp_vektor.z += wilayah_render.size.z / 2
+				# ubah posisi abb menjadi posisi global
+				tmp_vektor = global_position + tmp_vektor
+				# terapkan ke array
+				tmp_aabb.append(tmp_vektor)
+			titik_sudut = tmp_aabb
 		wilayah_render = aabb
 @export var jarak_render = 10		# jarak maks render
 @export var titik_sudut = []		# titik tiap sudut AABB untuk occlusion culling

@@ -22,6 +22,7 @@ func tambahkan_aksi(kode : String, jalur_aksi : String = "pemisah_vertikal_2/are
 			get_node(jalur_aksi).add_child(aksi_terakhir)
 		else:
 			get_node(jalur_aksi).add_child(instance_aksi)
+			if aksi_terakhir is blok_aksi: aksi_terakhir.cek_urutan()
 		instance_aksi.atur_nilai(kode)
 func dapatkan_aksi() -> Array[Node]:
 	return $pemisah_vertikal_2/area_aksi.get_children()

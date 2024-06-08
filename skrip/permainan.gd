@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 05/06/24 alpha"
+const versi = "Dreamline v1.4.4 08/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -712,12 +712,18 @@ func _edit_objek(jalur):
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.visible = true
 	if edit_objek.get("skala") != null:
 		$hud/daftar_properti_objek/panel/pilih_tab_skala.disabled = false
+	# 06/06/24 :: cek apakah objek memiliki node skrip, kemudian aktifkan visibilitas tombol edit skrip
+	if edit_objek.get_node_or_null("kode_ubahan") != null and edit_objek.get_node("kode_ubahan") is kode_ubahan:
+		$hud/daftar_properti_objek/panel/edit_skrip.visible = true
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.release_focus()
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.release_focus()
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.release_focus()
+	$hud/daftar_properti_objek/panel/edit_skrip.visible = false
+	# kalau mengedit kode, sembunyikan editor
+	if $blok_kode.visible: tutup_editor_kode()
 	tombol_aksi_2 = "edit_objek"
 	$mode_bermain.visible = true
 	$kontrol_sentuh/chat.visible = true
@@ -1374,6 +1380,11 @@ func _ketika_translasi_z_objek_diubah(nilai):
 				edit_objek.set_indexed("rotation_degrees:z", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:z", nilai)
+func _ketika_mengubah_kode_objek():
+	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
+		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
+		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
+		tampilkan_editor_kode()
 func _ketika_mengubah_jarak_pandangan_objek(jarak):
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
@@ -1579,7 +1590,8 @@ func tampilkan_editor_kode():
 		$menu_utama/animasi.play("lipat")
 	$blok_kode/animasi.play("tampilkan")
 func tutup_editor_kode():
-	# TODO : hapus node blok kode untuk menguragi penggunaan memori
+	# 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
+	$blok_kode/panel_kode.hapus_blok_kode()
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
 	$blok_kode/animasi.play("sembunyikan")
@@ -1726,6 +1738,8 @@ func _kembali():
 	elif $proses_koneksi.visible:
 		client.putuskan_server()
 		$proses_koneksi/animasi.play("sembunyikan")
+	elif $blok_kode.visible:
+		tutup_editor_kode()
 	elif $setelan.visible:
 		_sembunyikan_setelan_permainan()
 	elif $buat_server.visible:
