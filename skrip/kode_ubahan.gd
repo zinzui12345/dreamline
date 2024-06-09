@@ -1,7 +1,7 @@
 extends Node3D
 class_name kode_ubahan
 
-@export var kode : String = "func placeholder():\n\tPanku.notify(\"ini adalah contoh kode\")\n\tpass"
+@export var kode : String = "func placeholder():\n\tPanku.notify(\"ini adalah contoh kode\")\n\t\n\tif test:\n\t\tpass"
 
 func dapatkan_kode() -> String:
 	return kode

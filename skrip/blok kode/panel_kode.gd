@@ -6,7 +6,7 @@ signal tutup_panel()
 var jalur_edit_aksi : NodePath
 var fungsi_edit_aksi : Array[String]
 var pilih_scope
-var pilih_aksi : blok_aksi
+var pilih_aksi
 
 func _tambah_skala(): $kontrol_skala/pengatur_skala.value += $kontrol_skala/pengatur_skala.step
 func _kurang_skala(): $kontrol_skala/pengatur_skala.value -= $kontrol_skala/pengatur_skala.step
@@ -121,25 +121,28 @@ func hapus_blok_aksi():
 		var urutan_aksi_dihapus = pilih_aksi.urutan
 		var urutan_aksi_terakhir = -1
 		var induk_aksi = pilih_aksi.get_parent()
+		var tmp_pass
 		if !(induk_aksi.get_child(induk_aksi.get_child_count() - 1) is blok_pass):
 			urutan_aksi_terakhir = induk_aksi.get_child(induk_aksi.get_child_count() - 1).urutan
 		elif !(induk_aksi.get_child(induk_aksi.get_child_count() - 2) is blok_pass):
 			urutan_aksi_terakhir = induk_aksi.get_child(induk_aksi.get_child_count() - 2).urutan
-		#print_debug("hapus aksi : " + str(urutan_aksi_dihapus))
+			tmp_pass = induk_aksi.get_child(induk_aksi.get_child_count() - 1)
+			induk_aksi.remove_child(tmp_pass)
+		#print_debug("hapus aksi : " + str(urutan_aksi_dihapus) + " << " + str(pilih_aksi))
 		induk_aksi.remove_child(pilih_aksi)
 		pilih_aksi.queue_free()
 		pilih_aksi = null
-		#print_debug("aksi terakhir : " + str(urutan_aksi_terakhir))
-		if urutan_aksi_dihapus == urutan_aksi_terakhir and urutan_aksi_dihapus > 0 and (urutan_aksi_dihapus - 1) < induk_aksi.get_child_count():
+		#print_debug("aksi terakhir : " + str(urutan_aksi_terakhir) + " << " + str(induk_aksi.get_child(urutan_aksi_terakhir)))
+		if urutan_aksi_dihapus == urutan_aksi_terakhir and urutan_aksi_dihapus > 0 and (urutan_aksi_dihapus - 1) < urutan_aksi_terakhir:
 			var cek_aksiaksi = induk_aksi.get_child(urutan_aksi_dihapus - 1)
 			#print_debug("cek : " + str(urutan_aksi_dihapus - 1) + " << " + cek_aksiaksi.name)
 			if cek_aksiaksi.get("urutan") != null:
 				cek_aksiaksi.urutan = urutan_aksi_dihapus - 1
 			if cek_aksiaksi.has_method("cek_urutan"):
 				cek_aksiaksi.cek_urutan()
-		elif urutan_aksi_dihapus == 0 and urutan_aksi_dihapus == urutan_aksi_terakhir:
+		elif urutan_aksi_dihapus == 0 and urutan_aksi_dihapus == urutan_aksi_terakhir and tmp_pass == null:
 			# jangan cek apapun, cukup tambahin pass
-			# FIXME : 07/06/24 :: jangan tambahin pass kalo udah ada!
+			# 08/06/24 :: jangan tambahin pass kalo udah ada!
 			pilih_scope.tambahkan_aksi("pass")
 		else:
 			for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dihapus):
@@ -152,6 +155,7 @@ func hapus_blok_aksi():
 							cek_aksiaksi.urutan = urutan_cek_aksi
 						if cek_aksiaksi.has_method("cek_urutan"):
 							cek_aksiaksi.cek_urutan()
+		if tmp_pass != null: induk_aksi.add_child(tmp_pass)
 func kompilasi_blok_kode():
 	var hasil_kode = ""
 	for b_deklarasi in $wilayah_deklarasi/area_deklarasi.get_children():

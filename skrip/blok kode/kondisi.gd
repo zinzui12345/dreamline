@@ -21,6 +21,7 @@ func cek_urutan():
 			else:
 				$pemisah_vertikal/geser_kebawah.disabled = false
 		elif urutan == (get_parent().get_child_count() - 2) and get_parent().get_child(urutan + 1) is blok_pass:
+			$pemisah_vertikal/geser_keatas.disabled = false
 			$pemisah_vertikal/geser_kebawah.disabled = true
 			get_parent().get_child(urutan - 1).cek_urutan()
 		elif urutan == (get_parent().get_child_count() - 1):
@@ -110,6 +111,8 @@ func dapatkan_nilai_aksi() -> Array[String]:
 func tambahkan_aksi(kode : String):
 	if node_fungsi != null:
 		node_fungsi.tambahkan_aksi(kode, str(node_fungsi.get_path_to(self)) + "/pemisah_vertikal_2/area_aksi")
+func dapatkan_aksi(pilih_urutan) -> Control:
+	return $pemisah_vertikal_2/area_aksi.get_child(pilih_urutan)
 
 func lipat():
 	for n_blok_aksi in $pemisah_vertikal_2/area_aksi.get_children():

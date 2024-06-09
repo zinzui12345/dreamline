@@ -151,6 +151,7 @@ func cek_urutan():
 			else:
 				$pemisah_vertikal/geser_kebawah.disabled = false
 		elif urutan == (get_parent().get_child_count() - 2) and get_parent().get_child(urutan + 1) is blok_pass:
+			$pemisah_vertikal/geser_keatas.disabled = false
 			$pemisah_vertikal/geser_kebawah.disabled = true
 			get_parent().get_child(urutan - 1).cek_urutan()
 		elif urutan == (get_parent().get_child_count() - 1):
@@ -163,39 +164,77 @@ func cek_urutan():
 			$pemisah_vertikal/geser_keatas.disabled = false
 			$pemisah_vertikal/geser_kebawah.disabled = false
 func geser_keatas():
+	# dapatkan node blok aksi
+	var aksi_1 = get_parent().get_child(urutan - 1)
+	var aksi_2 = self
+	# cek arah tukar
 	if urutan > 0:
-		# dapatkan node blok aksi
-		var aksi_1 = get_parent().get_child(urutan - 1)
-		var aksi_2 = self
-		# dapatkan urutan aksi
-		var urutan_aksi_1 = aksi_1.urutan
-		var urutan_aksi_2 = urutan
-		# tukar urutan aksi
-		get_parent().move_child(aksi_1, urutan_aksi_2)
-		get_parent().move_child(aksi_2, urutan_aksi_1)
-		# perbarui urutan aksi
-		var tmp_urtan_aksi_1 = urutan_aksi_1
-		aksi_1.urutan = urutan_aksi_2
-		aksi_2.urutan = tmp_urtan_aksi_1
-		aksi_1.cek_urutan()
-		aksi_2.cek_urutan()
+		if aksi_1 is blok_kondisi:
+			aksi_1.tambahkan_aksi(aksi_2.dapatkan_nilai())
+			aksi_2.hapus()
+			if aksi_1.terlipat: aksi_1.lipat()
+		else:
+			# dapatkan urutan aksi
+			var urutan_aksi_1 = aksi_1.urutan
+			var urutan_aksi_2 = urutan
+			# tukar urutan aksi
+			get_parent().move_child(aksi_1, urutan_aksi_2)
+			get_parent().move_child(aksi_2, urutan_aksi_1)
+			# perbarui urutan aksi
+			var tmp_urtan_aksi_1 = urutan_aksi_1
+			aksi_1.urutan = urutan_aksi_2
+			aksi_2.urutan = tmp_urtan_aksi_1
+			aksi_1.cek_urutan()
+			aksi_2.cek_urutan()
+	elif node_induk is blok_kondisi:
+		#print_debug("i will be waiting")
+		node_induk.node_fungsi.panel_kode.pilih_scope = node_induk.node_induk
+		if node_induk.urutan > 0:
+			node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk.get_parent().get_child(node_induk.urutan - 1)
+			node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_2.dapatkan_nilai())
+		else:
+			node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk
+			node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_2.dapatkan_nilai())
+			node_induk.geser_kebawah()
+		aksi_2.hapus()
 func geser_kebawah():
-	if urutan < get_parent().get_child_count() - 1:
+	# dapatkan node blok aksi
+	var aksi_1 = self
+	# cek arah tukar
+	if urutan < get_parent().get_child_count() - 1 and !(get_parent().get_child(urutan + 1) is blok_pass):
 		# dapatkan node blok aksi
-		var aksi_1 = self
 		var aksi_2 = get_parent().get_child(urutan + 1)
-		# dapatkan urutan aksi
-		var urutan_aksi_1 = urutan
-		var urutan_aksi_2 = aksi_2.urutan
-		# tukar urutan aksi
-		get_parent().move_child(aksi_1, urutan_aksi_2)
-		get_parent().move_child(aksi_2, urutan_aksi_1)
-		# perbarui urutan aksi
-		var tmp_urtan_aksi_1 = urutan_aksi_1
-		aksi_1.urutan = urutan_aksi_2
-		aksi_2.urutan = tmp_urtan_aksi_1
-		aksi_1.cek_urutan()
-		aksi_2.cek_urutan()
+		# cek arah tukar
+		if aksi_2 is blok_kondisi:
+			if aksi_2.dapatkan_aksi(0) != null and !(aksi_2.dapatkan_aksi(0) is blok_pass):
+				 # atur ke urutan pertama
+				aksi_2.node_fungsi.panel_kode.pilih_scope = aksi_2
+				aksi_2.node_fungsi.panel_kode.pilih_aksi = aksi_2.dapatkan_aksi(0)
+				aksi_2.node_fungsi.panel_kode.tambah_blok_aksi(aksi_1.dapatkan_nilai())
+				aksi_2.dapatkan_aksi(0).geser_kebawah()
+			else:
+				aksi_2.tambahkan_aksi(aksi_1.dapatkan_nilai())
+			aksi_1.hapus()
+			if aksi_2.terlipat: aksi_2.lipat()
+		else:
+			# dapatkan urutan aksi
+			var urutan_aksi_1 = urutan
+			var urutan_aksi_2 = aksi_2.urutan
+			# tukar urutan aksi
+			get_parent().move_child(aksi_1, urutan_aksi_2)
+			get_parent().move_child(aksi_2, urutan_aksi_1)
+			# perbarui urutan aksi
+			var tmp_urtan_aksi_1 = urutan_aksi_1
+			aksi_1.urutan = urutan_aksi_2
+			aksi_2.urutan = tmp_urtan_aksi_1
+			aksi_1.cek_urutan()
+			aksi_2.cek_urutan()
+	elif node_induk is blok_kondisi:
+		#print_debug("we are the kids from yesterday!")
+		node_induk.node_fungsi.panel_kode.pilih_scope = node_induk.node_induk
+		node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk
+		node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_1.dapatkan_nilai())
+		aksi_1.hapus()
 func pilih():
 	#print_debug("@panel_kode::pilih_aksi = "+str(get_path()))
 	if node_induk != null:
