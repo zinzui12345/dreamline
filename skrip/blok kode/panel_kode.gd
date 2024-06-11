@@ -160,7 +160,7 @@ func kompilasi_blok_kode():
 	var hasil_kode = ""
 	for b_deklarasi in $wilayah_deklarasi/area_deklarasi.get_children():
 		if b_deklarasi is blok_fungsi:
-			hasil_kode += b_deklarasi.dapatkan_nama() + "\n"
+			hasil_kode += "func " + b_deklarasi.dapatkan_nama() + "\n"
 			if b_deklarasi.dapatkan_aksi().size() > 0:
 				for b_aksi in b_deklarasi.dapatkan_aksi():
 					if b_aksi is blok_aksi:

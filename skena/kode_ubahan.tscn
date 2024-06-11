@@ -4,3 +4,5 @@
 
 [node name="kode_ubahan" type="Node3D"]
 script = ExtResource("1_6kgdy")
+
+[node name="compiler" type="Node" parent="."]

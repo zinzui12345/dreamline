@@ -1,12 +1,30 @@
 extends Node3D
 class_name kode_ubahan
 
-@export var kode : String = "func placeholder():\n\tPanku.notify(\"ini adalah contoh kode\")\n\t\n\tif test:\n\t\tpass"
+@export var kode : String = "func gunakan():\n\tPanku.notify(\"ini adalah contoh kode\")"
 
 func dapatkan_kode() -> String:
 	return kode
 
-func atur_kode(kode : String):
-	# compile kode ke komponen GDScript
-	# set self.kode dengan kode
-	pass
+func atur_kode(_kode : String):
+	# compile _kode ke komponen GDScript
+	var eksekusi := GDScript.new()
+	eksekusi.source_code = "extends Node\n\n" + _kode
+	var galat := eksekusi.reload()
+	
+	# debug hasil compiler
+	print_debug("hasil compile: \n"+_kode)
+	print_debug(galat)
+	
+	# cek hasil
+	if galat == OK:
+		$compiler.set_script(eksekusi)
+	else:
+		Panku.notify("kode tidak valid!")
+	
+	# atur nilai
+	kode = _kode
+
+func panggil_fungsi_kode(nama_fungsi : String, id_pengguna):
+	if $compiler.has_method(nama_fungsi):
+		$compiler.call(nama_fungsi)

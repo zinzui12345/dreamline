@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 09/06/24 alpha"
+const versi = "Dreamline v1.4.4 10/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1387,6 +1387,8 @@ func _ketika_mengubah_kode_objek():
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
 		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
 		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
+		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
+		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
 		tampilkan_editor_kode()
 func _ketika_mengubah_jarak_pandangan_objek(jarak):
 	if edit_objek != null:

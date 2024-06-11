@@ -168,7 +168,9 @@ func _process(delta):
 						server.permainan.pasang_objek = pos_target
 						server.permainan._tampilkan_daftar_objek()
 					_:
-						if _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
+						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
+							objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
+						elif _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
 							objek_target = _raycast_serangan_a_pemain.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)
 							# TODO : dorong pemain lain
