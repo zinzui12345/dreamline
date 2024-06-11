@@ -1,6 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://cyxi85pr8q8yb"]
+[gd_scene load_steps=8 format=3 uid="uid://cyxi85pr8q8yb"]
 
-[ext_resource type="Texture2D" uid="uid://dpgt4y5skryih" path="res://material/wp/cute4.png" id="1_vlmb5"]
+[ext_resource type="Texture2D" uid="uid://d3gw8eophvaue" path="res://material/wp/bg_0.png" id="1_tfi3m"]
 
 [sub_resource type="GDScript" id="GDScript_vqr5r"]
 script/source = "extends Control
@@ -8,7 +8,7 @@ script/source = "extends Control
 # skala sama dengan ukuran y viewport / ukuran y default (600)
 # posisi vertikal sama dengan tinggi gambar parallax / 8
 
-@export var gambar = \"res://material/wp/cute4.png\"
+@export var gambar = \"res://material/wp/bg_0.png\"
 @export var fungsikan : bool = true :
 	set(apa):
 		if apa == false:
@@ -20,23 +20,19 @@ script/source = "extends Control
 func _ready():
 	_ketika_ukuran_diubah()
 	get_parent().connect(\"resized\", Callable(self, \"_ketika_ukuran_diubah\"))
-	$animasi.play(\"animasi2\")
+	$animasi.play(\"animasi1\")
 
 func _ketika_ukuran_diubah():
-	$latar_parallax.scale = Vector2(
-		get_parent().get_rect().size.y / 600,
-		get_parent().get_rect().size.y / 600
-	)
-	#for latar in $latar_parallax/ParallaxLayer.get_children():
-	#	if latar.get(\"texture\") != null:
-	#		latar.position.y = -( latar.texture.get_height() / 8 )
-
+	$latar_parallax/ParallaxLayer.scale.x = 0.0003662109375 * get_parent().get_rect().size.x
+	$latar_parallax/ParallaxLayer.scale.y = $latar_parallax/ParallaxLayer.scale.x
+	$latar_parallax/ParallaxLayer.position.x = get_parent().get_rect().size.x / 2
+	$latar_parallax/ParallaxLayer.position.y = get_parent().get_rect().size.y / 2
 func tampilkan():
 	if fungsikan:
 		if $latar_parallax/ParallaxLayer/Cute4.texture == null:
 			$latar_parallax/ParallaxLayer/Cute4.texture = load(gambar)
 		$animasi.play(\"tampilkan\")
-		$animasi.queue(\"animasi2\")
+		$animasi.queue(\"animasi1\")
 func sembunyikan():
 	if fungsikan:
 		$animasi.play(\"sembunyikan\")
@@ -62,37 +58,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 15, 30),
 "transitions": PackedFloat32Array(0.5, 0.5, 0.5),
 "update": 0,
-"values": [0.0, 100.0, 0.0]
-}
-
-[sub_resource type="Animation" id="Animation_5jum6"]
-resource_name = "animasi2"
-length = 40.0
-loop_mode = 1
-step = 1.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("latar_parallax:offset:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 15, 20, 40),
-"transitions": PackedFloat32Array(0.5, 0.5, 0.5, 0.5),
-"update": 0,
-"values": [0.0, -40.0, -50.0, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("latar_parallax/ParallaxLayer:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 20, 40),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector2(0.25, 0.25), Vector2(0.263, 0.263), Vector2(0.25, 0.25)]
+"values": [0.0, 7.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_khvls"]
@@ -178,14 +144,11 @@ tracks/2/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1bm3d"]
 _data = {
 "animasi1": SubResource("Animation_nw4wg"),
-"animasi2": SubResource("Animation_5jum6"),
 "sembunyikan": SubResource("Animation_khvls"),
 "tampilkan": SubResource("Animation_j2wvp")
 }
 
 [node name="latar" type="Control"]
-visible = false
-modulate = Color(1, 1, 1, 0)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -199,13 +162,12 @@ script = SubResource("GDScript_vqr5r")
 scroll_limit_end = Vector2(0, -245)
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="latar_parallax"]
-modulate = Color(1, 1, 1, 0)
-scale = Vector2(0.25, 0.25)
-motion_mirroring = Vector2(4096, 0)
+position = Vector2(512, 300)
+scale = Vector2(0.375, 0.375)
+skew = -0.0174533
 
 [node name="Cute4" type="Sprite2D" parent="latar_parallax/ParallaxLayer"]
-texture = ExtResource("1_vlmb5")
-centered = false
+texture = ExtResource("1_tfi3m")
 
 [node name="dim" type="Panel" parent="."]
 layout_mode = 1

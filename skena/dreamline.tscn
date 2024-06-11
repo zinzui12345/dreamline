@@ -4995,6 +4995,7 @@ anchor_bottom = 1.00033
 offset_right = 0.0639992
 offset_bottom = -0.200001
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="panel" type="Panel" parent="hud/daftar_properti_objek"]
 layout_mode = 1
@@ -5465,7 +5466,6 @@ offset_bottom = 34.0
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 texture_repeat = 3
 layout_mode = 1
-fungsikan = false
 
 [node name="Cute4" parent="latar/latar_parallax/ParallaxLayer" index="0"]
 metadata/_edit_lock_ = true
