@@ -2,6 +2,7 @@ extends VBoxContainer
 class_name blok_fungsi
 
 var terlipat : bool = false
+var ukuran : float = 1.0
 var panel_kode : Panel
 
 func tambahkan_aksi(kode : String, jalur_aksi : String = "pemisah_vertikal_2/area_aksi"):
@@ -10,6 +11,7 @@ func tambahkan_aksi(kode : String, jalur_aksi : String = "pemisah_vertikal_2/are
 		instance_aksi = load("res://ui/blok kode/pass.tscn").instantiate()
 		get_node(jalur_aksi).add_child(instance_aksi)
 		instance_aksi.atur_warna($pemisah_vertikal/nama_fungsi.get_indexed("theme_override_styles/normal:bg_color"))
+		instance_aksi.atur_ukuran(ukuran)
 	elif kode.match("*(*)") or kode.match("await *(*)*"):
 		instance_aksi = load("res://ui/blok kode/aksi.tscn").instantiate()
 		# cek kalo aksi_terakhir blok_pass, tukar urutannya
@@ -24,6 +26,7 @@ func tambahkan_aksi(kode : String, jalur_aksi : String = "pemisah_vertikal_2/are
 			get_node(jalur_aksi).add_child(instance_aksi)
 			if aksi_terakhir is blok_aksi: aksi_terakhir.cek_urutan()
 		instance_aksi.atur_nilai(kode)
+		instance_aksi.atur_ukuran(ukuran)
 func dapatkan_aksi() -> Array[Node]:
 	return $pemisah_vertikal_2/area_aksi.get_children()
 
@@ -38,6 +41,7 @@ func atur_ukuran(skala : float):
 		"theme_override_font_sizes/font_size",
 		16 * skala
 	)
+	ukuran = skala
 func atur_nama(nama : String):
 	$pemisah_vertikal/nama_fungsi.text = nama
 func dapatkan_nama() -> String:

@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 10/06/24 alpha"
+const versi = "Dreamline v1.4.4 14/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1387,6 +1387,20 @@ func _ketika_mengubah_kode_objek():
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
 		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
 		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
+		# 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
+		var sintaks_aksi : Dictionary = {
+			"Permainan" : [
+				["notifikasi(teks)", "Panku.notify(\"teks\")", "ikon"],
+				["pesan(teks)", "server.permainan._tampilkan_popup_informasi(\"teks\", server.permainan.get_node(\"menu_jeda/menu/kontrol/Panel/lanjutkan\"))", "ikon"]
+			]
+		}
+		if edit_objek is objek:
+			sintaks_aksi.merge({
+				"Objek" : [
+					["pindahkan(arah)", "get_node(\"../../\").translate(Vector3(0,0,0))", "ikon"]
+				]
+			})
+		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
 		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
 		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
 		tampilkan_editor_kode()
@@ -1395,6 +1409,8 @@ func _ketika_mengubah_jarak_pandangan_objek(jarak):
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
 			$pengamat.get_node("%pandangan").position.z = jarak
 func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
+	# 16/06/24 :: ketika dalam permainan
+	if is_instance_valid(karakter) and !jeda: _jeda()
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi
 	$popup_informasi/animasi.play_backwards("tutup")
@@ -1597,6 +1613,12 @@ func tampilkan_editor_kode():
 func tutup_editor_kode():
 	# 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
 	$blok_kode/panel_kode.hapus_blok_kode()
+	# 14/06/24 :: hapus palet sintaks untuk mengurangi penggunaan memori
+	$blok_kode/panel_kode.hapus_palet_sintaks()
+	# 11/06/24 :: putuskan signal jalankan_kode dari editor ke objek
+	if is_instance_valid(edit_objek) and $blok_kode/panel_kode.is_connected("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode):
+		$blok_kode/panel_kode.disconnect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
+	# kalau bukan dalam permainan, tampilkan kembali menu utama
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
 	$blok_kode/animasi.play("sembunyikan")

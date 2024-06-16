@@ -7,6 +7,7 @@ var jalur_edit_aksi : NodePath
 var fungsi_edit_aksi : Array[String]
 var pilih_scope
 var pilih_aksi
+var daftar_kelas_sintaks : Array[Control]
 
 func _tambah_skala(): $kontrol_skala/pengatur_skala.value += $kontrol_skala/pengatur_skala.step
 func _kurang_skala(): $kontrol_skala/pengatur_skala.value -= $kontrol_skala/pengatur_skala.step
@@ -156,6 +157,35 @@ func hapus_blok_aksi():
 						if cek_aksiaksi.has_method("cek_urutan"):
 							cek_aksiaksi.cek_urutan()
 		if tmp_pass != null: induk_aksi.add_child(tmp_pass)
+func buat_palet_sintaks(nama_grup : String, data : Dictionary):
+	var label_aksi = Label.new()
+	var label_pemisah = Label.new()
+	label_aksi.text = nama_grup
+	$palet_sintaks.add_child(label_aksi)
+	for kelas_sintaks in data.keys():
+		var node_kelas_sintaks = load("res://ui/blok kode/sintaks/kelas.scn").instantiate()
+		$palet_sintaks.add_child(node_kelas_sintaks)
+		node_kelas_sintaks.name = kelas_sintaks
+		node_kelas_sintaks.text = kelas_sintaks + " >"
+		if data[kelas_sintaks] is Array and data[kelas_sintaks].size() > 0:
+			for aksi_sintaks in data[kelas_sintaks]:
+				var nama_fungsi_aksi = aksi_sintaks[0]
+				var kode_sintaks_aksi = aksi_sintaks[1]
+				var jalur_ikon_aksi = aksi_sintaks[2]
+				var node_aksi_sintaks : Button
+				if nama_fungsi_aksi == "notifikasi(teks)":
+					node_aksi_sintaks = load("res://ui/blok kode/sintaks/notifikasi.scn").instantiate()
+				else:
+					node_aksi_sintaks = load("res://ui/blok kode/sintaks/aksi.scn").instantiate()
+				node_kelas_sintaks.daftar_aksi.add_child(node_aksi_sintaks)
+				node_aksi_sintaks.text = nama_fungsi_aksi
+				node_aksi_sintaks.kode = kode_sintaks_aksi
+		daftar_kelas_sintaks.append(node_kelas_sintaks)
+	$palet_sintaks.add_child(label_pemisah)
+func hapus_palet_sintaks():
+	for sintaks in $palet_sintaks.get_children():
+		sintaks.queue_free()
+	daftar_kelas_sintaks.clear()
 func kompilasi_blok_kode():
 	var hasil_kode = ""
 	for b_deklarasi in $wilayah_deklarasi/area_deklarasi.get_children():

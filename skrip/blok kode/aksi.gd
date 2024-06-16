@@ -20,14 +20,12 @@ func atur_nilai(nilai : String):
 	# cek deklarasi tipe data pada parameter
 	if pecah_nilai[1].count("(") > 0 and pecah_nilai[1].count(")") < pecah_nilai[1].count("("):
 		var indeks_posisi = 0
-		for n in pecah_nilai[1].count("("):
-			var tmp_p = pecah_parameter[1]
-			pecah_parameter[1] = "(" + pecah_nilai[1].substr(0, pecah_nilai[1].find("(", indeks_posisi))
-			tmp_p += pecah_parameter[1]
-			pecah_parameter[1] = tmp_p
-			var tmp_indeks_posisi = pecah_nilai[1].find("(", indeks_posisi)
-			pecah_nilai[1] = pecah_nilai[1].substr(pecah_nilai[1].find("(", indeks_posisi) + 1)
-			indeks_posisi = tmp_indeks_posisi
+		for n in pecah_parameter[1].count(")"):
+			if pecah_parameter[1].substr(indeks_posisi, 1) == ")":
+				var tmp_pecah_fungsi = pecah_nilai[1].split("(", true, 1)
+				pecah_parameter[1] += "(" + tmp_pecah_fungsi[0]
+				pecah_nilai[1] = tmp_pecah_fungsi[1]
+				indeks_posisi += 1
 	var s_fungsi = pecah_nilai[1].reverse()
 	fungsi.append(pecah_nilai[1].reverse() + "(")
 	fungsi.append(")" + pecah_parameter[0].reverse())
@@ -254,4 +252,3 @@ func hapus():
 			node_induk.node_fungsi.panel_kode.pilih_scope = node_induk
 			node_induk.node_fungsi.panel_kode.pilih_aksi = self
 			node_induk.node_fungsi.panel_kode.hapus_blok_aksi()
-	

@@ -1,10 +1,23 @@
-[gd_scene load_steps=13 format=3 uid="uid://d2k86ht18kg0d"]
+[gd_scene load_steps=19 format=3 uid="uid://d2k86ht18kg0d"]
 
 [ext_resource type="Script" path="res://skrip/blok kode/panel_kode.gd" id="1_0xc42"]
 [ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="2_7ls2e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0s0w"]
 bg_color = Color(0.266667, 0.266667, 0.266667, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5vu3a"]
+size = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2hsou"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_top = 30
+border_color = Color(0.168627, 0.168627, 0.168627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0d04d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rtmuh"]
+bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3jyl"]
 bg_color = Color(1, 1, 1, 1)
@@ -18,8 +31,16 @@ bg_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hoi8r"]
 bg_color = Color(0.168627, 0.168627, 0.168627, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mr7dl"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uno7o"]
 bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ggril"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 3
 
 [sub_resource type="Animation" id="Animation_e74s2"]
 resource_name = "perkecil"
@@ -35,75 +56,51 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.175, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.0, 0.3, 0.5]
+"values": [0.0, 0.3, 0.4]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("wilayah_deklarasi:anchor_left")
+tracks/1/path = NodePath("perluas_ukuran:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.175, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.112, 0.157, 0.223]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("wilayah_deklarasi:anchor_right")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.35),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [1.0, 1.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("perluas_ukuran:disabled")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.3, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, false, false]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("perluas_ukuran:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("perluas_ukuran:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.3, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, false, true]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("perkecil_ukuran:disabled")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("perkecil_ukuran:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.05, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
 }
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("perkecil_ukuran:visible")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("perkecil_ukuran:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.3, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
@@ -124,75 +121,51 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.225, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.5, 0.184, 0.0]
+"values": [0.35, 0.184, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("wilayah_deklarasi:anchor_left")
+tracks/1/path = NodePath("perluas_ukuran:disabled")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.225, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.223, 0.141, 0.112]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("wilayah_deklarasi:anchor_right")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.35),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [1.0, 1.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("perluas_ukuran:disabled")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.05, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("perluas_ukuran:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("perluas_ukuran:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.25, 0.3, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [true, true, false, false]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("perkecil_ukuran:disabled")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("perkecil_ukuran:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.05, 0.25, 0.3, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [false, true, true, false, false]
 }
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("perkecil_ukuran:visible")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("perkecil_ukuran:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.25, 0.3, 0.35),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
@@ -298,7 +271,7 @@ _data = {
 [node name="panel_kode" type="Panel"]
 clip_contents = true
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 0.4
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -0.512085
@@ -311,24 +284,26 @@ metadata/_edit_lock_ = true
 [node name="kontrol_skala" type="Control" parent="."]
 layout_mode = 1
 anchor_left = 1.0
-anchor_top = 0.031
+anchor_top = 0.049
 anchor_right = 1.0
-anchor_bottom = 0.031
-offset_left = -376.0
-offset_top = -20.088
-offset_bottom = 19.912
+anchor_bottom = 0.049
+offset_left = -447.712
+offset_top = -31.752
+offset_right = 0.287964
+offset_bottom = 24.248
 grow_horizontal = 0
 metadata/_edit_lock_ = true
 
 [node name="nilai_skala" type="Label" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.000446812
-anchor_top = 0.2
-anchor_right = 0.105
-anchor_bottom = 0.8
+anchor_left = 0.0360893
+anchor_top = 0.0714286
+anchor_right = 0.141696
+anchor_bottom = 0.928571
 offset_left = -0.168001
 offset_right = 0.519997
+theme_override_font_sizes/font_size = 20
 text = "1.0"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -337,91 +312,94 @@ metadata/_edit_use_anchors_ = true
 [node name="pengatur_skala" type="HSlider" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.149
-anchor_top = 0.2
-anchor_right = 0.659638
-anchor_bottom = 0.8
+anchor_left = 0.178625
+anchor_top = 0.0714286
+anchor_right = 0.696482
+anchor_bottom = 0.928571
 offset_left = -0.0240021
 offset_right = -0.0240173
+theme_override_icons/grabber = SubResource("PlaceholderTexture2D_5vu3a")
+theme_override_icons/grabber_highlight = SubResource("PlaceholderTexture2D_5vu3a")
+theme_override_icons/grabber_disabled = SubResource("PlaceholderTexture2D_5vu3a")
+theme_override_styles/slider = SubResource("StyleBoxFlat_2hsou")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_0d04d")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_rtmuh")
 min_value = 1.0
 max_value = 5.0
-step = 0.5
+step = 0.25
 value = 1.0
 metadata/_edit_use_anchors_ = true
 
 [node name="tambah_skala" type="Button" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.809
-anchor_top = 0.1
-anchor_right = 0.894
-anchor_bottom = 0.9
+anchor_left = 0.861375
+anchor_top = 0.0892857
+anchor_right = 0.961321
+anchor_bottom = 0.893286
 offset_left = -0.184021
-offset_right = -0.144012
+offset_right = 0.0400085
+offset_bottom = -0.0240021
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("2_7ls2e")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 35
 text = "y"
 metadata/_edit_use_anchors_ = true
 
 [node name="kurangi_skala" type="Button" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.702277
-anchor_top = 0.1
-anchor_right = 0.787277
-anchor_bottom = 0.9
+anchor_left = 0.733857
+anchor_top = 0.0892857
+anchor_right = 0.833804
+anchor_bottom = 0.893286
 offset_left = -0.0560303
-offset_right = -0.0160217
+offset_right = 0.167908
+offset_bottom = -0.0240021
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("2_7ls2e")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 35
 text = "z"
 metadata/_edit_use_anchors_ = true
 
 [node name="tutup" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1
-offset_left = 33.0
-offset_top = -3.0
-offset_right = 137.0
+offset_left = 52.0
+offset_top = -8.0
+offset_right = 228.0
 offset_bottom = 40.0
 theme_override_fonts/font = ExtResource("2_7ls2e")
 theme_override_font_sizes/font_size = 32
 text = "/"
-metadata/_edit_lock_ = true
-
-[node name="uji_tambah_aksi" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.148
-anchor_bottom = 0.148
-offset_left = 32.5121
-offset_top = -31.904
-offset_right = 136.513
-offset_bottom = 32.096
-text = "cetak(teks)"
 
 [node name="wilayah_deklarasi" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.223
-anchor_top = 0.062
+anchor_top = 0.0866914
 anchor_right = 1.0
 anchor_bottom = 0.988
-offset_left = -0.0501099
+offset_left = 260.0
 offset_top = -0.176003
-offset_right = -11.277
+offset_right = -7.71204
 offset_bottom = -0.223999
-grow_horizontal = 2
+grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_v3jyl")
-metadata/_edit_lock_ = true
 
 [node name="area_deklarasi" type="VBoxContainer" parent="wilayah_deklarasi"]
 layout_mode = 2
 size_flags_horizontal = 3
-metadata/_edit_lock_ = true
+
+[node name="palet_sintaks" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 64.0
+offset_right = 244.0
+offset_bottom = -136.0
+grow_vertical = 2
 
 [node name="panel_edit" type="Panel" parent="."]
 visible = false
@@ -513,11 +491,12 @@ text = "oke"
 layout_mode = 1
 anchors_preset = -1
 anchor_bottom = 1.0
-offset_right = 19.0
+offset_right = 25.0
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_7ls2e")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_hoi8r")
+theme_override_styles/focus = SubResource("StyleBoxFlat_mr7dl")
 text = "<"
 
 [node name="perkecil_ukuran" type="Button" parent="."]
@@ -525,11 +504,13 @@ visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_bottom = 1.0
-offset_right = 19.0
+offset_right = 25.0
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_7ls2e")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_uno7o")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ggril")
+disabled = true
 text = ">
 "
 
@@ -555,7 +536,6 @@ libraries = {
 [connection signal="pressed" from="kontrol_skala/tambah_skala" to="." method="_tambah_skala"]
 [connection signal="pressed" from="kontrol_skala/kurangi_skala" to="." method="_kurang_skala"]
 [connection signal="pressed" from="tutup" to="." method="_ketika_menutup_panel"]
-[connection signal="pressed" from="uji_tambah_aksi" to="." method="_uji_tambah_aksi"]
 [connection signal="pressed" from="panel_edit/Panel/batal" to="." method="batal_ubah_nilai_aksi"]
 [connection signal="pressed" from="panel_edit/Panel/oke" to="." method="terapkan_nilai_aksi"]
 [connection signal="pressed" from="perluas_ukuran" to="." method="_perluas_tampilan"]
