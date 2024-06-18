@@ -3,8 +3,9 @@ class_name kode_ubahan
 
 @export var kode : String = "func gunakan():\n\tPanku.notify(\"ini adalah contoh kode\")"
 
-# FIXME : sinkronkan kode dan compile jika telah di compile
 # FIXME : sinkronkan kondisi ketika memanggil fungsi
+
+func _ready(): atur_kode(kode)
 
 func dapatkan_kode() -> String:
 	return kode
@@ -27,6 +28,7 @@ func atur_kode(_kode : String):
 	
 	# atur nilai
 	kode = _kode
+	if get_parent().kode != _kode: get_parent().kode = _kode
 
 func panggil_fungsi_kode(nama_fungsi : String, id_pengguna):
 	if $compiler.has_method(nama_fungsi):

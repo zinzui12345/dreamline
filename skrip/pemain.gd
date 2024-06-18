@@ -299,6 +299,10 @@ func _physics_process(delta):
 			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
+			server.permainan.set("tombol_aksi_1", "gunakan_objek")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false

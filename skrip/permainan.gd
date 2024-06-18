@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 14/06/24 alpha"
+const versi = "Dreamline v1.4.4 18/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -88,6 +88,7 @@ var tombol_aksi_1 = "lempar_sesuatu" :
 			tombol_aksi_1 = ikon
 		match ikon:
 			"pasang_objek":		$hud/bantuan_input/aksi1/teks.text = "%pasang"
+			"gunakan_objek":	$hud/bantuan_input/aksi1/teks.text = "%gunakan"
 			"dorong_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%dorong"
 			"lempar_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%lempar"
 var tombol_aksi_2 = "angkat_sesuatu" :
