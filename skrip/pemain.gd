@@ -169,7 +169,8 @@ func _process(delta):
 						server.permainan._tampilkan_daftar_objek()
 					_:
 						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
-							objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
+							if objek_target.id_pengubah < 1:
+								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
 						elif _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
 							objek_target = _raycast_serangan_a_pemain.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)

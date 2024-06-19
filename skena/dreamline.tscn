@@ -1,4 +1,4 @@
-[gd_scene load_steps=307 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=309 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -54,6 +54,7 @@
 [ext_resource type="Texture2D" uid="uid://dbngqyysbphw6" path="res://ui/ikon/ikon_tab_rambut.svg" id="20_x7tnp"]
 [ext_resource type="Texture2D" uid="uid://bkbtjgpe4ucul" path="res://ui/spinner_menghubungkan.svg" id="21_lgrqm"]
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
+[ext_resource type="Texture2D" uid="uid://bv30icjt11rtb" path="res://ui/tombol/berlari_tekan.svg" id="23_28me6"]
 [ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/lempar_sesuatu.svg" id="23_p8sf0"]
 [ext_resource type="Texture2D" uid="uid://xf60ppb2l5u2" path="res://ui/tombol/aksi_1_tekan.svg" id="24_5vy8q"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
@@ -748,9 +749,12 @@ _data = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2jlpn"]
-radius = 35.0
+radius = 45.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tw50u"]
+radius = 45.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_28tvu"]
 radius = 50.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovj3w"]
@@ -5533,38 +5537,36 @@ metadata/_edit_lock_ = true
 [node name="lari" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.098
-anchor_top = 0.307
-anchor_right = 0.176
-anchor_bottom = 0.44
-offset_top = -0.199814
-offset_right = -79.936
-offset_bottom = 0.000183105
+anchor_left = 0.102539
+anchor_top = 0.293333
+anchor_right = 0.200195
+anchor_bottom = 0.460333
 action_mode = 0
 texture_normal = ExtResource("15_67glo")
+texture_pressed = ExtResource("23_28me6")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lari"]
-position = Vector2(40, 40)
+position = Vector2(50, 50)
 shape = SubResource("CircleShape2D_2jlpn")
 action = "berlari"
 
 [node name="lompat" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.910156
-anchor_top = 0.306667
-anchor_right = 0.988344
-anchor_bottom = 0.44
-offset_right = -0.064003
-offset_bottom = -3.05176e-05
+anchor_left = 0.898438
+anchor_top = 0.293333
+anchor_right = 0.996
+anchor_bottom = 0.46
 action_mode = 0
 texture_normal = ExtResource("15_5l3bk")
 texture_pressed = ExtResource("16_t7mcc")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lompat"]
-position = Vector2(40, 40)
+position = Vector2(50, 50)
 shape = SubResource("CircleShape2D_2jlpn")
 action = "lompat"
 
@@ -5580,6 +5582,7 @@ offset_bottom = 0.000183105
 action_mode = 0
 stretch_mode = 3
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/jongkok"]
 texture_normal = ExtResource("25_umeh2")
@@ -5599,28 +5602,27 @@ offset_bottom = 0.000183105
 action_mode = 0
 stretch_mode = 3
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
 texture_normal = ExtResource("23_p8sf0")
 texture_pressed = ExtResource("24_5vy8q")
-shape = SubResource("CircleShape2D_tw50u")
+shape = SubResource("CircleShape2D_28tvu")
 action = "aksi1_sentuh"
 
 [node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.824219
-anchor_top = 0.306667
-anchor_right = 0.902407
-anchor_bottom = 0.44
-offset_right = -0.064003
-offset_bottom = -3.05176e-05
+anchor_left = 0.788086
+anchor_top = 0.293333
+anchor_right = 0.885742
+anchor_bottom = 0.460333
 action_mode = 0
 texture_normal = ExtResource("17_2rhvy")
 metadata/_edit_use_anchors_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2"]
-position = Vector2(40, 40)
+position = Vector2(50, 50)
 shape = SubResource("CircleShape2D_2jlpn")
 action = "aksi2"
 
@@ -5775,6 +5777,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="menu_jeda" type="Control" parent="."]
 visible = false
@@ -7664,6 +7667,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="pemisah" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
 layout_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="pemisah" type="Label" parent="setelan/panel/gulir/tab_setelan/pemisah"]
 layout_mode = 2
@@ -7718,6 +7722,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="pemisah2" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
 layout_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="pemisah" type="Label" parent="setelan/panel/gulir/tab_setelan/pemisah2"]
 layout_mode = 2
@@ -7736,6 +7741,7 @@ text = "%input"
 [node name="pemisah 1" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_input"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="label kontrol gerak" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_input"]
 layout_mode = 2
@@ -7761,6 +7767,7 @@ popup/item_1/id = 2
 [node name="pemisah 2" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_input"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="info_sensitivitas_gestur" type="HBoxContainer" parent="setelan/panel/gulir/tab_setelan/setelan_input"]
 layout_mode = 2
@@ -7796,9 +7803,11 @@ scrollable = false
 [node name="pemisah 3" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_input"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="pemisah3" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
 layout_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="pemisah" type="Label" parent="setelan/panel/gulir/tab_setelan/pemisah3"]
 layout_mode = 2
@@ -7817,6 +7826,7 @@ text = "%audio"
 [node name="pemisah 1" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="label bgm" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
 layout_mode = 2
@@ -7838,9 +7848,11 @@ scrollable = false
 [node name="pemisah 2" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_suara"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
 
 [node name="pemisah4" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
 layout_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="pemisah" type="Label" parent="setelan/panel/gulir/tab_setelan/pemisah4"]
 layout_mode = 2

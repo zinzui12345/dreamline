@@ -21,10 +21,13 @@ func tambahkan_aksi(kode : String, jalur_aksi : String = "pemisah_vertikal_2/are
 		if aksi_terakhir is blok_pass:
 			get_node(jalur_aksi).remove_child(aksi_terakhir)
 			get_node(jalur_aksi).add_child(instance_aksi)
-			get_node(jalur_aksi).add_child(aksi_terakhir)
+			#get_node(jalur_aksi).add_child(aksi_terakhir) # 11/06/24 :: gak usah tambah lagi karena gak guna
 		else:
 			get_node(jalur_aksi).add_child(instance_aksi)
-			if aksi_terakhir is blok_aksi: aksi_terakhir.cek_urutan()
+			if aksi_terakhir is blok_aksi:
+				aksi_terakhir.cek_urutan()
+				if panel_kode.pilih_aksi == null: # 19/06/24 :: harus di cek supaya gak rekursif
+					panel_kode.pilih_aksi = aksi_terakhir
 		instance_aksi.atur_nilai(kode)
 		instance_aksi.atur_ukuran(ukuran)
 func dapatkan_aksi() -> Array[Node]:

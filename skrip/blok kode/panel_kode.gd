@@ -35,6 +35,7 @@ func buat_blok_kode(kode : String):
 			instance_fungsi.atur_nama(baris.split(" ")[1])
 			instance_fungsi.panel_kode = self
 			fungsi = instance_fungsi
+			pilih_scope = fungsi
 			indentasi = 0
 		# jika baris adalah aksi fungsi
 		elif baris.substr(0, 1) == "\t":
@@ -79,44 +80,45 @@ func hapus_blok_kode():
 	$kontrol_skala/pengatur_skala.value = 1.0
 	$wilayah_deklarasi/area_deklarasi.custom_minimum_size.x = 414
 func tambah_blok_aksi(baris_kode : String):
-	# kalau pilih_aksi belum di set, tambah ke fungsi pertama
-	if pilih_scope != null and pilih_aksi != null:
+	# kalau pilih_aksi belum di set tapi pilih_scope valid, tambah ke fungsi pertama
+	if pilih_scope != null:
 		# tambahkan aksi ke fungsi
 		pilih_scope.tambahkan_aksi(baris_kode)
 		# kalau pilih_aksi bukan di urutan terakhir, pindahin aksi yg ditambah ke bawah aksi yg dipilih
-		var urutan_aksi_dipilih = pilih_aksi.urutan
-		var urutan_aksi_terakhir = -1
-		var tambah_aksi
-		# dapetin aksi terakhir, kalau pass, cek lagi -1 nya, kalau bukan pass terus ambil jadi tambah_aksi; ambil urutan jadi urutan_aksi_terakhir
-		if !(pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1) is blok_pass):
-			tambah_aksi = pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1)
-			urutan_aksi_terakhir = tambah_aksi.urutan
-		elif !(pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 2) is blok_pass):
-			tambah_aksi = pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 2)
-			urutan_aksi_terakhir = tambah_aksi.urutan
-		# pindahin urutan tambah_aksi ke [urutan_aksi_dipilih + 1]
-		tambah_aksi.get_parent().move_child(tambah_aksi, urutan_aksi_dipilih + 1)
-		tambah_aksi.urutan = urutan_aksi_dipilih + 1
-		tambah_aksi.cek_urutan()
-		# pindahin urutan aksi[urutan_aksi_dipilih + 1] ke + 2; seterusnya sampai urutan_aksi_terakhir
-		if pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1) is blok_pass\
-		 and pilih_aksi.get_parent().get_child_count() > (urutan_aksi_dipilih + 2):
-			for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
-				var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 2
-				var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
-				if cek_aksiaksi.get("urutan") != null:
-					cek_aksiaksi.urutan = urutan_cek_aksi
-				if cek_aksiaksi.has_method("cek_urutan"):
-					cek_aksiaksi.cek_urutan()
-		elif pilih_aksi.get_parent().get_child_count() > (urutan_aksi_dipilih + 1):
-			for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
-				var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 1
-				var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
-				if cek_aksiaksi.get("urutan") != null:
-					cek_aksiaksi.urutan = urutan_cek_aksi
-				if cek_aksiaksi.has_method("cek_urutan"):
-					cek_aksiaksi.cek_urutan()
-		#print_debug(tambah_aksi.get_parent().get_children())
+		if pilih_aksi != null:
+			var urutan_aksi_dipilih = pilih_aksi.urutan
+			var urutan_aksi_terakhir = -1
+			var tambah_aksi
+			# dapetin aksi terakhir, kalau pass, cek lagi -1 nya, kalau bukan pass terus ambil jadi tambah_aksi; ambil urutan jadi urutan_aksi_terakhir
+			if !(pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1) is blok_pass):
+				tambah_aksi = pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1)
+				urutan_aksi_terakhir = tambah_aksi.urutan
+			elif !(pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 2) is blok_pass):
+				tambah_aksi = pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 2)
+				urutan_aksi_terakhir = tambah_aksi.urutan
+			# pindahin urutan tambah_aksi ke [urutan_aksi_dipilih + 1]
+			tambah_aksi.get_parent().move_child(tambah_aksi, urutan_aksi_dipilih + 1)
+			tambah_aksi.urutan = urutan_aksi_dipilih + 1
+			tambah_aksi.cek_urutan()
+			# pindahin urutan aksi[urutan_aksi_dipilih + 1] ke + 2; seterusnya sampai urutan_aksi_terakhir
+			if pilih_aksi.get_parent().get_child(pilih_aksi.get_parent().get_child_count() - 1) is blok_pass\
+			 and pilih_aksi.get_parent().get_child_count() > (urutan_aksi_dipilih + 2):
+				for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
+					var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 2
+					var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
+					if cek_aksiaksi.get("urutan") != null:
+						cek_aksiaksi.urutan = urutan_cek_aksi
+					if cek_aksiaksi.has_method("cek_urutan"):
+						cek_aksiaksi.cek_urutan()
+			elif pilih_aksi.get_parent().get_child_count() > (urutan_aksi_dipilih + 1):
+				for idx_cek_aksi in (urutan_aksi_terakhir - urutan_aksi_dipilih):
+					var urutan_cek_aksi = urutan_aksi_dipilih + idx_cek_aksi + 1
+					var cek_aksiaksi = pilih_aksi.get_parent().get_child(urutan_cek_aksi)
+					if cek_aksiaksi.get("urutan") != null:
+						cek_aksiaksi.urutan = urutan_cek_aksi
+					if cek_aksiaksi.has_method("cek_urutan"):
+						cek_aksiaksi.cek_urutan()
+			#print_debug(tambah_aksi.get_parent().get_children())
 func hapus_blok_aksi():
 	if pilih_scope != null and pilih_aksi != null:
 		var urutan_aksi_dihapus = pilih_aksi.urutan

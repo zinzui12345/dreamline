@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://d2k86ht18kg0d"]
+[gd_scene load_steps=21 format=3 uid="uid://d2k86ht18kg0d"]
 
 [ext_resource type="Script" path="res://skrip/blok kode/panel_kode.gd" id="1_0xc42"]
 [ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="2_7ls2e"]
@@ -11,7 +11,7 @@ size = Vector2(0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2hsou"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_top = 30
+border_width_top = 35
 border_color = Color(0.168627, 0.168627, 0.168627, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0d04d"]
@@ -31,12 +31,18 @@ bg_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hoi8r"]
 bg_color = Color(0.168627, 0.168627, 0.168627, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m0uqc"]
+bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mr7dl"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uno7o"]
 bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4dgeb"]
+bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ggril"]
 bg_color = Color(0, 0, 0, 0)
@@ -271,7 +277,7 @@ _data = {
 [node name="panel_kode" type="Panel"]
 clip_contents = true
 anchors_preset = -1
-anchor_left = 0.4
+anchor_left = 0.35
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -0.512085
@@ -287,20 +293,20 @@ anchor_left = 1.0
 anchor_top = 0.049
 anchor_right = 1.0
 anchor_bottom = 0.049
-offset_left = -447.712
+offset_left = -463.712
 offset_top = -31.752
 offset_right = 0.287964
-offset_bottom = 24.248
+offset_bottom = 32.248
 grow_horizontal = 0
 metadata/_edit_lock_ = true
 
 [node name="nilai_skala" type="Label" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0360893
-anchor_top = 0.0714286
-anchor_right = 0.141696
-anchor_bottom = 0.928571
+anchor_left = 0.0176035
+anchor_top = 0.078125
+anchor_right = 0.13681
+anchor_bottom = 0.9375
 offset_left = -0.168001
 offset_right = 0.519997
 theme_override_font_sizes/font_size = 20
@@ -308,14 +314,14 @@ text = "1.0"
 horizontal_alignment = 2
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="pengatur_skala" type="HSlider" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.178625
-anchor_top = 0.0714286
-anchor_right = 0.696482
-anchor_bottom = 0.928571
+anchor_left = 0.172466
+anchor_right = 0.569017
+anchor_bottom = 1.0
 offset_left = -0.0240021
 offset_right = -0.0240173
 theme_override_icons/grabber = SubResource("PlaceholderTexture2D_5vu3a")
@@ -329,36 +335,31 @@ max_value = 5.0
 step = 0.25
 value = 1.0
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="tambah_skala" type="Button" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.861375
-anchor_top = 0.0892857
-anchor_right = 0.961321
-anchor_bottom = 0.893286
-offset_left = -0.184021
-offset_right = 0.0400085
-offset_bottom = -0.0240021
+anchor_left = 0.758621
+anchor_top = 0.125
+anchor_right = 0.862207
+anchor_bottom = 0.875
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("2_7ls2e")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 40
 text = "y"
 metadata/_edit_use_anchors_ = true
 
 [node name="kurangi_skala" type="Button" parent="kontrol_skala"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.733857
-anchor_top = 0.0892857
-anchor_right = 0.833804
-anchor_bottom = 0.893286
-offset_left = -0.0560303
-offset_right = 0.167908
-offset_bottom = -0.0240021
+anchor_left = 0.62081
+anchor_top = 0.125
+anchor_right = 0.724138
+anchor_bottom = 0.875
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("2_7ls2e")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 40
 text = "z"
 metadata/_edit_use_anchors_ = true
 
@@ -368,7 +369,7 @@ anchors_preset = -1
 offset_left = 52.0
 offset_top = -8.0
 offset_right = 228.0
-offset_bottom = 40.0
+offset_bottom = 48.0
 theme_override_fonts/font = ExtResource("2_7ls2e")
 theme_override_font_sizes/font_size = 32
 text = "/"
@@ -376,11 +377,11 @@ text = "/"
 [node name="wilayah_deklarasi" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.0866914
+anchor_top = 0.099
 anchor_right = 1.0
 anchor_bottom = 0.988
 offset_left = 260.0
-offset_top = -0.176003
+offset_top = -0.152008
 offset_right = -7.71204
 offset_bottom = -0.223999
 grow_horizontal = 0
@@ -420,11 +421,12 @@ anchors_preset = -1
 anchor_left = 0.513
 anchor_right = 0.513
 anchor_bottom = 1.0
-offset_left = -192.239
-offset_top = 192.0
-offset_right = 191.761
-offset_bottom = -232.0
+offset_left = -235.397
+offset_top = 120.0
+offset_right = 236.603
+offset_bottom = -208.0
 grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(1e-05, 1e-05)
 pivot_offset = Vector2(192, 112)
 theme_override_styles/panel = SubResource("StyleBoxFlat_x7axr")
@@ -444,13 +446,12 @@ text = "Ubah nilai"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0416667
-anchor_top = 0.178571
+anchor_top = 0.15
 anchor_right = 0.958333
-anchor_bottom = 0.785714
+anchor_bottom = 0.825
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="panel_edit/Panel/ScrollContainer"]
 layout_mode = 2
@@ -460,29 +461,29 @@ theme_override_constants/separation = 10
 [node name="batal" type="Button" parent="panel_edit/Panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.833
-anchor_top = 0.964
-anchor_right = 0.833
-anchor_bottom = 0.964
-offset_left = -47.872
-offset_top = -30.936
-offset_right = 0.127991
-offset_bottom = 0.0639954
+anchor_left = 0.780322
+anchor_top = 0.975
+anchor_right = 0.780322
+anchor_bottom = 0.975
+offset_left = -80.0
+offset_top = -48.0
+offset_right = -3.05176e-05
 grow_horizontal = 2
 grow_vertical = 0
 text = "batal"
+metadata/_edit_use_anchors_ = true
 
 [node name="oke" type="Button" parent="panel_edit/Panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.979
-anchor_top = 0.964
-anchor_right = 0.979
-anchor_bottom = 0.964
-offset_left = -47.936
-offset_top = -30.936
-offset_right = 0.0639954
-offset_bottom = 0.0639954
+anchor_left = 0.958
+anchor_top = 0.975
+anchor_right = 0.958062
+anchor_bottom = 0.975125
+offset_left = -76.176
+offset_top = -48.0
+offset_right = -0.205444
+offset_bottom = -0.0400085
 grow_horizontal = 2
 grow_vertical = 0
 text = "oke"
@@ -496,6 +497,7 @@ grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_7ls2e")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_hoi8r")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_m0uqc")
 theme_override_styles/focus = SubResource("StyleBoxFlat_mr7dl")
 text = "<"
 
@@ -509,8 +511,8 @@ grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_7ls2e")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_uno7o")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4dgeb")
 theme_override_styles/focus = SubResource("StyleBoxFlat_ggril")
-disabled = true
 text = ">
 "
 
