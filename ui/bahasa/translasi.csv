@@ -102,7 +102,11 @@ INPUTHAPUS,hapus,delete
 %inputperintah%,Masukkan perintah disini...,Input expression here...
 ,,
 # aksi,,
+%aksi,Aksi,Action
+%pasang,Buat,Place
+%gunakan,Gunakan,Use
 %edit,Edit,Edit
+%edit_skrip,Edit Kode,Edit Code
 %dorong,Dorong,Push
 %angkat,Angkat,Pickup
 %lempar,Lempar,Throw
@@ -112,6 +116,14 @@ INPUTHAPUS,hapus,delete
 # dialog,,
 t5d0f95face,Selamat datang di dreamline!,Welcome to dreamline!
 tc6ded773c4,Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa bermain bersama siapapun dengan perangkat apapun,This is a Sandbox [b]Multiplayer Cross-Platform[/b] game where you can play with anyone with any platform
+,,
+# editor kode,,
+gunakan():, gunakan():, use():
+Permainan >,Permainan >,Game >
+Objek >,Objek >,Object >
+notifikasi(teks),notifikasi(teks),notify(text)
+pesan(teks),pesan(teks),message(text)
+pindahkan(arah),pindahkan(arah),move(direction)
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
