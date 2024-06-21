@@ -53,6 +53,18 @@ func _setup():
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
 func mulai():
 	pass
+# fungsi untuk memindahkan posisi lokal objek berdasarkan jarak
+func pindahkan(arah : Vector3):
+	if id_pengubah < 1:
+		Panku.notify(position)
+		translate(arah)
+		Panku.notify(position)
+		cek_properti["posisi"] = position
+		# FIXME : gabisa karena pool_objek[nama_objek]["id_pengubah"] di server belum di set!
+		if client.id_koneksi == 1:
+			server._sesuaikan_properti_objek(1, name, [["position", position]])
+		else:
+			server.rpc_id(1, "_sesuaikan_properti_objek", client.id_koneksi, name, [["position", position]])
 # fungsi untuk menghapus objek, menghilangkan dari dunia dan server
 func hilangkan():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:

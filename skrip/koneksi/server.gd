@@ -35,6 +35,8 @@ const jarak_render_entitas = 10 # FIXME : set ke 50
 # frame adalah nilai Time.get_ticks_msec() dikurangi waktu pada saat dunia di spawn
 # timeline["data"]["mulai"] adalah Time.get_ticks_msec() pada saat dunia di spawn
 # timeline["data"]["frame"] adalah Time.get_ticks_msec() dikurangi timeline[0]["mulai"]
+# timeline["data"]["id"] adalah karakter acak untuk identifikasi bagian timeline pada suatu sesi permainan
+# timeline["data"]["urutan"] adalah posisi urutan bagian timeline pada suatu sesi permainan
 # :: penggunaan ::
 # timeline[12][1] = { "spawn", "pintu", "res://model/pintu/pintuffburik.scn", "data": { Vec3(12, 1, 10), Vec3(0, 122, 0), Vec3(1, 1, 1), { "arah_gerak": Vec3(0.33, 0, 1.5) } } }
 # timeline[12][1] = { "sinkron", "posisi": Vec3(12, 1, 10), "rotasi": Vec3(0, 122, 0), "skala": Vec3(1, 1, 1), "kondisi": { "arah_gerak": Vec3(0.33, 0, 1.5) } }
@@ -97,7 +99,32 @@ func _process(_delta):
 			# atur frame timeline
 			if !mode_replay:
 				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
-					timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
+					if timeline.size() > 700:
+						var b_data_timeline = timeline["data"]
+						# hasilkan nama_file
+						var nama_file_timeline = "timeline_%s-%s-%s_%s.timelinepart" % [map, nama, timeline["data"]["id"], timeline["data"]["urutan"]]
+						# simpan data timeline ke nama_file
+						# - hapus timeline["data"], sisakan data frame
+						timeline.erase("data")
+						# - kalau direktori bagian belum ada, buat
+						if !DirAccess.dir_exists_absolute("user://timeline_part"):
+							DirAccess.make_dir_absolute("user://timeline_part")
+						var file = FileAccess.open("user://timeline_part/"+nama_file_timeline, FileAccess.WRITE)
+						# - jangan langsung stor, hapus dulu frame yang kosong!
+						var indeks_timeline = timeline.keys()
+						for frame in indeks_timeline.size(): 
+							if timeline[indeks_timeline[frame]].size() < 1:
+								timeline.erase(indeks_timeline[frame])
+						indeks_timeline.clear()
+						file.store_var(timeline)
+						file.close()
+						# kosongkan data frame timeline
+						timeline.clear()
+						timeline["data"] = b_data_timeline
+						# tambah urutan
+						timeline["data"]["urutan"] += 1
+					else:
+						timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 			
 			# tentukan visibilitas entitas dan objek pada tiap pemain
 			if permainan.dunia.get_node("pemain").get_child_count() > 0:
@@ -201,9 +228,11 @@ func buat_koneksi():
 	# setup timeline
 	timeline = {
 		"data": {
+			"id":	 permainan.hasilkanKarakterAcak(5),
 			"map":	 map,
 			"mulai": Time.get_ticks_msec(),
-			"frame": 0
+			"frame": 0,
+			"urutan":1
 		}
 	}
 	# setup pool
@@ -249,16 +278,48 @@ func putuskan():
 	interface = null
 	client.id_koneksi = -44
 	pemain_terhubung = 0
-	# setup timeline
+	# kompilasi data frame timeline
 	set_process(false)
-	var file = FileAccess.open(file_replay, FileAccess.WRITE)
-	var indeks_timeline = timeline.keys() # jangan langsug stor, hapus dulu frame yang kosong!
-	for frame in indeks_timeline.size(): 
-		if timeline[indeks_timeline[frame]].size() < 1:
-			timeline.erase(indeks_timeline[frame])
-	indeks_timeline.clear()
-	file.store_var(timeline)
-	file.close()
+	# - pindahkan timeline["data"] ke variabel baru
+	var b_data_timeline = timeline["data"]
+	timeline.erase("data")
+	# - pindahkan data frame terakhir ke variabel baru
+	var b_data_frame = timeline
+	# - kosongkan data frame timeline
+	timeline.clear()
+	# - pindahkan kembali timeline["data"] ke timeline
+	timeline["data"] = b_data_timeline
+	# - dapatkan nama_file timeline berdasarkan id_timeline
+	for i in timeline["data"]["urutan"] - 1:
+		var nama_file_timeline = "timeline_%s-%s-%s_%s.timelinepart" % [map, nama, timeline["data"]["id"], str(i+1)]
+		# > buka nama_file_timeline lalu set ke tmp_frame
+		if FileAccess.file_exists("user://timeline_part/"+nama_file_timeline): # cegah error jika seandainya file corrupt
+			var file = FileAccess.open("user://timeline_part/"+nama_file_timeline, FileAccess.READ_WRITE)
+			var tmp_frame = file.get_var()
+			# > merge tmp_frame ke timeline
+			timeline.merge(tmp_frame, true)
+			# > tutup file nama_file_timeline
+			file.close()
+			# > hapus file nama_file_timeline
+			DirAccess.remove_absolute("user://timeline_part/"+nama_file_timeline)
+	# - pindahkan kembali (merge) frame terakhir ke timeline
+	timeline.merge(b_data_frame, true)
+	# - hapus id dari timeline["data"]
+	timeline["data"].erase("id")
+	# - hapus urutan dari timeline["data"]
+	timeline["data"].erase("urutan")
+	# - simpan timeline ke file
+	# > pastikan frame tidak kosong
+	if timeline.size() > 10:
+		var file = FileAccess.open(file_replay, FileAccess.WRITE)
+		var indeks_timeline = timeline.keys()
+		# > jangan langsug stor, hapus dulu frame yang kosong!
+		for frame in indeks_timeline.size(): 
+			if timeline[indeks_timeline[frame]].size() < 1:
+				timeline.erase(indeks_timeline[frame])
+		indeks_timeline.clear()
+		file.store_var(timeline)
+		file.close()
 	# setup pool
 	pool_entitas.clear()
 	pool_objek.clear()

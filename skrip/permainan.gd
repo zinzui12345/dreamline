@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 19/06/24 alpha"
+const versi = "Dreamline v1.4.4 21/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1398,7 +1398,7 @@ func _ketika_mengubah_kode_objek():
 		if edit_objek is objek:
 			sintaks_aksi.merge({
 				"Objek" : [
-					["pindahkan(arah)", "get_node(\"../../\").translate(Vector3(0,0,0))", "ikon"]
+					["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "ikon"]
 				]
 			})
 		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
@@ -1830,6 +1830,14 @@ func detikKeMenit(detik: int) -> String:
 		detik_terformat = "0" + detik_terformat
 
 	return menit_terformat + ":" + detik_terformat
+func hasilkanKarakterAcak(jumlah: int) -> String:
+	var set_karakter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	var length = set_karakter.length()
+	var karakter_acak = ""
+	for i in range(jumlah):
+		var indeks_acak = randi_range(0, length - 1)
+		karakter_acak += set_karakter[indeks_acak]
+	return karakter_acak
 func tampilkan_info_koneksi():
 	# Dapatkan IP
 	var addr : Array

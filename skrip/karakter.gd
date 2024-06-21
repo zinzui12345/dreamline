@@ -453,6 +453,6 @@ func _sinkronkan_timeline():
 			}
 		}
 		# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya
-		if server.timeline[_frame_timeline_sb].has(id_pemain) and server.timeline[_frame_timeline_sb][id_pemain] == server.timeline[frame_sekarang][id_pemain]:
+		if server.timeline.has(_frame_timeline_sb) and server.timeline[_frame_timeline_sb].has(id_pemain) and server.timeline[_frame_timeline_sb][id_pemain] == server.timeline[frame_sekarang][id_pemain]:
 			server.timeline[_frame_timeline_sb].erase(id_pemain)
 		_frame_timeline_sb = frame_sekarang
