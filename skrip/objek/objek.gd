@@ -16,7 +16,7 @@ var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membanding
 @export var wilayah_render : AABB :
 	set(aabb):
 		if is_inside_tree():
-			# TODO : reset otomatis ketika posisi/rotasi diubah
+			# TODO : reset otomatis ketika rotasi diubah
 			var tmp_aabb = []
 			for titik in 8:
 				var tmp_vektor = wilayah_render.get_endpoint(titik)
@@ -31,7 +31,8 @@ var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membanding
 		wilayah_render = aabb
 @export var jarak_render = 10		# jarak maks render
 @export var titik_sudut = []		# titik tiap sudut AABB untuk occlusion culling
-@export var cek_titik = 0
+@export var cek_titik = 0			# simpan titik terakhir occlusion culling
+@export var tak_terlihat = false	# simpan kondisi frustum culling
 @export var terhalang = false		# simpan kondisi occlusion culling
 
 func _ready(): call_deferred("_setup")

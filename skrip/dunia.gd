@@ -104,46 +104,51 @@ func _process(delta):
 						# non-aktifkan visibilitas objek
 						if m_objek.visible: 
 							m_objek.visible = false
+							m_objek.tak_terlihat = true
 							# debug
 							Panku.notify(m_objek.name+" tak terlihat")
 					# jika objek berada di depan kamera dan tidak terhalang
 					elif !m_objek.visible and !m_objek.terhalang:
 						# aktifkan visibilitas objek
 						m_objek.visible = true
+						m_objek.tak_terlihat = false
 						# debug
 						Panku.notify(m_objek.name+" terlihat")
 				# jika objek tidak visible dan tidak terhalang
 				elif !m_objek.visible and !m_objek.terhalang:
 					# aktifkan visibilitas objek
 					m_objek.visible = true
+					m_objek.tak_terlihat = false
 					# debug
 					Panku.notify(m_objek.name+" terlihat")
 			
 			# Occlusion Culling
-			if server.permainan.karakter.get_node("PlayerInput").gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
-				# pastikan cek titik yang valid
-				if m_objek.cek_titik < m_objek.titik_sudut.size():
-					# cek apakah raycast mengenai sesuatu
-					raycast_occlusion_culling.global_position = m_objek.titik_sudut[m_objek.cek_titik]
-					raycast_occlusion_culling.look_at(pengamat.global_position)
-					raycast_occlusion_culling.force_raycast_update()
-					var mengenai_sesuatu = await raycast_occlusion_culling.is_colliding()
-					# FIXME : jangan cull ketika posisi pengamat berada didekat objek / titik
-					# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
-					if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == pengamat:
-						m_objek.cek_titik = 0
-						m_objek.terhalang = false
-					# jika raycast terhalang, tambah dan cek jumlah indeks cek titik
-					else:
-						# jika semua titik terhalang, atur ulang indeks cek titik, non-aktifkan visibilitas objek | objek terhalang
-						if m_objek.visible and m_objek.cek_titik == m_objek.titik_sudut.size() - 1:
-							m_objek.visible = false
-							m_objek.terhalang = true
+			# FIXME : jangan cek ketika posisi pengamat berada didekat objek / titik
+			if !m_objek.tak_terlihat: # 23/06/24 :: jangan cek ketika arah pengamat membelakangi objek
+				if server.permainan.karakter.get_node("PlayerInput").gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
+					# pastikan cek titik yang valid
+					if m_objek.cek_titik < m_objek.titik_sudut.size():
+						# cek apakah raycast mengenai sesuatu
+						raycast_occlusion_culling.global_position = m_objek.global_position
+						raycast_occlusion_culling.global_position += m_objek.titik_sudut[m_objek.cek_titik] # 23/06/24 :: walau posisi abb telah menjadi posisi global, posisi tersebut tidak sama dengan posisi global dunia sehingga harus di kalkulasi ulang
+						raycast_occlusion_culling.look_at(pengamat.global_position)
+						raycast_occlusion_culling.force_raycast_update()
+						var mengenai_sesuatu = await raycast_occlusion_culling.is_colliding()
+						# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
+						if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == pengamat:
 							m_objek.cek_titik = 0
-							# debug
-							Panku.notify(m_objek.name+" terhalang")
-						# jika masih ada titik yang belum dicek, tambah indeks cek titik
+							m_objek.terhalang = false
+						# jika raycast terhalang, tambah dan cek jumlah indeks cek titik
 						else:
-							m_objek.cek_titik += 1
-				else:
-					m_objek.cek_titik = 0
+							# jika semua titik terhalang, atur ulang indeks cek titik, non-aktifkan visibilitas objek | objek terhalang
+							if m_objek.visible and m_objek.cek_titik == m_objek.titik_sudut.size() - 1:
+								m_objek.visible = false
+								m_objek.terhalang = true
+								m_objek.cek_titik = 0
+								# debug
+								Panku.notify(m_objek.name+" terhalang")
+							# jika masih ada titik yang belum dicek, tambah indeks cek titik
+							else:
+								m_objek.cek_titik += 1
+					else:
+						m_objek.cek_titik = 0
