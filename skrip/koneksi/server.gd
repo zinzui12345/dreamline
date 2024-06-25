@@ -670,7 +670,7 @@ func _pemain_terputus(id_pemain):
 				permainan.dunia.get_node("objek").get_node(nama_objek).hapus()
 			else:
 				permainan.dunia.get_node("objek").get_node(nama_objek).queue_free()
-@rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi):
+@rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi, tampilkan_ui = true):
 	var jalur_objek = ""
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if pool_entitas.has(nama_objek):
@@ -714,9 +714,10 @@ func _pemain_terputus(id_pemain):
 					pool_objek[nama_objek]["id_pengubah"] = id_pengubah
 			else: return
 		
-		# TODO : kirim properti kustom yang bisa di-edit mis: skala, warna, dll..
-		if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
-		else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)
+		if tampilkan_ui:
+			# TODO : kirim properti kustom yang bisa di-edit mis: skala, warna, dll..
+			if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
+			else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)
 @rpc("any_peer") func _terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
 	var t_objek = get_node_or_null(jalur_objek)
 	if t_objek != null and t_objek.get("linear_velocity") != null:

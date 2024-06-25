@@ -57,15 +57,21 @@ func mulai():
 # fungsi untuk memindahkan posisi lokal objek berdasarkan jarak
 func pindahkan(arah : Vector3):
 	if id_pengubah < 1:
-		Panku.notify(position)
-		translate(arah)
-		Panku.notify(position)
-		cek_properti["posisi"] = position
-		# FIXME : gabisa karena pool_objek[nama_objek]["id_pengubah"] di server belum di set!
 		if client.id_koneksi == 1:
-			server._sesuaikan_properti_objek(1, name, [["position", position]])
+			server._edit_objek(name, 1, true, false)
 		else:
-			server.rpc_id(1, "_sesuaikan_properti_objek", client.id_koneksi, name, [["position", position]])
+			server.rpc_id(1, "_edit_objek", name, client.id_koneksi, true, false)
+		var posisi_perpindahan = global_transform.origin + arah
+		# FIXME : cek apakah privilage edit telah didapatkan
+		await get_tree().create_timer(0.05).timeout
+		cek_properti["posisi"] = posisi_perpindahan
+		set_indexed("global_transform:origin", posisi_perpindahan)
+		if client.id_koneksi == 1:
+			server._sesuaikan_properti_objek(1, name, [["position", cek_properti["posisi"]]])
+			server._edit_objek(name, id_pengubah, false, false)
+		else:
+			server.rpc_id(1, "_sesuaikan_properti_objek", client.id_koneksi, name, [["position", cek_properti["posisi"]]])
+			server.rpc_id(1, "_edit_objek", name, id_pengubah, false, false)
 # fungsi untuk menghapus objek, menghilangkan dari dunia dan server
 func hilangkan():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
