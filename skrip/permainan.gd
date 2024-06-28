@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 26/06/24 alpha"
+const versi = "Dreamline v1.4.4 28/06/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -199,20 +199,21 @@ func _ready():
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
 	$hud/daftar_properti_objek/DragPad.visible = false
-	# non-aktifkan pengamat objek
-	$pengamat.set_process(false)
-	$pengamat.visible = false
+	
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
 	_timer_kirim_suara.wait_time = 2.0
 	_timer_kirim_suara.connect("timeout", Callable(self, "_kirim_suara"))
+	
 	# setup timer pesan
 	add_child(_timer_tampilkan_pesan)
 	_timer_tampilkan_pesan.wait_time = 2.0
 	_timer_tampilkan_pesan.connect("timeout", Callable(self, "_sembunyikan_pesan"))
+	
 	# setup timeline
 	server.set_process(false)
 	server.process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	# INFO : (2) muat data konfigurasi atau terapkan konfigurasi default
 	if OS.get_distribution_name() == "Android":
 		# aktifkan otomatis kontrol sentuh di android
@@ -221,8 +222,10 @@ func _ready():
 		$hud/bantuan_input.visible = false
 		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
 		dunia.get_node("matahari").directional_shadow_max_distance /= 2
+	
 	# setup dialog
 	DialogueManager.dialogue_ended.connect(tutup_dialog)
+	
 	# INFO : (3) tampilkan menu utama
 	$menu_utama/animasi.play("tampilkan")
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
@@ -249,15 +252,6 @@ func _process(delta):
 				$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y,
 				-60, 60
 			)
-	
-	# kontrol rotasi pandangan ketika mengedit objek
-	if $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
-		_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * Konfigurasi.sensitivitasPandangan * delta
-		if _arah_gestur_tampilan_objek != _gerakan_gestur_tampilan_objek:
-			$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
-			$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
-			_arah_gestur_tampilan_objek = Vector2.ZERO
-			_gerakan_gestur_tampilan_objek = _arah_gestur_tampilan_objek
 	
 	# pemutar musik
 	if $pemutar_musik.visible:
@@ -295,11 +289,22 @@ func _process(delta):
 			$mode_bermain.visible = true
 			$hud/daftar_pemain/animasi.play_backwards("tampilkan")
 		
-		if Input.is_action_just_pressed("perdekat_pandangan") or Input.is_action_just_pressed("perjauh_pandangan"):
-			if _touchpad_disentuh:
-				$pengamat/posisi_mata.fungsi_zoom = true
-			else:
-				$pengamat/posisi_mata.fungsi_zoom = false
+		# kontrol rotasi pandangan ketika mengedit objek
+		if get_node_or_null("pengamat") != null and !server.mode_replay and !server.mode_uji_performa:
+			if $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
+				_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * Konfigurasi.sensitivitasPandangan * delta
+				if _arah_gestur_tampilan_objek != _gerakan_gestur_tampilan_objek:
+					$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
+					$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
+					_arah_gestur_tampilan_objek = Vector2.ZERO
+					_gerakan_gestur_tampilan_objek = _arah_gestur_tampilan_objek
+				
+				# kontrol zoom pengamat objek
+				if Input.is_action_just_pressed("perdekat_pandangan") or Input.is_action_just_pressed("perjauh_pandangan"):
+					if _touchpad_disentuh:
+						$pengamat/posisi_mata.fungsi_zoom = true
+					else:
+						$pengamat/posisi_mata.fungsi_zoom = false
 	
 	if Input.is_action_just_pressed("ui_cancel"): _kembali()
 	if Input.is_action_just_pressed("modelayar_penuh"):
@@ -342,8 +347,9 @@ func _notification(what):
 
 # core
 func uji_performa():
-	if dunia != null: dunia.queue_free()
-	get_tree().change_scene_to_file("res://skena/perf_test.tscn")
+	server.mode_uji_performa = true
+	koneksi = MODE_KONEKSI.CLIENT
+	_mulai_permainan("perf_test", server.map)
 func uji_vr():
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://skena/vr_test.tscn")
@@ -406,7 +412,7 @@ func _muat_map(file_map):
 		data["rotasi"] = map.get_node("posisi_spawn").rotation
 	if map.get_node_or_null("batas_bawah") != null:
 		batas_bawah = map.get_node("batas_bawah").position.y
-	call_deferred("_atur_persentase_memuat", 70)
+	call_deferred("_atur_persentase_memuat", 60)
 	await get_tree().create_timer(0.5).timeout
 	dunia.call_deferred("add_child", map)
 	dunia.call_deferred("set_process", true)
@@ -414,16 +420,18 @@ func _muat_map(file_map):
 		# INFO : (5a) buat server
 		server.call_deferred("buat_koneksi")
 		if not server.headless:
+			# tambah pengamat objek
+			var pengamat_objek = load("res://skena/pengamat_objek.tscn").instantiate()
+			call_deferred("_atur_persentase_memuat", 70)
+			call_deferred("add_child", pengamat_objek)
+			# tambahkan pemain
 			call_deferred("_tambahkan_pemain", 1, data)
 			server.pemain_terhubung = 1
 		else:
 			call_deferred("_mulai_server_cli")
 	elif koneksi == MODE_KONEKSI.CLIENT:
-		if not server.mode_replay:
-			# INFO : (5b1) kirim data pemain ke server
-			server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
-			#_tampilkan_permainan() # dipindah ke pemain.gd supaya gak lag
-		else:
+		if server.mode_replay:
+			# INFO : (5b3) muat data replay
 			# 04/02/24 :: ubah nilai properti menjadi keyframe animasi
 			koneksi = MODE_KONEKSI.SERVER
 			var indeks_frame = server.timeline.keys() # berisi indeks seperti nomor frame, dll
@@ -432,11 +440,11 @@ func _muat_map(file_map):
 			var pengamat = Camera3D.new()
 			var _fungsi_pengamat : GDScript = load("res://skrip/objek/free_look_camera.gd")
 			alur_waktu.name = "alur_waktu"
+			dunia.call_deferred("add_child", alur_waktu)
 			pengamat.name = "pengamat"
 			pengamat.current = true
 			pengamat.set_script(_fungsi_pengamat)
-			dunia.call_deferred("add_child", alur_waktu)
-			dunia.call_deferred("add_child", pengamat)
+			call_deferred("add_child", pengamat)
 			for frame in indeks_frame:
 				if frame is int and server.timeline[frame] != {}:
 					var indeks_entitas = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
@@ -564,6 +572,23 @@ func _muat_map(file_map):
 			alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
 			# $root.dunia.get_node("alur_waktu").play("alur_waktu/skenario")
 			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
+		elif server.mode_uji_performa:
+			# INFO : (5b4) tampilkan halaman uji performa
+			# 28/06/24 :: demo uji algoritma object culling
+			# FIXME : viewport root tetap di-render!
+			koneksi = MODE_KONEKSI.SERVER
+			server.mode_replay = true
+			call_deferred("_tambahkan_pemain", 1, data)
+			var pengamat = load("res://skena/perf_test.tscn").instantiate()
+			pengamat.name = "pengamat"
+			call_deferred("add_child", pengamat)
+		else:
+			# tambah pengamat objek
+			var pengamat_objek = load("res://skena/pengamat_objek.tscn").instantiate()
+			call_deferred("_atur_persentase_memuat", 70)
+			call_deferred("add_child", pengamat_objek)
+			# INFO : (5b1) kirim data pemain ke server
+			server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
 	thread.call_deferred("wait_to_finish")
 func _mulai_server_cli():
 	print(alamat_ip())
@@ -576,6 +601,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 			"L": pemain = karakter_cowok.instantiate(); sumber = karakter_cowok.resource_path
 			"P": pemain = karakter_cewek.instantiate(); sumber = karakter_cewek.resource_path
 		if !is_instance_valid(pemain): print("tidak dapat menambahkan pemain "+str(id)); return
+		if id == client.id_koneksi: karakter = pemain
 		
 		# INFO : (6) terapkan data pemain ke model pemain
 		pemain.id_pemain = id
@@ -628,8 +654,6 @@ func _tambahkan_pemain(id: int, data_pemain):
 		# hanya pada server
 		if id == 1:
 			# INFO : (8a) mulai permainan
-			karakter = pemain
-			# sembunyikan proses memuat
 			_tampilkan_permainan()
 		
 	else: print("tidak dapat menambahkan pemain sebelum memuat dunia!")
@@ -798,19 +822,19 @@ func putuskan_server(paksa = false):
 				_tampilkan_popup_konfirmasi($menu_utama/menu/Panel/buat_server, tmp_f_putuskan, "%putuskan_server")
 				return
 			else:
-				if not server.mode_replay: server.putuskan()
-				else:
+				if server.mode_uji_performa:
+					server.mode_replay = false
+					server.mode_uji_performa = false
+				elif server.mode_replay:
 					dunia.get_node("alur_waktu").queue_free()
-					dunia.get_node("pengamat").queue_free()
+					server.mode_replay = false
+				else:
+					server.putuskan()
 				$menu_utama/menu/Panel/buat_server.grab_focus()
 		elif koneksi == MODE_KONEKSI.CLIENT:
 			client.putuskan_server()
 			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
-		
-		# non-aktifkan pengamat objek
-		$pengamat.set_process(false)
-		$pengamat.visible = false
 		
 		_sembunyikan_antarmuka_permainan()
 		# INFO : (9) tampilkan kembali menu utama
@@ -863,6 +887,10 @@ func putuskan_server(paksa = false):
 		
 		# hapus daftar pemain
 		for d_pemain in $hud/daftar_pemain/panel/gulir/baris.get_children(): d_pemain.queue_free()
+		
+		# hapus pengamat objek
+		if get_node_or_null("pengamat") != null:
+			$pengamat.queue_free()
 		
 		$latar.tampilkan()
 		_mainkan_musik_latar()
@@ -957,6 +985,8 @@ func _tampilkan_permainan():
 	$kontrol_sentuh/chat.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
 func _sembunyikan_antarmuka_permainan():
+	$hud/bantuan_input/aksi1.visible = false
+	$hud/bantuan_input/aksi2.visible = false
 	$hud/kompas.set_physics_process(false)
 	$hud/kompas.parent = null
 	$hud.visible = false
@@ -1731,7 +1761,9 @@ func _ketika_menyimpan_data_karakter():
 # menu
 func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
-		if $pengamat/kamera/rotasi_vertikal/pandangan.current: pass
+		if get_node_or_null("pengamat") != null and !server.mode_replay \
+			and !server.mode_uji_performa and $pengamat/kamera/rotasi_vertikal/pandangan.current:
+			pass
 		else:
 			if memasang_objek: _tutup_daftar_objek(true)
 			if $dialog.get_node_or_null("ExampleBalloon") != null:

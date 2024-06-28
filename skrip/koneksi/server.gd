@@ -19,6 +19,7 @@ var pemain : Dictionary
 var timeline : Dictionary = {}
 var mode_replay = false
 var file_replay = "user://rekaman.dreamline_replay"
+var mode_uji_performa = false
 var jumlah_entitas = 0
 var jumlah_objek = 0
 var pool_entitas : Dictionary = {}
@@ -453,6 +454,7 @@ func _pemain_terputus(id_pemain):
 		permainan.dunia.get_node("pemain/"+str(id_pemain))._hapus()
 		permainan._hapus_daftar_pemain(id_pemain)
 		client.rpc("hapus_pemain", id_pemain)
+		# TODO : 26/06/24 :: loop pool_objek kemudian reset id_pengubah pada objek yang id_pengubah == id_pemain
 		print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 		pemain_terhubung -= 1
 

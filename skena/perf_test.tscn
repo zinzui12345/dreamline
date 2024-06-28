@@ -1,59 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://dodo3q7h6ujaa"]
+[gd_scene load_steps=11 format=3 uid="uid://dodo3q7h6ujaa"]
 
 [ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
 [ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
-[ext_resource type="PackedScene" uid="uid://dfoyqfg2gqaff" path="res://map/pulau.tscn" id="2_gor8n"]
 
 [sub_resource type="GDScript" id="GDScript_5cxiv"]
 script/source = "# 28/12/23
 extends Control
 
-var dunia
-var mode_layar_penuh = false :
-	set(nilai):
-		if nilai:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-			mode_layar_penuh = nilai
-		else:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			mode_layar_penuh = nilai
-
-@onready var permukaan = $viewport_utama/viewport/lingkungan/permukaan
-@onready var posisi_terakhir = $viewport_utama/viewport/pengamat.global_position
-@onready var rotasi_terakhir = $viewport_utama/viewport/pengamat.global_rotation
-
 func _ready():
-	if dunia == null:
-		dunia = await load(\"res://skena/dunia.scn\").instantiate()
-		call_deferred(\"add_child\", dunia)
-	
-	permukaan.pengamat = $viewport_utama/viewport/pengamat
-	for pt in permukaan.potongan.size():
-		var potongan = permukaan.get_node_or_null(\"bentuk_\" + permukaan.potongan[pt][\"indeks\"])
-		if potongan != null:
-			var label_info = $viewport_culling/SubViewport/info_chunk/Label3D.duplicate()
-			label_info.name = \"bentuk_\" + permukaan.potongan[pt][\"indeks\"]
-			$viewport_culling/SubViewport/info_chunk.add_child(label_info)
-			label_info.text = label_info.name
-			label_info.global_position.x = permukaan.potongan[pt][\"pusat_x\"]
-			label_info.global_position.z = permukaan.potongan[pt][\"pusat_y\"]
-			label_info.visible = true
+	pass
 
-func _input(event):
-	if event.is_action_pressed(\"modelayar_penuh\"): mode_layar_penuh = !mode_layar_penuh
-	
-	if posisi_terakhir == $viewport_utama/viewport/pengamat.global_transform.origin and \\
-		rotasi_terakhir == $viewport_utama/viewport/pengamat.global_rotation_degrees:
-		pass
-	else:
-		for pt in permukaan.potongan.size():
-			var potongan = permukaan.get_node_or_null(\"bentuk_\" + permukaan.potongan[pt][\"indeks\"])
-			var label_info = $viewport_culling/SubViewport/info_chunk.get_node_or_null(\"bentuk_\" + permukaan.potongan[pt][\"indeks\"])
-			if potongan != null and label_info != null:
-				if permukaan.potongan[pt].get(\"m_render\") != null:
-					label_info.text = permukaan.potongan[pt][\"m_render\"]
-		posisi_terakhir = $viewport_utama/viewport/pengamat.global_transform.origin
-		rotasi_terakhir = $viewport_utama/viewport/pengamat.global_rotation_degrees
 func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
 	$viewport_utama/viewport/pengamat.global_position.x = posisi_x
 	$viewport_utama/viewport/pengamat.global_position.y = posisi_y
@@ -61,11 +17,13 @@ func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
 
 # ketika mengatur culling
 func _atur_frustum_culling(nilai):
-	$viewport_utama/viewport/lingkungan/permukaan.gunakan_frustum_culling = nilai
+	server.permainan.karakter.get_node(\"PlayerInput\").gunakan_frustum_culling = nilai
 func _atur_object_culling(nilai):
-	$viewport_utama/viewport/lingkungan/permukaan.gunakan_occlusion_culling = nilai
+	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_occlusion_culling = nilai
+	pass
 func _atur_level_of_detail(nilai):
-	$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
+	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
+	pass
 
 # ketika memilih tampilan viewport culling
 func _pilih_tidak_ada():
@@ -96,12 +54,8 @@ func _atur_fov(nilai):
 func _atur_overdraw(aktif):
 	if aktif:
 		$viewport_utama/viewport.debug_draw = Viewport.DEBUG_DRAW_OVERDRAW
-		$viewport_utama/viewport/lingkungan/air.visible = false
-		$viewport_utama/viewport/lingkungan/lantai.visible = false
 	else:
 		$viewport_utama/viewport.debug_draw = Viewport.DEBUG_DRAW_DISABLED
-		$viewport_utama/viewport/lingkungan/air.visible = true
-		$viewport_utama/viewport/lingkungan/lantai.visible = true
 func _atur_fov_minimap(nilai):
 	$viewport_culling/SubViewport/pengamat/Camera3D.size = nilai
 "
@@ -171,11 +125,9 @@ render_target_update_mode = 4
 
 [node name="pengamat" type="Camera3D" parent="viewport_utama/viewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 22.17, 80.425)
-cull_mask = 1
+cull_mask = 3
 current = true
 script = ExtResource("1_n5sj6")
-
-[node name="lingkungan" parent="viewport_utama/viewport" instance=ExtResource("2_gor8n")]
 
 [node name="informasi_performa" type="Control" parent="." node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
 custom_minimum_size = Vector2(400, 400)
@@ -717,7 +669,7 @@ transform = Transform3D(0.798636, 0, 0.601815, 0, 1, 0, -0.601815, 0, 0.798636, 
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="viewport_culling/SubViewport/pengamat/tampilan_fov_kiri"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -100)
-layers = 2
+layers = 4
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_jqsgi")
 skeleton = NodePath("../..")
@@ -727,7 +679,7 @@ transform = Transform3D(0.798636, 0, -0.601815, 0, 1, 0, 0.601815, 0, 0.798636, 
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="viewport_culling/SubViewport/pengamat/tampilan_fov_kanan"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -100)
-layers = 2
+layers = 4
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_jqsgi")
 skeleton = NodePath("../..")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=309 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=308 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -68,7 +68,6 @@
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
-[ext_resource type="PackedScene" uid="uid://cok36wfitg4po" path="res://skena/pengamat_objek.tscn" id="54_kqfbn"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english.svg" id="63_r5flb"]
 [ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia.svg" id="64_gnps4"]
 [ext_resource type="Texture2D" uid="uid://b68vyh4ydqyy8" path="res://ui/ikon/ikon_bug.svg" id="65_y0rvh"]
@@ -8736,6 +8735,7 @@ libraries = {
 }
 
 [node name="performa" type="Label" parent="."]
+top_level = true
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -8755,6 +8755,7 @@ text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB"
 horizontal_alignment = 2
 
 [node name="versi" type="Label" parent="."]
+top_level = true
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -8779,9 +8780,6 @@ editor_description = "ini dipake untuk merekam suara pemain"
 stream = SubResource("AudioStreamMicrophone_skxpm")
 mix_target = 2
 bus = &"Suara Pemain"
-
-[node name="pengamat" parent="." instance=ExtResource("54_kqfbn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 1.16)
 
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_posisi" to="." method="_pilih_tab_posisi_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_rotasi" to="." method="_pilih_tab_rotasi_objek"]

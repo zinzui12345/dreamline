@@ -48,7 +48,6 @@ func atur_pengendali(id):
 			if server.permainan.permukaan != null:
 				server.permainan.permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 			karakter.get_node("pengamat").atur_mode(1)
-			client.permainan.karakter = karakter
 			client.permainan._tampilkan_permainan()
 			
 			# INFO : atur layer visibilitas model

@@ -9,6 +9,7 @@ var fungsi_zoom = false
 
 func _ready():
 	get_node(\"%pandangan\").far = Konfigurasi.jarak_render
+	get_parent().visible = false
 
 func _input(_event):
 	if get_node(\"%pandangan\").current:
@@ -32,6 +33,7 @@ func _process(delta):
 "
 
 [node name="pengamat" type="Node3D"]
+editor_description = "node ini ditambah secara otomatis ke dalam permainan, jangan instansi node ini dimanapun!"
 
 [node name="posisi_mata" type="Node3D" parent="."]
 script = SubResource("GDScript_hcnrk")
