@@ -454,7 +454,22 @@ func _pemain_terputus(id_pemain):
 		permainan.dunia.get_node("pemain/"+str(id_pemain))._hapus()
 		permainan._hapus_daftar_pemain(id_pemain)
 		client.rpc("hapus_pemain", id_pemain)
-		# TODO : 26/06/24 :: loop pool_objek kemudian reset id_pengubah pada objek yang id_pengubah == id_pemain
+		# 29/06/24 :: loop pool_objek kemudian reset id_pengubah pada objek yang id_pengubah == id_pemain
+		# loop array pool_objek
+		if !pool_objek.is_empty():
+			var indeks_pool_objek = pool_objek.keys()
+			for i_pool_objek in indeks_pool_objek.size():
+				# dapatkan objek
+				var nama_objek = indeks_pool_objek[i_pool_objek]
+				var objek_ = pool_objek[nama_objek]
+				# cek id pengubah objek, apakah sama dengan id pemain yang terputus
+				if objek_.id_pengubah == id_pemain:
+					# rpc atur ulang id_pengubah di semua peer
+					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", 0]])
+					# atur ulang id_pengubah
+					pool_objek[nama_objek]["id_pengubah"] = 0
+					# hentikan loop
+					break
 		print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 		pemain_terhubung -= 1
 

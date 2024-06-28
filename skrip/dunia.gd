@@ -19,6 +19,8 @@ func _ready():
 				server.permainan.atur_map(argumen[arg+1])
 			server.permainan.mulai_server(true);
 			return
+		if argumen[arg] == "--no-shadow":
+			$matahari.shadow_enabled = false
 
 	posisi_relatif_pengamat = Node3D.new()
 	arah_target_pengamat	= Marker3D.new()
