@@ -1,7 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://dodo3q7h6ujaa"]
+[gd_scene load_steps=20 format=3 uid="uid://dodo3q7h6ujaa"]
 
 [ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
 [ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
+[ext_resource type="Texture2D" uid="uid://dsjkya7g111eu" path="res://ui/ikon/ikon_mode_bermain.svg" id="2_wn08a"]
+[ext_resource type="Texture2D" uid="uid://c23oxwal8i07d" path="res://ui/ikon/ikon_mode_render.svg" id="3_pxv10"]
 
 [sub_resource type="GDScript" id="GDScript_5cxiv"]
 script/source = "# 28/12/23
@@ -32,6 +34,19 @@ func _atur_object_culling(nilai):
 func _atur_level_of_detail(nilai):
 	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
 	pass
+
+# ketika memilih mode rendering
+func _mode_render_realtime():
+	$mode_render/realtime.button_pressed = true
+	$mode_render/pre.button_pressed = false
+	$viewport_utama/viewport/pengamat.current = true
+func _mode_render_pre():
+	$mode_render/realtime.button_pressed = false
+	$mode_render/pre.button_pressed = true
+	$viewport_utama/viewport/pengamat_pre.current = true
+	$viewport_utama/viewport/pengamat_pre.fov = $viewport_utama/viewport/pengamat.fov
+	$viewport_utama/viewport/pengamat_pre.position = $viewport_utama/viewport/pengamat.position
+	$viewport_utama/viewport/pengamat_pre.rotation = $viewport_utama/viewport/pengamat.rotation
 
 # ketika memilih tampilan viewport culling
 func _pilih_tidak_ada():
@@ -79,6 +94,36 @@ var _input_arah_pandangan : Vector2
 var arah_pandangan : Vector2 
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t10m1"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 1
+corner_radius_bottom_left = 1
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1x4vu"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6o23"]
+bg_color = Color(0.2, 0.2, 0.196078, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_haqqv"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_heqqv"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wimlv"]
+bg_color = Color(0.2, 0.2, 0.196078, 1)
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_detail = 4
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki0n8"]
 bg_color = Color(0, 0, 0, 0.25098)
 
@@ -95,6 +140,11 @@ corner_radius_bottom_left = 3
 [sub_resource type="GDScript" id="GDScript_sr4j5"]
 script/source = "extends Node3D
 
+func _input(event):
+	if Input.is_action_just_pressed(\"debug\"):
+		$\"../../..\"._mode_render_realtime()
+	elif Input.is_action_just_pressed(\"debug2\"):
+		$\"../../..\"._mode_render_pre()
 func _process(_delta):
 	global_position.x = get_node(\"../../../viewport_utama/viewport/pengamat\").global_position.x
 	global_rotation.y = get_node(\"../../../viewport_utama/viewport/pengamat\").global_rotation.y
@@ -144,8 +194,46 @@ cull_mask = 3
 current = true
 script = ExtResource("1_n5sj6")
 
+[node name="pengamat_pre" type="Camera3D" parent="viewport_utama/viewport"]
+cull_mask = 3
+
 [node name="dummy_karakter" type="CharacterBody3D" parent="viewport_utama/viewport"]
 script = SubResource("GDScript_ov0gi")
+
+[node name="mode_render" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 144.0
+offset_bottom = 72.0
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="realtime" type="Button" parent="mode_render"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_t10m1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1x4vu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_q6o23")
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("2_wn08a")
+icon_alignment = 1
+
+[node name="pre" type="Button" parent="mode_render"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_haqqv")
+theme_override_styles/hover = SubResource("StyleBoxFlat_heqqv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wimlv")
+toggle_mode = true
+icon = ExtResource("3_pxv10")
+icon_alignment = 1
 
 [node name="informasi_performa" type="Control" parent="." node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
 custom_minimum_size = Vector2(400, 400)
@@ -800,6 +888,8 @@ min_value = 10.0
 max_value = 800.0
 value = 40.0
 
+[connection signal="pressed" from="mode_render/realtime" to="." method="_mode_render_realtime"]
+[connection signal="pressed" from="mode_render/pre" to="." method="_mode_render_pre"]
 [connection signal="visibility_changed" from="informasi_performa" to="informasi_performa" method="_on_visibility_changed"]
 [connection signal="toggled" from="panel_opsi/opsi_fc" to="." method="_atur_frustum_culling"]
 [connection signal="pressed" from="panel_opsi/pilih_fc" to="." method="_pilih_frustum_culling"]
