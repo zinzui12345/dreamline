@@ -19,10 +19,8 @@ var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membanding
 			# TODO : reset otomatis ketika rotasi diubah
 			var tmp_aabb = []
 			for titik in 8:
-				var tmp_vektor = wilayah_render.get_endpoint(titik)
-				# sesuaikan posisi AABB dengan titik tengah
-				tmp_vektor.x += wilayah_render.size.x / 2
-				tmp_vektor.z += wilayah_render.size.z / 2
+				# dapatkan posisi titik AABB
+				var tmp_vektor = aabb.get_endpoint(titik)
 				# ubah posisi abb menjadi posisi global
 				tmp_vektor = global_position + tmp_vektor
 				# terapkan ke array

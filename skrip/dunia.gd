@@ -131,10 +131,15 @@ func _process(delta):
 				if server.permainan.gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
 					# pastikan cek titik yang valid
 					if m_objek.cek_titik < m_objek.titik_sudut.size():
-						# cek apakah raycast mengenai sesuatu
+						# 23/06/24 :: walau posisi aabb telah menjadi posisi global, posisi tersebut tidak sama dengan posisi global dunia sehingga harus di kalkulasi ulang
 						raycast_occlusion_culling.global_position = m_objek.global_position
-						raycast_occlusion_culling.global_position += m_objek.titik_sudut[m_objek.cek_titik] # 23/06/24 :: walau posisi abb telah menjadi posisi global, posisi tersebut tidak sama dengan posisi global dunia sehingga harus di kalkulasi ulang
+						raycast_occlusion_culling.global_position += m_objek.titik_sudut[m_objek.cek_titik]
+						# arahkan rayacast ke pengamat
 						raycast_occlusion_culling.look_at(pengamat.global_position)
+						# exclude raycast dengan m_objek jika m_objek adalah CollisionObject3D
+						if m_objek.cek_titik == 0 and m_objek is CollisionObject3D:
+							raycast_occlusion_culling.add_exception(m_objek) # 03/07/24 :: ini mengatasi jika m_objek adalah objek solid
+						# cek apakah raycast mengenai sesuatu
 						raycast_occlusion_culling.force_raycast_update()
 						var mengenai_sesuatu = raycast_occlusion_culling.is_colliding()
 						# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
@@ -153,6 +158,9 @@ func _process(delta):
 							# jika masih ada titik yang belum dicek, tambah indeks cek titik
 							else:
 								m_objek.cek_titik += 1
+						# hentikan exclude raycast dengan m_objek jika m_objek adalah CollisionObject3D
+						if m_objek.cek_titik == m_objek.titik_sudut.size() - 1 and m_objek is CollisionObject3D:
+							raycast_occlusion_culling.remove_exception(m_objek)
 					else:
 						m_objek.cek_titik = 0
 				elif m_objek.visible == false:
