@@ -121,6 +121,9 @@ func _process(delta):
 					m_objek.tak_terlihat = false
 					# debug
 					Panku.notify(m_objek.name+" terlihat")
+			elif m_objek.tak_terlihat or !m_objek.terhalang:
+				m_objek.visible = true
+				m_objek.tak_terlihat = false
 			
 			# Occlusion Culling
 			# FIXME : jangan cek ketika posisi pengamat berada didekat objek / titik
@@ -152,3 +155,5 @@ func _process(delta):
 								m_objek.cek_titik += 1
 					else:
 						m_objek.cek_titik = 0
+				elif m_objek.visible == false:
+					m_objek.visible = true

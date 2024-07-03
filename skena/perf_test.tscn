@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dodo3q7h6ujaa"]
+[gd_scene load_steps=12 format=3 uid="uid://dodo3q7h6ujaa"]
 
 [ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
 [ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
@@ -8,7 +8,16 @@ script/source = "# 28/12/23
 extends Control
 
 func _ready():
-	pass
+	server.permainan.karakter = $viewport_utama/viewport/dummy_karakter
+	server.permainan.dunia.pengamat = $viewport_utama/viewport/pengamat
+	server.pemain[\"pengamat\"] = {
+		\"id_client\": 1,
+		\"nama\": 	\"\",
+		\"posisi\":	$viewport_utama/viewport/pengamat.position,
+		\"rotasi\":	$viewport_utama/viewport/pengamat.rotation,
+		\"model\": { },
+		\"kondisi\": { }
+	}
 
 func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
 	$viewport_utama/viewport/pengamat.global_position.x = posisi_x
@@ -17,10 +26,9 @@ func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
 
 # ketika mengatur culling
 func _atur_frustum_culling(nilai):
-	server.permainan.karakter.get_node(\"PlayerInput\").gunakan_frustum_culling = nilai
+	server.permainan.gunakan_frustum_culling = nilai
 func _atur_object_culling(nilai):
-	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_occlusion_culling = nilai
-	pass
+	server.permainan.gunakan_occlusion_culling = nilai
 func _atur_level_of_detail(nilai):
 	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
 	pass
@@ -60,6 +68,17 @@ func _atur_fov_minimap(nilai):
 	$viewport_culling/SubViewport/pengamat/Camera3D.size = nilai
 "
 
+[sub_resource type="GDScript" id="GDScript_ov0gi"]
+resource_name = "dummy_karakter"
+script/source = "extends CharacterBody3D
+
+var arah : Vector3
+var arah_gerakan : Vector3
+var _transisi_reset_arah : Tween
+var _input_arah_pandangan : Vector2
+var arah_pandangan : Vector2 
+"
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki0n8"]
 bg_color = Color(0, 0, 0, 0.25098)
 
@@ -74,20 +93,16 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="GDScript" id="GDScript_sr4j5"]
-script/source = "@tool
-extends Node3D
-
-@export var debug_sinkronkan_posisi_dengan_pengamat : bool = false:
-	set(nilai):
-		if Engine.is_editor_hint():
-			set_process(nilai)
-			print_debug(\"mengatur sinkronisasi posisi : \"+str(nilai))
-			debug_sinkronkan_posisi_dengan_pengamat = nilai
+script/source = "extends Node3D
 
 func _process(_delta):
 	global_position.x = get_node(\"../../../viewport_utama/viewport/pengamat\").global_position.x
 	global_rotation.y = get_node(\"../../../viewport_utama/viewport/pengamat\").global_rotation.y
 	global_position.z = get_node(\"../../../viewport_utama/viewport/pengamat\").global_position.z
+	
+	# 02/07/24 :: sinkronkan $\"../../../viewport_utama/viewport/pengamat\" sebagai pemain
+	server.pemain[\"pengamat\"][\"posisi\"] = get_node(\"../../../viewport_utama/viewport/pengamat\").position
+	server.pemain[\"pengamat\"][\"rotasi\"] = get_node(\"../../../viewport_utama/viewport/pengamat\").rotation
 "
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_psps8"]
@@ -96,7 +111,7 @@ albedo_color = Color(0, 1, 1, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_jqsgi"]
 material = SubResource("StandardMaterial3D_psps8")
-size = Vector2(0.5, 200)
+size = Vector2(0.25, 200)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jn6nk"]
 bg_color = Color(0.34902, 0.34902, 0.34902, 1)
@@ -128,6 +143,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 22.17, 80.425)
 cull_mask = 3
 current = true
 script = ExtResource("1_n5sj6")
+
+[node name="dummy_karakter" type="CharacterBody3D" parent="viewport_utama/viewport"]
+script = SubResource("GDScript_ov0gi")
 
 [node name="informasi_performa" type="Control" parent="." node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
 custom_minimum_size = Vector2(400, 400)
@@ -567,6 +585,7 @@ anchor_top = 0.32
 anchor_right = 0.25
 anchor_bottom = 0.46
 offset_left = 0.0319996
+button_pressed = true
 
 [node name="pilih_oc" type="Button" parent="panel_opsi"]
 layout_mode = 1
@@ -659,10 +678,10 @@ script = SubResource("GDScript_sr4j5")
 
 [node name="Camera3D" type="Camera3D" parent="viewport_culling/SubViewport/pengamat"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
-cull_mask = 32771
+cull_mask = 32775
 projection = 1
 current = true
-size = 80.0
+size = 40.0
 
 [node name="tampilan_fov_kiri" type="Node3D" parent="viewport_culling/SubViewport/pengamat"]
 transform = Transform3D(0.798636, 0, 0.601815, 0, 1, 0, -0.601815, 0, 0.798636, 0, 0, 0)
@@ -777,9 +796,9 @@ offset_left = -0.0640182
 offset_top = -1.52588e-05
 offset_right = 0.12793
 offset_bottom = 0.0159836
-min_value = 80.0
-max_value = 1000.0
-value = 80.0
+min_value = 10.0
+max_value = 800.0
+value = 40.0
 
 [connection signal="visibility_changed" from="informasi_performa" to="informasi_performa" method="_on_visibility_changed"]
 [connection signal="toggled" from="panel_opsi/opsi_fc" to="." method="_atur_frustum_culling"]
