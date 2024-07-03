@@ -50,73 +50,18 @@ func atur_pengendali(id):
 			karakter.get_node("pengamat").atur_mode(1)
 			client.permainan.karakter = karakter
 			client.permainan._tampilkan_permainan()
-			
-			# INFO : atur layer visibilitas model
-			get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, true)
-			get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, false)
-		else:
-			get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, false)
-			get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, true)
 	else:
 		karakter.set_process(false)
 		karakter.set_physics_process(false)
 		set_multiplayer_authority(1)
-func atur_raycast(nilai):
-	_raycast_pemain.enabled = nilai
-	if nilai == false: _target_pemain = false
 
 func _enter_tree():
 	set_process(false)
 	set_physics_process(false)
-func _ready():
-	_raycast_pemain = karakter.get_node("pengamat/%target")
-	_raycast_serangan_a_pemain = karakter.get_node("area_serang_a")
-	
-	# default kalo nggak di set (karakter)
-	get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, true)
-	get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, true)
 
-func _input(event):
-	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		karakter.arah_pandangan = event.relative
 func _process(delta):
 	# kendalikan pemain dengan input
 	if karakter.kontrol:
-		if Input.is_action_pressed("berlari"):
-			arah_gerakan.y = Input.get_action_strength("berlari") * 2
-			if Input.is_action_pressed("mundur"):
-				arah_gerakan.y = -Input.get_action_strength("berlari") * 2
-		elif Input.is_action_pressed("maju"):
-			arah_gerakan.y = Input.get_action_strength("maju")
-		elif Input.is_action_pressed("mundur"):
-			arah_gerakan.y = -Input.get_action_strength("mundur")
-		else:
-			if karakter.is_on_floor(): arah_gerakan.y = 0
-			else: arah_gerakan.y = lerp(arah_gerakan.y, 0.0, 0.25 * delta)
-		
-		if Input.is_action_pressed("kiri"):
-			if Input.is_action_pressed("berlari"): arah_gerakan.x = Input.get_action_strength("kiri")
-			else: arah_gerakan.x = Input.get_action_strength("kiri") / 2
-		elif Input.is_action_pressed("kanan"):
-			if Input.is_action_pressed("berlari"): arah_gerakan.x = -Input.get_action_strength("kanan")
-			else: arah_gerakan.x = -Input.get_action_strength("kanan") / 2
-		else: arah_gerakan.x = 0
-		
-		if Input.is_action_pressed("pandangan_atas"):
-			karakter.arah_pandangan.y = -Input.get_action_strength("pandangan_atas")
-		elif Input.is_action_pressed("pandangan_bawah"):
-			karakter.arah_pandangan.y = Input.get_action_strength("pandangan_bawah")
-		
-		if Input.is_action_pressed("pandangan_kiri"):
-			karakter.arah_pandangan.x = -Input.get_action_strength("pandangan_kiri")
-		elif Input.is_action_pressed("pandangan_kanan"):
-			karakter.arah_pandangan.x = Input.get_action_strength("pandangan_kanan")
-		
 		if Input.is_action_pressed("waktu_mundur"):
 			if _hentikan_waktu:
 				_frame_saat_ini -= 1
@@ -160,32 +105,6 @@ func _process(delta):
 				#print_debug("frame : %s/%s    keyframe : %s    interval : %s" % [-_frame_saat_ini, tmp_jml_f, tmp_idx_f, (server.timeline["data"]["frame"] - tmp_idx_f)/1000])
 				#print_debug(frame_karakter)
 		
-		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
-			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
-			elif _target_pemain:
-				match karakter.peran:
-					Permainan.PERAN_KARAKTER.Arsitek:
-						server.permainan.pasang_objek = pos_target
-						server.permainan._tampilkan_daftar_objek()
-					_:
-						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
-							if objek_target.id_pengubah < 1:
-								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
-						elif _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and not karakter.menyerang:
-							objek_target = _raycast_serangan_a_pemain.get_collider()
-							var arah_dorongan = Vector3(0, 0, 5)
-							# TODO : dorong pemain lain
-							if objek_target.get("linear_velocity") != null:
-								karakter.mode_menyerang = "a"
-								karakter.set("menyerang", true)
-								await get_tree().create_timer(0.4).timeout
-								if objek_target != null:
-									server.terapkan_percepatan_objek(
-										objek_target.get_path(),
-										arah_dorongan.rotated(Vector3.UP, karakter.rotation.y)
-									)
-								await get_tree().create_timer(0.4).timeout
-								karakter.set("menyerang", false)
 		if Input.is_action_just_pressed("aksi2"):
 			if _target_pemain:
 				match karakter.peran:
@@ -206,22 +125,6 @@ func _process(delta):
 					Permainan.PERAN_KARAKTER.Arsitek:
 						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
 		
-		if Input.is_action_just_pressed("mode_pandangan"): karakter.get_node("pengamat").ubah_mode()
-		
-		if Input.is_action_just_pressed("jongkok"):
-			if karakter.arah.x == 0.0 and karakter.arah.z == 0.0:
-				if !jongkok:
-					#karakter.get_node("pose").set("parameters/gestur/transition_request", "jongkok")
-					var tween = get_tree().create_tween()
-					tween.tween_property(karakter.get_node("pose"), "parameters/jongkok/blend_amount", 1, 0.6)
-					jongkok = true
-					tween.play()
-				else:
-					#karakter.get_node("pose").set("parameters/gestur/transition_request", "berdiri")
-					var tween = get_tree().create_tween()
-					tween.tween_property(karakter.get_node("pose"), "parameters/jongkok/blend_amount", 0, 0.6)
-					jongkok = false
-					tween.play()
 		if Input.is_action_just_pressed("hentikan_waktu"):
 			if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 				if !_hentikan_waktu:
@@ -267,98 +170,7 @@ func _process(delta):
 					#get_tree().paused = false
 					# sembunyikan tampilan durasi
 					server.permainan.get_node("%timeline/animasi").play_backwards("tampilkan")
-		if Input.is_action_just_pressed("debug"):	server.permainan.pilih_mode_bermain()
-		if Input.is_action_just_pressed("debug2"):	server.permainan.pilih_mode_edit()
 	
-	# atur ulang fungsi melompat ketika berada di floor
-	if karakter.is_on_floor() and lompat:
-		if karakter.kontrol: karakter.set("lompat", false)
-		lompat = false
-	
-	# atur ulang posisi kalau terjatuh dari dunia
-	if karakter.global_position.y < server.permainan.batas_bawah:
-		karakter.global_transform.origin = posisi_awal
-		karakter.rotation		 		= rotasi_awal
-		Panku.notify("re-spawn")
-
-func _physics_process(delta):
-	# fungsi raycast
-	_target_pemain = _raycast_pemain.is_colliding()
-	if _target_pemain:
-		pos_target = _raycast_pemain.get_collision_point()
-		objek_target = _raycast_pemain.get_collider()
-		if karakter.peran == Permainan.PERAN_KARAKTER.Arsitek:
-			# atur posisi pointer
-			if !server.permainan.dunia.get_node("kursor_objek").visible:
-				server.permainan.dunia.get_node("kursor_objek").visible = true
-			server.permainan.dunia.get_node("kursor_objek").global_transform.origin = pos_target
-			# tampilkan tombol buat objek
-			server.permainan.set("tombol_aksi_1", "pasang_objek")
-			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
-		elif _raycast_serangan_a_pemain.is_colliding() and karakter.gestur == "berdiri" and objek_target == _raycast_serangan_a_pemain.get_collider():
-			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
-			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
-		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
-			server.permainan.set("tombol_aksi_1", "gunakan_objek")
-			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
-		else:
-			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
-		if karakter.peran == Permainan.PERAN_KARAKTER.Arsitek and objek_target.is_in_group("dapat_diedit"):
-			server.permainan.set("tombol_aksi_2", "edit_objek")
-			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
-		elif objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
-			if karakter.peran == Permainan.PERAN_KARAKTER.Arsitek:
-				server.permainan.set("tombol_aksi_2", "edit_objek")
-			else:
-				if objek_target.has_method("fokus"): objek_target.fokus()
-				if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
-			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
-		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
-			if !server.permainan.dunia.get_node("bar_nyawa").visible:
-				server.permainan.dunia.get_node("bar_nyawa").visible = true
-			server.permainan.dunia.get_node("bar_nyawa").global_position =  Vector3(
-				objek_target.global_position.x,
-				objek_target.global_position.y + objek_target.posisi_bar_nyawa,
-				objek_target.global_position.z
-			)
-			server.permainan.dunia.get_node("bar_nyawa").max_value = 150
-			server.permainan.dunia.get_node("bar_nyawa").value = objek_target.nyawa
-		else:
-			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
-	
-	elif is_instance_valid(objek_target):
-		objek_target = null
-		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
-			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
-		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
-			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
-		if server.permainan.dunia.get_node("kursor_objek").visible:
-			server.permainan.dunia.get_node("kursor_objek").visible = false
-		if server.permainan.dunia.get_node("bar_nyawa").visible:
-			server.permainan.dunia.get_node("bar_nyawa").visible = false
-	
-	# kendalikan pemain dengan input
-	if karakter.kontrol:
-		if Input.is_action_pressed("lompat"):
-			if !lompat:
-				if Input.is_action_pressed("berlari") and karakter.arah.z > 1.0:
-					if karakter.is_on_floor():
-						karakter.arah.y = 180 * delta
-					elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"): # ini fitur btw >u<
-						karakter.arah.y = 200 * delta
-				elif karakter.is_on_floor():
-					karakter.set("lompat", true)
-					karakter.arah.y = 150 * delta
-				lompat = true
 
 # debug
 const _HELP_teleportasi = "Teleportasi ke posisi : Vector3"

@@ -11,15 +11,8 @@ func _ready():
 	get_node(\"%pandangan\").far = Konfigurasi.jarak_render
 	get_parent().visible = false
 
-func _input(_event):
-	if get_node(\"%pandangan\").current:
-		if is_instance_valid(server.permainan.edit_objek):
-			if Input.is_action_just_pressed(\"aksi2\"):		# berhenti mengedit
-				var jalur_node = server.permainan.edit_objek.name
-				await get_tree().create_timer(0.1).timeout
-				server.edit_objek(jalur_node, false)
 func _process(delta):
-	if get_node(\"%pandangan\").current:
+	if get_node(\"%pandangan\").current and get_parent().visible:
 		if is_instance_valid(server.permainan.edit_objek):
 			get_parent().global_transform.origin = server.permainan.edit_objek.global_transform.origin
 			if fungsi_zoom:
@@ -30,6 +23,9 @@ func _process(delta):
 			get_node(\"%pandangan\").position.z = clamp(get_node(\"%pandangan\").position.z, -Konfigurasi.jarak_render, -0.5)
 			# TODO : sesuaikan posisi x kamera
 			# mis. posisi pandangan z == -0.5 maka posisi x kamera = -0.25
+			if Input.is_action_just_pressed(\"aksi2\"):
+				var jalur_node = server.permainan.edit_objek.name
+				server.edit_objek(jalur_node, false)
 "
 
 [node name="pengamat" type="Node3D"]

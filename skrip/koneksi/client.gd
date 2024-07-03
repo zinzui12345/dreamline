@@ -8,6 +8,7 @@ var interface = null
 var peer : ENetMultiplayerPeer
 var listener : ServerListener
 var id_koneksi = -44
+var id_sesi = ""
 var pilih_server = ButtonGroup.new()
 var data_suara : PackedByteArray
 
@@ -31,7 +32,7 @@ func sambungkan_server(ip, port=10567):
 	interface.connect("connection_failed", self._ketika_gagal_menghubungkan_server)
 	interface.connect("server_disconnected", self._ketika_terputus_dari_server)
 	get_tree().set_multiplayer(interface)
-	get_tree().get_root().get_node("dunia/spawner_pemain").connect("spawned", self.tambah_pemain)
+	#get_tree().get_root().get_node("dunia/spawner_pemain").connect("spawned", self.tambah_pemain)
 	print("menghubungkan ke server {%s}" % [ip])
 func putuskan_server():
 	if interface != null:
@@ -40,7 +41,7 @@ func putuskan_server():
 		interface.clear()
 		interface.set_root_path(NodePath("/root"))
 		interface = null
-		get_tree().get_root().get_node("dunia/spawner_pemain").disconnect("spawned", self.tambah_pemain)
+		#get_tree().get_root().get_node("dunia/spawner_pemain").disconnect("spawned", self.tambah_pemain)
 
 func cek_koneksi():
 	if peer != null:
@@ -84,6 +85,7 @@ func tambah_pemain(pemain):
 @rpc("authority") func gabung_ke_server(nama_server, nama_map, posisi, rotasi):
 	print("telah terhubung ke server")
 	id_koneksi = interface.get_unique_id()
+	id_sesi = OS.get_unique_id()
 	permainan._mulai_permainan(nama_server, nama_map, posisi, rotasi)
 @rpc("authority") func tambahkan_pemain(daftar : Dictionary):
 	var data = daftar.keys()

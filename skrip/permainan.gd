@@ -33,7 +33,7 @@ class_name Permainan
 # 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 
-const versi = "Dreamline v1.4.4 29/06/24 alpha"
+const versi = "Dreamline v1.4.4 02/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -68,6 +68,8 @@ var memasang_objek = false
 var pasang_objek : Vector3		# posisi objek yang akan dipasang
 var thread = Thread.new()
 var koneksi = MODE_KONEKSI.CLIENT
+var gunakan_frustum_culling = true
+var gunakan_occlusion_culling = true
 var jeda = false
 var pesan = false				# ketika input pesan ditampilkan
 var _posisi_tab_koneksi = "LAN" # | "Internet"
@@ -348,6 +350,7 @@ func _notification(what):
 # core
 func uji_performa():
 	server.mode_uji_performa = true
+	client.id_koneksi = 1
 	koneksi = MODE_KONEKSI.CLIENT
 	_mulai_permainan("perf_test", server.map)
 func uji_vr():
@@ -426,6 +429,33 @@ func _muat_map(file_map):
 			call_deferred("add_child", pengamat_objek)
 			# tambahkan pemain
 			call_deferred("_tambahkan_pemain", 1, data)
+			server.pemain["admin"] = {
+				"id_client": 1,
+				"nama": 	data["nama"],
+				"posisi":	data["posisi"],
+				"rotasi":	data["rotasi"],
+				"model": {
+					"gender":		data["gender"],
+					"alis":			data["alis"],
+					"garis_mata":	data["garis_mata"],
+					"mata":			data["mata"],
+					"warna_mata":	data["warna_mata"],
+					"rambut":		data["rambut"],
+					"warna_rambut":	data["warna_rambut"],
+					"baju":			data["baju"],
+					"warna_baju":	data["warna_baju"],
+					"celana":		data["celana"],
+					"warna_celana":	data["warna_celana"],
+					"sepatu":		data["sepatu"],
+					"warna_sepatu":	data["warna_sepatu"]
+				},
+				"kondisi":		{
+					"arah_gerakan": 	Vector3.ZERO,
+					"arah_pandangan":	Vector2.ZERO,
+					"mode_gestur":		"berdiri",
+					"mode_menyerang": 	"a"
+				}
+			}
 			server.pemain_terhubung = 1
 		else:
 			call_deferred("_mulai_server_cli")
@@ -538,9 +568,11 @@ func _muat_map(file_map):
 										if data_frame.kondisi.lompat and not server.timeline.trek[entitas_]["lompat?"]:
 											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 											server.timeline.trek[entitas_]["lompat?"] = true
+											Panku.notify(data_frame.kondisi.lompat)
 										elif not data_frame.kondisi.lompat and server.timeline.trek[entitas_]["lompat?"]:
-											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
+											#skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 											server.timeline.trek[entitas_]["lompat?"] = false
+											Panku.notify(data_frame.kondisi.lompat)
 										if data_frame.kondisi.menyerang:
 											match data_frame.kondisi.gestur:
 												"berdiri":
@@ -558,7 +590,7 @@ func _muat_map(file_map):
 													match data_frame.kondisi.mode_menyerang:
 														"a":
 															if server.timeline.trek[entitas_]["menyerang_berdiri?"]:
-																skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
+																#skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 																server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
 										skenario.length = waktu
 									elif server.timeline.entitas[entitas_] == "entitas":
@@ -575,10 +607,10 @@ func _muat_map(file_map):
 		elif server.mode_uji_performa:
 			# INFO : (5b4) tampilkan halaman uji performa
 			# 28/06/24 :: demo uji algoritma object culling
-			# FIXME : viewport root tetap di-render!
 			koneksi = MODE_KONEKSI.SERVER
 			server.mode_replay = true
-			call_deferred("_tambahkan_pemain", 1, data)
+			server.set_process(true)
+			call_deferred("_tampilkan_permainan")
 			var pengamat = load("res://skena/perf_test.tscn").instantiate()
 			pengamat.name = "pengamat"
 			call_deferred("add_child", pengamat)
@@ -588,74 +620,90 @@ func _muat_map(file_map):
 			call_deferred("_atur_persentase_memuat", 70)
 			call_deferred("add_child", pengamat_objek)
 			# INFO : (5b1) kirim data pemain ke server
-			server.call_deferred("rpc_id", 1, "_tambahkan_pemain_ke_dunia", client.id_koneksi, OS.get_unique_id(), data)
+			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
 	thread.call_deferred("wait_to_finish")
 func _mulai_server_cli():
 	print(alamat_ip())
 	if permukaan != null: permukaan.gunakan_frustum_culling = false
 func _tambahkan_pemain(id: int, data_pemain):
-	var pemain
-	var sumber = "" # ini jalur resource pemain, fungsinya untuk disimpan di timeline
-	if is_instance_valid(dunia) and koneksi == MODE_KONEKSI.SERVER: # ini maksudnya cuma dijalanin di server untuk semua (peer) pemain
-		match data_pemain["gender"]:
-			"L": pemain = karakter_cowok.instantiate(); sumber = karakter_cowok.resource_path
-			"P": pemain = karakter_cewek.instantiate(); sumber = karakter_cewek.resource_path
-		if !is_instance_valid(pemain): print("tidak dapat menambahkan pemain "+str(id)); return
-		if id == client.id_koneksi: karakter = pemain
+	if is_instance_valid(dunia):
+		# tambahkan pemain utama
+		if id == client.id_koneksi or server.mode_replay:
+			var pemain
+			match data_pemain["gender"]:
+				"L": pemain = karakter_cowok.instantiate()
+				"P": pemain = karakter_cewek.instantiate()
+			if !is_instance_valid(pemain): print("tidak dapat menambahkan pemain "+str(id)); return
+			karakter = pemain
+			dunia.pengamat = karakter.get_node("pengamat/%pandangan")
 		
-		# INFO : (6) terapkan data pemain ke model pemain
-		pemain.id_pemain = id
-		pemain.name = str(id)
-		pemain.nama 				= data_pemain["nama"]
-		pemain.gender 				= data_pemain["gender"]
-		pemain.id_sistem			= data_pemain["id_sys"]
-		pemain.platform_pemain 		= data_pemain["sistem"]
-		pemain.gambar_potret 		= data_pemain["gambar"]
-		pemain.model["alis"] 		= data_pemain["alis"]
-		pemain.model["garis_mata"] 	= data_pemain["garis_mata"]
-		pemain.model["mata"] 		= data_pemain["mata"]
-		pemain.warna["mata"] 		= data_pemain["warna_mata"]
-		pemain.model["rambut"] 		= data_pemain["rambut"]
-		pemain.warna["rambut"] 		= data_pemain["warna_rambut"]
-		pemain.model["baju"] 		= data_pemain["baju"]
-		pemain.warna["baju"] 		= data_pemain["warna_baju"]
-		pemain.model["celana"] 		= data_pemain["celana"]
-		pemain.warna["celana"] 		= data_pemain["warna_celana"]
-		pemain.model["sepatu"] 		= data_pemain["sepatu"]
-		pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
-		
-		# terapkan kondisi | note : ini harus sebelum pemain ditambahin ke dunia supaya sync dengan ServerSynchronizer
-		pemain.position = data_pemain["posisi"]
-		pemain.rotation = data_pemain["rotasi"]
-		
-		# INFO : (7) tambahkan pemain ke dunia
-		dunia.get_node("pemain").add_child(pemain, true)
-		
-		# Timeline : spawn pemain
-		if not server.mode_replay:
-			if not server.timeline.has(server.timeline["data"]["frame"]):
-				server.timeline[server.timeline["data"]["frame"]] = {}
-			server.timeline[server.timeline["data"]["frame"]][id] = {
-				"tipe": 		"spawn",
-				"tipe_objek":	"pemain",
-				"sumber": 		sumber,
-				"data": 		data_pemain
-			}
-		
-		# INFO : tambah info pemain (server) ke daftar pemain
-		_tambah_daftar_pemain(pemain.id_pemain, {
-			"nama"	: pemain.nama,
-			"sistem": pemain.platform_pemain,
-			"id_sys": pemain.id_sistem,
-			"gender": pemain.gender,
-			"gambar": pemain.gambar_potret
-		})
-		
-		# hanya pada server
-		if id == 1:
+			# INFO : (6) terapkan data pemain ke model pemain
+			pemain.id_pemain = id
+			pemain.name = str(id)
+			pemain.nama 				= data_pemain["nama"]
+			pemain.gender 				= data_pemain["gender"]
+			pemain.model["alis"] 		= data_pemain["alis"]
+			pemain.model["garis_mata"] 	= data_pemain["garis_mata"]
+			pemain.model["mata"] 		= data_pemain["mata"]
+			pemain.warna["mata"] 		= data_pemain["warna_mata"]
+			pemain.model["rambut"] 		= data_pemain["rambut"]
+			pemain.warna["rambut"] 		= data_pemain["warna_rambut"]
+			pemain.model["baju"] 		= data_pemain["baju"]
+			pemain.warna["baju"] 		= data_pemain["warna_baju"]
+			pemain.model["celana"] 		= data_pemain["celana"]
+			pemain.warna["celana"] 		= data_pemain["warna_celana"]
+			pemain.model["sepatu"] 		= data_pemain["sepatu"]
+			pemain.warna["sepatu"] 		= data_pemain["warna_sepatu"]
+			
+			# INFO : (7) tambahkan pemain ke dunia
+			dunia.get_node("pemain").add_child(pemain, true)
+			
+			# terapkan kondisi
+			pemain.position = data_pemain["posisi"]
+			pemain.rotation = data_pemain["rotasi"]
+			
+			# terapkan tampilan
+			pemain.atur_model()
+			pemain.atur_warna()
+			
 			# INFO : (8a) mulai permainan
 			_tampilkan_permainan()
+			
+			# kendalikan karakter
+			if not server.mode_replay:
+				pemain.set_process(true)
+				pemain.set_physics_process(true)
+				pemain._atur_kendali(true)
+				pemain.get_node("pengamat").atur_mode(1)
+				pemain.get_node("pengamat").aktifkan(true)
+			else:
+				pemain.set_process(false)
+				pemain.set_physics_process(false)
 		
+		# Timeline : spawn pemain
+		if koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
+			var sumber = ""
+			match data_pemain["gender"]:
+				"L": sumber = karakter_cowok.resource_path
+				"P": sumber = karakter_cewek.resource_path
+			if not server.mode_replay:
+				if not server.timeline.has(server.timeline["data"]["frame"]):
+					server.timeline[server.timeline["data"]["frame"]] = {}
+				server.timeline[server.timeline["data"]["frame"]][id] = {
+					"tipe": 		"spawn",
+					"tipe_objek":	"pemain",
+					"sumber": 		sumber,
+					"data": 		data_pemain
+				}
+		
+		# INFO : tambah info pemain ke daftar pemain
+		_tambah_daftar_pemain(id, {
+			"nama"	: data_pemain["nama"],
+			"sistem": data_pemain["sistem"],
+			"id_sys": data_pemain["id_sys"],
+			"gender": data_pemain["gender"],
+			"gambar": data_pemain["gambar"]
+		})
 	else: print("tidak dapat menambahkan pemain sebelum memuat dunia!")
 func _berbicara(fungsi : bool):
 	var idx = AudioServer.get_bus_index("Suara Pemain")
@@ -699,17 +747,14 @@ func _kirim_pesan():
 		$hud/pesan/input_pesan.text = ""
 	$hud/pesan/input_pesan.release_focus()
 	$hud/pesan/input_pesan.grab_focus()
-func _edit_objek(jalur): 
+func _edit_objek(jalur):
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
 	if karakter.get_node("pengamat").mode_kontrol != 3:
 		_mode_pandangan_sblm_edit_objek = karakter.get_node("pengamat").mode_kontrol
 		karakter.get_node("pengamat").atur_mode(3)
-	karakter.get_node("PlayerInput").atur_raycast(false)
-	$pengamat.get_node("%pandangan").make_current()
-	$pengamat.set_process(true)
-	$pengamat.visible = true
+	karakter._atur_penarget(false)
 	$kontrol_sentuh/menu.visible = false
 	$kontrol_sentuh/chat.visible = false
 	$kontrol_sentuh/mic.visible = false
@@ -743,6 +788,11 @@ func _edit_objek(jalur):
 	# 06/06/24 :: cek apakah objek memiliki node skrip, kemudian aktifkan visibilitas tombol edit skrip
 	if edit_objek.get_node_or_null("kode_ubahan") != null and edit_objek.get_node("kode_ubahan") is kode_ubahan:
 		$hud/daftar_properti_objek/panel/edit_skrip.visible = true
+	# 29/06/24 :: alihkan pengamat
+	await get_tree().create_timer(0.1).timeout
+	$pengamat.get_node("%pandangan").make_current()
+	$pengamat.set_process(true)
+	$pengamat.visible = true
 func _berhenti_mengedit_objek():
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
@@ -766,9 +816,9 @@ func _berhenti_mengedit_objek():
 	$pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
 	$pengamat.set_process(false)
 	$pengamat.visible = false
-	karakter._kendalikan(true)
+	karakter._atur_kendali(true)
 	karakter.get_node("pengamat").atur_mode(_mode_pandangan_sblm_edit_objek)
-	karakter.get_node("PlayerInput").atur_raycast(true)
+	karakter._atur_penarget(true)
 
 # koneksi
 func mulai_server(headless = false, nama = ""):
@@ -823,6 +873,7 @@ func putuskan_server(paksa = false):
 				return
 			else:
 				if server.mode_uji_performa:
+					server.set_process(false)
 					server.mode_replay = false
 					server.mode_uji_performa = false
 				elif server.mode_replay:
@@ -904,27 +955,27 @@ func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
 	if is_instance_valid(karakter) and !jeda: # ketika dalam permainan
 		if _touchpad_disentuh:
 			if _arah_sentuhan_touchpad.x == 0:
-				karakter.arah_pandangan.x = 0
+				karakter._input_arah_pandangan.x = 0
 				_arah_gestur_tampilan_objek.x = 0
 				_arah_sentuhan_touchpad.x = arah.x
 			else:
-				karakter.arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
+				karakter._input_arah_pandangan.x = arah.x - _arah_sentuhan_touchpad.x
 				_arah_gestur_tampilan_objek.x = arah.x - _arah_sentuhan_touchpad.x
 				_arah_sentuhan_touchpad.x = arah.x
 			
 			if _arah_sentuhan_touchpad.y == 0:
-				karakter.arah_pandangan.y = 0
+				karakter._input_arah_pandangan.y = 0
 				_arah_gestur_tampilan_objek.y = 0
 				_arah_sentuhan_touchpad.y = arah.y
 			else:
-				karakter.arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
+				karakter._input_arah_pandangan.y = arah.y - _arah_sentuhan_touchpad.y
 				_arah_gestur_tampilan_objek.y = arah.y - _arah_sentuhan_touchpad.y
 				_arah_sentuhan_touchpad.y = arah.y
 			
-			karakter.arah_pandangan.x =  karakter.arah_pandangan.x * 100
-			karakter.arah_pandangan.x = ceil(karakter.arah_pandangan.x)
-			karakter.arah_pandangan.y = -karakter.arah_pandangan.y * 100
-			karakter.arah_pandangan.y = ceil(karakter.arah_pandangan.y)
+			karakter._input_arah_pandangan.x =  karakter._input_arah_pandangan.x * 100
+			karakter._input_arah_pandangan.x = ceil(karakter._input_arah_pandangan.x)
+			karakter._input_arah_pandangan.y = -karakter._input_arah_pandangan.y * 100
+			karakter._input_arah_pandangan.y = ceil(karakter._input_arah_pandangan.y)
 			_arah_gestur_tampilan_objek.x =  _arah_gestur_tampilan_objek.x * 50
 			_arah_gestur_tampilan_objek.x = ceil(_arah_gestur_tampilan_objek.x)
 			_arah_gestur_tampilan_objek.y = -_arah_gestur_tampilan_objek.y * 50
@@ -933,7 +984,7 @@ func _ketika_berhenti_mengontrol_arah_pandangan():
 	_touchpad_disentuh = false
 	if is_instance_valid(karakter): # ketika dalam permainan
 		_arah_sentuhan_touchpad = Vector2.ZERO
-		karakter.arah_pandangan = Vector2.ZERO
+		karakter._input_arah_pandangan = Vector2.ZERO
 		_arah_gestur_tampilan_objek = Vector2.ZERO
 func _ketika_mengontrol_arah_gerak(arah, _analog):
 	if is_instance_valid(karakter): # ketika dalam permainan
@@ -1357,7 +1408,6 @@ func _pilih_tab_skala_objek():
 func _tampilkan_daftar_objek():
 	if $daftar_objek/Panel.anchor_top > 0: $daftar_objek/animasi.play("tampilkan")
 	karakter._atur_kendali(false)
-	karakter.kontrol = true
 	memasang_objek = true
 func _tutup_daftar_objek(paksa = false):
 	if is_instance_valid(karakter):
@@ -1631,6 +1681,9 @@ func _buka_log():
 	aa.open_window()
 func _tampilkan_konsol(): Panku.toggle_console_action_just_pressed.emit()
 func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+func berhenti_mengedit_objek():
+	if edit_objek != null:
+		server.edit_objek(edit_objek.name, false)
 func tampilkan_editor_kode():
 	if !is_instance_valid(karakter):
 		if $pemutar_musik.visible:
@@ -1659,13 +1712,12 @@ func tampilkan_dialog(file_dialog : DialogueResource):
 	penampil_dialog.start(file_dialog, "0", [])
 	if is_instance_valid(karakter):
 		karakter._atur_kendali(false)
-		karakter.get_node("pengamat").set("kontrol", true)
-		karakter.get_node("PlayerInput").atur_raycast(false)
+		karakter._atur_penarget(false)
 func tutup_dialog(_file_dialog):
 	if is_instance_valid(karakter):
 		if Input.is_action_pressed("lompat"): Input.action_release("lompat")
-		karakter._kendalikan(true)
-		karakter.get_node("PlayerInput").atur_raycast(true)
+		karakter._atur_kendali(true)
+		karakter._atur_penarget(true)
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama

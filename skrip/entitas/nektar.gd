@@ -140,7 +140,7 @@ func _hancur(): # ketika hancur (musnah)
 func _angkat(id):
 	# cek id_pengangkat dengan client.id_koneksi, kalau pemain utama, jangan non-aktifkan visibilitas tombol aksi_2, non-aktifkan raycast pemain, begitupula pada _lepas()
 	if id == client.id_koneksi:
-		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(false)
+		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_1", "lempar_sesuatu")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
@@ -161,7 +161,7 @@ func _lepas(id):
 		call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 	call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
-		server.permainan.dunia.get_node("pemain/"+str(id)+"/PlayerInput").atur_raycast(true)
+		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
@@ -191,7 +191,7 @@ func _lempar(pelempar):
 		call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(pelempar)))
 	call("apply_central_force", gaya.rotated(Vector3.UP, rotation.y))
 	if id_pengangkat == client.id_koneksi:
-		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat)+"/PlayerInput").atur_raycast(true)
+		server.permainan.dunia.get_node("pemain/"+str(id_pengangkat))._atur_penarget(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false

@@ -13,7 +13,7 @@ var publik = false
 var ip_publik
 var jumlah_pemain = 32
 var pemain_terhubung = 0
-var map = "pulau"
+var map = "empty"
 var nama = "bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -24,10 +24,12 @@ var jumlah_entitas = 0
 var jumlah_objek = 0
 var pool_entitas : Dictionary = {}
 var pool_objek : Dictionary = {}
+var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "spawn" ? "hapus"
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
 
-const jarak_render_entitas = 10 # FIXME : set ke 50
+const jarak_render_karakter = 10	# FIXME : set ke 50!
+const jarak_render_entitas = 10		# FIXME : set ke 50!
 
 # .: Timeline :.
 # frame : Int
@@ -97,8 +99,9 @@ const POSISI_SPAWN_RANDOM := 5.0
 func _process(_delta):
 	if permainan != null and permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if permainan.dunia != null:
-			# atur frame timeline
-			if !mode_replay:
+			# hanya dalam permainan
+			if not mode_replay:
+				# atur frame timeline
 				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
 					if timeline.size() > 700:
 						var b_data_timeline = timeline["data"]
@@ -126,54 +129,89 @@ func _process(_delta):
 						timeline["data"]["urutan"] += 1
 					else:
 						timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
+				
+				# tentukan visibilitas tiap pemain berdasarkan pemain lain
+				var indeks_pool_pemain = pemain.keys()
+				for i_pool_pemain in indeks_pool_pemain:
+					var id_pemain = pemain[i_pool_pemain]["id_client"]
+					
+					# 30/06/24 :: loop pemain lain, kemudian cek visibilitasnya
+					for pemain_target in indeks_pool_pemain:
+						var id_pemain_target = pemain[pemain_target]["id_client"]
+						var data_pemain_target = pemain[pemain_target]
+						if id_pemain != pemain[pemain_target]["id_client"]:
+							# cek jarak pemain dengan pemain target
+							var jarak_pemain = pemain[i_pool_pemain]["posisi"].distance_to(pemain[pemain_target]["posisi"])
+							# pastikan keadaan visibilitas pool
+							if cek_visibilitas_pemain.get(id_pemain) == null:
+								cek_visibilitas_pemain[id_pemain] = {}
+							if cek_visibilitas_pemain[id_pemain].get(id_pemain_target) == null:
+								cek_visibilitas_pemain[id_pemain][id_pemain_target] = "hapus"
+							# jika jarak pemain target lebih dari jarak render karakter
+							if jarak_pemain > jarak_render_karakter:
+								# hanya hapus jika pool telah di-spawn
+								if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn":
+									# rpc hapus pool pemain
+									hapus_pool_pemain(id_pemain, id_pemain_target)
+									# ubah visibilitas pool agar jangan rpc lagi
+									cek_visibilitas_pemain[id_pemain][id_pemain_target] = "hapus"
+							# jika jarak pemain kurang dari jarak render karakter
+							else:
+								# hanya spawn jika pool belum di-spawn
+								if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "hapus":
+									# rpc spawn pool pemain
+									spawn_pool_pemain(id_pemain, id_pemain_target, data_pemain_target)
+									# ubah visibilitas pool agar jangan rpc lagi
+									cek_visibilitas_pemain[id_pemain][id_pemain_target] = "spawn"
 			
 			# tentukan visibilitas entitas dan objek pada tiap pemain
-			if permainan.dunia.get_node("pemain").get_child_count() > 0:
-				# loop array pemain
-				for p in permainan.dunia.get_node("pemain").get_child_count():
-					var b_pemain : Karakter = permainan.dunia.get_node("pemain").get_child(p)
+			if !pemain.is_empty():
+				var indeks_pool_pemain = pemain.keys()
+				for i_pool_pemain in indeks_pool_pemain:
+					var id_pemain = pemain[i_pool_pemain]["id_client"]
+					
 					# loop array pool_entitas
 					if !pool_entitas.is_empty():
 						var indeks_pool_entitas = pool_entitas.keys()
 						for i_pool_entitas in indeks_pool_entitas.size(): 
 							var nama_entitas = indeks_pool_entitas[i_pool_entitas]
 							# cek jarak pemain dengan entitas
-							var jarak_pemain = b_pemain.global_position.distance_to(pool_entitas[nama_entitas]["posisi"])
+							var jarak_pemain = pemain[i_pool_pemain]["posisi"].distance_to(pool_entitas[nama_entitas]["posisi"])
 							# pastikan keadaan visibilitas pool
-							if cek_visibilitas_pool_entitas.get(b_pemain.id_pemain) == null:
-								cek_visibilitas_pool_entitas[b_pemain.id_pemain] = {}
-							if cek_visibilitas_pool_entitas[b_pemain.id_pemain].get(nama_entitas) == null:
-								cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] = "hapus"
+							if cek_visibilitas_pool_entitas.get(id_pemain) == null:
+								cek_visibilitas_pool_entitas[id_pemain] = {}
+							if cek_visibilitas_pool_entitas[id_pemain].get(nama_entitas) == null:
+								cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "hapus"
 							# jika jarak pemain lebih dari jarak render entitas
 							if jarak_pemain > jarak_render_entitas:
 								# pastikan pemain saat ini tidak mengubah entitas
-								if pool_entitas[nama_entitas]["id_pengubah"] != b_pemain.id_pemain:
+								if pool_entitas[nama_entitas]["id_pengubah"] != id_pemain:
 									# cek jika id_proses telah diatur dan pemain saat ini adalah pemroses
-									if pool_entitas[nama_entitas]["id_proses"] != -1 and pool_entitas[nama_entitas]["id_proses"] == b_pemain.id_pemain:
+									if pool_entitas[nama_entitas]["id_proses"] != -1 and pool_entitas[nama_entitas]["id_proses"] == id_pemain:
 										# rpc atur -1 sebagai pemroses entitas ke semua peer
 										sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
 										# atur id_proses dengan -1
 										pool_entitas[nama_entitas]["id_proses"] = -1
 									# hanya hapus jika pool telah di-spawn
-									if cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] == "spawn":
+									if cek_visibilitas_pool_entitas[id_pemain][nama_entitas] == "spawn":
 										# rpc hapus pool_entitas
-										hapus_pool_entitas(b_pemain.id_pemain, nama_entitas)
+										hapus_pool_entitas(id_pemain, nama_entitas)
 										# ubah visibilitas pool agar jangan rpc lagi
-										cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] = "hapus"
+										cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "hapus"
 							# jika jarak pemain kurang dari jarak render entitas
 							else:
 								# hanya spawn jika pool belum di-spawn
-								if cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] == "hapus":
+								if cek_visibilitas_pool_entitas[id_pemain][nama_entitas] == "hapus":
 									# rpc spawn pool entitas
-									spawn_pool_entitas(b_pemain.id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+									spawn_pool_entitas(id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
 									# ubah visibilitas pool agar jangan rpc lagi
-									cek_visibilitas_pool_entitas[b_pemain.id_pemain][nama_entitas] = "spawn"
+									cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "spawn"
 								# cek jika id_proses belum diatur
 								if pool_entitas[nama_entitas]["id_proses"] == -1:
 									# rpc atur pemain sebagai pemroses entitas ke semua peer
-									sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", b_pemain.id_pemain]])
+									sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", id_pemain]])
 									# atur id_proses dengan id_pemain
-									pool_entitas[nama_entitas]["id_proses"] = b_pemain.id_pemain
+									pool_entitas[nama_entitas]["id_proses"] = id_pemain
 					
 					# loop array pool_objek
 					if !pool_objek.is_empty():
@@ -181,30 +219,30 @@ func _process(_delta):
 						for i_pool_objek in indeks_pool_objek.size(): 
 							var nama_objek = indeks_pool_objek[i_pool_objek]
 							# cek jarak pemain dengan objek
-							var jarak_pemain = b_pemain.global_position.distance_to(pool_objek[nama_objek]["posisi"])
+							var jarak_pemain = pemain[i_pool_pemain]["posisi"].distance_to(pool_objek[nama_objek]["posisi"])
 							# pastikan keadaan visibilitas pool
-							if cek_visibilitas_pool_objek.get(b_pemain.id_pemain) == null:
-								cek_visibilitas_pool_objek[b_pemain.id_pemain] = {}
-							if cek_visibilitas_pool_objek[b_pemain.id_pemain].get(nama_objek) == null:
-								cek_visibilitas_pool_objek[b_pemain.id_pemain][nama_objek] = "hapus"
+							if cek_visibilitas_pool_objek.get(id_pemain) == null:
+								cek_visibilitas_pool_objek[id_pemain] = {}
+							if cek_visibilitas_pool_objek[id_pemain].get(nama_objek) == null:
+								cek_visibilitas_pool_objek[id_pemain][nama_objek] = "hapus"
 							# jika frustum culling diaktifkan dan jarak pemain lebih dari jarak render objek
-							if b_pemain.get_node("PlayerInput").gunakan_frustum_culling and jarak_pemain > pool_objek[nama_objek]["jarak_render"]:
+							if permainan.gunakan_frustum_culling and jarak_pemain > pool_objek[nama_objek]["jarak_render"]:
 								# pastikan pemain saat ini tidak mengubah objek
-								if pool_objek[nama_objek]["id_pengubah"] != b_pemain.id_pemain:
+								if pool_objek[nama_objek]["id_pengubah"] != id_pemain:
 									# hanya hapus jika pool telah di-spawn
-									if cek_visibilitas_pool_objek[b_pemain.id_pemain][nama_objek] == "spawn":
+									if cek_visibilitas_pool_objek[id_pemain][nama_objek] == "spawn":
 										# rpc hapus pool_objek
-										hapus_pool_objek(b_pemain.id_pemain, nama_objek)
+										hapus_pool_objek(id_pemain, nama_objek)
 										# ubah visibilitas pool agar jangan rpc lagi
-										cek_visibilitas_pool_objek[b_pemain.id_pemain][nama_objek] = "hapus"
+										cek_visibilitas_pool_objek[id_pemain][nama_objek] = "hapus"
 							# jika jarak pemain kurang dari jarak render objek
 							else:
 								# hanya spawn jika pool belum di-spawn
-								if cek_visibilitas_pool_objek[b_pemain.id_pemain][nama_objek] == "hapus":
+								if cek_visibilitas_pool_objek[id_pemain][nama_objek] == "hapus":
 									# rpc spawn pool objek
-									spawn_pool_objek(b_pemain.id_pemain, nama_objek, pool_objek[nama_objek]["jalur_instance"], pool_objek[nama_objek]["id_pengubah"], pool_objek[nama_objek]["posisi"], pool_objek[nama_objek]["rotasi"], pool_objek[nama_objek]["properti"])
+									spawn_pool_objek(id_pemain, nama_objek, pool_objek[nama_objek]["jalur_instance"], pool_objek[nama_objek]["id_pengubah"], pool_objek[nama_objek]["posisi"], pool_objek[nama_objek]["rotasi"], pool_objek[nama_objek]["properti"])
 									# ubah visibilitas pool agar jangan rpc lagi
-									cek_visibilitas_pool_objek[b_pemain.id_pemain][nama_objek] = "spawn"
+									cek_visibilitas_pool_objek[id_pemain][nama_objek] = "spawn"
 
 func buat_koneksi():
 	interface = MultiplayerAPI.create_default_interface()
@@ -329,6 +367,11 @@ func putuskan():
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
 
+func spawn_pool_pemain(id_pemain : int, id_spawn_pemain : int, data : Dictionary):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		Panku.notify("spawn pool pemain [%s] pada pemain %s" % [str(id_spawn_pemain), str(id_pemain)])
+		if id_pemain == 1: _spawn_visibilitas_pemain(id_spawn_pemain, data)
+		else: rpc_id(id_pemain, "_spawn_visibilitas_pemain", id_spawn_pemain, data)
 func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas, id_pemroses_entitas, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("spawn pool entitas [%s] pada pemain %s" % [str(jalur_instance_entitas), str(id_pemain)])
@@ -357,6 +400,11 @@ func sinkronkan_kondisi_objek(id_pemain, nama_objek : String, kondisi_objek : Ar
 			rpc("_sinkronkan_kondisi_objek", nama_objek, kondisi_objek)
 		else:
 			rpc_id(id_pemain, "_sinkronkan_kondisi_objek", nama_objek, kondisi_objek)
+func hapus_pool_pemain(id_pemain, id_hapus_pemain):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		Panku.notify("menghapus pool pemain [%s] pada pemain %s" % [str(id_hapus_pemain), str(id_pemain)])
+		if id_pemain == 1: _hapus_visibilitas_pemain(id_hapus_pemain)
+		else: rpc_id(id_pemain, "_hapus_visibilitas_pemain", id_hapus_pemain)
 func hapus_pool_entitas(id_pemain, nama_entitas : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("menghapus pool entitas [%s] pada pemain %s" % [nama_entitas, str(id_pemain)])
@@ -473,21 +521,72 @@ func _pemain_terputus(id_pemain):
 		print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 		pemain_terhubung -= 1
 
-@rpc("any_peer") func _tambahkan_pemain_ke_dunia(id_pemain, id_koneksi, data_pemain):
+@rpc("any_peer") func _tambahkan_pemain_ke_dunia(id_pemain, id_sesi, data_pemain):
 	if permainan.koneksi == permainan.MODE_KONEKSI.SERVER:
 		# INFO : (5b2) tambahkan pemain client ke dunia
-		if pemain.has(id_koneksi):
-			pemain[id_koneksi]["id_client"] = id_pemain
-			data_pemain["posisi"] = pemain[id_koneksi]["posisi"]
-			data_pemain["rotasi"] = pemain[id_koneksi]["rotasi"]
+		# muat sesi dari pool (jika tersedia)
+		if pemain.has(id_sesi):
+			# terapkan data sesi
+			data_pemain["posisi"] = pemain[id_sesi]["posisi"]
+			data_pemain["rotasi"] = pemain[id_sesi]["rotasi"]
+			
+			# timpa data sesi
+			pemain[id_sesi]["id_client"] = id_pemain
+			pemain[id_sesi]["nama"] = data_pemain["nama"]
+			pemain[id_sesi]["model"]["gender"]			= data_pemain["gender"]
+			pemain[id_sesi]["model"]["alis"]			= data_pemain["alis"]
+			pemain[id_sesi]["model"]["garis_mata"]		= data_pemain["garis_mata"]
+			pemain[id_sesi]["model"]["mata"]			= data_pemain["mata"]
+			pemain[id_sesi]["model"]["warna_mata"]		= data_pemain["warna_mata"]
+			pemain[id_sesi]["model"]["rambut"]			= data_pemain["rambut"]
+			pemain[id_sesi]["model"]["warna_rambut"]	= data_pemain["warna_rambut"]
+			pemain[id_sesi]["model"]["baju"]			= data_pemain["baju"]
+			pemain[id_sesi]["model"]["warna_baju"]		= data_pemain["warna_baju"]
+			pemain[id_sesi]["model"]["celana"]			= data_pemain["celana"]
+			pemain[id_sesi]["model"]["warna_celana"]	= data_pemain["warna_celana"]
+			pemain[id_sesi]["model"]["sepatu"]			= data_pemain["sepatu"]
+			pemain[id_sesi]["model"]["warna_sepatu"]	= data_pemain["warna_sepatu"]
+			
+			# reset data sesi
+			pemain[id_sesi]["kondisi"]["mode_gestur"]	= "berdiri"
+			pemain[id_sesi]["kondisi"]["arah_gerakan"]	= Vector3.ZERO
+			pemain[id_sesi]["kondisi"]["mode_menyerang"]= "a"
+			pemain[id_sesi]["kondisi"]["arah_pandangan"]= Vector2.ZERO
+		# tambahkan ke pool
 		else:
-			pemain[id_koneksi] = {
+			pemain[id_sesi] = {
 				"id_client": id_pemain,
-				"posisi": data_pemain["posisi"],
-				"rotasi": data_pemain["rotasi"]
+				"nama": 	data_pemain["nama"],
+				"posisi":	data_pemain["posisi"],
+				"rotasi":	data_pemain["rotasi"],
+				"model": {
+					"gender":		data_pemain["gender"],
+					"alis":			data_pemain["alis"],
+					"garis_mata":	data_pemain["garis_mata"],
+					"mata":			data_pemain["mata"],
+					"warna_mata":	data_pemain["warna_mata"],
+					"rambut":		data_pemain["rambut"],
+					"warna_rambut":	data_pemain["warna_rambut"],
+					"baju":			data_pemain["baju"],
+					"warna_baju":	data_pemain["warna_baju"],
+					"celana":		data_pemain["celana"],
+					"warna_celana":	data_pemain["warna_celana"],
+					"sepatu":		data_pemain["sepatu"],
+					"warna_sepatu":	data_pemain["warna_sepatu"]
+				},
+				"kondisi":		{
+					"arah_gerakan": 	Vector3.ZERO,
+					"arah_pandangan":	Vector2.ZERO,
+					"mode_gestur":		"berdiri",
+					"mode_menyerang": 	"a"
+				}
 			}
-		permainan._tambahkan_pemain(id_pemain, data_pemain)
-		print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
+		# tambahkan ke client
+		rpc_id(id_pemain, "_tambahkan_pemain_ke_dunia", 1, id_sesi, permainan.data)
+		rpc_id(id_pemain, "_tambahkan_pemain_ke_dunia", id_pemain, id_sesi, data_pemain)
+	# tambahkan ke daftar pemain
+	permainan._tambahkan_pemain(id_pemain, data_pemain)
+	print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
 @rpc("any_peer") func _terima_suara_pemain(id_pemain : int, data_suara : PackedByteArray, ukuran_buffer : int):
 	print("pemain [%s] berbicara (%s)" % [str(id_pemain), str(ukuran_buffer)])
 	# dekompresi dan simpan data suara ke array yang kemudian dimainkan pada thread
@@ -529,10 +628,10 @@ func _pemain_terputus(id_pemain):
 				"kondisi"	: properti
 			}
 			# Timeline : spawn entitas
-			if not server.mode_replay:
-				if not server.timeline.has(server.timeline["data"]["frame"]):
-					server.timeline[server.timeline["data"]["frame"]] = {}
-				server.timeline[server.timeline["data"]["frame"]][nama_entitas] = {
+			if not mode_replay:
+				if not timeline.has(timeline["data"]["frame"]):
+					timeline[timeline["data"]["frame"]] = {}
+				timeline[timeline["data"]["frame"]][nama_entitas] = {
 					"tipe": 		"spawn",
 					"tipe_objek":	"entitas",
 					"sumber": 		jalur_skena,
@@ -576,6 +675,63 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
 		rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
+@rpc("any_peer") func _sesuaikan_kondisi_pemain(id_sesi_pemain : String, id_pemain : int, properti_kondisi : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if pemain.has(id_sesi_pemain) and pemain[id_sesi_pemain]["id_client"] == id_pemain:
+			var r_melompat = false
+			var r_menyerang = false
+			# atur kondisi di pool
+			for kondisi_pemain in properti_kondisi:
+				if kondisi_pemain[0] == "posisi":			pemain[id_sesi_pemain]["posisi"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "rotasi":			pemain[id_sesi_pemain]["rotasi"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "mode_gestur":	pemain[id_sesi_pemain]["kondisi"]["mode_gestur"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "arah_gerakan":	pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "arah_pandangan":	pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "mode_menyerang":	pemain[id_sesi_pemain]["kondisi"]["mode_menyerang"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "melompat":		r_melompat = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "menyerang":		r_menyerang = kondisi_pemain[1]
+			# rpc sinkronkan kondisi id_pemain ke semua pemain yang spawn id_pemain
+			if cek_visibilitas_pemain.has(id_pemain):
+				for id_pemain_target in cek_visibilitas_pemain[id_pemain]:
+					if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn":
+						# rpc ke id_pemain_target
+						if id_pemain_target == 1:
+							_sinkronkan_kondisi_pemain(id_pemain, properti_kondisi)
+						else:
+							rpc_id(id_pemain_target, "_sinkronkan_kondisi_pemain", id_pemain, properti_kondisi)
+			# Timeline : sinkronkan pemain (rekam)
+			if not mode_replay:
+				# dapatkan waktu frame saat ini
+				var frame_sekarang = timeline["data"]["frame"]
+				# jika frame saat ini belum ada di timeline, buat data kosong
+				if not timeline.has(frame_sekarang): timeline[frame_sekarang] = {}
+				# pastikan frame saat ini belum berisi data pemain
+				if timeline[frame_sekarang].has(id_pemain): return
+				# set frame saat ini ke timeline
+				timeline[frame_sekarang][id_pemain] = {
+					"tipe": 	"sinkron",
+					"posisi":	pemain[id_sesi_pemain]["posisi"],
+					"rotasi":	Vector3(rad_to_deg(pemain[id_sesi_pemain]["rotasi"].x), rad_to_deg(pemain[id_sesi_pemain]["rotasi"].y), rad_to_deg(pemain[id_sesi_pemain]["rotasi"].z)),
+					"skala":	Vector3(1, 1, 1), # asumsikan skala pemain tidak pernah berubah
+					"kondisi":	{
+						"arah_gerakan": 	Vector2(-pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].x, pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].z / 2),
+						"arah_y_pandangan": pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"].y,
+						"gestur":			pemain[id_sesi_pemain]["kondisi"]["mode_gestur"],
+						"mode_menyerang": 	pemain[id_sesi_pemain]["kondisi"]["mode_menyerang"],
+						"lompat":			r_melompat,
+						"menyerang": 		r_menyerang,
+					}
+				}
+				# optimasi
+				# > kalo data sama dengan frame sebelumnya, hapus kondisi pemain dari frame sebelumnya untuk menghemat penggunaan memori
+				# - cek apakah frame sebelumnya telah tersimpan di pool
+				if !pemain[id_sesi_pemain].has("cek_frame"):
+					pemain[id_sesi_pemain]["cek_frame"] = 0
+				# - jika frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
+				if timeline.has(pemain[id_sesi_pemain]["cek_frame"]) and timeline[pemain[id_sesi_pemain]["cek_frame"]].has(id_pemain) and timeline[pemain[id_sesi_pemain]["cek_frame"]][id_pemain] == timeline[frame_sekarang][id_pemain]:
+					timeline[pemain[id_sesi_pemain]["cek_frame"]].erase(id_pemain)
+				# - set frame sekarang untuk di-cek pada frame selanjutnya
+				pemain[id_sesi_pemain]["cek_frame"] = frame_sekarang
 @rpc("any_peer") func _sesuaikan_posisi_entitas(nama_entitas : String, id_pemain : int):
 	# kirim posisi entitas ke client kalau posisi di client de-sync
 	var t_entitas = permainan.dunia.get_node_or_null("entitas/" + nama_entitas)
@@ -595,10 +751,10 @@ func _pemain_terputus(id_pemain):
 					if pool_entitas[nama_entitas]["kondisi"][k][0] == kondisi_entitas[p][0]:
 						pool_entitas[nama_entitas]["kondisi"][k][1] = kondisi_entitas[p][1]
 		# Timeline : sinkronkan entitas (rekam)
-		if not server.mode_replay:
-			if not server.timeline.has(server.timeline["data"]["frame"]):
-				server.timeline[server.timeline["data"]["frame"]] = {}
-			server.timeline[server.timeline["data"]["frame"]][nama_entitas] = {
+		if not mode_replay:
+			if not timeline.has(timeline["data"]["frame"]):
+				timeline[timeline["data"]["frame"]] = {}
+			timeline[timeline["data"]["frame"]][nama_entitas] = {
 				"tipe": 		"sinkron",
 				"posisi":		pool_entitas[nama_entitas]["posisi"],
 				"rotasi":		pool_entitas[nama_entitas]["rotasi"],
@@ -621,10 +777,10 @@ func _pemain_terputus(id_pemain):
 					if pool_objek[nama_objek]["properti"][k][0] == properti_objek[p][0]:
 						pool_objek[nama_objek]["properti"][k][1] = properti_objek[p][1]
 		# Timeline : sinkronkan objek (rekam)
-		if not server.mode_replay:
-			if not server.timeline.has(server.timeline["data"]["frame"]):
-				server.timeline[server.timeline["data"]["frame"]] = {}
-			server.timeline[server.timeline["data"]["frame"]][nama_objek] = {
+		if not mode_replay:
+			if not timeline.has(server.timeline["data"]["frame"]):
+				timeline[server.timeline["data"]["frame"]] = {}
+			timeline[server.timeline["data"]["frame"]][nama_objek] = {
 				"tipe": 		"sinkron",
 				"posisi":		pool_objek[nama_objek]["posisi"],
 				"rotasi":		pool_objek[nama_objek]["rotasi"],
@@ -635,6 +791,51 @@ func _pemain_terputus(id_pemain):
 			if permainan.dunia.get_node("pemain").get_child(p).id_pemain != id_pengatur:
 				if cek_visibilitas_pool_objek[permainan.dunia.get_node("pemain").get_child(p).id_pemain][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(permainan.dunia.get_node("pemain").get_child(p).id_pemain, nama_objek, properti_objek)
+@rpc("authority") func _spawn_visibilitas_pemain(id : int, data : Dictionary):
+	if permainan != null and permainan.dunia != null:
+		var instance_pemain : Karakter
+		match data["model"]["gender"]:
+			"L": instance_pemain = permainan.karakter_cowok.instantiate();
+			"P": instance_pemain = permainan.karakter_cewek.instantiate();
+		if !is_instance_valid(instance_pemain): print("tidak dapat menambahkan pemain "+str(id)); return
+		
+		# terapkan data pemain ke model pemain
+		instance_pemain.id_pemain = id
+		instance_pemain.name = str(id)
+		instance_pemain.nama 				= data["nama"]
+		instance_pemain.gender 				= data["model"]["gender"]
+		instance_pemain.model["alis"] 		= data["model"]["alis"]
+		instance_pemain.model["garis_mata"] = data["model"]["garis_mata"]
+		instance_pemain.model["mata"] 		= data["model"]["mata"]
+		instance_pemain.warna["mata"] 		= data["model"]["warna_mata"]
+		instance_pemain.model["rambut"] 	= data["model"]["rambut"]
+		instance_pemain.warna["rambut"] 	= data["model"]["warna_rambut"]
+		instance_pemain.model["baju"] 		= data["model"]["baju"]
+		instance_pemain.warna["baju"] 		= data["model"]["warna_baju"]
+		instance_pemain.model["celana"] 	= data["model"]["celana"]
+		instance_pemain.warna["celana"] 	= data["model"]["warna_celana"]
+		instance_pemain.model["sepatu"] 	= data["model"]["sepatu"]
+		instance_pemain.warna["sepatu"] 	= data["model"]["warna_sepatu"]
+		
+		# tambahkan pemain ke dunia
+		permainan.dunia.get_node("pemain").add_child(instance_pemain, true)
+		
+		# terapkan kondisi
+		instance_pemain.position = data["posisi"]
+		instance_pemain.rotation = data["rotasi"]
+		instance_pemain.gestur = data["kondisi"]["mode_gestur"]
+		instance_pemain.arah_gerakan = data["kondisi"]["arah_gerakan"]
+		instance_pemain.arah_pandangan = data["kondisi"]["arah_pandangan"]
+		instance_pemain.mode_menyerang = data["kondisi"]["mode_menyerang"]
+		
+		# terapkan tampilan
+		instance_pemain.atur_model()
+		instance_pemain.atur_warna()
+		
+		# hindari kalkulasi yang tidak dibutuhkan
+		instance_pemain.set_process(false)
+		instance_pemain.set_physics_process(false)
+		instance_pemain.get_node("pengamat").set_process(false)
 @rpc("authority") func _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemroses_entitas : int, nama_entitas : String, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) == null and load(jalur_instance_entitas) != null:
@@ -661,6 +862,19 @@ func _pemain_terputus(id_pemain):
 			tmp_objek.id_pengubah = id_pengubah
 			tmp_objek.global_transform.origin = posisi_objek
 			tmp_objek.rotation = rotasi_objek
+@rpc("authority") func _sinkronkan_kondisi_pemain(id_pemain : int, kondisi_pemain : Array):
+	if permainan != null and permainan.dunia != null:
+		if permainan.dunia.get_node("pemain").get_node_or_null(str(id_pemain)) != null:
+			var _pemain = permainan.dunia.get_node("pemain").get_node(str(id_pemain))
+			for kondisi in kondisi_pemain:
+				if kondisi[0] == "posisi":				_pemain.position = kondisi[1]
+				elif kondisi[0] == "rotasi":			_pemain.rotation = kondisi[1]
+				elif kondisi[0] == "melompat":			_pemain.melompat = kondisi[1]
+				elif kondisi[0] == "menyerang":			_pemain.menyerang = kondisi[1]
+				elif kondisi[0] == "mode_gestur":		_pemain.gestur = kondisi[1]
+				elif kondisi[0] == "arah_gerakan":		_pemain.arah_gerakan = kondisi[1]
+				elif kondisi[0] == "arah_pandangan":	_pemain.arah_pandangan = kondisi[1]
+				elif kondisi[0] == "mode_menyerang":	_pemain.mode_menyerang = kondisi[1]
 @rpc("authority") func _sinkronkan_kondisi_entitas(nama_entitas : String, kondisi_entitas : Array):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) != null:
@@ -673,6 +887,13 @@ func _pemain_terputus(id_pemain):
 			for p in kondisi_objek.size():
 				if permainan.dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
 					permainan.dunia.get_node("objek").get_node(nama_objek).set(kondisi_objek[p][0], kondisi_objek[p][1])
+@rpc("authority") func _hapus_visibilitas_pemain(id_pemain : int):
+	if permainan != null and permainan.dunia != null:
+		if permainan.dunia.get_node("pemain").get_node_or_null(str(id_pemain)) != null:
+			if permainan.dunia.get_node("pemain").get_node(str(id_pemain)).has_method("hapus"):
+				permainan.dunia.get_node("pemain").get_node(str(id_pemain)).hapus()
+			else:
+				permainan.dunia.get_node("pemain").get_node(str(id_pemain)).queue_free()
 @rpc("authority") func _hapus_visibilitas_entitas(nama_entitas : String):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) != null:

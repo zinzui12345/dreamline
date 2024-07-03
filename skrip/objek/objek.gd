@@ -39,7 +39,7 @@ func _ready(): call_deferred("_setup")
 func _setup():
 	if !is_instance_valid(server.permainan): return
 	if get_parent().get_path() != server.permainan.dunia.get_node("objek").get_path():
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			server._tambahkan_objek(
 				get("jalur_instance"),
 				global_transform.origin,

@@ -11,7 +11,7 @@ var posisiAwalVertikalPandangan : float
 
 var _karakter : Node
 
-func  _ready():
+func _ready():
 	if get_parent() is Karakter:
 		_karakter = get_parent();
 		get_node("%pandangan").set("far", Konfigurasi.jarak_render);
@@ -20,7 +20,7 @@ func  _ready():
 
 func _process(delta):
 	if kontrol:
-		if _karakter.get("arah_pandangan") != null: gerakan = _karakter.arah_pandangan
+		if _karakter.get("_input_arah_pandangan") != null: gerakan = _karakter._input_arah_pandangan
 		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitasPandangan * delta
 		
 		if gerakan != _gerakan:
@@ -31,10 +31,10 @@ func _process(delta):
 					get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
 					_karakter.rotation_degrees.y -= rotasi.y
 					gerakan = Vector2.ZERO
-					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
-					if _karakter.get("arah_p_pandangan") != null:
+					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
+					if _karakter.get("arah_pandangan") != null:
 						if get_node("%pandangan").rotation_degrees.x > 0:
-							_karakter.arah_p_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
+							_karakter.arah_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
 						elif get_node("%pandangan").rotation_degrees.x < 0:
 							var arah_pandangan = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
 							var persentase_arah = abs(arah_pandangan)
@@ -42,7 +42,7 @@ func _process(delta):
 							var perbedaan_posisi_z_akhir = 0.237 * persentase_arah
 							#position.y = posisiAwalVertikalPandangan - perbedaan_posisi_y_akhir # gak usah dipake karena bakalan offset ketika pemain jongkok
 							get_node("%pandangan").position.z = 0 + perbedaan_posisi_z_akhir
-							_karakter.arah_p_pandangan.y = arah_pandangan
+							_karakter.arah_pandangan.y = arah_pandangan
 				2:
 					get_node("%pandangan").rotation_degrees.x -= rotasi.x
 					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -38, putaranMaxVertikalPandangan)
@@ -57,14 +57,14 @@ func _process(delta):
 						$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y
 						$kamera/rotasi_vertikal.rotation_degrees.y = clamp($kamera/rotasi_vertikal.rotation_degrees.y, -70, 70)
 					gerakan = Vector2.ZERO
-					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
-					if _karakter.get("arah_p_pandangan") != null:
+					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
+					if _karakter.get("arah_pandangan") != null:
 						if $kamera/rotasi_vertikal.rotation_degrees.y > 0:
-							_karakter.arah_p_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
+							_karakter.arah_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
 						elif $kamera/rotasi_vertikal.rotation_degrees.y < 0:
-							_karakter.arah_p_pandangan.x = $kamera/rotasi_vertikal.rotation_degrees.y / -70
+							_karakter.arah_pandangan.x = $kamera/rotasi_vertikal.rotation_degrees.y / -70
 						else:
-							_karakter.arah_p_pandangan.x = 0
+							_karakter.arah_pandangan.x = 0
 				3:
 					$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
 					$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
@@ -79,8 +79,8 @@ func _process(delta):
 					if rotation_degrees.y <= -270:	rotation_degrees.y += 90 * 4
 					if rotation_degrees.y >= 270:	rotation_degrees.y -= 90 * 4
 					gerakan = Vector2.ZERO
-					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO
-					if _karakter.get("arah_p_pandangan") != null: _karakter.arah_p_pandangan = Vector2.ZERO # TODO : arah x
+					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
+					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO # TODO : arah x
 			_gerakan = gerakan
 
 func aktifkan(nilai = true, vr = false):

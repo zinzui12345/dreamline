@@ -1,5 +1,6 @@
 extends Node3D
 
+var pengamat : Camera3D
 var arah_target_pengamat : Marker3D
 var posisi_relatif_pengamat : Node3D
 var raycast_occlusion_culling : RayCast3D
@@ -57,9 +58,6 @@ func hapus_instance_pemain():
 # Optimasi rendering | Object Culling
 func _process(delta):
 	if is_instance_valid(server.permainan.karakter) and $objek.get_child_count() > 0:
-		# dapatkan kamera (pengamat) karakter
-		var pengamat : Camera3D = server.permainan.karakter.get_node("pengamat/%pandangan")
-		
 		# atur collider raycast occlusion culling jika belum ada
 		if pengamat.get_node_or_null("target_raycast_culling") == null:
 			var tmp_bb_fisik_pengamat = BoxShape3D.new()
@@ -77,7 +75,7 @@ func _process(delta):
 		# loop setiap objek
 		for m_objek in $objek.get_children():
 			# Direction Culling / Frustum Culling
-			if server.permainan.karakter.get_node("PlayerInput").gunakan_frustum_culling:
+			if server.permainan.gunakan_frustum_culling:
 				# dapatkan posisi global kamera
 				var posisi_pengamat : Vector3 = pengamat.global_position
 				
@@ -127,7 +125,7 @@ func _process(delta):
 			# Occlusion Culling
 			# FIXME : jangan cek ketika posisi pengamat berada didekat objek / titik
 			if !m_objek.tak_terlihat: # 23/06/24 :: jangan cek ketika arah pengamat membelakangi objek
-				if server.permainan.karakter.get_node("PlayerInput").gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
+				if server.permainan.gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
 					# pastikan cek titik yang valid
 					if m_objek.cek_titik < m_objek.titik_sudut.size():
 						# cek apakah raycast mengenai sesuatu
@@ -135,7 +133,7 @@ func _process(delta):
 						raycast_occlusion_culling.global_position += m_objek.titik_sudut[m_objek.cek_titik] # 23/06/24 :: walau posisi abb telah menjadi posisi global, posisi tersebut tidak sama dengan posisi global dunia sehingga harus di kalkulasi ulang
 						raycast_occlusion_culling.look_at(pengamat.global_position)
 						raycast_occlusion_culling.force_raycast_update()
-						var mengenai_sesuatu = await raycast_occlusion_culling.is_colliding()
+						var mengenai_sesuatu = raycast_occlusion_culling.is_colliding()
 						# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
 						if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == pengamat:
 							m_objek.cek_titik = 0

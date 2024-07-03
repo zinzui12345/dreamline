@@ -5,44 +5,19 @@ class_name Karakter
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
-var arah_pandangan : Vector2 	# ini arah input / event relative
-var arah_p_pandangan : Vector2 :# ini arah pose
+var arah_gerakan : Vector3 :		# ini arah gerakan
+	set(nilai):
+		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-nilai.x, nilai.z / 2)) # TODO : clamp arah gerak z > 0.25
+		$pose.set("parameters/arah_jongkok/blend_position", nilai.z)
+		arah_gerakan = nilai
+var _transisi_reset_arah : Tween	# transisi ketika berhenti bergerak
+var _input_arah_pandangan : Vector2	# ini arah input / event relative
+var arah_pandangan : Vector2 :		# ini arah pose
 	set(nilai):
 		$pose.set("parameters/arah_x_pandangan/blend_position", nilai.x)
 		$pose.set("parameters/arah_y_pandangan/blend_position", nilai.y)
-		arah_p_pandangan = nilai
-var _menabrak = false
-var _ragdoll = false :
-	set(nilai):
-		$pengamat.position.x 		= 0
-		$pengamat.position.y 		= 0
-		$pengamat.position.z 		= 0
-		$pengamat/kamera.position.x = 0
-		$pengamat/kamera.position.z = 0
-		_ragdoll = nilai
-var _timer_ragdoll : Timer
-var tekstur
-var _interval_timeline	= 0.05
-var _delay_timeline 	= _interval_timeline
-var _frame_timeline_sb	= 0 # frame sebelumnya
-
-@export var kontrol = false
-@export var nama := ""+OS.get_model_name() :
-	set(namaa):
-		if get_node_or_null("nama") != null:
-			$nama.text = namaa
-		if namaa != "":
-			nama = namaa
-@export var gender := "P"
-@export var gambar_potret : Dictionary
-@export var peran = Permainan.PERAN_KARAKTER.Arsitek
-@export var id_sistem = ""
-@export var platform_pemain := "Linux"
-@export var id_pemain := -44 :
-	set(id):
-		$PlayerInput.call_deferred("atur_pengendali", id)
-		id_pemain = id
-@export var gestur = "berdiri":
+		arah_pandangan = nilai
+var gestur = "berdiri":				# ini mode gestur
 	set(ubah):
 		if ubah != $pose.get("parameters/gestur/current_state"):
 			$pose.set("parameters/gestur/transition_request", ubah)
@@ -54,26 +29,29 @@ var _frame_timeline_sb	= 0 # frame sebelumnya
 					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 0)
 					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 1)
 			gestur = ubah
-@export var pose_duduk = "normal":
-	set(ubah):
-		if ubah != $pose.get("parameters/pose_duduk/current_state"):
-			$pose.set("parameters/pose_duduk/transition_request", ubah)
-			pose_duduk = ubah
-@export var lompat = false : 
-	set(melompat):
+var _menabrak = false
+var _ragdoll = false :
+	set(nilai):
+		$pengamat.position.x 		= 0
+		$pengamat.position.y 		= 0
+		$pengamat.position.z 		= 0
+		$pengamat/kamera.position.x = 0
+		$pengamat/kamera.position.z = 0
+		_ragdoll = nilai
+var _timer_ragdoll : Timer
+var penarget : RayCast3D
+var penarget_serangan_a : RayCast3D
+var menarget = false				# kondisi apakah sedang menarget objek
+var objek_target : Node3D			# node/objek yang di target
+var posisi_target : Vector3			# posisi titik temu target
+var mode_menyerang = "a"			# ini mode serangan misalnya: a / b
+var melompat = false : 
+	set(lompat):
 		if get_node_or_null("pose") != null:
-			if melompat:
-				# track dan keyframe belum ada
-				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 0, true)
-				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 1, true)
-				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 4, true)
-				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(57, 5, true)
-				#$model/animasi.get_animation("animasi/melompat").track_set_key_value(58, 0, $PlayerInput.arah_gerakan)
+			if lompat:
 				$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-			lompat = melompat
-			_sinkronkan_timeline()
-@export var mode_menyerang = "a"
-@export var menyerang = false : 
+			melompat = lompat
+var menyerang = false : 
 	set(serang):
 		if get_node_or_null("pose") != null:
 			if serang:
@@ -83,8 +61,27 @@ var _frame_timeline_sb	= 0 # frame sebelumnya
 							"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
 						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			menyerang = serang
-			_sinkronkan_timeline()
-@export var arah_gerakan : Vector3
+var _interval_timeline	= 0.05
+var _delay_timeline 	= _interval_timeline
+var _frame_timeline_sb	= 0		# frame sebelumnya
+var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+
+@export var kontrol = false
+@export var nama := ""+OS.get_model_name() :
+	set(namaa):
+		if get_node_or_null("nama") != null:
+			$nama.text = namaa
+		if namaa != "":
+			nama = namaa
+@export var gender := "P"
+@export var peran = Permainan.PERAN_KARAKTER.Arsitek
+@export var id_pemain := -44
+@export var pose_duduk = "normal":
+	set(ubah):
+		if ubah != $pose.get("parameters/pose_duduk/current_state"):
+			$pose.set("parameters/pose_duduk/transition_request", ubah)
+			pose_duduk = ubah
+@export var jongkok = false
 @export var model = {
 	"alis"		: 0,
 	"bulu_mata"	: 0,
@@ -131,6 +128,9 @@ var _frame_timeline_sb	= 0 # frame sebelumnya
 		warna["celana"] = warna_baru["celana"]
 		warna["sepatu"] = warna_baru["sepatu"]
 		atur_warna()
+
+@onready var posisi_awal = global_transform.origin
+@onready var rotasi_awal = rotation
 
 # penampilan
 func atur_model():
@@ -298,35 +298,7 @@ func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 		#$area_tabrak/area.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
 		global_position = percepatan
 		_ragdoll = false
-
-# setup
-func _enter_tree():
-	set_physics_process(false)
-func _ready():
-	$pose.active = true
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		$area_tabrak.monitoring = true
-		$area_tabrak.connect("body_entered", _ketika_ditabrak)
-	elif server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:
-		set_process(false) # jangan disable di server karena untuk timeline
-func _kendalikan(nilai):
-	$pengamat.aktifkan(nilai) # ini harus di set true | false untuk layer visibilitas
-	if kontrol != nilai: # gak usah  di terapin kalo nilai gak berubah
-		$pengamat.fungsikan(nilai)
-		$area_serang_a.enabled = nilai
-		kontrol = nilai
-func _atur_kendali(nilai): 
-	$pengamat.fungsikan(nilai)
-	$PlayerInput.arah_gerakan = Vector2.ZERO
-	kontrol = nilai
-func _hapus():
-	# Timeline : hapus pemain
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var frame_sekarang = server.timeline["data"]["frame"]
-		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
-		server.timeline[frame_sekarang][id_pemain] = {
-			"tipe": "hapus"
-		}
+func hapus():
 	set_physics_process(false)
 	set_process(false)
 	kontrol = false
@@ -344,25 +316,325 @@ func _hapus():
 						get_node("%GeneralSkeleton/"+jlr_mtl).set_surface_override_material(id_mtl[mtl], null)
 	queue_free()
 
-func _physics_process(_delta):
-	if $pose.active: # jangan fungsikan kalo animasi gak aktif
-		# terapkan arah gerak
-		if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
-		elif is_on_floor() and arah.y < 0: arah.y = 0
-		velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
-		_menabrak = move_and_slide()
+# setup
+func _enter_tree():
+	set_physics_process(false)
+func _ready():
+	$pose.active = true
+	penarget = get_node("pengamat/%target")
+	penarget_serangan_a = $area_serang_a
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		$area_tabrak.monitoring = true
+		$area_tabrak.connect("body_entered", _ketika_ditabrak)
+	# INFO : atur layer visibilitas model
+	if id_pemain > 0 and id_pemain == client.id_koneksi:
+		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, true)
+		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, false)
+	else:
+		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, false)
+		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, true)
 		
-		# terapkan gerakan
-		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-arah_gerakan.x, arah_gerakan.z / 2)) # TODO : clamp arah gerak z > 0.25
-		$pose.set("parameters/arah_jongkok/blend_position", arah_gerakan.z)
-func _process(delta):
-	# kalkulasi gerakan
-	arah.x = $PlayerInput.arah_gerakan.x
-	arah.z = $PlayerInput.arah_gerakan.y
+		get_node("%GeneralSkeleton/rambut").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/wajah").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/kelopak_mata").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/badan").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, true)
+		get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, true)
+func _atur_kendali(nilai):
+	if nilai == false: arah = Vector3.ZERO
+	if kontrol != nilai:
+		$pengamat.fungsikan(nilai)
+		$area_serang_a.enabled = nilai
+		kontrol = nilai
+func _atur_penarget(nilai):
+	penarget.enabled = nilai
+	if nilai == false: menarget = false
+func _hapus():
+	# Timeline : hapus pemain
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var frame_sekarang = server.timeline["data"]["frame"]
+		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
+		server.timeline[frame_sekarang][id_pemain] = {
+			"tipe": "hapus"
+		}
+	hapus()
+
+func _input(event):
+	# kendalikan interaksi dengan input
+	if kontrol:
+		# arah pandangan
+		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			_input_arah_pandangan = event.relative
+		if Input.is_action_pressed("pandangan_atas"):
+			_input_arah_pandangan.y = -Input.get_action_strength("pandangan_atas")
+		elif Input.is_action_pressed("pandangan_bawah"):
+			_input_arah_pandangan.y = Input.get_action_strength("pandangan_bawah")
+		if Input.is_action_pressed("pandangan_kiri"):
+			_input_arah_pandangan.x = -Input.get_action_strength("pandangan_kiri")
+		elif Input.is_action_pressed("pandangan_kanan"):
+			_input_arah_pandangan.x = Input.get_action_strength("pandangan_kanan")
+		
+		# ubah mode pandangan
+		if Input.is_action_just_pressed("mode_pandangan"): $pengamat.ubah_mode()
+		
+		# mode interaksi
+		if Input.is_action_just_pressed("debug"):	server.permainan.pilih_mode_bermain()
+		if Input.is_action_just_pressed("debug2"):	server.permainan.pilih_mode_edit()
+		
+		# aksi
+		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
+			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			elif menarget:
+				match peran:
+					Permainan.PERAN_KARAKTER.Arsitek:
+						server.permainan.pasang_objek = posisi_target
+						server.permainan._tampilkan_daftar_objek()
+					_:
+						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
+							if objek_target.id_pengubah < 1:
+								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
+						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
+							objek_target = penarget_serangan_a.get_collider()
+							var arah_dorongan = Vector3(0, 0, 5)
+							# TODO : dorong pemain lain
+							if objek_target.get("linear_velocity") != null:
+								mode_menyerang = "a"
+								set("menyerang", true)
+								await get_tree().create_timer(0.4).timeout
+								if objek_target != null:
+									server.terapkan_percepatan_objek(
+										objek_target.get_path(),
+										arah_dorongan.rotated(Vector3.UP, rotation.y)
+									)
+								await get_tree().create_timer(0.4).timeout
+								set("menyerang", false)
+		if Input.is_action_just_pressed("aksi2"):
+			if menarget:
+				match peran:
+					Permainan.PERAN_KARAKTER.Arsitek:
+						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
+						elif objek_target.has_method("gunakan") or objek_target.is_in_group("dapat_diedit"):
+							server.edit_objek(objek_target.name, true)
+						elif objek_target.name == "bidang_raycast" and \
+						 objek_target.get_parent().has_method("gunakan"):
+							server.edit_objek(objek_target.get_parent().name, true)
+					_:
+						if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
+						elif objek_target.name == "bidang_raycast" and \
+						 objek_target.get_parent().has_method("gunakan"):
+							objek_target.get_parent().gunakan(multiplayer.get_unique_id())
+			else:
+				match peran:
+					Permainan.PERAN_KARAKTER.Arsitek:
+						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
+func _physics_process(delta):
+	# kendalikan karakter dengan input
+	if kontrol:
+		# maju / mundur
+		if Input.is_action_pressed("berlari"):
+			arah.z = Input.get_action_strength("berlari") * 2
+			if Input.is_action_pressed("mundur"):
+				arah.z = -Input.get_action_strength("berlari") * 2
+		elif Input.is_action_pressed("maju"):
+			arah.z = Input.get_action_strength("maju")
+		elif Input.is_action_pressed("mundur"):
+			arah.z = -Input.get_action_strength("mundur")
+		else:
+			if is_on_floor():
+				if self.is_inside_tree():
+					if _transisi_reset_arah == null:
+						_transisi_reset_arah = get_tree().create_tween()
+						_transisi_reset_arah.stop()
+						_transisi_reset_arah.tween_property(self, "arah", Vector3.FORWARD * 0.0, 0.35)
+						_transisi_reset_arah.set_trans(Tween.TRANS_SPRING)
+						_transisi_reset_arah.set_ease(Tween.EASE_OUT)
+						_transisi_reset_arah.play()
+					elif !_transisi_reset_arah.is_running():
+						_transisi_reset_arah = null
+			else: arah.z = lerp(arah.z, 0.0, 0.5 * delta)
+		
+		# kiri / kanan
+		if Input.is_action_pressed("kiri"):
+			if Input.is_action_pressed("berlari"): arah.x = Input.get_action_strength("kiri")
+			else: arah.x = Input.get_action_strength("kiri") / 2
+		elif Input.is_action_pressed("kanan"):
+			if Input.is_action_pressed("berlari"): arah.x = -Input.get_action_strength("kanan")
+			else: arah.x = -Input.get_action_strength("kanan") / 2
+		else: arah.x = 0
+		
+		# lompat
+		if Input.is_action_pressed("lompat"):
+			if !melompat:
+				if Input.is_action_pressed("berlari") and arah.z > 1.0:
+					if is_on_floor():
+						arah.y = 180 * delta
+					elif (Input.is_action_pressed("kiri") and _input_arah_pandangan.x > 0) \
+					 or (Input.is_action_pressed("kanan") and _input_arah_pandangan.x < 0):
+						arah.y = 200 * delta
+						if Input.is_action_pressed("mundur"):
+							arah.z = -Input.get_action_strength("berlari") * 5
+						else:
+							arah.z = Input.get_action_strength("berlari") * 4
+				elif is_on_floor():
+					melompat = true
+					arah.y = 150 * delta
+		elif is_on_floor() and melompat:
+			melompat = false
+		
+		# jongkok
+		if Input.is_action_just_pressed("jongkok"):
+			if arah.x == 0.0 and arah.z == 0.0:
+				if !jongkok:
+					#$pose.set("parameters/gestur/transition_request", "jongkok")
+					var tween = get_tree().create_tween()
+					tween.tween_property($pose, "parameters/jongkok/blend_amount", 1, 0.6)
+					jongkok = true
+					tween.play()
+				else:
+					#$pose.set("parameters/gestur/transition_request", "berdiri")
+					var tween = get_tree().create_tween()
+					tween.tween_property($pose, "parameters/jongkok/blend_amount", 0, 0.6)
+					jongkok = false
+					tween.play()
+	
+	# fungsi raycast
+	menarget = penarget.is_colliding()
+	if menarget and penarget.get_collider() != null:
+		posisi_target = penarget.get_collision_point()
+		objek_target = penarget.get_collider()
+		if peran == Permainan.PERAN_KARAKTER.Arsitek:
+			# atur posisi pointer
+			if !server.permainan.dunia.get_node("kursor_objek").visible:
+				server.permainan.dunia.get_node("kursor_objek").visible = true
+			server.permainan.dunia.get_node("kursor_objek").global_transform.origin = posisi_target
+			# tampilkan tombol buat objek
+			server.permainan.set("tombol_aksi_1", "pasang_objek")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_a.get_collider():
+			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
+			server.permainan.set("tombol_aksi_1", "gunakan_objek")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		else:
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+		if peran == Permainan.PERAN_KARAKTER.Arsitek and objek_target.is_in_group("dapat_diedit"):
+			server.permainan.set("tombol_aksi_2", "edit_objek")
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+		elif objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
+			if peran == Permainan.PERAN_KARAKTER.Arsitek:
+				server.permainan.set("tombol_aksi_2", "edit_objek")
+			else:
+				if objek_target.has_method("fokus"): objek_target.fokus()
+				if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
+			if !server.permainan.dunia.get_node("bar_nyawa").visible:
+				server.permainan.dunia.get_node("bar_nyawa").visible = true
+			server.permainan.dunia.get_node("bar_nyawa").global_position =  Vector3(
+				objek_target.global_position.x,
+				objek_target.global_position.y + objek_target.posisi_bar_nyawa,
+				objek_target.global_position.z
+			)
+			server.permainan.dunia.get_node("bar_nyawa").max_value = 150
+			server.permainan.dunia.get_node("bar_nyawa").value = objek_target.nyawa
+		else:
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+	elif is_instance_valid(objek_target):
+		objek_target = null
+		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
+			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+		if server.permainan.dunia.get_node("kursor_objek").visible:
+			server.permainan.dunia.get_node("kursor_objek").visible = false
+		if server.permainan.dunia.get_node("bar_nyawa").visible:
+			server.permainan.dunia.get_node("bar_nyawa").visible = false
+	
+	# atur ulang posisi kalau terjatuh dari dunia
+	if global_position.y < server.permainan.batas_bawah:
+		global_transform.origin = posisi_awal
+		rotation		 		 = rotasi_awal
+		Panku.notify("re-spawn")
 	
 	# kalkulasi arah gerakan
 	arah_gerakan = get_real_velocity() * transform.basis
 	
+	# sinkronkan perubahan kondisi
+	if id_pemain == client.id_koneksi:
+		# buat variabel pembanding
+		var perubahan_kondisi = []
+		
+		# cek apakah kondisi sebelumnya telah tersimpan, jika belum set ke nilai kosong
+		if cek_perubahan_kondisi.get("posisi") == null:
+			cek_perubahan_kondisi["posisi"] = Vector3.ZERO
+		if cek_perubahan_kondisi.get("rotasi") == null:
+			cek_perubahan_kondisi["rotasi"] = Vector3.ZERO
+		if cek_perubahan_kondisi.get("arah_pandangan") == null:
+			cek_perubahan_kondisi["arah_pandangan"] = Vector2.ZERO
+		if cek_perubahan_kondisi.get("arah_gerakan") == null:
+			cek_perubahan_kondisi["arah_gerakan"] = Vector3.ZERO
+		if cek_perubahan_kondisi.get("mode_gestur") == null:
+			cek_perubahan_kondisi["mode_gestur"] = "berdiri"
+		if cek_perubahan_kondisi.get("mode_menyerang") == null:
+			cek_perubahan_kondisi["mode_menyerang"] = "a"
+		if cek_perubahan_kondisi.get("melompat") == null:
+			cek_perubahan_kondisi["melompat"] = false
+		if cek_perubahan_kondisi.get("menyerang") == null:
+			cek_perubahan_kondisi["menyerang"] = false
+		
+		# cek apakah kondisi berubah
+		if cek_perubahan_kondisi["posisi"] != position:
+			perubahan_kondisi.append(["posisi", position])
+		if cek_perubahan_kondisi["rotasi"] != rotation:
+			perubahan_kondisi.append(["rotasi", rotation])
+		if cek_perubahan_kondisi["arah_pandangan"] != arah_pandangan:
+			perubahan_kondisi.append(["arah_pandangan", arah_pandangan])
+		if cek_perubahan_kondisi["arah_gerakan"] != arah_gerakan:
+			perubahan_kondisi.append(["arah_gerakan", arah_gerakan])
+		if cek_perubahan_kondisi["mode_gestur"] != gestur:
+			perubahan_kondisi.append(["mode_gestur", gestur])
+		if cek_perubahan_kondisi["mode_menyerang"] != mode_menyerang:
+			perubahan_kondisi.append(["mode_menyerang", mode_menyerang])
+		if cek_perubahan_kondisi["melompat"] != melompat:
+			perubahan_kondisi.append(["melompat", melompat])
+		if cek_perubahan_kondisi["menyerang"] != menyerang:
+			perubahan_kondisi.append(["menyerang", menyerang])
+		
+		# jika kondisi berubah, maka sinkronkan perubahan ke server
+		if perubahan_kondisi.size() > 0:
+			if id_pemain == 1 and client.id_koneksi == 1:
+				server._sesuaikan_kondisi_pemain("admin", 1, perubahan_kondisi)
+			else:
+				server.rpc_id(1, "_sesuaikan_kondisi_pemain", client.id_sesi, client.id_koneksi, perubahan_kondisi)
+		
+		# simpan perubahan kondisi untuk di-cek lagi
+		cek_perubahan_kondisi["posisi"] = position
+		cek_perubahan_kondisi["rotasi"] = rotation
+		cek_perubahan_kondisi["melompat"] = melompat
+		cek_perubahan_kondisi["menyerang"] = menyerang
+		cek_perubahan_kondisi["mode_gestur"] = gestur
+		cek_perubahan_kondisi["arah_gerakan"] = arah_gerakan
+		cek_perubahan_kondisi["arah_pandangan"] = arah_pandangan
+		cek_perubahan_kondisi["mode_menyerang"] = mode_menyerang
+	
+	if $pose.active: # jangan fungsikan kalo animasi gak aktif
+		# terapkan arah gerakan
+		if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
+		elif is_on_floor() and arah.y < 0: arah.y = 0
+		velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
+		_menabrak = move_and_slide()
+func _process(delta):
 	# atur posisi pengamat
 	if _ragdoll:
 		$pengamat.global_position.x = get_node("%pinggang").global_position.x
@@ -373,14 +645,14 @@ func _process(delta):
 		$pengamat.position.y 		= get_node("%mata_kiri").position.y
 		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
 	
-	# Timeline : sinkronkan pemain (rekam)
-	if _delay_timeline <= 0.0:
-		# perekaman hanya dilakukan di server dan ketika waktu berjalan
-		_sinkronkan_timeline()
-		
-		# reset delay
-		_delay_timeline = _interval_timeline
-	elif id_pemain > 0: _delay_timeline -= delta
+	# Timeline : sinkronkan pemain (rekam) pada tiap interval tertentu # FIXME : pindahkan ke server!
+	#if _delay_timeline <= 0.0:
+		## perekaman hanya dilakukan di server dan ketika waktu berjalan
+		#_sinkronkan_timeline()
+		#
+		## reset delay
+		#_delay_timeline = _interval_timeline
+	#elif id_pemain > 0: _delay_timeline -= delta
 
 func _ketika_ditabrak(node):
 	var percepatan = node.get_linear_velocity()
@@ -433,26 +705,3 @@ func _ketika_bangkit(): # bangkit kembali setelah menjadi ragdoll
 			_timer_ragdoll.stop()
 			atur_ragdoll(false, global_position)
 			server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])
-
-func _sinkronkan_timeline():
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.process_mode != PROCESS_MODE_DISABLED:
-		var frame_sekarang = server.timeline["data"]["frame"]
-		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
-		server.timeline[frame_sekarang][id_pemain] = {
-			"tipe": 		"sinkron",
-			"posisi":		position,
-			"rotasi":		rotation_degrees,
-			"skala":		scale,
-			"kondisi":		{
-				"arah_gerakan": 	get_node("pose").get("parameters/arah_gerakan/blend_position"),
-				"arah_y_pandangan": get_node("pose").get("parameters/arah_y_pandangan/blend_position"),
-				"gestur":			gestur,
-				"lompat":			lompat,
-				"mode_menyerang": 	mode_menyerang,
-				"menyerang": 		menyerang,
-			}
-		}
-		# kalo data sama dengan frame sebelumnya, hapus kondisi entity dari frame sebelumnya
-		if server.timeline.has(_frame_timeline_sb) and server.timeline[_frame_timeline_sb].has(id_pemain) and server.timeline[_frame_timeline_sb][id_pemain] == server.timeline[frame_sekarang][id_pemain]:
-			server.timeline[_frame_timeline_sb].erase(id_pemain)
-		_frame_timeline_sb = frame_sekarang
