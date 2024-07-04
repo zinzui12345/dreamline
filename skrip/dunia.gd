@@ -137,7 +137,7 @@ func _process(delta):
 						# arahkan rayacast ke pengamat
 						raycast_occlusion_culling.look_at(pengamat.global_position)
 						# exclude raycast dengan m_objek jika m_objek adalah CollisionObject3D
-						if m_objek.cek_titik == 0 and m_objek is CollisionObject3D:
+						if m_objek is CollisionObject3D:
 							raycast_occlusion_culling.add_exception(m_objek) # 03/07/24 :: ini mengatasi jika m_objek adalah objek solid
 						# cek apakah raycast mengenai sesuatu
 						raycast_occlusion_culling.force_raycast_update()
@@ -159,7 +159,7 @@ func _process(delta):
 							else:
 								m_objek.cek_titik += 1
 						# hentikan exclude raycast dengan m_objek jika m_objek adalah CollisionObject3D
-						if m_objek.cek_titik == m_objek.titik_sudut.size() - 1 and m_objek is CollisionObject3D:
+						if m_objek is CollisionObject3D:
 							raycast_occlusion_culling.remove_exception(m_objek)
 					else:
 						m_objek.cek_titik = 0
