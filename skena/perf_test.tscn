@@ -17,6 +17,7 @@ var shader_tampilan_bentuk_objek : StandardMaterial3D = load(\"res://material/de
 func _ready():
 	server.permainan.karakter = $viewport_utama/viewport/dummy_karakter
 	server.permainan.dunia.pengamat = $viewport_utama/viewport/pengamat
+	if server.permainan.permukaan != null: server.permainan.permukaan.pengamat = $viewport_utama/viewport/pengamat
 	server.pemain[\"pengamat\"] = {
 		\"id_client\": 1,
 		\"nama\": 	\"\",
@@ -33,12 +34,14 @@ func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
 
 # ketika mengatur culling
 func _atur_frustum_culling(nilai):
+	_mode_render_realtime()
 	server.permainan.gunakan_frustum_culling = nilai
 func _atur_object_culling(nilai):
+	_mode_render_realtime()
 	server.permainan.gunakan_occlusion_culling = nilai
 func _atur_level_of_detail(nilai):
+	_mode_render_realtime()
 	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
-	pass
 
 # ketika memilih mode rendering
 func _mode_render_realtime():
@@ -87,6 +90,10 @@ func _mode_render_pre():
 	if server.permainan.dunia.get_node(\"matahari\").shadow_enabled:
 		server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", false)
 		aktifkan_pencahayaan = true
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"background_mode\", Environment.BG_COLOR)
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_color\", Color(\"#4d4d4d\"))
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_energy\", 0.9)
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_source\", Environment.AMBIENT_SOURCE_COLOR)
 	# 4. dapatkan objek yang nampak kemudian tambahkan ke array
 	var daftar_objek : Dictionary
 	for objek_ in server.permainan.dunia.get_node(\"objek\").get_children():
@@ -132,14 +139,17 @@ func _mode_render_pre():
 	# 13. tunggu 0.5 detik
 	await get_tree().create_timer(0.5).timeout
 	# 14. tampilkan kembali pencahayaan
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"background_mode\", Environment.BG_SKY)
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"sky\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:sky\"))
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_color\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:ambient_light_color\"))
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_energy\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:ambient_light_energy\"))
+	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_source\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:ambient_light_source\"))
 	if aktifkan_pencahayaan:
 		server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", true)
 	#endregion
 	# sembunyikan proses rendering
 	$panel_bawah/animasi.play_backwards(\"tampilkan\")
 	$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
-	# tukar kembali pengamat
-	$viewport_utama/viewport/pengamat.current = true
 # ketika memilih tampilan viewport culling
 func _pilih_tidak_ada():
 	$panel_opsi/pilih_fc.button_pressed = false
