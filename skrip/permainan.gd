@@ -637,6 +637,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 			if !is_instance_valid(pemain): print("tidak dapat menambahkan pemain "+str(id)); return
 			karakter = pemain
 			dunia.pengamat = karakter.get_node("pengamat/%pandangan")
+			if permukaan != null: permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
 		
 			# INFO : (6) terapkan data pemain ke model pemain
 			pemain.id_pemain = id
