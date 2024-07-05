@@ -752,14 +752,26 @@ func _pemain_terputus(id_pemain):
 						pool_entitas[nama_entitas]["kondisi"][k][1] = kondisi_entitas[p][1]
 		# Timeline : sinkronkan entitas (rekam)
 		if not mode_replay:
-			if not timeline.has(timeline["data"]["frame"]):
-				timeline[timeline["data"]["frame"]] = {}
-			timeline[timeline["data"]["frame"]][nama_entitas] = {
+			# dapatkan waktu frame saat ini
+			var frame_sekarang = timeline["data"]["frame"]
+			# jika frame saat ini belum ada di timeline, buat data kosong
+			if not timeline.has(frame_sekarang): timeline[frame_sekarang] = {}
+			# set frame saat ini ke timeline
+			timeline[frame_sekarang][nama_entitas] = {
 				"tipe": 		"sinkron",
 				"posisi":		pool_entitas[nama_entitas]["posisi"],
 				"rotasi":		pool_entitas[nama_entitas]["rotasi"],
 				"properti":		pool_entitas[nama_entitas]["kondisi"],
 			}
+			# optimasi
+			# - cek apakah frame sebelumnya telah tersimpan di pool
+			if !pool_entitas[nama_entitas].has("cek_frame"):
+				pool_entitas[nama_entitas]["cek_frame"] = 0
+			# - jika frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
+			if timeline.has(pool_entitas[nama_entitas]["cek_frame"]) and timeline[pool_entitas[nama_entitas]["cek_frame"]].has(nama_entitas) and timeline[pool_entitas[nama_entitas]["cek_frame"]][nama_entitas] == timeline[frame_sekarang][nama_entitas]:
+				timeline[pool_entitas[nama_entitas]["cek_frame"]].erase(nama_entitas)
+			# - set frame sekarang untuk di-cek pada frame selanjutnya
+			pool_entitas[nama_entitas]["cek_frame"] = frame_sekarang
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for p in permainan.dunia.get_node("pemain").get_child_count():
 			if permainan.dunia.get_node("pemain").get_child(p).id_pemain != id_pengatur:
