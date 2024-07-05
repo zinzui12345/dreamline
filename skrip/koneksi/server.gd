@@ -323,7 +323,7 @@ func putuskan():
 	var b_data_timeline = timeline["data"]
 	timeline.erase("data")
 	# - pindahkan data frame terakhir ke variabel baru
-	var b_data_frame = timeline
+	var b_data_frame = timeline.duplicate()
 	# - kosongkan data frame timeline
 	timeline.clear()
 	# - pindahkan kembali timeline["data"] ke timeline
