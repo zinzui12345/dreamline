@@ -57,7 +57,8 @@ func hapus_instance_pemain():
 
 # Optimasi rendering | Object Culling
 func _process(delta):
-	if is_instance_valid(server.permainan.karakter) and $objek.get_child_count() > 0:
+	if server.mode_replay and not server.mode_uji_performa: pass # 06/07/24 :: jangan optimasi ketika memainkan replay
+	elif is_instance_valid(server.permainan.karakter) and $objek.get_child_count() > 0:
 		# atur collider raycast occlusion culling jika belum ada
 		if pengamat.get_node_or_null("target_raycast_culling") == null:
 			var tmp_bb_fisik_pengamat = BoxShape3D.new()

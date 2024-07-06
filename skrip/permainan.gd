@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 05/07/24 alpha"
+const versi = "Dreamline v1.4.4 06/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -318,6 +318,18 @@ func _process(delta):
 	if is_instance_valid(edit_objek) and !$kontrol_sentuh/aksi_2.visible:
 		$kontrol_sentuh/aksi_2.visible = true
 	
+	# timeline
+	if %timeline.visible and server.mode_replay and not server.mode_uji_performa:
+		var pemutar_animasi = dunia.get_node("alur_waktu")
+		if pemutar_animasi.is_playing():
+			%timeline/posisi_durasi.value = pemutar_animasi.current_animation_position
+			%timeline/durasi.text = "%s/%s" % [
+				detikKeMenit(int(pemutar_animasi.current_animation_position)),
+				detikKeMenit(int(pemutar_animasi.current_animation_length))
+			]
+		elif %timeline/mainkan.disabled:
+			%timeline/mainkan.disabled = false
+	
 	# informasi
 	var info_mode_koneksi = ""
 	match koneksi:
@@ -511,11 +523,12 @@ func _muat_map(file_map):
 									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
 									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
 									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["posisi"], Animation.INTERPOLATION_NEAREST)
-									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["posisi"], Animation.UPDATE_DISCRETE)
+									#skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["posisi"], Animation.UPDATE_DISCRETE)
 									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
 									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
 									# atur nilai default animasi
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, true)
+									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
+									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
 								elif data_frame.tipe_objek == "entitas":
@@ -536,6 +549,7 @@ func _muat_map(file_map):
 									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
 									# atur nilai default animasi
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, true)
+									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
 							elif data_frame.tipe == "sinkron":
@@ -575,6 +589,7 @@ func _muat_map(file_map):
 											server.timeline.trek[entitas_]["mode_menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], "pemain/"+str(entitas_)+"/pose:parameters/mode_menyerang_berdiri/current_state")
 											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], Animation.INTERPOLATION_CUBIC)
+											skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], 0.0, "mendorong")
 										if server.timeline.trek[entitas_].get("menyerang_berdiri") == null:
 											server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
 											server.timeline.trek[entitas_]["menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
@@ -902,11 +917,16 @@ func putuskan_server(paksa = false):
 			else:
 				if server.mode_uji_performa:
 					server.set_process(false)
+					server.pool_entitas.clear()
+					server.pool_objek.clear()
+					server.cek_visibilitas_pool_entitas.clear()
+					server.cek_visibilitas_pool_objek.clear()
 					server.mode_replay = false
 					server.mode_uji_performa = false
 				elif server.mode_replay:
 					dunia.get_node("alur_waktu").queue_free()
 					server.mode_replay = false
+					%timeline.visible = false
 				else:
 					server.putuskan()
 				$menu_utama/menu/Panel/buat_server.grab_focus()
@@ -1043,6 +1063,13 @@ func _ketika_mulai_berlari():		Input.action_press("berlari")
 func _ketika_berhenti_berlari():	Input.action_release("berlari")
 func _tombol_jongkok_tekan():		Input.action_press("jongkok")
 func _tombol_jongkok_lepas():		Input.action_release("jongkok");		$kontrol_sentuh/jongkok.release_focus()
+func _mainkan_replay():
+	if server.mode_replay and not server.mode_uji_performa:
+		var pemutar_animasi = dunia.get_node("alur_waktu")
+		pemutar_animasi.play("alur_waktu/skenario")
+		$hud/timeline/posisi_durasi.max_value = pemutar_animasi.current_animation_length
+		$hud/timeline/posisi_durasi.value = pemutar_animasi.current_animation_position
+		$hud/timeline/mainkan.disabled = true
 
 # UI
 func _atur_persentase_memuat(nilai):
@@ -1353,6 +1380,8 @@ func pilih_mode_bermain():
 		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
 		Panku.notify("mode bermain")
 		$mode_bermain/main.release_focus()
+	if server.mode_replay and not server.mode_uji_performa:
+		%timeline/animasi.play_backwards("tampilkan")
 func pilih_mode_edit():
 	if is_instance_valid(karakter) and !jeda:
 		$hud/kompas.visible = false
@@ -1361,6 +1390,9 @@ func pilih_mode_edit():
 		karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
 		Panku.notify("mode edit")
 		$mode_bermain/edit.release_focus()
+	if server.mode_replay and not server.mode_uji_performa:
+		%timeline/animasi.play("tampilkan")
+		%timeline/durasi.text = "00:00/00:00"
 func _pilih_tab_posisi_objek(): 
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false

@@ -5424,10 +5424,10 @@ visible = false
 modulate = Color(0.0470588, 0.0470588, 0.0470588, 0.0196078)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.344
+anchor_left = 0.31275
 anchor_top = 0.72
-anchor_right = 0.657742
-anchor_bottom = 0.888333
+anchor_right = 0.687039
+anchor_bottom = 0.893
 offset_left = -0.256012
 offset_top = -3.05176e-05
 offset_right = 0.471985
@@ -5438,19 +5438,18 @@ metadata/_edit_use_anchors_ = true
 [node name="posisi_durasi" type="HSlider" parent="hud/timeline"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.079
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 16.0052
-offset_right = -10.0
-offset_bottom = -61.2
+offset_top = 16.0
+offset_right = -8.0
+offset_bottom = -69.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_icons/grabber = ExtResource("18_ex6as")
 theme_override_icons/grabber_disabled = ExtResource("18_ex6as")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_mli8v")
-value = 40.0
+step = 0.1
 editable = false
 scrollable = false
 
@@ -5465,18 +5464,29 @@ grow_vertical = 2
 [node name="durasi" type="Label" parent="hud/timeline"]
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -49.2
+offset_top = -49.0
 offset_right = -9.0
-offset_bottom = -16.2
+offset_bottom = -16.0
 theme_override_colors/font_color = Color(0.192157, 0.192157, 0.192157, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 22
 text = "02:01/93:39"
-horizontal_alignment = 1
+horizontal_alignment = 2
+
+[node name="mainkan" type="Button" parent="hud/timeline"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -56.0
+offset_right = 56.0
+offset_bottom = -16.0
+grow_vertical = 0
 
 [node name="animasi" type="AnimationPlayer" parent="hud/timeline"]
 libraries = {
@@ -5506,6 +5516,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="kontrol_pandangan" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -5695,6 +5706,7 @@ offset_right = 144.0
 offset_bottom = 72.0
 theme_override_constants/separation = 0
 alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="main" type="Button" parent="mode_bermain"]
 layout_mode = 2
@@ -8824,6 +8836,7 @@ bus = &"Suara Pemain"
 [connection signal="touch_start" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
 [connection signal="value_changed" from="hud/daftar_properti_objek/panel_2/perdekat_objek" to="." method="_ketika_mengubah_jarak_pandangan_objek"]
+[connection signal="pressed" from="hud/timeline/mainkan" to="." method="_mainkan_replay"]
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
