@@ -433,9 +433,12 @@ func _physics_process(delta):
 	if kontrol:
 		# maju / mundur
 		if Input.is_action_pressed("berlari"):
-			arah.z = Input.get_action_strength("berlari") * 2
-			if Input.is_action_pressed("mundur"):
-				arah.z = -Input.get_action_strength("berlari") * 2
+			if is_on_floor():
+				arah.z = Input.get_action_strength("berlari") * 2
+				if Input.is_action_pressed("mundur"):
+					arah.z = -Input.get_action_strength("berlari") * 2
+			elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"):
+				arah.z = lerp(arah.z, Input.get_action_strength("berlari") * 2, 0.5 * delta)
 		elif Input.is_action_pressed("maju"):
 			arah.z = Input.get_action_strength("maju")
 		elif Input.is_action_pressed("mundur"):
@@ -471,11 +474,11 @@ func _physics_process(delta):
 						arah.y = 180 * delta
 					elif (Input.is_action_pressed("kiri") and _input_arah_pandangan.x > 0) \
 					 or (Input.is_action_pressed("kanan") and _input_arah_pandangan.x < 0):
-						arah.y = 200 * delta
+						arah.y = clampf(arah.y * 1.4, 180 * delta, 250 * delta)
 						if Input.is_action_pressed("mundur"):
-							arah.z = -Input.get_action_strength("berlari") * 5
+							arah.z = -clampf(arah.z * 1.05, 0.0, 250 * delta)
 						else:
-							arah.z = Input.get_action_strength("berlari") * 4
+							arah.z = clampf(arah.z * 1.025, 0.0, 250 * delta)
 				elif is_on_floor():
 					melompat = true
 					arah.y = 150 * delta
