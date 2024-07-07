@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 06/07/24 alpha"
+const versi = "Dreamline v1.4.4 07/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1532,7 +1532,7 @@ func _ketika_mengubah_kode_objek():
 		var sintaks_aksi : Dictionary = {
 			"Permainan" : [
 				["notifikasi(teks)", "Panku.notify(\"teks\")", "ikon"],
-				["pesan(teks)", "server.permainan._tampilkan_popup_informasi(\"teks\", server.permainan.get_node(\"menu_jeda/menu/kontrol/Panel/lanjutkan\"))", "ikon"]
+				["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "ikon"]
 			]
 		}
 		if edit_objek is objek:
@@ -1556,6 +1556,7 @@ func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
 	$popup_informasi/panel/teks.text = teks_informasi
 	$popup_informasi/animasi.play_backwards("tutup")
 	$popup_informasi/panel/tutup.grab_focus()
+func _tampilkan_popup_informasi_(teks_informasi : String): _tampilkan_popup_informasi(teks_informasi, $menu_jeda/menu/kontrol/Panel/lanjutkan)
 func _tutup_popup_informasi():
 	$popup_informasi/animasi.play("tutup")
 	await get_tree().create_timer($popup_informasi/animasi.current_animation_length).timeout

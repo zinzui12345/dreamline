@@ -350,15 +350,6 @@ func _atur_kendali(nilai):
 func _atur_penarget(nilai):
 	penarget.enabled = nilai
 	if nilai == false: menarget = false
-func _hapus():
-	# Timeline : hapus pemain
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var frame_sekarang = server.timeline["data"]["frame"]
-		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
-		server.timeline[frame_sekarang][id_pemain] = {
-			"tipe": "hapus"
-		}
-	hapus()
 
 func _input(event):
 	# kendalikan interaksi dengan input
@@ -647,15 +638,6 @@ func _process(delta):
 		$pengamat/kamera.position.x = 0
 		$pengamat.position.y 		= get_node("%mata_kiri").position.y
 		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
-	
-	# Timeline : sinkronkan pemain (rekam) pada tiap interval tertentu # FIXME : pindahkan ke server!
-	#if _delay_timeline <= 0.0:
-		## perekaman hanya dilakukan di server dan ketika waktu berjalan
-		#_sinkronkan_timeline()
-		#
-		## reset delay
-		#_delay_timeline = _interval_timeline
-	#elif id_pemain > 0: _delay_timeline -= delta
 
 func _ketika_ditabrak(node):
 	var percepatan = node.get_linear_velocity()
