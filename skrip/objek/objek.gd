@@ -14,17 +14,14 @@ var cek_properti = {}		# simpan beberapa properti di tiap frame untuk membanding
 #const jalur_instance = ""	# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
 
 @export var wilayah_render : AABB :
+	# FIXME : gak work kalo objek terputar
 	set(aabb):
 		if is_inside_tree():
 			# TODO : reset otomatis ketika rotasi diubah
 			var tmp_aabb = []
 			for titik in 8:
-				# dapatkan posisi titik AABB
-				var tmp_vektor = aabb.get_endpoint(titik)
-				# ubah posisi abb menjadi posisi global
-				tmp_vektor = global_position + tmp_vektor
-				# terapkan ke array
-				tmp_aabb.append(tmp_vektor)
+				# terapkan posisi titik AABB ke array
+				tmp_aabb.append(aabb.get_endpoint(titik))
 			titik_sudut = tmp_aabb
 		wilayah_render = aabb
 @export var jarak_render = 10		# jarak maks render

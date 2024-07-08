@@ -8856,6 +8856,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
 [connection signal="button_down" from="mode_bermain/main" to="." method="pilih_mode_bermain"]
 [connection signal="button_down" from="mode_bermain/edit" to="." method="pilih_mode_edit"]
+[connection signal="pressed" from="daftar_objek/tutup" to="." method="_tutup_daftar_objek"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/lanjutkan" to="." method="_lanjutkan"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/putuskan" to="." method="_putuskan"]
 [connection signal="pressed" from="menu_jeda/setelan" to="." method="_tampilkan_setelan_permainan"]
