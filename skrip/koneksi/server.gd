@@ -809,10 +809,13 @@ func _pemain_terputus(id_pemain):
 			# - set frame sekarang untuk di-cek pada frame selanjutnya
 			pool_entitas[nama_entitas]["cek_frame"] = frame_sekarang
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
-		for p in permainan.dunia.get_node("pemain").get_child_count():
-			if permainan.dunia.get_node("pemain").get_child(p).id_pemain != id_pengatur:
-				if cek_visibilitas_pool_entitas[permainan.dunia.get_node("pemain").get_child(p).id_pemain][nama_entitas] == "spawn":
-					sinkronkan_kondisi_entitas(permainan.dunia.get_node("pemain").get_child(p).id_pemain, nama_entitas, kondisi_entitas)
+		for idx_pemain in pemain.keys():
+			# dapatkan id pemain target
+			var id_pemain_target = pemain[idx_pemain]["id_client"]
+			# pastikan pemain valid dan pemain bukan pengatur
+			if id_pemain_target != 0 and id_pemain_target != id_pengatur:
+				if cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":
+					sinkronkan_kondisi_entitas(id_pemain_target, nama_entitas, kondisi_entitas)
 @rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:
 		for p in properti_objek.size():

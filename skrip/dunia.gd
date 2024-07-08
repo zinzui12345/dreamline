@@ -132,7 +132,7 @@ func _process(delta):
 				if server.permainan.gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
 					# pastikan cek titik yang valid
 					if m_objek.cek_titik < m_objek.titik_sudut.size():
-						# 23/06/24 :: walau posisi aabb telah menjadi posisi global, posisi tersebut tidak sama dengan posisi global dunia sehingga harus di kalkulasi ulang
+						# 23/06/24 :: kalkulasi posisi titik berdasarkan posisi global dunia
 						raycast_occlusion_culling.global_position = m_objek.global_position
 						raycast_occlusion_culling.global_position += m_objek.titik_sudut[m_objek.cek_titik]
 						# arahkan rayacast ke pengamat
