@@ -466,6 +466,7 @@ func _muat_map(file_map):
 					"arah_gerakan": 	Vector3.ZERO,
 					"arah_pandangan":	Vector2.ZERO,
 					"mode_gestur":		"berdiri",
+					"gestur_jongkok": 	0.0,
 					"mode_menyerang": 	"a"
 				}
 			}
@@ -574,9 +575,12 @@ func _muat_map(file_map):
 										if server.timeline.trek[entitas_].get("arah_y_pandangan") == null:
 											server.timeline.trek[entitas_]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas_]["arah_y_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_y_pandangan/blend_position")
-										#if server.timeline.trek[entitas_].get("gestur") == null:
-										#	server.timeline.trek[entitas_]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
-										#	skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+":gestur")
+										if server.timeline.trek[entitas_].get("gestur") == null:
+											server.timeline.trek[entitas_]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+":gestur")
+										if server.timeline.trek[entitas_].get("gestur_jongkok") == null:
+											server.timeline.trek[entitas_]["gestur_jongkok"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas_]["gestur_jongkok"], "pemain/"+str(entitas_)+":gestur_jongkok")
 										if server.timeline.trek[entitas_].get("lompat") == null:
 											server.timeline.trek[entitas_]["lompat?"] = false
 											server.timeline.trek[entitas_]["lompat"] = skenario.add_track(Animation.TYPE_VALUE)
@@ -602,7 +606,8 @@ func _muat_map(file_map):
 										skenario.track_insert_key(server.timeline.trek[entitas_]["skala"],				waktu, data_frame.skala)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_gerakan"],		waktu, data_frame.kondisi.arah_gerakan)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_y_pandangan"],	waktu, data_frame.kondisi.arah_y_pandangan)
-										#skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"],			waktu, data_frame.kondisi.gestur)
+										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"],				waktu, data_frame.kondisi.gestur)
+										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur_jongkok"],		waktu, data_frame.kondisi.gestur_jongkok)
 										if data_frame.kondisi.lompat and not server.timeline.trek[entitas_]["lompat?"]:
 											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 											server.timeline.trek[entitas_]["lompat?"] = true
@@ -796,6 +801,7 @@ func _edit_objek(jalur):
 	karakter.get_node("pengamat").set("kontrol", true)
 	if karakter.get_node("pengamat").mode_kontrol != 3:
 		_mode_pandangan_sblm_edit_objek = karakter.get_node("pengamat").mode_kontrol
+		await get_tree().create_timer(0.1).timeout # kadang eksekusi terlalu cepat sehingga _mode_pandangan_sblm_edit_objek ter-set setelah mode pandangan diubah, alhasil _mode_pandangan_sblm_edit_objek nilainya menjadi 0
 		karakter.get_node("pengamat").atur_mode(3)
 	karakter._atur_penarget(false)
 	$kontrol_sentuh/menu.visible = false
@@ -1640,9 +1646,10 @@ func _atur_daftar_pemain(id_pemain : int, properti: String, nilai):
 	if tmp_daftar != null and tmp_daftar.get(properti) != null:
 		tmp_daftar.set(properti, nilai)
 func _hapus_daftar_pemain(id_pemain):
-	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node(str(id_pemain))
-	$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
-	tmp_daftar.queue_free()
+	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
+	if tmp_daftar != null:
+		$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
+		tmp_daftar.queue_free()
 func _tampilkan_setelan_permainan():
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
