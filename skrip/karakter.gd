@@ -29,6 +29,16 @@ var gestur = "berdiri":				# ini mode gestur
 					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 0)
 					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 1)
 			gestur = ubah
+var gestur_jongkok = 0.0 :
+	set(nilai):
+		# atur parameter pose
+		$pose.set("parameters/jongkok/blend_amount", nilai)
+		# 08/07/24 :: atur tinggi collider
+		var tinggi_jongkok = tinggi * 0.65625
+		$fisik.shape.height = tinggi - ((tinggi - tinggi_jongkok) * nilai)
+		$area_tabrak/area.shape.height = $fisik.shape.height + 0.02
+		# terapkan nilai ke properti
+		gestur_jongkok = nilai
 var _menabrak = false
 var _ragdoll = false :
 	set(nilai):
@@ -61,6 +71,7 @@ var menyerang = false :
 							"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
 						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			menyerang = serang
+var jongkok = false
 var _interval_timeline	= 0.05
 var _delay_timeline 	= _interval_timeline
 var _frame_timeline_sb	= 0		# frame sebelumnya
@@ -81,7 +92,8 @@ var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk me
 		if ubah != $pose.get("parameters/pose_duduk/current_state"):
 			$pose.set("parameters/pose_duduk/transition_request", ubah)
 			pose_duduk = ubah
-@export var jongkok = false
+@export var tinggi := 1.6		# tinggi pemain, ini disesuaikan untuk collider
+
 @export var model = {
 	"alis"		: 0,
 	"bulu_mata"	: 0,
@@ -482,13 +494,13 @@ func _physics_process(delta):
 				if !jongkok:
 					#$pose.set("parameters/gestur/transition_request", "jongkok")
 					var tween = get_tree().create_tween()
-					tween.tween_property($pose, "parameters/jongkok/blend_amount", 1, 0.6)
+					tween.tween_property(self, "gestur_jongkok", 1, 0.6)
 					jongkok = true
 					tween.play()
 				else:
 					#$pose.set("parameters/gestur/transition_request", "berdiri")
 					var tween = get_tree().create_tween()
-					tween.tween_property($pose, "parameters/jongkok/blend_amount", 0, 0.6)
+					tween.tween_property(self, "gestur_jongkok", 0, 0.6)
 					jongkok = false
 					tween.play()
 	
@@ -580,6 +592,8 @@ func _physics_process(delta):
 			cek_perubahan_kondisi["arah_gerakan"] = Vector3.ZERO
 		if cek_perubahan_kondisi.get("mode_gestur") == null:
 			cek_perubahan_kondisi["mode_gestur"] = "berdiri"
+		if cek_perubahan_kondisi.get("gestur_jongkok") == null:
+			cek_perubahan_kondisi["gestur_jongkok"] = 0.0
 		if cek_perubahan_kondisi.get("mode_menyerang") == null:
 			cek_perubahan_kondisi["mode_menyerang"] = "a"
 		if cek_perubahan_kondisi.get("melompat") == null:
@@ -598,6 +612,8 @@ func _physics_process(delta):
 			perubahan_kondisi.append(["arah_gerakan", arah_gerakan])
 		if cek_perubahan_kondisi["mode_gestur"] != gestur:
 			perubahan_kondisi.append(["mode_gestur", gestur])
+		if cek_perubahan_kondisi["gestur_jongkok"] != gestur_jongkok:
+			perubahan_kondisi.append(["gestur_jongkok", gestur_jongkok])
 		if cek_perubahan_kondisi["mode_menyerang"] != mode_menyerang:
 			perubahan_kondisi.append(["mode_menyerang", mode_menyerang])
 		if cek_perubahan_kondisi["melompat"] != melompat:
@@ -620,6 +636,7 @@ func _physics_process(delta):
 		cek_perubahan_kondisi["mode_gestur"] = gestur
 		cek_perubahan_kondisi["arah_gerakan"] = arah_gerakan
 		cek_perubahan_kondisi["arah_pandangan"] = arah_pandangan
+		cek_perubahan_kondisi["gestur_jongkok"] = gestur_jongkok
 		cek_perubahan_kondisi["mode_menyerang"] = mode_menyerang
 	
 	if $pose.active: # jangan fungsikan kalo animasi gak aktif

@@ -178,7 +178,6 @@ input_2/auto_advance = false
 input_2/reset = true
 
 [resource]
-graph_offset = Vector2(-992.446, 154.229)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_f2bv3")
 nodes/Animation/position = Vector2(-371.429, 542.857)
 nodes/arah_gerakan/node = SubResource("AnimationNodeBlendSpace2D_sttqg")
