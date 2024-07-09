@@ -33,7 +33,7 @@ var gestur_jongkok = 0.0 :
 	set(nilai):
 		# atur parameter pose
 		$pose.set("parameters/jongkok/blend_amount", nilai)
-		# 08/07/24 :: atur tinggi collider
+		# 08/07/24 :: atur tinggi collider | FIXME : setiap pemain menggunakan collider yang sama, buat tiap pemain memiliki collider unik!
 		var tinggi_jongkok = tinggi * 0.65625
 		$fisik.shape.height = tinggi - ((tinggi - tinggi_jongkok) * nilai)
 		$area_tabrak/area.shape.height = $fisik.shape.height + 0.02

@@ -56,6 +56,7 @@ extends Panel
 				\"cewek\", \"P\": $ikon.texture = load(\"res://ui/ikon/ikon_pemain_cewek.svg\")
 				\"cowok\", \"L\": $ikon.texture = load(\"res://ui/ikon/ikon_gender_cowok.svg\")
 		karakter = karakternya
+@export var gambar = {}
 
 func atur_gambar_karakter(gambar : Image):
 	$ikon.texture = ImageTexture.create_from_image(gambar)

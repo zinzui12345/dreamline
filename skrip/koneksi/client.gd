@@ -32,7 +32,6 @@ func sambungkan_server(ip, port=10567):
 	interface.connect("connection_failed", self._ketika_gagal_menghubungkan_server)
 	interface.connect("server_disconnected", self._ketika_terputus_dari_server)
 	get_tree().set_multiplayer(interface)
-	#get_tree().get_root().get_node("dunia/spawner_pemain").connect("spawned", self.tambah_pemain)
 	print("menghubungkan ke server {%s}" % [ip])
 func putuskan_server():
 	if interface != null:
@@ -41,7 +40,6 @@ func putuskan_server():
 		interface.clear()
 		interface.set_root_path(NodePath("/root"))
 		interface = null
-		#get_tree().get_root().get_node("dunia/spawner_pemain").disconnect("spawned", self.tambah_pemain)
 
 func cek_koneksi():
 	if peer != null:
@@ -70,18 +68,6 @@ func _ketika_terputus_dari_server():
 		permainan._tampilkan_popup_informasi("%koneksiputus", permainan.get_node("menu_utama/menu/Panel/gabung_server"))
 		print("koneksi server terputus.")
 
-func tambah_pemain(pemain):
-	# INFO : tambah info pemain ke daftar pemain
-	#if pemain.id_pemain != id_koneksi:
-	permainan._tambah_daftar_pemain(pemain.id_pemain, {
-		"nama"	: pemain.nama,
-		"sistem": pemain.platform_pemain,
-		"id_sys": str(pemain.id_pemain),
-		"gender": pemain.gender,
-		"gambar": pemain.gambar_potret
-	})
-	print("spawn pemain "+str(pemain))
-
 @rpc("authority") func gabung_ke_server(nama_server, nama_map, posisi, rotasi):
 	print("telah terhubung ke server")
 	id_koneksi = interface.get_unique_id()
@@ -102,5 +88,7 @@ func tambah_pemain(pemain):
 	if t_entitas != null:
 		t_entitas.global_transform.origin = posisi
 		t_entitas.rotation_degrees = rotasi
+@rpc("authority") func tambah_pemain(id_pemain, data_pemain):
+	permainan._tambahkan_pemain(id_pemain, data_pemain)
 @rpc("authority") func hapus_pemain(id_pemain):
 	permainan._hapus_daftar_pemain(id_pemain)

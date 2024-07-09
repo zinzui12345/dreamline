@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 07/07/24 alpha"
+const versi = "Dreamline v1.4.4 09/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1641,10 +1641,14 @@ func _tambah_daftar_pemain(id_pemain, data_pemain):
 		var gambar_pemain = Image.new()
 		gambar_pemain.set_data(data_pemain["gambar"]["width"], data_pemain["gambar"]["height"], data_pemain["gambar"]["mipmaps"], Image.FORMAT_RGBA8, data_pemain["gambar"]["data"])
 		pemain.atur_gambar_karakter(gambar_pemain)
+		if koneksi == MODE_KONEKSI.SERVER:
+			pemain.gambar = data_pemain["gambar"]
 func _atur_daftar_pemain(id_pemain : int, properti: String, nilai):
 	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
 	if tmp_daftar != null and tmp_daftar.get(properti) != null:
 		tmp_daftar.set(properti, nilai)
+func _dapatkan_daftar_pemain() -> Array[Node]:
+	return $hud/daftar_pemain/panel/gulir/baris.get_children()
 func _hapus_daftar_pemain(id_pemain):
 	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
 	if tmp_daftar != null:

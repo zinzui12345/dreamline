@@ -615,11 +615,22 @@ func _pemain_terputus(id_pemain):
 				}
 			}
 		# tambahkan ke client
-		rpc_id(id_pemain, "_tambahkan_pemain_ke_dunia", 1, id_sesi, permainan.data)
-		rpc_id(id_pemain, "_tambahkan_pemain_ke_dunia", id_pemain, id_sesi, data_pemain)
-	# tambahkan ke daftar pemain
-	permainan._tambahkan_pemain(id_pemain, data_pemain)
-	print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
+		if not headless: rpc_id(id_pemain, "_tambahkan_pemain_ke_dunia", 1, id_sesi, permainan.data)
+		# 09/07/24 :: buat daftar pemain kemudian kirim ke client yang bergabung
+		var daftar_pemain : Dictionary
+		for dt_pemain in permainan._dapatkan_daftar_pemain():
+			daftar_pemain[dt_pemain.name] = {
+				"nama":		dt_pemain.nama,
+				"sistem":	dt_pemain.sistem,
+				"id_sys":	dt_pemain.name,
+				"gender":	dt_pemain.karakter,
+				"gambar":	dt_pemain.gambar
+			}
+		client.rpc_id(id_pemain, "tambahkan_pemain", daftar_pemain)
+		# tambahkan ke daftar pemain
+		permainan._tambahkan_pemain(id_pemain, data_pemain)
+		client.rpc("tambah_pemain", id_pemain, data_pemain)
+		print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
 @rpc("any_peer") func _terima_suara_pemain(id_pemain : int, data_suara : PackedByteArray, ukuran_buffer : int):
 	print("pemain [%s] berbicara (%s)" % [str(id_pemain), str(ukuran_buffer)])
 	# dekompresi dan simpan data suara ke array yang kemudian dimainkan pada thread
