@@ -1,6 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cyxi85pr8q8yb"]
-
-[ext_resource type="Texture2D" uid="uid://d3gw8eophvaue" path="res://material/wp/bg_0.png" id="1_tfi3m"]
+[gd_scene load_steps=7 format=3 uid="uid://cyxi85pr8q8yb"]
 
 [sub_resource type="GDScript" id="GDScript_vqr5r"]
 script/source = "extends Control
@@ -157,6 +155,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = SubResource("GDScript_vqr5r")
+gambar = "res://material/wp/bg_1.png"
 
 [node name="latar_parallax" type="ParallaxBackground" parent="."]
 scroll_limit_end = Vector2(0, -245)
@@ -167,7 +166,6 @@ scale = Vector2(0.375, 0.375)
 skew = -0.0174533
 
 [node name="Cute4" type="Sprite2D" parent="latar_parallax/ParallaxLayer"]
-texture = ExtResource("1_tfi3m")
 
 [node name="dim" type="Panel" parent="."]
 layout_mode = 1

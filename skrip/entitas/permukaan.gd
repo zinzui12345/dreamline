@@ -103,11 +103,15 @@ var semak = [
  load("res://model/alam/placeholder_semak.tres")
 ]
 var batu = [
- load("res://model/alam/batu1.res"),
- load("res://model/alam/placeholder_batu.tres"),
- load("res://model/alam/placeholder_batu.tres"),
- load("res://model/alam/placeholder_batu.tres"),
- load("res://model/alam/placeholder_batu.tres")
+	"res://skena/objek/batu_1.scn",
+	"res://skena/objek/batu_2.scn",
+	"res://skena/objek/batu_3.scn",
+	"res://skena/objek/batu_4.scn",
+	"res://skena/objek/batu_5.scn",
+	"res://skena/objek/batu_6.scn",
+	"res://skena/objek/batu_7.scn",
+	"res://skena/objek/batu_8.scn",
+	"res://skena/objek/batu_9.scn"
 ]
 
 var total_pohon = 0
@@ -533,7 +537,6 @@ func muat_terrain():
 						lod1 	= pohon[vegetasi[v]["model"]]["lod1"];	jarak_lod1 = pohon[vegetasi[v]["model"]]["jarak_lod1"];
 						lod2 	= pohon[vegetasi[v]["model"]]["lod2"];	jarak_lod2 = pohon[vegetasi[v]["model"]]["jarak_lod2"];
 					"semak": detail = semak[vegetasi[v]["model"]];  jarak_render = 50; transisi_render = 10
-					"batu":  detail = batu[vegetasi[v]["model"]];	jarak_render = 25; transisi_render = 5
 				
 				if detail != null:
 					var xform = Transform3D(vegetasi[v]["rotasi"], posisi_vegetasi)
@@ -594,6 +597,13 @@ func muat_terrain():
 						else: continue
 						
 						match vegetasi[v]["tipe"]:
+							"batu":
+								if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+									var model_vegetasi = load(batu[vegetasi[v]["model"]])
+									var instance_vegetasi = model_vegetasi.instantiate()
+									instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
+									instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
+									add_child(instance_vegetasi)
 							"pencemaran", "bunga_nektar":
 								potongan[pt]["vegetasi"][v] = {
 									"terlihat":	true,

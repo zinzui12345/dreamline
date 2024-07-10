@@ -65,6 +65,7 @@ shape = SubResource("BoxShape3D_oj1l1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.95, 0)
 script = ExtResource("3_kx3r3")
 gunakan_frustum_culling = true
+gunakan_occlusion_culling = true
 hasilkan_vegetasi = true
 hasilkan_fisik = true
 hasilkan_potongan = true

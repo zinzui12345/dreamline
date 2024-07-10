@@ -33,7 +33,13 @@ var gestur_jongkok = 0.0 :
 	set(nilai):
 		# atur parameter pose
 		$pose.set("parameters/jongkok/blend_amount", nilai)
-		# 08/07/24 :: atur tinggi collider | FIXME : setiap pemain menggunakan collider yang sama, buat tiap pemain memiliki collider unik!
+		# 10/07/24 :: atur tinggi collider | setiap pemain menggunakan collider yang sama, buat tiap pemain memiliki collider unik
+		if fisik_pemain == null:
+			fisik_pemain = $fisik.shape.duplicate()
+			$fisik.shape = fisik_pemain
+		if fisik_area_tabrak_pemain == null:
+			fisik_area_tabrak_pemain = $fisik.shape.duplicate()
+			$area_tabrak/area.shape = fisik_area_tabrak_pemain
 		var tinggi_jongkok = tinggi * 0.65625
 		$fisik.shape.height = tinggi - ((tinggi - tinggi_jongkok) * nilai)
 		$area_tabrak/area.shape.height = $fisik.shape.height + 0.02
@@ -93,6 +99,8 @@ var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk me
 			$pose.set("parameters/pose_duduk/transition_request", ubah)
 			pose_duduk = ubah
 @export var tinggi := 1.6		# tinggi pemain, ini disesuaikan untuk collider
+@export var fisik_pemain : Shape3D = null				# collider pemain (unik di tiap instance)
+@export var fisik_area_tabrak_pemain : Shape3D = null	# collider area serang pemain (unik di tiap instance)
 
 @export var model = {
 	"alis"		: 0,

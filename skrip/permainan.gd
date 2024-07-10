@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 09/07/24 alpha"
+const versi = "Dreamline v1.4.4 10/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -230,10 +230,11 @@ func _ready():
 	DialogueManager.dialogue_ended.connect(tutup_dialog)
 	
 	# INFO : (3) tampilkan menu utama
+	$latar.tampilkan()
+	await get_tree().create_timer(0.15).timeout
 	$menu_utama/animasi.play("tampilkan")
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
-	$latar.tampilkan()
 	_mainkan_musik_latar()
 #endregion
 
@@ -508,7 +509,11 @@ func _muat_map(file_map):
 									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
-									# TODO : matikan visibilitas daftar pemain hingga di-sinkron
+									# matikan visibilitas daftar pemain hingga di-sinkron
+									server.timeline.trek[entitas_]["visibilitas_"] = skenario.add_track(Animation.TYPE_VALUE)
+									skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas_"], "../Dreamline/hud/daftar_pemain/panel/gulir/baris/"+str(entitas_)+":visible")
+									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], 0.0, false)
+									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, true)
 								elif data_frame.tipe_objek == "objek":
 									server.timeline.trek[entitas_] = {}
 									server.timeline.entitas[entitas_] = "objek"
@@ -645,7 +650,10 @@ func _muat_map(file_map):
 										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
 										skenario.length = waktu
 							elif data_frame.tipe == "hapus":
+								# hapus entitas
 								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
+								# jika entitas adalah pemain, matikan visibilitas dari daftar pemain
+								if server.timeline.entitas[entitas_] == "pemain": skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, false)
 			var pustaka_animasi = AnimationLibrary.new()
 			pustaka_animasi.add_animation("skenario", skenario)
 			alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
@@ -1609,18 +1617,18 @@ func _tutup_popup_konfirmasi_peringatan():
 	$popup_konfirmasi_peringatan.penampil.grab_focus()
 	AudioServer.set_bus_effect_enabled(1, 1, false)
 func _mainkan_musik_latar():
-	#if $pemutar_musik/AudioStreamPlayer.stream == null:
-	#	var musik = load("res://audio/soundtrack/Holding Hands.mp3")
-	#	if musik != null:
-	#		$pemutar_musik/AudioStreamPlayer.stream = musik
-	#		$pemutar_musik/AudioStreamPlayer.play()
-	#		$pemutar_musik/judul.text = "Holding Hands"
-	#		$pemutar_musik/artis.text = "Couple N"
-	#		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	#else:
-	#	$pemutar_musik/AudioStreamPlayer.play()
-	#	$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	pass
+	if $pemutar_musik/AudioStreamPlayer.stream == null:
+		var musik = load("res://audio/soundtrack/Animal Crossing Kirara Magic Remix.mp3")
+		if musik != null:
+			$pemutar_musik/AudioStreamPlayer.stream = musik
+			$pemutar_musik/AudioStreamPlayer.play()
+			$pemutar_musik/judul.text = "New Horizons Remix"
+			$pemutar_musik/artis.text = "Kirara Magic"
+			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	else:
+		$pemutar_musik/AudioStreamPlayer.play()
+		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	#pass
 func _ketika_musik_latar_selesai_dimainkan():
 	await get_tree().create_timer(10.0).timeout
 	_mainkan_musik_latar()
