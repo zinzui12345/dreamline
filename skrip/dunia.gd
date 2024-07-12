@@ -54,6 +54,7 @@ func hapus_instance_pemain():
 	for p in jumlah_pemain:
 		#print_debug("menghapus pemain [%s/%s]" % [jumlah_pemain-p, jumlah_pemain])
 		$pemain.get_child(jumlah_pemain - (p + 1)).queue_free()
+	server.pemain.clear()
 
 # Optimasi rendering | Object Culling
 func _process(delta):
@@ -107,21 +108,21 @@ func _process(delta):
 							m_objek.visible = false
 							m_objek.tak_terlihat = true
 							# debug
-							Panku.notify(m_objek.name+" tak terlihat")
+							#Panku.notify(m_objek.name+" tak terlihat")
 					# jika objek berada di depan kamera dan tidak terhalang
 					elif !m_objek.visible and !m_objek.terhalang:
 						# aktifkan visibilitas objek
 						m_objek.visible = true
 						m_objek.tak_terlihat = false
 						# debug
-						Panku.notify(m_objek.name+" terlihat")
+						#Panku.notify(m_objek.name+" terlihat")
 				# jika objek tidak visible dan tidak terhalang
 				elif !m_objek.visible and !m_objek.terhalang:
 					# aktifkan visibilitas objek
 					m_objek.visible = true
 					m_objek.tak_terlihat = false
 					# debug
-					Panku.notify(m_objek.name+" terlihat")
+					#Panku.notify(m_objek.name+" terlihat")
 			elif m_objek.tak_terlihat or !m_objek.terhalang:
 				m_objek.visible = true
 				m_objek.tak_terlihat = false
@@ -155,7 +156,7 @@ func _process(delta):
 								m_objek.terhalang = true
 								m_objek.cek_titik = 0
 								# debug
-								Panku.notify(m_objek.name+" terhalang")
+								#Panku.notify(m_objek.name+" terhalang")
 							# jika masih ada titik yang belum dicek, tambah indeks cek titik
 							else:
 								m_objek.cek_titik += 1

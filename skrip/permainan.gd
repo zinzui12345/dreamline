@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 10/07/24 alpha"
+const versi = "Dreamline v1.4.4 12/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -337,11 +337,16 @@ func _process(delta):
 		0: info_mode_koneksi = "server"
 		1: info_mode_koneksi = "client"
 	if $performa.visible:
+		var info_jumlah_sudut = "0"
 		var info_jumlah_entitas = 0
+		if server.mode_uji_performa and get_node_or_null("pengamat/viewport_utama/viewport") != null:
+			info_jumlah_sudut = str($pengamat/viewport_utama/viewport.get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME))
+		else:
+			info_jumlah_sudut = str(get_tree().get_root().get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME))
 		if is_instance_valid(dunia): info_jumlah_entitas = dunia.get_node("entitas").get_child_count()
 		$performa.text = "%s : %s | %s : %s  | %s : %s | VRAM : %s" % [
 			TranslationServer.translate("VERTEKS"),
-			str(get_tree().get_root().get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME)),
+			info_jumlah_sudut,
 			TranslationServer.translate("ENTITAS"),
 			info_jumlah_entitas,
 			TranslationServer.translate("DRAW"),
@@ -376,7 +381,8 @@ func uji_viewport():
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
 func atur_map(nama_map : StringName = "empty"):
-	if ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;	return "mengatur map menjadi : "+nama_map
+	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();				return "memulai uji performa"
+	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
 func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
 	if $pemutar_musik.visible:
@@ -472,6 +478,7 @@ func _muat_map(file_map):
 				}
 			}
 			server.pemain_terhubung = 1
+			client.id_sesi = "admin"
 		else:
 			call_deferred("_mulai_server_cli")
 	elif koneksi == MODE_KONEKSI.CLIENT:
@@ -620,7 +627,6 @@ func _muat_map(file_map):
 										elif not data_frame.kondisi.lompat and server.timeline.trek[entitas_]["lompat?"]:
 											#skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 											server.timeline.trek[entitas_]["lompat?"] = false
-											Panku.notify(data_frame.kondisi.lompat)
 										if data_frame.kondisi.menyerang:
 											match data_frame.kondisi.gestur:
 												"berdiri":
@@ -798,8 +804,8 @@ func _kirim_suara():
 		print("kirim suara...")
 func _kirim_pesan():
 	if $hud/pesan/input_pesan.text != "":
-		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(1, $hud/pesan/input_pesan.text)
-		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_koneksi, $hud/pesan/input_pesan.text)
+		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(client.id_sesi, $hud/pesan/input_pesan.text)
+		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_sesi, $hud/pesan/input_pesan.text)
 		$hud/pesan/input_pesan.text = ""
 	$hud/pesan/input_pesan.release_focus()
 	$hud/pesan/input_pesan.grab_focus()

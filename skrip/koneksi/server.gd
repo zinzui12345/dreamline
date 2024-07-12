@@ -13,7 +13,7 @@ var publik = false
 var ip_publik
 var jumlah_pemain = 32
 var pemain_terhubung = 0
-var map = "empty"
+var map = "pulau"
 var nama = "bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -28,7 +28,7 @@ var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
 
-const jarak_render_karakter = 10	# FIXME : set ke 50!
+const jarak_render_karakter = 50
 const jarak_render_entitas = 10		# FIXME : set ke 50!
 
 # .: Timeline :.
@@ -638,25 +638,27 @@ func _pemain_terputus(id_pemain):
 	permainan.dunia.get_node("pemain/"+str(id_pemain)+"/suara").array_suara.append(tmp_data_suara)
 	# mainkan suara *
 	permainan.dunia.get_node("pemain/"+str(id_pemain)+"/suara").bicara()
-@rpc("any_peer") func _terima_pesan_pemain(id_pemain : int, pesan : String):
-	# [14:42:58] [color="ff00aa"]uswa[/color] : aku sayang banget sama kamu >u<
-	var waktu = Time.get_datetime_dict_from_system() # { "year": 2023, "month": 9, "day": 25, "weekday": 1, "hour": 11, "minute": 28, "second": 57, "dst": false }
-	var jam   = str(waktu["hour"]);
-	var menit = str(waktu["minute"]);
-	var detik = str(waktu["second"])
-	if waktu["hour"] 	< 10: jam 	= "0"+str(waktu["hour"])
-	if waktu["minute"]	< 10: menit = "0"+str(waktu["minute"])
-	if waktu["second"] 	< 10: detik = "0"+str(waktu["second"])
-	# TODO : warna nama pemain berdasarkan warna pemain
-	var teks = "[%s:%s:%s] [color=\"%s\"]%s[/color] : %s" % [
-		jam, menit, detik,
-		"ff80ff",
-		permainan.dunia.get_node("pemain/"+str(id_pemain)).nama,
-		pesan
-	]
-	#print_debug(teks)
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: rpc("_terima_pesan_pemain", id_pemain, pesan)
-	permainan._tampilkan_pesan(teks)
+@rpc("any_peer") func _terima_pesan_pemain(id_pemain : String, pesan : String):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# [14:42:58] [color="ff00aa"]uswa[/color] : aku sayang banget sama kamu >u<
+		var waktu = Time.get_datetime_dict_from_system() # { "year": 2023, "month": 9, "day": 25, "weekday": 1, "hour": 11, "minute": 28, "second": 57, "dst": false }
+		var jam   = str(waktu["hour"]);
+		var menit = str(waktu["minute"]);
+		var detik = str(waktu["second"])
+		if waktu["hour"] 	< 10: jam 	= "0"+str(waktu["hour"])
+		if waktu["minute"]	< 10: menit = "0"+str(waktu["minute"])
+		if waktu["second"] 	< 10: detik = "0"+str(waktu["second"])
+		# TODO : warna nama pemain berdasarkan warna pemain
+		var teks = "[%s:%s:%s] [color=\"%s\"]%s[/color] : %s" % [
+			jam, menit, detik,
+			"ff80ff",
+			pemain[id_pemain]["nama"],
+			pesan
+		]
+		pesan = teks
+		rpc("_terima_pesan_pemain", id_pemain, pesan)
+	# TODO : rekam ke timeline
+	permainan._tampilkan_pesan(pesan)
 @rpc("any_peer") func _tambahkan_entitas(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
