@@ -451,6 +451,11 @@ func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak
 		else:
 			return false
 	else:	return false
+func dorong_pemain(id_pemain : int, arah_dorong : Vector3):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		_terima_dorongan_pemain_terhadap_pemain(client.id_sesi, id_pemain, arah_dorong)
+	else:
+		rpc_id(1, "_terima_dorongan_pemain_terhadap_pemain", client.id_sesi, id_pemain, arah_dorong)
 func edit_objek(nama_objek : String, fungsi : bool):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_edit_objek(nama_objek, multiplayer.get_unique_id(), fungsi)
@@ -657,8 +662,25 @@ func _pemain_terputus(id_pemain):
 		]
 		pesan = teks
 		rpc("_terima_pesan_pemain", id_pemain, pesan)
-	# TODO : rekam ke timeline
 	permainan._tampilkan_pesan(pesan)
+@rpc("any_peer") func _terima_dorongan_pemain_terhadap_pemain(id_pemain_pendorong : String, id_pemain_didorong : int, arah_dorongan : Vector3):
+	# 12/07/24 :: dorong pemain lain
+	# * Couple N - Dreamland  ~  Couple N - Love Trip *
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var id_pendorong = pemain[id_pemain_pendorong]["id_client"]
+		if cek_visibilitas_pemain[id_pendorong][id_pemain_didorong] == "spawn":
+			var indeks_pool_pemain = pemain.keys()
+			for i_pool_pemain in indeks_pool_pemain:
+				var id_didorong = pemain[i_pool_pemain]["id_client"]
+				if id_didorong == id_pemain_didorong and pemain[id_pemain_pendorong]["posisi"].distance_to(pemain[i_pool_pemain]["posisi"]) < 3:
+					#Panku.notify("Dreamcatcher")
+					if id_pemain_didorong == client.id_koneksi:
+						_terima_dorongan_dari_pemain(id_pendorong, arah_dorongan)
+					else:
+						rpc_id(id_pemain_didorong, "_terima_dorongan_dari_pemain", id_pendorong, arah_dorongan)
+					break
+				#else:
+				#	Panku.notify("Kirara Magic - Sweet Dream")
 @rpc("any_peer") func _tambahkan_entitas(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
@@ -721,6 +743,60 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
 		rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
+@rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi, tampilkan_ui = true):
+	var jalur_objek = ""
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if pool_entitas.has(nama_objek):
+			jalur_objek = "/root/dunia/entitas/"
+			if pool_entitas[nama_objek]["id_pengubah"] == id_pengubah:
+				if !fungsi:
+					# rpc atur ulang id_pengubah di semua peer
+					sinkronkan_kondisi_entitas(-1, nama_objek, [
+						["id_proses", -1],
+						["id_pengubah", 0]
+					])
+					# atur ulang id_pengubah
+					pool_entitas[nama_objek]["id_pengubah"] = 0
+					# atur ulang id_proses
+					pool_entitas[nama_objek]["id_proses"] = -1
+			elif pool_entitas[nama_objek]["id_pengubah"] == 0:
+				if fungsi:
+					# rpc atur id_pengubah sebagai pemroses entitas dan pengubah objek ke semua peer
+					sinkronkan_kondisi_entitas(-1, nama_objek, [
+						["id_proses", id_pengubah],
+						["id_pengubah", id_pengubah]
+					])
+					# atur id_pengubah dengan id_pengubah
+					pool_entitas[nama_objek]["id_pengubah"] = id_pengubah
+					# atur id_proses dengan id_pengubah
+					pool_entitas[nama_objek]["id_proses"] = id_pengubah
+			else: return
+		elif pool_objek.has(nama_objek):
+			jalur_objek = "/root/dunia/objek/"
+			if pool_objek[nama_objek]["id_pengubah"] == id_pengubah:
+				if !fungsi:
+					# rpc atur ulang id_pengubah di semua peer
+					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", 0]])
+					# atur ulang id_pengubah
+					pool_objek[nama_objek]["id_pengubah"] = 0
+			elif pool_objek[nama_objek]["id_pengubah"] == 0:
+				if fungsi:
+					# rpc atur id_pengubah sebagai pengubah objek ke semua peer
+					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", id_pengubah]])
+					# atur id_pengubah dengan id_pengubah
+					pool_objek[nama_objek]["id_pengubah"] = id_pengubah
+			else: return
+		
+		if tampilkan_ui:
+			# TODO : kirim properti kustom yang bisa di-edit mis: skala, warna, dll..
+			if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
+			else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)
+@rpc("any_peer") func _terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
+	var t_objek = get_node_or_null(jalur_objek)
+	if t_objek != null and t_objek.get("linear_velocity") != null:
+		var t_percepatan : Vector3 = t_objek.linear_velocity + nilai_percepatan
+		t_objek.set_linear_velocity(t_percepatan)
+		#Panku.notify("mengatur percepatan ["+str(nilai_percepatan)+"] pada $"+jalur_objek)
 @rpc("any_peer") func _sesuaikan_kondisi_pemain(id_sesi_pemain : String, id_pemain : int, properti_kondisi : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if pemain.has(id_sesi_pemain) and pemain[id_sesi_pemain]["id_client"] == id_pemain:
@@ -974,60 +1050,6 @@ func _pemain_terputus(id_pemain):
 				permainan.dunia.get_node("objek").get_node(nama_objek).hapus()
 			else:
 				permainan.dunia.get_node("objek").get_node(nama_objek).queue_free()
-@rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi, tampilkan_ui = true):
-	var jalur_objek = ""
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		if pool_entitas.has(nama_objek):
-			jalur_objek = "/root/dunia/entitas/"
-			if pool_entitas[nama_objek]["id_pengubah"] == id_pengubah:
-				if !fungsi:
-					# rpc atur ulang id_pengubah di semua peer
-					sinkronkan_kondisi_entitas(-1, nama_objek, [
-						["id_proses", -1],
-						["id_pengubah", 0]
-					])
-					# atur ulang id_pengubah
-					pool_entitas[nama_objek]["id_pengubah"] = 0
-					# atur ulang id_proses
-					pool_entitas[nama_objek]["id_proses"] = -1
-			elif pool_entitas[nama_objek]["id_pengubah"] == 0:
-				if fungsi:
-					# rpc atur id_pengubah sebagai pemroses entitas dan pengubah objek ke semua peer
-					sinkronkan_kondisi_entitas(-1, nama_objek, [
-						["id_proses", id_pengubah],
-						["id_pengubah", id_pengubah]
-					])
-					# atur id_pengubah dengan id_pengubah
-					pool_entitas[nama_objek]["id_pengubah"] = id_pengubah
-					# atur id_proses dengan id_pengubah
-					pool_entitas[nama_objek]["id_proses"] = id_pengubah
-			else: return
-		elif pool_objek.has(nama_objek):
-			jalur_objek = "/root/dunia/objek/"
-			if pool_objek[nama_objek]["id_pengubah"] == id_pengubah:
-				if !fungsi:
-					# rpc atur ulang id_pengubah di semua peer
-					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", 0]])
-					# atur ulang id_pengubah
-					pool_objek[nama_objek]["id_pengubah"] = 0
-			elif pool_objek[nama_objek]["id_pengubah"] == 0:
-				if fungsi:
-					# rpc atur id_pengubah sebagai pengubah objek ke semua peer
-					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", id_pengubah]])
-					# atur id_pengubah dengan id_pengubah
-					pool_objek[nama_objek]["id_pengubah"] = id_pengubah
-			else: return
-		
-		if tampilkan_ui:
-			# TODO : kirim properti kustom yang bisa di-edit mis: skala, warna, dll..
-			if id_pengubah == 1: 		 client.edit_objek(fungsi, jalur_objek+nama_objek)
-			else: client.rpc_id(id_pengubah, "edit_objek", fungsi, jalur_objek+nama_objek)
-@rpc("any_peer") func _terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
-	var t_objek = get_node_or_null(jalur_objek)
-	if t_objek != null and t_objek.get("linear_velocity") != null:
-		var t_percepatan : Vector3 = t_objek.linear_velocity + nilai_percepatan
-		t_objek.set_linear_velocity(t_percepatan)
-		#Panku.notify("mengatur percepatan ["+str(nilai_percepatan)+"] pada $"+jalur_objek)
 @rpc("authority") func _fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array):
 	var objek_difungsikan = get_node_or_null(jalur_objek)
 	if objek_difungsikan != null:
@@ -1044,3 +1066,8 @@ func _pemain_terputus(id_pemain):
 	if objek_dihapus != null:
 		objek_dihapus.queue_free()
 	#else: Panku.notify("error")
+@rpc("authority") func _terima_dorongan_dari_pemain(id_pemain : int, arah_dorongan : Vector3):
+	permainan.karakter.get_node("pose").set("active", false)
+	permainan.karakter.velocity += arah_dorongan
+	await get_tree().create_timer(0.4).timeout
+	permainan.karakter.get_node("pose").set("active", true)

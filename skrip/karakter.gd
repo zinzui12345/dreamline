@@ -408,7 +408,6 @@ func _input(event):
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
 							var arah_dorongan = Vector3(0, 0, 5)
-							# TODO : dorong pemain lain
 							if objek_target.get("linear_velocity") != null:
 								mode_menyerang = "a"
 								set("menyerang", true)
@@ -419,6 +418,14 @@ func _input(event):
 										arah_dorongan.rotated(Vector3.UP, rotation.y)
 									)
 								await get_tree().create_timer(0.4).timeout
+								set("menyerang", false)
+							elif objek_target is Karakter:
+								var id_target = objek_target.id_pemain
+								mode_menyerang = "a"
+								set("menyerang", true)
+								await get_tree().create_timer(0.2).timeout
+								if objek_target != null:
+									server.dorong_pemain(id_target, arah_dorongan.rotated(Vector3.UP, rotation.y))
 								set("menyerang", false)
 		if Input.is_action_just_pressed("aksi2"):
 			if menarget:
@@ -647,12 +654,12 @@ func _physics_process(delta):
 		cek_perubahan_kondisi["gestur_jongkok"] = gestur_jongkok
 		cek_perubahan_kondisi["mode_menyerang"] = mode_menyerang
 	
-	if $pose.active: # jangan fungsikan kalo animasi gak aktif
-		# terapkan arah gerakan
-		if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
-		elif is_on_floor() and arah.y < 0: arah.y = 0
-		velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
-		_menabrak = move_and_slide()
+	# terapkan arah gerakan
+	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
+	elif is_on_floor() and arah.y < 0: arah.y = 0
+	# jangan fungsikan kendali kalo animasi gak aktif
+	if $pose.active: velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
+	_menabrak = move_and_slide()
 func _process(delta):
 	# atur posisi pengamat
 	if _ragdoll:

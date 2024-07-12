@@ -1715,6 +1715,7 @@ func _tampilkan_input_pesan():
 			karakter._atur_kendali(false)
 		pesan = true
 func _tampilkan_pesan(teks : String):
+	# TODO : rekam ke timeline
 	$hud/daftar_pesan/animasi.play("tampilkan")
 	$hud/daftar_pesan.append_text("\n"+teks)
 	if !pesan:
