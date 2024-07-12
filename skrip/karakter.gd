@@ -578,7 +578,7 @@ func _physics_process(delta):
 	# atur ulang posisi kalau terjatuh dari dunia
 	if global_position.y < server.permainan.batas_bawah:
 		global_transform.origin = posisi_awal
-		rotation		 		 = rotasi_awal
+		rotation		 		= rotasi_awal
 		Panku.notify("re-spawn")
 	
 	# kalkulasi arah gerakan

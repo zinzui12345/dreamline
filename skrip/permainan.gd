@@ -723,6 +723,8 @@ func _tambahkan_pemain(id: int, data_pemain):
 			# terapkan kondisi
 			pemain.position = data_pemain["posisi"]
 			pemain.rotation = data_pemain["rotasi"]
+			pemain.posisi_awal = pemain.global_position
+			pemain.rotasi_awal = pemain.rotation
 			
 			# terapkan tampilan
 			pemain.atur_model()
