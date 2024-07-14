@@ -3,7 +3,7 @@ extends CharacterBody3D
 
 class_name npc_ai
 
-var _proses_navigasi = false
+var _proses_navigasi : bool = false
 
 enum grup {
 	pemain,		# + teman, mis: hewan 
@@ -11,17 +11,17 @@ enum grup {
 	musuh		# - monster
 }
 
-@export var jalur_skena = "res://skena/npc_ai.tscn"
-@export var jarak_render = 50
-@export var nyawa = 100
-@export var serangan = 25
-@export var kelompok = grup.netral
-@export var kecepatan_gerak = 2
+@export var jalur_skena : StringName = "res://skena/npc_ai.tscn"
+@export var jarak_render : int = 50
+@export var nyawa : int = 100
+@export var serangan : int = 25
+@export var kelompok : int = grup.netral
+@export var kecepatan_gerak : float = 2
 
 @onready var navigasi : NavigationAgent3D = $navigasi
 
 ## setup ##
-func _ready():
+func _ready() -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
 		server.objek[str(get_path())] = \
 		{
@@ -38,29 +38,29 @@ func _ready():
 	else: queue_free()
 
 # fungsi untuk mengatur node ketika spawn
-func setup():
+func setup() -> void:
 	$Sprite3D.visibility_range_end = jarak_render
 
 ## core ##
 # arahkan untuk pergi ke posisi tertentu
-func navigasi_ke(posisi : Vector3, _berlari = false):
+func navigasi_ke(posisi : Vector3, _berlari : bool = false) -> void:
 	navigasi.set_target_position(posisi)
 	_proses_navigasi = true
 
 # ketika diserang dengan nilai serangan tertentu
-func _diserang(_penyerang : Node3D, _damage_serangan : int):
+func _diserang(_penyerang : Node3D, _damage_serangan : int) -> void:
 	pass
 
 # hapus / hilangkan
-func hapus(): server.hapus_objek(self.get_path())
+func hapus() -> void: server.hapus_objek(self.get_path())
 
 ## event ##
 # proses navigasi
-func _physics_process(delta):
+func _physics_process(delta : float) -> void:
 	if _proses_navigasi:
-		var posisi_selanjutnya = navigasi.get_next_path_position()
-		var posisi_saat_ini = global_position
-		var arah = (posisi_selanjutnya - posisi_saat_ini).normalized() * kecepatan_gerak
+		var posisi_selanjutnya : Vector3 = navigasi.get_next_path_position()
+		var posisi_saat_ini : Vector3 = global_position
+		var arah : Vector3 = (posisi_selanjutnya - posisi_saat_ini).normalized() * kecepatan_gerak
 		if navigasi.avoidance_enabled:
 			navigasi.set_velocity(arah)
 		else:
@@ -72,11 +72,11 @@ func _physics_process(delta):
 	move_and_slide()
 
 # arah ketika berjalan
-func _ketika_berjalan(arah):
+func _ketika_berjalan(arah : Vector3) -> void:
 	velocity = arah
 	move_and_slide()
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var pmn = server.pemain.keys()
+		var pmn : Array = server.pemain.keys()
 		for p in server.pemain.size():
 			if server.cek_visibilitas_entitas_terhadap_pemain(server.pemain[pmn[p]]["id_client"], self.get_path(), jarak_render):
 				server.atur_properti_objek(self.get_path(), "global_transform:origin", global_transform.origin)
@@ -84,15 +84,15 @@ func _ketika_berjalan(arah):
 				#server.permainan.get_node("%nilai_debug").text = "pemain "+str(pmn[p])+" melihat npc_ai"
  
 # ketika sampai di posisi tujuan
-func _ketika_navigasi_selesai():
+func _ketika_navigasi_selesai() -> void:
 	if _proses_navigasi:
 		_proses_navigasi = false
 
 # ketika mati
-func mati():
+func mati() -> void:
 	Panku.notify(name+" mati >~<")
 
 ## debug ##
-func _input(_event):
+func _input(_event : InputEvent) -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if Input.is_action_just_pressed("daftar_pemain"): navigasi_ke(server.permainan.karakter.global_position)

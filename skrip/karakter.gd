@@ -5,19 +5,19 @@ class_name Karakter
 # TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
-var arah_gerakan : Vector3 :		# ini arah gerakan
+var arah_gerakan : Vector3 :				# ini arah gerakan
 	set(nilai):
 		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-nilai.x, nilai.z / 2)) # TODO : clamp arah gerak z > 0.25
 		$pose.set("parameters/arah_jongkok/blend_position", nilai.z)
 		arah_gerakan = nilai
-var _transisi_reset_arah : Tween	# transisi ketika berhenti bergerak
-var _input_arah_pandangan : Vector2	# ini arah input / event relative
-var arah_pandangan : Vector2 :		# ini arah pose
+var _transisi_reset_arah : Tween			# transisi ketika berhenti bergerak
+var _input_arah_pandangan : Vector2			# ini arah input / event relative
+var arah_pandangan : Vector2 :				# ini arah pose
 	set(nilai):
 		$pose.set("parameters/arah_x_pandangan/blend_position", nilai.x)
 		$pose.set("parameters/arah_y_pandangan/blend_position", nilai.y)
 		arah_pandangan = nilai
-var gestur = "berdiri":				# ini mode gestur
+var gestur : String = "berdiri":			# ini mode gestur
 	set(ubah):
 		if ubah != $pose.get("parameters/gestur/current_state"):
 			$pose.set("parameters/gestur/transition_request", ubah)
@@ -29,7 +29,7 @@ var gestur = "berdiri":				# ini mode gestur
 					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 0)
 					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 1)
 			gestur = ubah
-var gestur_jongkok = 0.0 :
+var gestur_jongkok : float = 0.0 :
 	set(nilai):
 		# atur parameter pose
 		$pose.set("parameters/jongkok/blend_amount", nilai)
@@ -40,13 +40,13 @@ var gestur_jongkok = 0.0 :
 		if fisik_area_tabrak_pemain == null:
 			fisik_area_tabrak_pemain = $fisik.shape.duplicate()
 			$area_tabrak/area.shape = fisik_area_tabrak_pemain
-		var tinggi_jongkok = tinggi * 0.65625
+		var tinggi_jongkok : float = tinggi * 0.65625
 		$fisik.shape.height = tinggi - ((tinggi - tinggi_jongkok) * nilai)
 		$area_tabrak/area.shape.height = $fisik.shape.height + 0.02
 		# terapkan nilai ke properti
 		gestur_jongkok = nilai
-var _menabrak = false
-var _ragdoll = false :
+var _menabrak : bool = false
+var _ragdoll : bool = false :
 	set(nilai):
 		$pengamat.position.x 		= 0
 		$pengamat.position.y 		= 0
@@ -57,17 +57,17 @@ var _ragdoll = false :
 var _timer_ragdoll : Timer
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
-var menarget = false				# kondisi apakah sedang menarget objek
-var objek_target : Node3D			# node/objek yang di target
-var posisi_target : Vector3			# posisi titik temu target
-var mode_menyerang = "a"			# ini mode serangan misalnya: a / b
-var melompat = false : 
+var menarget : bool = false						# kondisi apakah sedang menarget objek
+var objek_target : Node3D					# node/objek yang di target
+var posisi_target : Vector3					# posisi titik temu target
+var mode_menyerang : StringName = "a"		# ini mode serangan misalnya: a / b
+var melompat : bool = false : 
 	set(lompat):
 		if get_node_or_null("pose") != null:
 			if lompat:
 				$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			melompat = lompat
-var menyerang = false : 
+var menyerang : bool = false : 
 	set(serang):
 		if get_node_or_null("pose") != null:
 			if serang:
@@ -77,13 +77,13 @@ var menyerang = false :
 							"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
 						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			menyerang = serang
-var jongkok = false
-var _interval_timeline	= 0.05
-var _delay_timeline 	= _interval_timeline
-var _frame_timeline_sb	= 0		# frame sebelumnya
-var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+var jongkok : bool = false
+#var _interval_timeline : float	= 0.05
+#var _delay_timeline : float 	= _interval_timeline
+#var _frame_timeline_sb : int	= 0			# frame sebelumnya
+var cek_perubahan_kondisi : Dictionary = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 
-@export var kontrol = false
+@export var kontrol : bool = false
 @export var nama := ""+OS.get_model_name() :
 	set(namaa):
 		if get_node_or_null("nama") != null:
@@ -91,18 +91,18 @@ var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk me
 		if namaa != "":
 			nama = namaa
 @export var gender := "P"
-@export var peran = Permainan.PERAN_KARAKTER.Arsitek
+@export var peran := Permainan.PERAN_KARAKTER.Arsitek
 @export var id_pemain := -44
-@export var pose_duduk = "normal":
+@export var pose_duduk : StringName = "normal":
 	set(ubah):
 		if ubah != $pose.get("parameters/pose_duduk/current_state"):
 			$pose.set("parameters/pose_duduk/transition_request", ubah)
 			pose_duduk = ubah
-@export var tinggi := 1.6		# tinggi pemain, ini disesuaikan untuk collider
+@export var tinggi := 1.6					# tinggi pemain, ini disesuaikan untuk collider
 @export var fisik_pemain : Shape3D = null				# collider pemain (unik di tiap instance)
 @export var fisik_area_tabrak_pemain : Shape3D = null	# collider area serang pemain (unik di tiap instance)
 
-@export var model = {
+@export var model : Dictionary = {
 	"alis"		: 0,
 	"bulu_mata"	: 0,
 	"garis_mata": 0,
@@ -112,13 +112,13 @@ var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk me
 	"celana"	: 0,
 	"sepatu"	: 0
 }
-@export var ubah_model = {
+@export var ubah_model : Dictionary = {
 	"rambut"	: false,
 	"baju"		: false,
 	"celana"	: false,
 	"sepatu"	: false
 }
-@export var material = {
+@export var material : Dictionary = {
 	"badan"		: { "jalur_node": "badan",	"id_material": [0] },
 	"wajah"		: { "jalur_node": "wajah",	"id_material": [0, 1, 6, 7] },
 	"mata"		: { "jalur_node": "wajah",	"id_material": [5, 2] },
@@ -130,7 +130,7 @@ var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk me
 	"celana"	: { "jalur_node": "celana",	"id_material": [0] },
 	"sepatu"	: { "jalur_node": "sepatu",	"id_material": [0] }
 }
-@export var warna = {
+@export var warna : Dictionary = {
 	"badan"		: Color.WHITE,
 	"wajah"		: Color.WHITE,
 	"mata" 		: Color.DARK_RED,
@@ -149,13 +149,13 @@ var cek_perubahan_kondisi = {}	# simpan beberapa properti di tiap frame untuk me
 		warna["sepatu"] = warna_baru["sepatu"]
 		atur_warna()
 
-@onready var posisi_awal = global_transform.origin
-@onready var rotasi_awal = rotation
+@onready var posisi_awal : Vector3 = global_transform.origin
+@onready var rotasi_awal : Vector3 = rotation
 
 # penampilan
-func atur_model():
+func atur_model() -> void:
 	# alis | FaceBrow
-	var tmp_alis
+	var tmp_alis : Material
 	if Konfigurasi.shader_karakter:
 		tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/shader/alis.material")
 	else:
@@ -163,7 +163,7 @@ func atur_model():
 	get_node("%GeneralSkeleton/wajah").set_surface_override_material(material["alis"]["id_material"][0], tmp_alis)
 	
 	# mata | EyeIris
-	var tmp_mata
+	var tmp_mata : Material
 	if Konfigurasi.shader_karakter:
 		tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/shader/mata.material")
 	else:
@@ -171,7 +171,7 @@ func atur_model():
 	get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][0], tmp_mata)
 	
 	# garis_mata | FaceEyeline | bulu_mata_a
-	var tmp_bulu_mata_a
+	var tmp_bulu_mata_a : Material
 	if Konfigurasi.shader_karakter:
 		tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/shader/bulu_mata_a.material")
 	else:
@@ -179,16 +179,16 @@ func atur_model():
 	get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][1], tmp_bulu_mata_a)
 	
 	# rambut
-	var src_mdl_rambut = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
-	var tmp_mdl_rambut = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["rambut"])+"/rambut.scn").instantiate()
+	var src_mdl_rambut : MeshInstance3D = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
+	var tmp_mdl_rambut : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["rambut"])+"/rambut.scn").instantiate()
 	src_mdl_rambut.set_name("b_rambut")
 	tmp_mdl_rambut.set_name("rambut")
 	get_node("%GeneralSkeleton").add_child(tmp_mdl_rambut)
 	src_mdl_rambut.queue_free()
 	
 	# baju
-	var tmp_mdl_baju = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
-	var src_mdl_baju = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
+	var tmp_mdl_baju : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
+	var src_mdl_baju : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
 	tmp_mdl_baju.name = "baju"
 	src_mdl_baju.name = "b_baju"
 	get_node("%GeneralSkeleton").add_child(tmp_mdl_baju.duplicate())
@@ -196,8 +196,8 @@ func atur_model():
 	src_mdl_baju.queue_free()
 	
 	# celana
-	var tmp_mdl_celana = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
-	var src_mdl_celana = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
+	var tmp_mdl_celana : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
+	var src_mdl_celana : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
 	tmp_mdl_celana.name = "celana"
 	src_mdl_celana.name = "b_celana"
 	get_node("%GeneralSkeleton").add_child(tmp_mdl_celana.duplicate())
@@ -205,8 +205,8 @@ func atur_model():
 	src_mdl_celana.queue_free()
 	
 	# sepatu
-	var tmp_mdl_sepatu = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
-	var src_mdl_sepatu = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
+	var tmp_mdl_sepatu : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
+	var src_mdl_sepatu : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
 	tmp_mdl_sepatu.name = "sepatu"
 	src_mdl_sepatu.name = "b_sepatu"
 	get_node("%GeneralSkeleton").add_child(tmp_mdl_sepatu.duplicate())
@@ -214,19 +214,19 @@ func atur_model():
 	src_mdl_sepatu.queue_free()
 	
 	atur_warna() # set ulang warna
-func atur_warna():
-	var indeks_material = material.keys()
+func atur_warna() -> void:
+	var indeks_material : Array = material.keys()
 	for mt in material.size():
 		if material[indeks_material[mt]]["jalur_node"] != "":
-			var jlr_mtl = material[indeks_material[mt]]["jalur_node"]
-			var id_mtl	= material[indeks_material[mt]]["id_material"]
-			for mtl in id_mtl.size():
+			var jlr_mtl : StringName = material[indeks_material[mt]]["jalur_node"]
+			var id_mtl : Array = material[indeks_material[mt]]["id_material"]
+			for mtl : int in id_mtl.size():
 				if get_node_or_null("%GeneralSkeleton/"+jlr_mtl) != null\
 				 and warna.get(indeks_material[mt]) != null\
 				 and id_mtl[mtl] < get_node("%GeneralSkeleton/"+jlr_mtl).mesh.get_surface_count():
-					var tmp_mtl = get_node("%GeneralSkeleton/"+jlr_mtl).get_surface_override_material(id_mtl[mtl])
+					var tmp_mtl : Material = get_node("%GeneralSkeleton/"+jlr_mtl).get_surface_override_material(id_mtl[mtl])
 					if tmp_mtl == null:
-						var src_mtl = get_node("%GeneralSkeleton/"+jlr_mtl).mesh.surface_get_material(id_mtl[mtl])
+						var src_mtl : Material = get_node("%GeneralSkeleton/"+jlr_mtl).mesh.surface_get_material(id_mtl[mtl])
 						if Konfigurasi.shader_karakter or src_mtl is ShaderMaterial:
 							tmp_mtl = ShaderMaterial.new()
 							tmp_mtl.shader = src_mtl.shader
@@ -283,10 +283,10 @@ func atur_warna():
 							tmp_mtl.albedo_color = warna["rambut"]
 						else:
 							tmp_mtl.albedo_color = warna[indeks_material[mt]]
-func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
+func atur_ragdoll(nilai : bool, percepatan := Vector3.ZERO) -> void:
 	if nilai and !_ragdoll:
-		var tmp_ragdoll = load("res://karakter/ragdoll.scn").instantiate()
-		for f in (tmp_ragdoll.get_child(0).get_child_count()):
+		var tmp_ragdoll : Node3D = load("res://karakter/ragdoll.scn").instantiate()
+		for f : int in (tmp_ragdoll.get_child(0).get_child_count()):
 			if tmp_ragdoll.get_child(0).get_child(f) is PhysicalBone3D:
 				$"%GeneralSkeleton".add_child(tmp_ragdoll.get_child(0).get_child(f).duplicate())
 		tmp_ragdoll.queue_free()
@@ -318,28 +318,28 @@ func atur_ragdoll(nilai, percepatan : Vector3 = Vector3.ZERO):
 		#$area_tabrak/area.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
 		global_position = percepatan
 		_ragdoll = false
-func hapus():
+func hapus() -> void:
 	set_physics_process(false)
 	set_process(false)
 	kontrol = false
-	var indeks_material = material.keys()
+	var indeks_material : Array = material.keys()
 	for mt in material.size():
 		if material[indeks_material[mt]]["jalur_node"] != "":
-			var jlr_mtl = material[indeks_material[mt]]["jalur_node"]
-			var id_mtl	= material[indeks_material[mt]]["id_material"]
-			for mtl in id_mtl.size():
+			var jlr_mtl : StringName = material[indeks_material[mt]]["jalur_node"]
+			var id_mtl : Array = material[indeks_material[mt]]["id_material"]
+			for mtl : int in id_mtl.size():
 				if get_node_or_null("%GeneralSkeleton/"+jlr_mtl) != null\
 				 and warna.get(indeks_material[mt]) != null\
 				 and id_mtl[mtl] < get_node("%GeneralSkeleton/"+jlr_mtl).mesh.get_surface_count():
-					var tmp_mtl = get_node("%GeneralSkeleton/"+jlr_mtl).get_surface_override_material(id_mtl[mtl])
+					var tmp_mtl : Material = get_node("%GeneralSkeleton/"+jlr_mtl).get_surface_override_material(id_mtl[mtl])
 					if tmp_mtl != null:
 						get_node("%GeneralSkeleton/"+jlr_mtl).set_surface_override_material(id_mtl[mtl], null)
 	queue_free()
 
 # setup
-func _enter_tree():
+func _enter_tree() -> void:
 	set_physics_process(false)
-func _ready():
+func _ready() -> void:
 	$pose.active = true
 	penarget = get_node("pengamat/%target")
 	penarget_serangan_a = $area_serang_a
@@ -361,17 +361,17 @@ func _ready():
 		get_node("%GeneralSkeleton/baju").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/celana").set_layer_mask_value(1, true)
 		get_node("%GeneralSkeleton/sepatu").set_layer_mask_value(1, true)
-func _atur_kendali(nilai):
+func _atur_kendali(nilai : bool) -> void:
 	if nilai == false: arah = Vector3.ZERO
 	if kontrol != nilai:
 		$pengamat.fungsikan(nilai)
 		$area_serang_a.enabled = nilai
 		kontrol = nilai
-func _atur_penarget(nilai):
+func _atur_penarget(nilai : bool) -> void:
 	penarget.enabled = nilai
 	if nilai == false: menarget = false
 
-func _input(event):
+func _input(event : InputEvent) -> void:
 	# kendalikan interaksi dengan input
 	if kontrol:
 		# arah pandangan
@@ -407,7 +407,7 @@ func _input(event):
 								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
-							var arah_dorongan = Vector3(0, 0, 5)
+							var arah_dorongan := Vector3(0, 0, 5)
 							if objek_target.get("linear_velocity") != null:
 								mode_menyerang = "a"
 								set("menyerang", true)
@@ -420,7 +420,7 @@ func _input(event):
 								await get_tree().create_timer(0.4).timeout
 								set("menyerang", false)
 							elif objek_target is Karakter:
-								var id_target = objek_target.id_pemain
+								var id_target : int = objek_target.id_pemain
 								mode_menyerang = "a"
 								set("menyerang", true)
 								await get_tree().create_timer(0.2).timeout
@@ -446,7 +446,7 @@ func _input(event):
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
 						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
-func _physics_process(delta):
+func _physics_process(delta : float) -> void:
 	# kendalikan karakter dengan input
 	if kontrol:
 		# maju / mundur
@@ -508,13 +508,13 @@ func _physics_process(delta):
 			if arah.x == 0.0 and arah.z == 0.0:
 				if !jongkok:
 					#$pose.set("parameters/gestur/transition_request", "jongkok")
-					var tween = get_tree().create_tween()
+					var tween : Tween = get_tree().create_tween()
 					tween.tween_property(self, "gestur_jongkok", 1, 0.6)
 					jongkok = true
 					tween.play()
 				else:
 					#$pose.set("parameters/gestur/transition_request", "berdiri")
-					var tween = get_tree().create_tween()
+					var tween : Tween = get_tree().create_tween()
 					tween.tween_property(self, "gestur_jongkok", 0, 0.6)
 					jongkok = false
 					tween.play()
@@ -594,7 +594,7 @@ func _physics_process(delta):
 	# sinkronkan perubahan kondisi
 	if id_pemain == client.id_koneksi:
 		# buat variabel pembanding
-		var perubahan_kondisi = []
+		var perubahan_kondisi : Array = []
 		
 		# cek apakah kondisi sebelumnya telah tersimpan, jika belum set ke nilai kosong
 		if cek_perubahan_kondisi.get("posisi") == null:
@@ -660,7 +660,7 @@ func _physics_process(delta):
 	# jangan fungsikan kendali kalo animasi gak aktif
 	if $pose.active: velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
 	_menabrak = move_and_slide()
-func _process(delta):
+func _process(_delta : float) -> void:
 	# atur posisi pengamat
 	if _ragdoll:
 		$pengamat.global_position.x = get_node("%pinggang").global_position.x
@@ -671,9 +671,9 @@ func _process(delta):
 		$pengamat.position.y 		= get_node("%mata_kiri").position.y
 		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
 
-func _ketika_ditabrak(node):
-	var percepatan = node.get_linear_velocity()
-	var hantaman = 0
+func _ketika_ditabrak(node : CollisionObject3D) -> void:
+	var percepatan : Vector3 = node.get_linear_velocity()
+	var hantaman : int = 0
 	
 	# Terapkan arah Area
 	$area_tabrak.look_at(node.global_position, Vector3.UP, true)
@@ -681,16 +681,16 @@ func _ketika_ditabrak(node):
 	$area_tabrak.rotation_degrees.z = 0
 	
 	# Dapatkan transformasi dari Area3D
-	var area_transform = $area_tabrak.global_transform
+	var area_transform : Transform3D = $area_tabrak.global_transform
 	
 	# Gunakan matriks rotasi dari transformasi area
-	var area_rotation = area_transform.basis
+	var area_rotation : Basis = area_transform.basis
 	
 	# Arah dari area adalah vektor ke depan (0, 0, 1) yang diubah dengan matriks rotasi area
-	var area_direction = Vector3(0, 0, 1) * area_rotation
+	var area_direction := Vector3(0, 0, 1) * area_rotation
 	
-	var direction = percepatan.normalized()
-	var alignment = area_direction.dot(direction)
+	var direction : Vector3 = percepatan.normalized()
+	var alignment : float = area_direction.dot(direction)
 	
 	# Jika arah kecepatan linear mengarah tepat ke area
 	if alignment > 0.99:  # Misalnya, jika arah mendekati 1, hampir tepat ke area
@@ -709,11 +709,11 @@ func _ketika_ditabrak(node):
 	# TODO : nyawa!?
 	 
 	#Panku.notify(node.name+" menabrak "+name+" : "+str(hantaman))
-func _ketika_bangkit(): # bangkit kembali setelah menjadi ragdoll
+func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
 	if is_instance_valid($"%GeneralSkeleton/fisik kerangka"):
-		var total_percepatan_kerangka = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
-		var percepatan_kerangka = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
-		var posisi_bangkit = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
+		var total_percepatan_kerangka : Vector3 = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
+		var percepatan_kerangka : float = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
+		var posisi_bangkit : Vector3 = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
 		if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
 			_timer_ragdoll.stop()
 			atur_ragdoll(false, posisi_bangkit)

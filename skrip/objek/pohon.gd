@@ -7,4 +7,4 @@ const properti = []
 func mulai() -> void:
 	set_process(false)
 	set_physics_process(false)
-	set("wilayah_render", $bentuk.get_aabb())
+	set("wilayah_render", $lod_1.get_aabb())

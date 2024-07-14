@@ -1,13 +1,13 @@
 extends Node
 
-var data_konfigurasi = "user://konfigurasi.dreamline"
-var data_pemain = "user://data.dreamline"
-var bahasa = 0 :
+var data_konfigurasi : String = "user://konfigurasi.dreamline"
+var data_pemain : String = "user://data.dreamline"
+var bahasa : int = 0 :
 	set(pilih):
 		TranslationServer.set_locale(kode_bahasa[pilih])
 		bahasa = pilih
 var sensitivitasPandangan : float = 25.0
-var mode_layar_penuh = false :
+var mode_layar_penuh : bool = false :
 	set(nilai):
 		if nilai:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -15,10 +15,10 @@ var mode_layar_penuh = false :
 		else:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 			mode_layar_penuh = nilai
-var mode_kontrol_sentuh = false
+var mode_kontrol_sentuh : bool = false
 var mode_kontrol_gerak : int = 0
-var skala_kontrol_gerak = 0.8 # TODO : ini untuk ukuran D-Pad dan Analog sentuh
-var shader_karakter = false
+var skala_kontrol_gerak : float = 0.8 # TODO : ini untuk ukuran D-Pad dan Analog sentuh
+var shader_karakter : bool = false
 var volume_musik_latar : float = -3.2 :
 	set(volume):
 		AudioServer.set_bus_volume_db(1, volume)
@@ -31,13 +31,13 @@ enum pilih_bahasa {
 	indonesia
 }
 
-var kode_bahasa = [
+var kode_bahasa : Array[StringName] = [
 	TranslationServer.get_locale(),
 	"en",
 	"id"
 ]
 
-func muat():
+func muat() -> void:
 	if !FileAccess.file_exists(data_konfigurasi):
 		Panku.notify("Tidak ada file konfigurasi yang ditemukan")
 		Panku.notify("Membuat file konfigurasi")
@@ -45,7 +45,7 @@ func muat():
 	else:
 		Panku.notify("Memuat file konfigurasi")
 	
-	var file = FileAccess.open(data_konfigurasi, FileAccess.READ)
+	var file : FileAccess = FileAccess.open(data_konfigurasi, FileAccess.READ)
 	var data = file.get_var()
 	
 	if data != null and data is Dictionary:
@@ -62,9 +62,9 @@ func muat():
 		if data.get("volume_musik_latar") != null:			volume_musik_latar = data["volume_musik_latar"]
 	else: simpan()
 	file.close()
-func simpan():
-	var file = FileAccess.open(data_konfigurasi, FileAccess.WRITE)
-	var data = {
+func simpan() -> void:
+	var file : FileAccess = FileAccess.open(data_konfigurasi, FileAccess.WRITE)
+	var data : Dictionary = {
 		"bahasa"				: bahasa,
 		"mode_layar_penuh"		: mode_layar_penuh,
 		

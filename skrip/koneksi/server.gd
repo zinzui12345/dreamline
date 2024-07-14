@@ -8,20 +8,20 @@ var interface = null
 var peer : MultiplayerPeer
 var broadcast : ServerAdvertiser
 var upnp : UPNP
-var headless = false
-var publik = false
+var headless : bool = false
+var publik : bool = false
 var ip_publik
-var jumlah_pemain = 32
-var pemain_terhubung = 0
-var map = "pulau"
-var nama = "bebas"
+var jumlah_pemain : int = 32
+var pemain_terhubung : int = 0
+var map : StringName = "pulau"
+var nama : StringName = "bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
-var mode_replay = false
+var mode_replay : bool = false
 var file_replay = "user://rekaman.dreamline_replay"
-var mode_uji_performa = false
-var jumlah_entitas = 0
-var jumlah_objek = 0
+var mode_uji_performa : bool = false
+var jumlah_entitas : int = 0
+var jumlah_objek : int = 0
 var pool_entitas : Dictionary = {}
 var pool_objek : Dictionary = {}
 var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "spawn" ? "hapus"
@@ -96,7 +96,7 @@ const jarak_render_entitas = 10		# FIXME : set ke 50!
 
 const POSISI_SPAWN_RANDOM := 5.0
 
-func _process(_delta):
+func _process(_delta : float) -> void:
 	if permainan != null and permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if permainan.dunia != null:
 			# hanya dalam permainan
@@ -622,7 +622,7 @@ func _pemain_terputus(id_pemain):
 		# tambahkan ke client
 		if not headless: rpc_id(id_pemain, "_tambahkan_pemain_ke_dunia", 1, id_sesi, permainan.data)
 		# 09/07/24 :: buat daftar pemain kemudian kirim ke client yang bergabung
-		var daftar_pemain : Dictionary
+		var daftar_pemain : Dictionary = {}
 		for dt_pemain in permainan._dapatkan_daftar_pemain():
 			daftar_pemain[dt_pemain.name] = {
 				"nama":		dt_pemain.nama,

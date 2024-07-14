@@ -34,12 +34,12 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 12/07/24 alpha"
+const versi = "Dreamline v1.4.4 14/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
 #region properti
-var data = {
+var data : Dictionary = {
 	"nama":			"",
 	"gender": 		"P",
 	"alis":			0,
@@ -60,31 +60,31 @@ var data = {
 	"id_sys":		OS.get_unique_id()
 }
 var karakter : CharacterBody3D
-var dunia = null
-var map = null
+var dunia : Node3D = null
+var map : Node3D = null
 var permukaan					# Permukaan (Terrain)
-var batas_bawah = -4000			# batas area untuk re-spawn
+var batas_bawah : int = -4000	# batas area untuk re-spawn
 var edit_objek : Node3D			# ref objek yang sedang di-edit
-var memasang_objek = false
+var memasang_objek : bool = false
 var pasang_objek : Vector3		# posisi objek yang akan dipasang
-var thread = Thread.new()
-var koneksi = MODE_KONEKSI.CLIENT
-var gunakan_frustum_culling = true
-var gunakan_occlusion_culling = true
-var jeda = false
-var pesan = false				# ketika input pesan ditampilkan
-var _posisi_tab_koneksi = "LAN" # | "Internet"
+var thread := Thread.new()
+var koneksi := MODE_KONEKSI.CLIENT
+var gunakan_frustum_culling : bool = true
+var gunakan_occlusion_culling : bool = true
+var jeda : bool = false
+var pesan : bool = false		# ketika input pesan ditampilkan
+var _posisi_tab_koneksi : StringName = "LAN" # | "Internet"
 var _rotasi_tampilan_karakter : Vector3
-var _mode_pandangan_sblm_edit_objek = 1
+var _mode_pandangan_sblm_edit_objek : int = 1
 var _rotasi_tampilan_objek : Vector3
 var _arah_gestur_tampilan_karakter : Vector2
 var _arah_gestur_tampilan_objek : Vector2
 var _gerakan_gestur_tampilan_objek : Vector2
-var _touchpad_disentuh = false
+var _touchpad_disentuh : bool = false
 var _arah_sentuhan_touchpad : Vector2
-var _timer_kirim_suara = Timer.new()
-var _timer_tampilkan_pesan = Timer.new()
-var tombol_aksi_1 = "lempar_sesuatu" :
+var _timer_kirim_suara := Timer.new()
+var _timer_tampilkan_pesan := Timer.new()
+var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_1:
 			get_node("kontrol_sentuh/aksi_1/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
@@ -94,7 +94,7 @@ var tombol_aksi_1 = "lempar_sesuatu" :
 			"gunakan_objek":	$hud/bantuan_input/aksi1/teks.text = "%gunakan"
 			"dorong_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%dorong"
 			"lempar_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%lempar"
-var tombol_aksi_2 = "angkat_sesuatu" :
+var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_2:
 			get_node("kontrol_sentuh/aksi_2").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
@@ -104,12 +104,12 @@ var tombol_aksi_2 = "angkat_sesuatu" :
 			"angkat_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%angkat"
 			"jatuhkan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
 			"tanyakan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%bantuan"
-var tombol_aksi_3 = "berlari" :
+var tombol_aksi_3 : StringName = "berlari" :
 	set(ikon):
 		if ikon != tombol_aksi_3:
 			get_node("kontrol_sentuh/lari").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_3 = ikon
-var _konfigurasi_awal = {
+var _konfigurasi_awal : Dictionary = {
 	"bahasa": 0,
 	"mode_layar_penuh": false
 }
@@ -129,9 +129,9 @@ enum PERAN_KARAKTER {
 #endregion
 
 #region setup
-func _enter_tree():
+func _enter_tree() -> void:
 	get_tree().get_root().set("min_size", Vector2(980, 600))
-	await Konfigurasi.muat()
+	Konfigurasi.muat()
 	$setelan.visible = false
 	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled = true
 	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.selected = Konfigurasi.bahasa
@@ -151,14 +151,14 @@ func _enter_tree():
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = false
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.value = Konfigurasi.sensitivitasPandangan
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = true
-func _ready():
+func _ready() -> void:
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
 		get_tree().get_root().call_deferred("add_child", dunia)
 		dunia.set_process(false)
 	# Muat data karakter
 	if FileAccess.file_exists(Konfigurasi.data_pemain):
-		var file = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
+		var file : FileAccess = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
 		data = file.get_var()
 		file.close()
 	# INFO : (1) non-aktifkan proses untuk placeholder karakter
@@ -238,7 +238,7 @@ func _ready():
 	_mainkan_musik_latar()
 #endregion
 
-func _process(delta):
+func _process(delta : float) -> void:
 	# tampilan karakter di setelan karakter
 	if $karakter.visible:
 		_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
@@ -267,10 +267,10 @@ func _process(delta):
 	
 	# frekuensi mikrofon
 	if $hud/frekuensi_mic.visible:
-		var idx = AudioServer.get_bus_index("Suara Pemain")
-		var effect = AudioServer.get_bus_effect_instance(idx, 1)
+		var idx := AudioServer.get_bus_index("Suara Pemain")
+		var effect := AudioServer.get_bus_effect_instance(idx, 1)
 		var magnitude : float = effect.get_magnitude_for_frequency_range(1, 11050.0 / 4).length()
-		var energy = clamp((60 + linear_to_db(magnitude)) / 60, 0, 1)
+		var energy : float = clamp((60 + linear_to_db(magnitude)) / 60, 0, 1)
 		$hud/frekuensi_mic/posisi/persentasi.value = energy * 100
 	
 	# input
@@ -321,7 +321,7 @@ func _process(delta):
 	
 	# timeline
 	if %timeline.visible and server.mode_replay and not server.mode_uji_performa:
-		var pemutar_animasi = dunia.get_node("alur_waktu")
+		var pemutar_animasi : AnimationPlayer = dunia.get_node("alur_waktu")
 		if pemutar_animasi.is_playing():
 			%timeline/posisi_durasi.value = pemutar_animasi.current_animation_position
 			%timeline/durasi.text = "%s/%s" % [
@@ -332,13 +332,13 @@ func _process(delta):
 			%timeline/mainkan.disabled = false
 	
 	# informasi
-	var info_mode_koneksi = ""
+	var info_mode_koneksi := ""
 	match koneksi:
 		0: info_mode_koneksi = "server"
 		1: info_mode_koneksi = "client"
 	if $performa.visible:
-		var info_jumlah_sudut = "0"
-		var info_jumlah_entitas = 0
+		var info_jumlah_sudut := "0"
+		var info_jumlah_entitas := 0
 		if server.mode_uji_performa and get_node_or_null("pengamat/viewport_utama/viewport") != null:
 			info_jumlah_sudut = str($pengamat/viewport_utama/viewport.get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME))
 		else:
@@ -354,7 +354,7 @@ func _process(delta):
 			String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED))
 		]
 	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps | "+info_mode_koneksi
-func _notification(what):
+func _notification(what : int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if is_instance_valid(karakter): # ketika dalam permainan
 			if pesan: _tampilkan_input_pesan()
@@ -367,24 +367,24 @@ func _notification(what):
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
 
 # core
-func uji_performa():
+func uji_performa() -> void:
 	server.mode_uji_performa = true
 	client.id_koneksi = 1
 	koneksi = MODE_KONEKSI.CLIENT
 	_mulai_permainan("perf_test", server.map)
-func uji_vr():
+func uji_vr() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://skena/vr_test.tscn")
-func uji_kode():
+func uji_kode() -> void:
 	$editor_kode/CodeEdit._jalankan()
-func uji_viewport():
+func uji_viewport() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
-func atur_map(nama_map : StringName = "empty"):
+func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();				return "memulai uji performa"
 	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
-func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO):
+func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO) -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 	if $setelan.visible:
@@ -426,7 +426,7 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 	data["rotasi"] = rotasi
 	var tmp_perintah = Callable(self, "_muat_map")
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
-func _muat_map(file_map):
+func _muat_map(file_map) -> void:
 	# INFO : (4) muat map
 	map = await load("res://map/%s.tscn" % [file_map]).instantiate()
 	map.name = "lingkungan"
@@ -683,10 +683,10 @@ func _muat_map(file_map):
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
 	thread.call_deferred("wait_to_finish")
-func _mulai_server_cli():
+func _mulai_server_cli() -> void:
 	print(alamat_ip())
 	if permukaan != null: permukaan.gunakan_frustum_culling = false
-func _tambahkan_pemain(id: int, data_pemain):
+func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 	if is_instance_valid(dunia):
 		# tambahkan pemain utama
 		if id == client.id_koneksi or server.mode_replay:
@@ -769,7 +769,7 @@ func _tambahkan_pemain(id: int, data_pemain):
 			"gambar": data_pemain["gambar"]
 		})
 	else: print("tidak dapat menambahkan pemain sebelum memuat dunia!")
-func _berbicara(fungsi : bool):
+func _berbicara(fungsi : bool) -> void:
 	var idx = AudioServer.get_bus_index("Suara Pemain")
 	var effect = AudioServer.get_bus_effect(idx, 0)
 	if is_instance_valid(karakter): # hanya berfungsi dalam permainan
@@ -785,12 +785,12 @@ func _berbicara(fungsi : bool):
 			await $hud/frekuensi_mic/animasi.animation_finished
 			$hud/frekuensi_mic.visible = false
 			$suara_pemain.stop()
-func _kirim_suara():
+func _kirim_suara() -> void:
 	if $suara_pemain.playing:
-		var idx = AudioServer.get_bus_index("Suara Pemain")
-		var effect = AudioServer.get_bus_effect(idx, 0)
-		var tmp_suara = effect.get_recording()
-		var tmp_ukuran_buffer_suara = 0
+		var idx := AudioServer.get_bus_index("Suara Pemain")
+		var effect : AudioEffectRecord = AudioServer.get_bus_effect(idx, 0)
+		var tmp_suara := effect.get_recording()
+		var tmp_ukuran_buffer_suara : int = 0
 		if tmp_suara != null:
 			# INFO : kompresi data audio
 			# BUG : suara menjadi lambat
@@ -804,14 +804,14 @@ func _kirim_suara():
 		else: server.rpc("_terima_suara_pemain", client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara)#; server._terima_suara_pemain(client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara) # testing
 		effect.set_recording_active(true)
 		print("kirim suara...")
-func _kirim_pesan():
+func _kirim_pesan() -> void:
 	if $hud/pesan/input_pesan.text != "":
 		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(client.id_sesi, $hud/pesan/input_pesan.text)
 		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_sesi, $hud/pesan/input_pesan.text)
 		$hud/pesan/input_pesan.text = ""
 	$hud/pesan/input_pesan.release_focus()
 	$hud/pesan/input_pesan.grab_focus()
-func _edit_objek(jalur):
+func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
@@ -858,7 +858,7 @@ func _edit_objek(jalur):
 	$pengamat.get_node("%pandangan").make_current()
 	$pengamat.set_process(true)
 	$pengamat.visible = true
-func _berhenti_mengedit_objek():
+func _berhenti_mengedit_objek() -> void:
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/properti_kustom.visible = false
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.release_focus()
@@ -1174,10 +1174,10 @@ func _tambah_server_lan(ip, sys, nama, nama_map, jml_pemain, max_pemain):
 	server_lan.atur(ip, sys, nama, nama_map, jml_pemain, max_pemain)
 	server_lan.button_group = client.pilih_server
 	$daftar_server/panel/daftar_lan/layout.add_child(server_lan)
-func _pilih_server_lan(ip):
+func _pilih_server_lan(ip : String):
 	$daftar_server/panel/panel_input/input_ip.text = ip
 	$daftar_server/panel/panel_input/sambungkan.grab_focus()
-func _hapus_server_lan(ip):
+func _hapus_server_lan(ip : String):
 	$daftar_server/panel/daftar_lan/layout.get_node(ip.replace('.', '_')).queue_free()
 func _reset_daftar_server_lan():
 	var jumlah_koneksi_lan = $daftar_server/panel/daftar_lan/layout.get_child_count()

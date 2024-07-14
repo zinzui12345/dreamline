@@ -1,7 +1,7 @@
 extends Node3D
 
-@export var kontrol = false
-@export var mode_kontrol = 3
+@export var kontrol : bool = false
+@export var mode_kontrol : int = 3
 var gerakan : Vector2
 var _gerakan : Vector2
 var rotasi : Vector3
@@ -11,14 +11,14 @@ var posisiAwalVertikalPandangan : float
 
 var _karakter : Node
 
-func _ready():
+func _ready() -> void:
 	if get_parent() is Karakter:
 		_karakter = get_parent();
 		get_node("%pandangan").set("far", Konfigurasi.jarak_render);
 		posisiAwalVertikalPandangan = position.y
 	else: _karakter = $posisi_mata
 
-func _process(delta):
+func _process(delta : float) -> void:
 	if kontrol:
 		if _karakter.get("_input_arah_pandangan") != null: gerakan = _karakter._input_arah_pandangan
 		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitasPandangan * delta
@@ -36,10 +36,10 @@ func _process(delta):
 						if get_node("%pandangan").rotation_degrees.x > 0:
 							_karakter.arah_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
 						elif get_node("%pandangan").rotation_degrees.x < 0:
-							var arah_pandangan = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
-							var persentase_arah = abs(arah_pandangan)
+							var arah_pandangan : float = -get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandangan
+							var persentase_arah : float = abs(arah_pandangan)
 							#var perbedaan_posisi_y_akhir = 0.064 * persentase_arah
-							var perbedaan_posisi_z_akhir = 0.237 * persentase_arah
+							var perbedaan_posisi_z_akhir : float = 0.237 * persentase_arah
 							#position.y = posisiAwalVertikalPandangan - perbedaan_posisi_y_akhir # gak usah dipake karena bakalan offset ketika pemain jongkok
 							get_node("%pandangan").position.z = 0 + perbedaan_posisi_z_akhir
 							_karakter.arah_pandangan.y = arah_pandangan
@@ -83,7 +83,7 @@ func _process(delta):
 					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO # TODO : arah x
 			_gerakan = gerakan
 
-func aktifkan(nilai = true, vr = false):
+func aktifkan(nilai := true, vr := false) -> void:
 	if vr:	pass
 	else:
 		if get_node("%pandangan").current != nilai:
@@ -94,15 +94,15 @@ func aktifkan(nilai = true, vr = false):
 	if 	nilai:	_karakter.get_node("nama").visible = false
 	else:		_karakter.get_node("nama").visible = true
 
-func atur_mode(nilai):
+func atur_mode(nilai : int) -> void:
 	if mode_kontrol == 2: mode_kontrol = 1
 	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2 # naik kendaraan / mulai duduk
-	var ubah = (mode_kontrol != nilai)
+	var ubah : bool = (mode_kontrol != nilai)
 	mode_kontrol = 0 # nonaktifkan kontrol
-	var tween_pandangan_1a = get_tree().create_tween()
-	var tween_pandangan_2a = get_tree().create_tween()
-	var tween_pandangan_3a = get_tree().create_tween()
-	var tween_pandangan_3b = get_tree().create_tween()
+	var tween_pandangan_1a : Tween = get_tree().create_tween()
+	var tween_pandangan_2a : Tween = get_tree().create_tween()
+	var tween_pandangan_3a : Tween = get_tree().create_tween()
+	var tween_pandangan_3b : Tween = get_tree().create_tween()
 	tween_pandangan_1a.tween_property($kamera/rotasi_vertikal/pandangan, "rotation_degrees:x", 0, 0.2)	# reset pandangan 1
 	tween_pandangan_2a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:y", 0, 0.2)			# reset pandangan 2
 	tween_pandangan_3a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:x", 0, 0.25)			# reset pandangan 3
@@ -118,12 +118,12 @@ func atur_mode(nilai):
 		1:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 1); $animasi.play("pandangan_utama")
 		2:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 2); $animasi.play("pandangan_utama")
 		3:	$animasi.play("pandangan_belakang") # TODO : Clipped Camera
-func ubah_mode():
+func ubah_mode() -> void:
 	match mode_kontrol:
 		1: atur_mode(3)
 		3: atur_mode(1)
 
-func fungsikan(nilai):
+func fungsikan(nilai : bool) -> void:
 	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	#ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)#; Panku.notify("set : false = hasil : "+str(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")))
 	else: 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE;	#ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", true)# biarpun berhasil di-set, ketika runtime gak ngaruh
 	kontrol = nilai

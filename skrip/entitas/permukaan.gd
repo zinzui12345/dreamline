@@ -39,8 +39,8 @@ extends Node3D
 @export var pengamat : Camera3D :
 	set(kamera):
 		if is_instance_valid(kamera):
-			posisi_terakhir = kamera.global_transform.origin
-			rotasi_terakhir = kamera.global_rotation_degrees
+			#posisi_terakhir = kamera.global_transform.origin
+			#rotasi_terakhir = kamera.global_rotation_degrees
 			pengamat = kamera
 			# debug raycast
 			#var debug_raycast = raycast_occlusion_culling.duplicate()
@@ -69,11 +69,7 @@ extends Node3D
 
 # data vegetasi
 var pohon = [
- {
- 	"detail":	load("res://model/alam/pohon1/detail.res"),
- 	"lod1": 	load("res://model/alam/pohon1/lod1.res"), 	"jarak_lod1": 	20,
- 	"lod2": 	load("res://model/alam/pohon1/lod2.res"), 	"jarak_lod2": 	50
- },
+ "res://skena/objek/pohon_besar_1.scn",
  {
 	"detail":	load("res://model/alam/pohon2/detail.res"),
  	"lod1": 	load("res://model/alam/pohon2/lod1.res"), 	"jarak_lod1": 	15,
@@ -533,9 +529,10 @@ func muat_terrain():
 				
 				match vegetasi[v]["tipe"]:
 					"pohon":
-						detail	= pohon[vegetasi[v]["model"]]["detail"];
-						lod1 	= pohon[vegetasi[v]["model"]]["lod1"];	jarak_lod1 = pohon[vegetasi[v]["model"]]["jarak_lod1"];
-						lod2 	= pohon[vegetasi[v]["model"]]["lod2"];	jarak_lod2 = pohon[vegetasi[v]["model"]]["jarak_lod2"];
+						if pohon[vegetasi[v]["model"]] is Dictionary:
+							detail	= pohon[vegetasi[v]["model"]]["detail"];
+							lod1 	= pohon[vegetasi[v]["model"]]["lod1"];	jarak_lod1 = pohon[vegetasi[v]["model"]]["jarak_lod1"];
+							lod2 	= pohon[vegetasi[v]["model"]]["lod2"];	jarak_lod2 = pohon[vegetasi[v]["model"]]["jarak_lod2"];
 					"semak": detail = semak[vegetasi[v]["model"]];  jarak_render = 50; transisi_render = 10
 				
 				if detail != null:
@@ -604,6 +601,14 @@ func muat_terrain():
 									instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
 									instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
 									add_child(instance_vegetasi)
+							"pohon":
+								if pohon[vegetasi[v]["model"]] is String:
+									if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+										var model_vegetasi = load(pohon[vegetasi[v]["model"]])
+										var instance_vegetasi = model_vegetasi.instantiate()
+										instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
+										instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
+										add_child(instance_vegetasi)
 							"pencemaran", "bunga_nektar":
 								potongan[pt]["vegetasi"][v] = {
 									"terlihat":	true,
@@ -691,7 +696,7 @@ func muat_terrain():
 									# raycast_debug
 									#get_node("raycast_debug_"+str(titik+1)).global_position = raycast_occlusion_culling.global_position
 									#get_node("raycast_debug_"+str(titik+1)).global_rotation_degrees = raycast_occlusion_culling.global_rotation_degrees
-									var mengenai_permukaan = await raycast_occlusion_culling.is_colliding()
+									var mengenai_permukaan = raycast_occlusion_culling.is_colliding()
 									if mengenai_permukaan: tmp_vektor.y = raycast_occlusion_culling.get_collision_point().y
 								# terapkan ke array
 								tmp_aabb.append(tmp_vektor)
@@ -736,7 +741,7 @@ func muat_terrain():
 							raycast_occlusion_culling.global_position = Vector3(posisi_distribusi.x, 100, posisi_distribusi.z)
 							raycast_occlusion_culling.global_rotation_degrees = (Vector3i(-90, 0, 0))
 							raycast_occlusion_culling.force_raycast_update()
-							var mengenai_permukaan = await raycast_occlusion_culling.is_colliding()
+							var mengenai_permukaan = raycast_occlusion_culling.is_colliding()
 							if mengenai_permukaan: posisi_distribusi.y = raycast_occlusion_culling.get_collision_point().y
 							
 							match tipe_distribusi[dspw]:
