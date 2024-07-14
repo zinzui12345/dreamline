@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://dodo3q7h6ujaa"]
+[gd_scene load_steps=37 format=3 uid="uid://dodo3q7h6ujaa"]
 
 [ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
 [ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
@@ -13,11 +13,18 @@ script/source = "# 28/12/23
 extends Control
 
 var shader_tampilan_bentuk_objek : StandardMaterial3D = load(\"res://material/dev/tampilan_bentuk_objek.material\")
+var _proses_pre_render : bool = false :
+	set(proses):
+		if proses:	$mode_render/realtime.disabled = true
+		else: 		$mode_render/realtime.disabled = false
+		_proses_pre_render = proses
+var _pencahayaan_pre : Environment
 
 func _ready():
 	server.permainan.karakter = $viewport_utama/viewport/dummy_karakter
 	server.permainan.dunia.pengamat = $viewport_utama/viewport/pengamat
 	if server.permainan.permukaan != null: server.permainan.permukaan.pengamat = $viewport_utama/viewport/pengamat
+	_pencahayaan_pre = $viewport_utama/viewport/pengamat_pre.environment
 	server.pemain[\"pengamat\"] = {
 		\"id_client\": 1,
 		\"nama\": 	\"\",
@@ -45,111 +52,119 @@ func _atur_level_of_detail(nilai):
 
 # ketika memilih mode rendering
 func _mode_render_realtime():
-	# set keadaan tombol
-	$mode_render/realtime.button_pressed = true
-	$mode_render/pre.button_pressed = false
-	# tukar pengamat
-	$viewport_utama/viewport/pengamat.current = true
-	# sembunyikan proses rendering
-	$panel_bawah/animasi.stop()
-	$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
-	$panel_bawah.visible = false
-	# tampilkan informasi performa
-	$informasi_performa.visible = true
-	#region reset fase rendering
-	# 1. jalankan proses culling
-	server.set_process(true)
-	server.permainan.dunia.set_process(true)
-	# 2. tampilkan kembali lingkungan
-	server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
-	#endregion
+	if not _proses_pre_render:
+		# set keadaan tombol
+		$mode_render/realtime.button_pressed = true
+		$mode_render/pre.button_pressed = false
+		# tukar pengamat
+		$viewport_utama/viewport/pengamat.current = true
+		# sembunyikan proses rendering
+		$panel_bawah/animasi.stop()
+		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
+		$panel_bawah.visible = false
+		# tampilkan informasi performa
+		$informasi_performa.visible = true
+		#region reset fase rendering
+		# 1. jalankan proses culling
+		server.set_process(true)
+		server.permainan.dunia.set_process(true)
+		# 2. tampilkan kembali lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
+		#endregion
 func _mode_render_pre():
-	# set keadaan tombol
-	$mode_render/realtime.button_pressed = false
-	$mode_render/pre.button_pressed = true
-	# tukar pengamat
-	$viewport_utama/viewport/pengamat_pre.current = true
-	$viewport_utama/viewport/pengamat_pre.fov = $viewport_utama/viewport/pengamat.fov
-	$viewport_utama/viewport/pengamat_pre.position = $viewport_utama/viewport/pengamat.position
-	$viewport_utama/viewport/pengamat_pre.rotation = $viewport_utama/viewport/pengamat.rotation
-	# sembunyikan informasi performa
-	$informasi_performa.visible = false
-	# tampilkan proses rendering
-	$panel_bawah/Panel/PersenMemuat.text = \"0%\"
-	$panel_bawah/Panel/ProsesMemuat.value = 0
-	$panel_bawah/animasi.play(\"tampilkan\")
-	$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play(\"kuru_kuru\")
-	#region tampilan fase rendering
-	# 1. hentikan proses culling
-	server.set_process(false)
-	server.permainan.dunia.set_process(false)
-	# 2. sembuyikan lingkungan
-	server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", false)
-	# 3. sembunyikan pencahayaan
-	var aktifkan_pencahayaan = false
-	if server.permainan.dunia.get_node(\"matahari\").shadow_enabled:
-		server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", false)
-		aktifkan_pencahayaan = true
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"background_mode\", Environment.BG_COLOR)
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_color\", Color(\"#4d4d4d\"))
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_energy\", 0.9)
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_source\", Environment.AMBIENT_SOURCE_COLOR)
-	# 4. dapatkan objek yang nampak kemudian tambahkan ke array
-	var daftar_objek : Dictionary
-	for objek_ in server.permainan.dunia.get_node(\"objek\").get_children():
-		if objek_.visible:
-			var jarak_objek = objek_.global_position.distance_to($viewport_utama/viewport/pengamat_pre.global_position)
-			daftar_objek[jarak_objek] = objek_
-	# 5. sembunyikan semua objek yang nampak
-	for _objek in daftar_objek: daftar_objek[_objek].set(\"visible\", false)
-	# 6. set max_value dari $panel_bawah/Panel/ProsesMemuat dengan jumlah objek yang nampak
-	$panel_bawah/Panel/ProsesMemuat.max_value = daftar_objek.size()
-	# 7. dapatkan indeks daftar objek
-	var indeks_daftar_objek = daftar_objek.keys()
-	# 8. buat urutan objek
-	var urutan_objek : Array = []
-	for _objek in daftar_objek: urutan_objek.append(_objek)
-	# 9. sesuaikan indeks urutan objek
-	urutan_objek.sort()
-	# 10. balik urutan objek
-	urutan_objek.reverse()
-	await get_tree().create_timer(0.5).timeout
-	# 11. tampilkan kembali lingkungan
-	server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
-	await get_tree().create_timer(0.5).timeout
-	# 12. loop urutan objek
-	for _objek_ in urutan_objek:
-		# dapatkan objek
-		var objek_ = daftar_objek[_objek_]
-		# tampilkan objek
-		objek_.set(\"visible\", true)
-		# tampilkan shader penanda bentuk objek
-		for isi_objek in objek_.get_children():
-			if isi_objek is MeshInstance3D:
-				isi_objek.set(\"material_override\", shader_tampilan_bentuk_objek)
-		# tunggu 0.5 detik
+	if not _proses_pre_render:
+		_proses_pre_render = true
+		# set keadaan tombol
+		$mode_render/realtime.button_pressed = false
+		$mode_render/pre.button_pressed = true
+		# tukar pengamat
+		$viewport_utama/viewport/pengamat_pre.current = true
+		$viewport_utama/viewport/pengamat_pre.fov = $viewport_utama/viewport/pengamat.fov
+		$viewport_utama/viewport/pengamat_pre.position = $viewport_utama/viewport/pengamat.position
+		$viewport_utama/viewport/pengamat_pre.rotation = $viewport_utama/viewport/pengamat.rotation
+		# sembunyikan informasi performa
+		$informasi_performa.visible = false
+		# tampilkan proses rendering
+		$panel_bawah/Panel/PersenMemuat.text = \"0%\"
+		$panel_bawah/Panel/ProsesMemuat.value = 0
+		$panel_bawah/animasi.play(\"tampilkan\")
+		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play(\"kuru_kuru\")
+		#region tampilan fase rendering
+		# 1. hentikan proses culling
+		server.set_process(false)
+		server.permainan.dunia.set_process(false)
+		# 2. sembuyikan lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", false)
+		# 3. sembunyikan pencahayaan
+		var aktifkan_pencahayaan = false
+		if server.permainan.dunia.get_node(\"matahari\").shadow_enabled:
+			server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", false)
+			aktifkan_pencahayaan = true
+		$viewport_utama/viewport/pengamat_pre.environment = _pencahayaan_pre
+		# 4. dapatkan objek yang nampak kemudian tambahkan ke array
+		var daftar_objek : Dictionary
+		for objek_ in server.permainan.dunia.get_node(\"objek\").get_children():
+			if objek_.visible:
+				var jarak_objek = objek_.global_position.distance_to($viewport_utama/viewport/pengamat_pre.global_position)
+				daftar_objek[jarak_objek] = objek_
+		# 5. sembunyikan semua objek yang nampak
+		for _objek in daftar_objek: daftar_objek[_objek].set(\"visible\", false)
+		# 6. set max_value dari $panel_bawah/Panel/ProsesMemuat dengan jumlah objek yang nampak
+		$panel_bawah/Panel/ProsesMemuat.max_value = daftar_objek.size()
+		# 7. dapatkan indeks daftar objek
+		var indeks_daftar_objek = daftar_objek.keys()
+		# 8. buat urutan objek
+		var urutan_objek : Array = []
+		for _objek in daftar_objek: urutan_objek.append(_objek)
+		# 9. sesuaikan indeks urutan objek
+		urutan_objek.sort()
+		# 10. balik urutan objek
+		urutan_objek.reverse()
 		await get_tree().create_timer(0.5).timeout
-		# sesuaikan persentase proses rendering
-		$panel_bawah/Panel/ProsesMemuat.value += 1
-		$panel_bawah/Panel/PersenMemuat.text = str(($panel_bawah/Panel/ProsesMemuat.value / urutan_objek.size()) * 100)+\"%\"
-		# hapus shader penanda bentuk objek
-		for isi_objek in objek_.get_children():
-			if isi_objek is MeshInstance3D:
-				isi_objek.set(\"material_override\", null)
-	# 13. tunggu 0.5 detik
-	await get_tree().create_timer(0.5).timeout
-	# 14. tampilkan kembali pencahayaan
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"background_mode\", Environment.BG_SKY)
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"sky\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:sky\"))
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_color\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:ambient_light_color\"))
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_energy\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:ambient_light_energy\"))
-	$viewport_utama/viewport/pengamat_pre.environment.set(\"ambient_light_source\", server.permainan.dunia.get_node(\"pencahayaan\").get_indexed(\"environment:ambient_light_source\"))
-	if aktifkan_pencahayaan:
-		server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", true)
-	#endregion
-	# sembunyikan proses rendering
-	$panel_bawah/animasi.play_backwards(\"tampilkan\")
-	$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
+		# 11. tampilkan kembali lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
+		await get_tree().create_timer(0.5).timeout
+		# 12. loop urutan objek
+		for _objek_ in urutan_objek:
+			if $viewport_utama/viewport/pengamat_pre.current:
+				# dapatkan objek
+				var objek_ = daftar_objek[_objek_]
+				# tampilkan objek
+				objek_.set(\"visible\", true)
+				# tampilkan shader penanda bentuk objek
+				for isi_objek in objek_.get_children():
+					if isi_objek is MeshInstance3D:
+						isi_objek.set(\"material_override\", shader_tampilan_bentuk_objek)
+					elif isi_objek is Node3D and isi_objek.name == \"model\":
+						for isi_isi_objek in isi_objek.get_children():
+							if isi_isi_objek is MeshInstance3D:
+								isi_isi_objek.set(\"material_override\", shader_tampilan_bentuk_objek)
+				# tunggu 0.5 detik
+				await get_tree().create_timer(0.5).timeout
+				# sesuaikan persentase proses rendering
+				$panel_bawah/Panel/ProsesMemuat.value += 1
+				$panel_bawah/Panel/PersenMemuat.text = str(($panel_bawah/Panel/ProsesMemuat.value / urutan_objek.size()) * 100)+\"%\"
+				# hapus shader penanda bentuk objek
+				for isi_objek in objek_.get_children():
+					if isi_objek is MeshInstance3D:
+						isi_objek.set(\"material_override\", null)
+					elif isi_objek is Node3D and isi_objek.name == \"model\":
+						for isi_isi_objek in isi_objek.get_children():
+							if isi_isi_objek is MeshInstance3D:
+								isi_isi_objek.set(\"material_override\", null)
+			else: return
+		# 13. tunggu 0.5 detik
+		await get_tree().create_timer(0.5).timeout
+		# 14. tampilkan kembali pencahayaan
+		$viewport_utama/viewport/pengamat_pre.environment = null
+		if aktifkan_pencahayaan:
+			server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", true)
+		#endregion
+		# sembunyikan proses rendering
+		$panel_bawah/animasi.play_backwards(\"tampilkan\")
+		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
+		_proses_pre_render = false
+
 # ketika memilih tampilan viewport culling
 func _pilih_tidak_ada():
 	$panel_opsi/pilih_fc.button_pressed = false
@@ -185,10 +200,17 @@ func _atur_fov_minimap(nilai):
 	$viewport_culling/SubViewport/pengamat/Camera3D.size = nilai
 "
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1q1y0"]
+
+[sub_resource type="Sky" id="Sky_mgbuu"]
+sky_material = SubResource("ProceduralSkyMaterial_1q1y0")
+
 [sub_resource type="Environment" id="Environment_738xd"]
 background_mode = 1
+sky = SubResource("Sky_mgbuu")
 ambient_light_source = 2
 ambient_light_color = Color(0.302566, 0.302566, 0.302566, 1)
+reflected_light_source = 2
 
 [sub_resource type="GDScript" id="GDScript_ov0gi"]
 resource_name = "dummy_karakter"
