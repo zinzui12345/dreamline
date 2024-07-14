@@ -672,7 +672,7 @@ func _muat_map(file_map : StringName) -> void:
 			server.mode_replay = true
 			server.set_process(true)
 			call_deferred("_tampilkan_permainan")
-			var pengamat : Node2D = load("res://skena/perf_test.tscn").instantiate()
+			var pengamat : Control = load("res://skena/perf_test.tscn").instantiate()
 			pengamat.name = "pengamat"
 			call_deferred("add_child", pengamat)
 		else:

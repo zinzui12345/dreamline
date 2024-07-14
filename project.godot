@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.2", "Mobile")
 run/delta_smoothing=false
 boot_splash/bg_color=Color(0.34902, 0.34902, 0.34902, 1)
 config/icon="res://icon.svg"
+config/windows_native_icon="res://icon.ico"
 config/default_signal_callback_to_self_name="_ketika_{signal_name}"
 config/default_signal_callback_name="_ketika_{node_name}_{signal_name}"
 
@@ -35,6 +36,7 @@ DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 
 [debug]
 
+gdscript/warnings/redundant_await=2
 gdscript/warnings/narrowing_conversion=0
 
 [display]
@@ -48,7 +50,6 @@ window/vsync/vsync_mode=0
 
 [editor]
 
-run/main_run_args="--no-shadow"
 naming/default_signal_callback_name="_ketika_{node_name}_{signal_name}"
 naming/default_signal_callback_to_self_name="_ketika_{signal_name}"
 
