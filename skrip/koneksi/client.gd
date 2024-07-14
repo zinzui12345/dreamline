@@ -4,7 +4,7 @@ class_name Client
 
 @onready var permainan : Permainan = get_tree().get_root().get_node("Dreamline")
 
-var interface = null
+var interface : MultiplayerAPI = null
 var peer : ENetMultiplayerPeer
 var listener : ServerListener
 var id_koneksi : int = -44

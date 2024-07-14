@@ -384,7 +384,7 @@ func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();				return "memulai uji performa"
 	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
-func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi = Vector3.ZERO, rotasi = Vector3.ZERO) -> void:
+func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName = "showcase", posisi := Vector3.ZERO, rotasi := Vector3.ZERO) -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 	if $setelan.visible:
@@ -424,9 +424,9 @@ func _mulai_permainan(nama_server = "localhost", nama_map = "showcase", posisi =
 	await get_tree().create_timer(0.25).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	data["posisi"] = posisi
 	data["rotasi"] = rotasi
-	var tmp_perintah = Callable(self, "_muat_map")
+	var tmp_perintah := Callable(self, "_muat_map")
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
-func _muat_map(file_map) -> void:
+func _muat_map(file_map : StringName) -> void:
 	# INFO : (4) muat map
 	map = await load("res://map/%s.tscn" % [file_map]).instantiate()
 	map.name = "lingkungan"
@@ -444,7 +444,7 @@ func _muat_map(file_map) -> void:
 		server.call_deferred("buat_koneksi")
 		if not server.headless:
 			# tambah pengamat objek
-			var pengamat_objek = load("res://skena/pengamat_objek.tscn").instantiate()
+			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
 			call_deferred("_atur_persentase_memuat", 70)
 			call_deferred("add_child", pengamat_objek)
 			# tambahkan pemain
@@ -486,10 +486,10 @@ func _muat_map(file_map) -> void:
 			# INFO : (5b3) muat data replay
 			# 04/02/24 :: ubah nilai properti menjadi keyframe animasi
 			koneksi = MODE_KONEKSI.SERVER
-			var indeks_frame = server.timeline.keys() # berisi indeks seperti nomor frame, dll
-			var alur_waktu = AnimationPlayer.new()
-			var skenario = Animation.new()
-			var pengamat = Camera3D.new()
+			var indeks_frame : Array = server.timeline.keys() # berisi indeks seperti nomor frame, dll
+			var alur_waktu := AnimationPlayer.new()
+			var skenario := Animation.new()
+			var pengamat := Camera3D.new()
 			var _fungsi_pengamat : GDScript = load("res://skrip/objek/free_look_camera.gd")
 			alur_waktu.name = "alur_waktu"
 			dunia.call_deferred("add_child", alur_waktu)
@@ -499,8 +499,8 @@ func _muat_map(file_map) -> void:
 			call_deferred("add_child", pengamat)
 			for frame in indeks_frame:
 				if frame is int and server.timeline[frame] != {}:
-					var indeks_entitas = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
-					var waktu = frame * 0.001 # konversi ke satuan milidetik (float)
+					var indeks_entitas : Array = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
+					var waktu : float = frame * 0.001 # konversi ke satuan milidetik (float)
 					for entitas_ in indeks_entitas:
 						if server.timeline[frame][entitas_] != {}:
 							var data_frame = server.timeline[frame][entitas_]
@@ -660,7 +660,7 @@ func _muat_map(file_map) -> void:
 								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
 								# jika entitas adalah pemain, matikan visibilitas dari daftar pemain
 								if server.timeline.entitas[entitas_] == "pemain": skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, false)
-			var pustaka_animasi = AnimationLibrary.new()
+			var pustaka_animasi := AnimationLibrary.new()
 			pustaka_animasi.add_animation("skenario", skenario)
 			alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
 			# $root.dunia.get_node("alur_waktu").play("alur_waktu/skenario")
@@ -672,12 +672,12 @@ func _muat_map(file_map) -> void:
 			server.mode_replay = true
 			server.set_process(true)
 			call_deferred("_tampilkan_permainan")
-			var pengamat = load("res://skena/perf_test.tscn").instantiate()
+			var pengamat : Node2D = load("res://skena/perf_test.tscn").instantiate()
 			pengamat.name = "pengamat"
 			call_deferred("add_child", pengamat)
 		else:
 			# tambah pengamat objek
-			var pengamat_objek = load("res://skena/pengamat_objek.tscn").instantiate()
+			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
 			call_deferred("_atur_persentase_memuat", 70)
 			call_deferred("add_child", pengamat_objek)
 			# INFO : (5b1) kirim data pemain ke server
@@ -690,7 +690,7 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 	if is_instance_valid(dunia):
 		# tambahkan pemain utama
 		if id == client.id_koneksi or server.mode_replay:
-			var pemain
+			var pemain : Karakter
 			match data_pemain["gender"]:
 				"L": pemain = karakter_cowok.instantiate()
 				"P": pemain = karakter_cewek.instantiate()
@@ -746,7 +746,7 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 		
 		# Timeline : spawn pemain
 		if koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
-			var sumber = ""
+			var sumber := ""
 			match data_pemain["gender"]:
 				"L": sumber = karakter_cowok.resource_path
 				"P": sumber = karakter_cewek.resource_path
@@ -770,8 +770,8 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 		})
 	else: print("tidak dapat menambahkan pemain sebelum memuat dunia!")
 func _berbicara(fungsi : bool) -> void:
-	var idx = AudioServer.get_bus_index("Suara Pemain")
-	var effect = AudioServer.get_bus_effect(idx, 0)
+	var idx := AudioServer.get_bus_index("Suara Pemain")
+	var effect : AudioEffect = AudioServer.get_bus_effect(idx, 0)
 	if is_instance_valid(karakter): # hanya berfungsi dalam permainan
 		if fungsi and !$suara_pemain.playing:
 			_timer_kirim_suara.start() # Mulai timer untuk memicu _kirim_suara setiap 2 detik
@@ -886,11 +886,11 @@ func _berhenti_mengedit_objek() -> void:
 	karakter._atur_penarget(true)
 
 # koneksi
-func mulai_server(headless = false, nama = ""):
+func mulai_server(headless : bool = false, nama : StringName = "") -> void:
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
 	tampilkan_info_koneksi()
-	var nama_server = "localhost"
+	var nama_server : StringName = "localhost"
 	if nama != "":
 		nama_server = nama
 	elif $buat_server/panel/panel_input/nama_server.text != "":
@@ -898,10 +898,10 @@ func mulai_server(headless = false, nama = ""):
 	server.nama = nama_server
 	server.jumlah_pemain = $buat_server/panel/panel_input/jumlah_pemain.value
 	_mulai_permainan(nama_server, server.map)
-func gabung_server():
+func gabung_server() -> void:
 	koneksi = MODE_KONEKSI.CLIENT
-	var ip = $daftar_server/panel/panel_input/input_ip.text
-	var port = 10567
+	var ip : String = $daftar_server/panel/panel_input/input_ip.text
+	var port : int = 10567
 	if _posisi_tab_koneksi == "LAN":
 		if not ip.is_valid_ip_address():
 			if ip == "": 	_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
@@ -913,7 +913,7 @@ func gabung_server():
 			return
 		elif ip.get_slice_count(":") == 2:
 			# cek pola | 0.tcp.ap.ngrok.io:12089
-			var alamat = ip.split(":", true, 1)
+			var alamat : PackedStringArray = ip.split(":", true, 1)
 			ip = alamat[0]
 			port = alamat[1].to_int()
 			print("mengatur port menjadi {%s}" % [str(port)])
@@ -926,13 +926,13 @@ func gabung_server():
 	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ip
 	client.hentikan_pencarian_server()
 	client.sambungkan_server(ip, port)
-func cari_server(): 		client.cari_server()
-func cek_koneksi_server(): 	client.cek_koneksi()
-func putuskan_server(paksa = false):
+func cari_server() -> void:			client.cari_server()
+func cek_koneksi_server() -> void: 	client.cek_koneksi()
+func putuskan_server(paksa : bool = false) -> void:
 	if is_instance_valid(dunia):
 		if koneksi == MODE_KONEKSI.SERVER:
 			if server.pemain_terhubung > 1 and !paksa:
-				var tmp_f_putuskan = Callable(self, "putuskan_server")
+				var tmp_f_putuskan := Callable(self, "putuskan_server")
 				tmp_f_putuskan = tmp_f_putuskan.bind(true)
 				_tampilkan_popup_konfirmasi($menu_utama/menu/Panel/buat_server, tmp_f_putuskan, "%putuskan_server")
 				return
@@ -1015,13 +1015,13 @@ func putuskan_server(paksa = false):
 		
 		$latar.tampilkan()
 		_mainkan_musik_latar()
-func alamat_ip():
-	var informasi = "IP : %s" % [str(server.ip_publik)]
+func alamat_ip() -> String:
+	var informasi : String = "IP : %s" % [str(server.ip_publik)]
 	return informasi
 
 # kontrol
-func _ketika_mulai_mengontrol_arah_pandangan(): _touchpad_disentuh = true
-func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
+func _ketika_mulai_mengontrol_arah_pandangan() -> void: _touchpad_disentuh = true
+func _ketika_mengontrol_arah_pandangan(arah : Vector2, _touchpad : Node) -> void:
 	if is_instance_valid(karakter) and !jeda: # ketika dalam permainan
 		if _touchpad_disentuh:
 			if _arah_sentuhan_touchpad.x == 0:
@@ -1050,13 +1050,13 @@ func _ketika_mengontrol_arah_pandangan(arah, _touchpad):
 			_arah_gestur_tampilan_objek.x = ceil(_arah_gestur_tampilan_objek.x)
 			_arah_gestur_tampilan_objek.y = -_arah_gestur_tampilan_objek.y * 50
 			_arah_gestur_tampilan_objek.y = ceil(_arah_gestur_tampilan_objek.y)
-func _ketika_berhenti_mengontrol_arah_pandangan():
+func _ketika_berhenti_mengontrol_arah_pandangan() -> void:
 	_touchpad_disentuh = false
 	if is_instance_valid(karakter): # ketika dalam permainan
 		_arah_sentuhan_touchpad = Vector2.ZERO
 		karakter._input_arah_pandangan = Vector2.ZERO
 		_arah_gestur_tampilan_objek = Vector2.ZERO
-func _ketika_mengontrol_arah_gerak(arah, _analog):
+func _ketika_mengontrol_arah_gerak(arah : Vector2, _analog : Node) -> void:
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if arah.y > 0.1 and arah.y <= 1.0:
 			#maju
@@ -1075,30 +1075,30 @@ func _ketika_mengontrol_arah_gerak(arah, _analog):
 		else:
 			Input.action_release("kiri")
 			Input.action_release("kanan")
-func _ketika_mulai_melompat():		Input.action_press("lompat")
-func _ketika_berhenti_melompat():	Input.action_release("lompat")
-func _aksi_1_tekan(): 				Input.action_press("aksi1_sentuh")
-func _aksi_1_lepas(): 				Input.action_release("aksi1_sentuh");	$kontrol_sentuh/aksi_1.release_focus()
-func _aksi_2_tekan(): 				Input.action_press("aksi2")
-func _aksi_2_lepas(): 				Input.action_release("aksi2");			$kontrol_sentuh/aksi_2.release_focus()
-func _ketika_mulai_berlari():		Input.action_press("berlari")
-func _ketika_berhenti_berlari():	Input.action_release("berlari")
-func _tombol_jongkok_tekan():		Input.action_press("jongkok")
-func _tombol_jongkok_lepas():		Input.action_release("jongkok");		$kontrol_sentuh/jongkok.release_focus()
-func _mainkan_replay():
+func _ketika_mulai_melompat() -> void:		Input.action_press("lompat")
+func _ketika_berhenti_melompat() -> void:	Input.action_release("lompat")
+func _aksi_1_tekan() -> void: 				Input.action_press("aksi1_sentuh")
+func _aksi_1_lepas() -> void: 				Input.action_release("aksi1_sentuh");	$kontrol_sentuh/aksi_1.release_focus()
+func _aksi_2_tekan() -> void: 				Input.action_press("aksi2")
+func _aksi_2_lepas() -> void: 				Input.action_release("aksi2");			$kontrol_sentuh/aksi_2.release_focus()
+func _ketika_mulai_berlari() -> void:		Input.action_press("berlari")
+func _ketika_berhenti_berlari() -> void:	Input.action_release("berlari")
+func _tombol_jongkok_tekan() -> void:		Input.action_press("jongkok")
+func _tombol_jongkok_lepas() -> void:		Input.action_release("jongkok");		$kontrol_sentuh/jongkok.release_focus()
+func _mainkan_replay() -> void:
 	if server.mode_replay and not server.mode_uji_performa:
-		var pemutar_animasi = dunia.get_node("alur_waktu")
+		var pemutar_animasi : AnimationPlayer = dunia.get_node("alur_waktu")
 		pemutar_animasi.play("alur_waktu/skenario")
 		$hud/timeline/posisi_durasi.max_value = pemutar_animasi.current_animation_length
 		$hud/timeline/posisi_durasi.value = pemutar_animasi.current_animation_position
 		$hud/timeline/mainkan.disabled = true
 
 # UI
-func _atur_persentase_memuat(nilai):
+func _atur_persentase_memuat(nilai : int) -> void:
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.get_animation("proses").track_set_key_value(0, 1, nilai)
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.play("proses")
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = str(nilai)+"%"
-func _tampilkan_permainan():
+func _tampilkan_permainan() -> void:
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
 	_hentikan_musik_latar()
@@ -1112,7 +1112,7 @@ func _tampilkan_permainan():
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	$kontrol_sentuh/chat.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
-func _sembunyikan_antarmuka_permainan():
+func _sembunyikan_antarmuka_permainan() -> void:
 	$hud/bantuan_input/aksi1.visible = false
 	$hud/bantuan_input/aksi2.visible = false
 	$hud/kompas.set_physics_process(false)
@@ -1125,10 +1125,10 @@ func _sembunyikan_antarmuka_permainan():
 	if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
 	if $dialog.get_node_or_null("ExampleBalloon") != null: $dialog.get_node("ExampleBalloon").queue_free()
 	jeda = false
-func _tampilkan_pemutar_musik():
+func _tampilkan_pemutar_musik() -> void:
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	else: $pemutar_musik/animasi.play("tampilkan")
-func _tampilkan_konfigurasi_server():
+func _tampilkan_konfigurasi_server() -> void:
 	if $buat_server.visible:
 		_sembunyikan_konfigurasi_server()
 	else:
@@ -1140,13 +1140,13 @@ func _tampilkan_konfigurasi_server():
 		else:
 			$buat_server/animasi.play("animasi_panel/tampilkan")
 		$buat_server/panel/batal.grab_focus()
-func _tambah_jumlah_pemain_server():	$buat_server/panel/panel_input/jumlah_pemain.value += $buat_server/panel/panel_input/jumlah_pemain.step
-func _kurang_jumlah_pemain_server():	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
-func _sembunyikan_konfigurasi_server():
+func _tambah_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value += $buat_server/panel/panel_input/jumlah_pemain.step
+func _kurang_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
+func _sembunyikan_konfigurasi_server() -> void:
 	$buat_server/animasi.play("animasi_panel/sembunyikan")
 	await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
-func _tampilkan_daftar_server():
+func _tampilkan_daftar_server() -> void:
 	if $daftar_server.visible: _sembunyikan_daftar_server()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
@@ -1162,41 +1162,41 @@ func _tampilkan_daftar_server():
 			$daftar_server/animasi.play("animasi_panel/tampilkan")
 			await get_tree().create_timer($daftar_server/animasi.current_animation_length).timeout
 		$daftar_server/panel/panel_input/batal.grab_focus()
-func _sembunyikan_daftar_server():
+func _sembunyikan_daftar_server() -> void:
 	client.hentikan_pencarian_server()
 	_reset_daftar_server_lan()
 	$daftar_server/animasi.play("animasi_panel/sembunyikan")
 	await get_tree().create_timer($daftar_server/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/gabung_server.grab_focus()
-func _tambah_server_lan(ip, sys, nama, nama_map, jml_pemain, max_pemain):
-	var server_lan = load("res://ui/server.tscn").instantiate()
+func _tambah_server_lan(ip : String, sys : String, nama : StringName, nama_map : StringName, jml_pemain : int, max_pemain : int) -> void:
+	var server_lan : Control = load("res://ui/server.tscn").instantiate()
 	server_lan.name = ip.replace('.', '_');
 	server_lan.atur(ip, sys, nama, nama_map, jml_pemain, max_pemain)
 	server_lan.button_group = client.pilih_server
 	$daftar_server/panel/daftar_lan/layout.add_child(server_lan)
-func _pilih_server_lan(ip : String):
+func _pilih_server_lan(ip : String) -> void:
 	$daftar_server/panel/panel_input/input_ip.text = ip
 	$daftar_server/panel/panel_input/sambungkan.grab_focus()
-func _hapus_server_lan(ip : String):
+func _hapus_server_lan(ip : String) -> void:
 	$daftar_server/panel/daftar_lan/layout.get_node(ip.replace('.', '_')).queue_free()
-func _reset_daftar_server_lan():
-	var jumlah_koneksi_lan = $daftar_server/panel/daftar_lan/layout.get_child_count()
-	for k in jumlah_koneksi_lan:
+func _reset_daftar_server_lan() -> void:
+	var jumlah_koneksi_lan := $daftar_server/panel/daftar_lan/layout.get_child_count()
+	for k : int in jumlah_koneksi_lan:
 		$daftar_server/panel/daftar_lan/layout.get_child(jumlah_koneksi_lan - (k + 1)).queue_free()
-func _pilih_tab_server_lan():
+func _pilih_tab_server_lan() -> void:
 	if _posisi_tab_koneksi != "LAN":
 		$daftar_server/panel/internet.button_pressed = false
 		$daftar_server/panel/animasi_tab.play("lan")
 		_posisi_tab_koneksi = "LAN"
-func _pilih_tab_server_internet():
+func _pilih_tab_server_internet() -> void:
 	if _posisi_tab_koneksi != "Internet":
 		$daftar_server/panel/lan.button_pressed = false
 		$daftar_server/panel/animasi_tab.play("internet")
 		_posisi_tab_koneksi = "Internet"
-func _sembunyikan_proses_koneksi():
+func _sembunyikan_proses_koneksi() -> void:
 	$proses_koneksi/animasi.play("sembunyikan")
 	$proses_koneksi/panel/animasi.stop()
-func _tampilkan_setelan_karakter():
+func _tampilkan_setelan_karakter() -> void:
 	if $karakter.visible: _sembunyikan_setelan_karakter()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
@@ -1229,23 +1229,23 @@ func _tampilkan_setelan_karakter():
 		else: $karakter/animasi.play("tampilkan")
 		$karakter/panel/batal.grab_focus()
 		AudioServer.set_bus_effect_enabled(1, 2, true)
-func _sembunyikan_setelan_karakter():
+func _sembunyikan_setelan_karakter() -> void:
 	AudioServer.set_bus_effect_enabled(1, 2, false)
 	_pilih_tab_personalitas_karakter()
 	$karakter/animasi.play("animasi_panel/sembunyikan")
 	$menu_utama/menu/Panel/karakter.grab_focus()
-func _ketika_ukuran_tampilan_karakter_diubah():
+func _ketika_ukuran_tampilan_karakter_diubah() -> void:
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport.size = $karakter/panel/tampilan.size
-func _ketika_mengubah_arah_tampilan_karakter(arah, _touchpad):
+func _ketika_mengubah_arah_tampilan_karakter(arah : Vector2, _touchpad : Node) -> void:
 	_arah_gestur_tampilan_karakter = arah
-func _reset_pilihan_tab_karakter():
+func _reset_pilihan_tab_karakter() -> void:
 	$karakter/panel/pilih_tab_personalitas.button_pressed = false
 	$karakter/panel/pilih_tab_wajah.button_pressed = false
 	$karakter/panel/pilih_tab_rambut.button_pressed = false
 	$karakter/panel/pilih_tab_baju.button_pressed = false
 	$karakter/panel/pilih_tab_celana.button_pressed = false
 	$karakter/panel/pilih_tab_sepatu.button_pressed = false
-func _pilih_tab_personalitas_karakter():
+func _pilih_tab_personalitas_karakter() -> void:
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.get_animation("fokus_badan").track_set_key_value(
 		0,
@@ -1260,7 +1260,7 @@ func _pilih_tab_personalitas_karakter():
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_badan")
 	$karakter/panel/tab.current_tab = 0
 	$karakter/panel/pilih_tab_personalitas.button_pressed = true
-func _pilih_tab_wajah_karakter():
+func _pilih_tab_wajah_karakter() -> void:
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tab.current_tab = 1
 	$karakter/panel/pilih_tab_wajah.button_pressed = true
@@ -1291,7 +1291,7 @@ func _pilih_tab_wajah_karakter():
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_wajah")
 	# tween putaran pengamat ke <= 60
 	if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 60:
-		var tween_arah_pengamat = get_tree().create_tween()
+		var tween_arah_pengamat : Tween = get_tree().create_tween()
 		tween_arah_pengamat.tween_property(
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat,
 			"rotation_degrees",
@@ -1300,7 +1300,7 @@ func _pilih_tab_wajah_karakter():
 		)
 		tween_arah_pengamat.play()
 	elif $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -60:
-		var tween_arah_pengamat = get_tree().create_tween()
+		var tween_arah_pengamat : Tween = get_tree().create_tween()
 		tween_arah_pengamat.tween_property(
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat,
 			"rotation_degrees",
@@ -1308,7 +1308,7 @@ func _pilih_tab_wajah_karakter():
 			0.5
 		)
 		tween_arah_pengamat.play()
-func _pilih_tab_rambut_karakter():
+func _pilih_tab_rambut_karakter() -> void:
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tab.current_tab = 2
 	$karakter/panel/pilih_tab_rambut.button_pressed = true
@@ -1336,7 +1336,7 @@ func _pilih_tab_rambut_karakter():
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_rambut")
-func _pilih_tab_baju_karakter():
+func _pilih_tab_baju_karakter() -> void:
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tab.current_tab = 3
 	$karakter/panel/pilih_tab_baju.button_pressed = true
@@ -1364,7 +1364,7 @@ func _pilih_tab_baju_karakter():
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_baju")
-func _pilih_tab_celana_karakter():
+func _pilih_tab_celana_karakter() -> void:
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tab.current_tab = 4
 	$karakter/panel/pilih_tab_celana.button_pressed = true
@@ -1379,7 +1379,7 @@ func _pilih_tab_celana_karakter():
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_celana")
-func _pilih_tab_sepatu_karakter():
+func _pilih_tab_sepatu_karakter() -> void:
 	_reset_pilihan_tab_karakter()
 	$karakter/panel/tab.current_tab = 5
 	$karakter/panel/pilih_tab_sepatu.button_pressed = true
@@ -1394,7 +1394,7 @@ func _pilih_tab_sepatu_karakter():
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/kamera.size
 	)
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
-func pilih_mode_bermain():
+func pilih_mode_bermain() -> void:
 	if is_instance_valid(karakter) and !jeda:
 		$hud/kompas.visible = true
 		$mode_bermain/main.button_pressed = true
@@ -1404,7 +1404,7 @@ func pilih_mode_bermain():
 		$mode_bermain/main.release_focus()
 	if server.mode_replay and not server.mode_uji_performa:
 		%timeline/animasi.play_backwards("tampilkan")
-func pilih_mode_edit():
+func pilih_mode_edit() -> void:
 	if is_instance_valid(karakter) and !jeda:
 		$hud/kompas.visible = false
 		$mode_bermain/main.button_pressed = false
@@ -1415,7 +1415,7 @@ func pilih_mode_edit():
 	if server.mode_replay and not server.mode_uji_performa:
 		%timeline/animasi.play("tampilkan")
 		%timeline/durasi.text = "00:00/00:00"
-func _pilih_tab_posisi_objek(): 
+func _pilih_tab_posisi_objek() -> void: 
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
@@ -1439,7 +1439,7 @@ func _pilih_tab_posisi_objek():
 		$hud/daftar_properti_objek/panel/translasi_x.editable = true
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
 		$hud/daftar_properti_objek/panel/translasi_z.editable = true
-func _pilih_tab_rotasi_objek():
+func _pilih_tab_rotasi_objek() -> void:
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = false
@@ -1463,7 +1463,7 @@ func _pilih_tab_rotasi_objek():
 		$hud/daftar_properti_objek/panel/translasi_x.editable = true
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
 		$hud/daftar_properti_objek/panel/translasi_z.editable = true
-func _pilih_tab_skala_objek():
+func _pilih_tab_skala_objek() -> void:
 	$hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.button_pressed = false
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed = true
@@ -1487,35 +1487,35 @@ func _pilih_tab_skala_objek():
 		$hud/daftar_properti_objek/panel/translasi_x.editable = true
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
 		$hud/daftar_properti_objek/panel/translasi_z.editable = true
-func _tampilkan_daftar_objek():
+func _tampilkan_daftar_objek() -> void:
 	if $daftar_objek/Panel.anchor_top > 0: $daftar_objek/animasi.play("tampilkan")
 	karakter._atur_kendali(false)
 	memasang_objek = true
-func _tutup_daftar_objek(paksa = false):
+func _tutup_daftar_objek(paksa : bool = false) -> void:
 	if is_instance_valid(karakter):
 		# kalau paksa berarti kendali pemain gak dikembaliin
 		$daftar_objek/animasi.play("sembunyikan")
 		if !paksa: karakter._atur_kendali(true)
 		memasang_objek = false
-func _tambah_translasi_x_objek():
+func _tambah_translasi_x_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_x.value += $hud/daftar_properti_objek/panel/translasi_x.step # TODO : jangan tambah dari step
 	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
-func _kurang_translasi_x_objek():
+func _kurang_translasi_x_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_x.value -= $hud/daftar_properti_objek/panel/translasi_x.step
 	#_ketika_translasi_x_objek_diubah($hud/daftar_properti_objek/panel/translasi_x.value)
-func _tambah_translasi_y_objek():
+func _tambah_translasi_y_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_y.value += $hud/daftar_properti_objek/panel/translasi_y.step
 	#_ketika_translasi_y_objek_diubah($hud/daftar_properti_objek/panel/translasi_y.value)
-func _kurang_translasi_y_objek():
+func _kurang_translasi_y_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_y.value -= $hud/daftar_properti_objek/panel/translasi_y.step
 	#_ketika_translasi_y_objek_diubah($hud/daftar_properti_objek/panel/translasi_y.value)
-func _tambah_translasi_z_objek():
+func _tambah_translasi_z_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_z.value += $hud/daftar_properti_objek/panel/translasi_z.step
 	#_ketika_translasi_z_objek_diubah($hud/daftar_properti_objek/panel/translasi_z.value)
-func _kurang_translasi_z_objek():
+func _kurang_translasi_z_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_z.value -= $hud/daftar_properti_objek/panel/translasi_z.step
 	#_ketika_translasi_z_objek_diubah($hud/daftar_properti_objek/panel/translasi_z.value)
-func _ketika_translasi_x_objek_diubah(nilai):
+func _ketika_translasi_x_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/translasi_x.editable:
 		#Panku.notify("ceritakan padanya~")
 		if edit_objek != null:
@@ -1526,7 +1526,7 @@ func _ketika_translasi_x_objek_diubah(nilai):
 				edit_objek.set_indexed("rotation_degrees:x", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:x", nilai)
-func _ketika_translasi_y_objek_diubah(nilai):
+func _ketika_translasi_y_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/translasi_y.editable:
 		if edit_objek != null:
 			await get_tree().create_timer(0.05).timeout
@@ -1536,7 +1536,7 @@ func _ketika_translasi_y_objek_diubah(nilai):
 				edit_objek.set_indexed("rotation_degrees:y", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:y", nilai)
-func _ketika_translasi_z_objek_diubah(nilai):
+func _ketika_translasi_z_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/translasi_z.editable:
 		if edit_objek != null:
 			await get_tree().create_timer(0.05).timeout
@@ -1546,7 +1546,7 @@ func _ketika_translasi_z_objek_diubah(nilai):
 				edit_objek.set_indexed("rotation_degrees:z", nilai)
 			elif $hud/daftar_properti_objek/panel/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:z", nilai)
-func _ketika_mengubah_kode_objek():
+func _ketika_mengubah_kode_objek() -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
 		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
 		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
@@ -1567,37 +1567,37 @@ func _ketika_mengubah_kode_objek():
 		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
 		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
 		tampilkan_editor_kode()
-func _ketika_mengubah_jarak_pandangan_objek(jarak):
+func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
 			$pengamat.get_node("%pandangan").position.z = jarak
-func _tampilkan_popup_informasi(teks_informasi, fokus_setelah):
+func _tampilkan_popup_informasi(teks_informasi : String, fokus_setelah : Control) -> void:
 	# 16/06/24 :: ketika dalam permainan
 	if is_instance_valid(karakter) and !jeda: _jeda()
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi
 	$popup_informasi/animasi.play_backwards("tutup")
 	$popup_informasi/panel/tutup.grab_focus()
-func _tampilkan_popup_informasi_(teks_informasi : String): _tampilkan_popup_informasi(teks_informasi, $menu_jeda/menu/kontrol/Panel/lanjutkan)
-func _tutup_popup_informasi():
+func _tampilkan_popup_informasi_(teks_informasi : String) -> void: _tampilkan_popup_informasi(teks_informasi, $menu_jeda/menu/kontrol/Panel/lanjutkan)
+func _tutup_popup_informasi() -> void:
 	$popup_informasi/animasi.play("tutup")
 	await get_tree().create_timer($popup_informasi/animasi.current_animation_length).timeout
 	$popup_informasi/panel/teks.text = ""+str(randf())
 	$popup_informasi.target_fokus_setelah.grab_focus()
-func _tampilkan_popup_konfirmasi(tombol_penampil : Button, fungsi : Callable, teks):
+func _tampilkan_popup_konfirmasi(tombol_penampil : Button, fungsi : Callable, teks : String) -> void:
 	$popup_konfirmasi.penampil = tombol_penampil
 	$popup_konfirmasi.fungsi = fungsi
 	$popup_konfirmasi/panel/teks.text = teks
 	$popup_konfirmasi/animasi.play("tampilkan")
 	$popup_konfirmasi/panel/batal.grab_focus()
-func _ketika_konfirmasi_popup_konfirmasi():
+func _ketika_konfirmasi_popup_konfirmasi() -> void:
 	$popup_konfirmasi/animasi.play_backwards("tampilkan")
 	$popup_konfirmasi.fungsi.call()
 	$popup_konfirmasi.penampil.grab_focus()
-func _tutup_popup_konfirmasi():
+func _tutup_popup_konfirmasi() -> void:
 	$popup_konfirmasi/animasi.play("tutup")
 	$popup_konfirmasi.penampil.grab_focus()
-func _tampilkan_popup_konfirmasi_peringatan(tombol_penampil : Button, fungsi : Callable, teks):
+func _tampilkan_popup_konfirmasi_peringatan(tombol_penampil : Button, fungsi : Callable, teks : String) -> void:
 	$popup_konfirmasi_peringatan.penampil = tombol_penampil
 	$popup_konfirmasi_peringatan.fungsi = fungsi
 	$popup_konfirmasi_peringatan/panel/teks.text = teks
@@ -1605,9 +1605,9 @@ func _tampilkan_popup_konfirmasi_peringatan(tombol_penampil : Button, fungsi : C
 	$popup_konfirmasi_peringatan/animasi.play("tampilkan")
 	$popup_konfirmasi_peringatan/panel/oke.grab_focus()
 	AudioServer.set_bus_effect_enabled(1, 1, true)
-func _konfirmasi_peringatan():
+func _konfirmasi_peringatan() -> void:
 	$popup_konfirmasi_peringatan/animasi.play("proses_konfirmasi")
-func _batalkan_konfirmasi_peringatan():
+func _batalkan_konfirmasi_peringatan() -> void:
 	$popup_konfirmasi_peringatan/animasi.stop()
 	$popup_konfirmasi_peringatan/animasi.get_animation("batalkan_proses_konfirmasi").track_set_key_value(
 		0,
@@ -1615,18 +1615,18 @@ func _batalkan_konfirmasi_peringatan():
 		$popup_konfirmasi_peringatan/panel/proses_konfirmasi.value
 	)
 	$popup_konfirmasi_peringatan/animasi.play("batalkan_proses_konfirmasi")
-func _ketika_proses_konfirmasi_peringatan(persentase):
+func _ketika_proses_konfirmasi_peringatan(persentase : float) -> void:
 	if persentase == 100:
 		$popup_konfirmasi_peringatan/animasi.play_backwards("tampilkan")
 		$popup_konfirmasi_peringatan.fungsi.call()
 		$popup_konfirmasi_peringatan.penampil.grab_focus()
-func _tutup_popup_konfirmasi_peringatan():
+func _tutup_popup_konfirmasi_peringatan() -> void:
 	$popup_konfirmasi_peringatan/animasi.play("tutup")
 	$popup_konfirmasi_peringatan.penampil.grab_focus()
 	AudioServer.set_bus_effect_enabled(1, 1, false)
-func _mainkan_musik_latar():
+func _mainkan_musik_latar() -> void:
 	if $pemutar_musik/AudioStreamPlayer.stream == null:
-		var musik = load("res://audio/soundtrack/Animal Crossing Kirara Magic Remix.mp3")
+		var musik : AudioStream = load("res://audio/soundtrack/Animal Crossing Kirara Magic Remix.mp3")
 		if musik != null:
 			$pemutar_musik/AudioStreamPlayer.stream = musik
 			$pemutar_musik/AudioStreamPlayer.play()
@@ -1637,13 +1637,13 @@ func _mainkan_musik_latar():
 		$pemutar_musik/AudioStreamPlayer.play()
 		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
 	#pass
-func _ketika_musik_latar_selesai_dimainkan():
+func _ketika_musik_latar_selesai_dimainkan() -> void:
 	await get_tree().create_timer(10.0).timeout
 	_mainkan_musik_latar()
-func _hentikan_musik_latar():
+func _hentikan_musik_latar() -> void:
 	$pemutar_musik/AudioStreamPlayer.stop()
 	$pemutar_musik/AudioStreamPlayer.stream = null
-func _tambah_daftar_pemain(id_pemain, data_pemain):
+func _tambah_daftar_pemain(id_pemain : int, data_pemain : Dictionary) -> void:
 	var pemain = load("res://ui/pemain.tscn").instantiate()
 	# INFO : tambahkan info pemain ke daftar pemain
 	#print("just a little more~")
@@ -1659,18 +1659,18 @@ func _tambah_daftar_pemain(id_pemain, data_pemain):
 		pemain.atur_gambar_karakter(gambar_pemain)
 		if koneksi == MODE_KONEKSI.SERVER:
 			pemain.gambar = data_pemain["gambar"]
-func _atur_daftar_pemain(id_pemain : int, properti: String, nilai):
-	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
+func _atur_daftar_pemain(id_pemain : int, properti: String, nilai) -> void:
+	var tmp_daftar : Control = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
 	if tmp_daftar != null and tmp_daftar.get(properti) != null:
 		tmp_daftar.set(properti, nilai)
 func _dapatkan_daftar_pemain() -> Array[Node]:
 	return $hud/daftar_pemain/panel/gulir/baris.get_children()
-func _hapus_daftar_pemain(id_pemain):
-	var tmp_daftar = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
+func _hapus_daftar_pemain(id_pemain : int) -> void:
+	var tmp_daftar : Control = $hud/daftar_pemain/panel/gulir/baris.get_node_or_null(str(id_pemain))
 	if tmp_daftar != null:
 		$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
 		tmp_daftar.queue_free()
-func _tampilkan_setelan_permainan():
+func _tampilkan_setelan_permainan() -> void:
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
 	_konfigurasi_awal = {
@@ -1684,7 +1684,7 @@ func _tampilkan_setelan_permainan():
 	$setelan/panel/gulir/tab_setelan/setelan_performa/info_jarak_render/nilai_jarak_render.text = str(Konfigurasi.jarak_render)+"m"
 	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(Konfigurasi.sensitivitasPandangan)
 	$setelan/animasi.play("tampilkan")
-func _sembunyikan_setelan_permainan():
+func _sembunyikan_setelan_permainan() -> void:
 	$setelan/animasi.play_backwards("tampilkan")
 	# jangan simpan kalo gak ada yang diubah
 	var indeks_konfigurasi = _konfigurasi_awal.keys()
@@ -1692,7 +1692,7 @@ func _sembunyikan_setelan_permainan():
 		if _konfigurasi_awal[indeks_konfigurasi[cfg]] != Konfigurasi.get(indeks_konfigurasi[cfg]):
 			Konfigurasi.simpan()
 			break
-func _tampilkan_input_pesan():
+func _tampilkan_input_pesan() -> void:
 	$kontrol_sentuh/chat.release_focus()
 	if pesan:
 		$hud/pesan/input_pesan.release_focus()
@@ -1714,7 +1714,7 @@ func _tampilkan_input_pesan():
 			$kontrol_sentuh/lari.visible = false
 			karakter._atur_kendali(false)
 		pesan = true
-func _tampilkan_pesan(teks : String):
+func _tampilkan_pesan(teks : String) -> void:
 	# TODO : rekam ke timeline
 	$hud/daftar_pesan/animasi.play("tampilkan")
 	$hud/daftar_pesan.append_text("\n"+teks)
@@ -1724,11 +1724,11 @@ func _tampilkan_pesan(teks : String):
 		# dan 1 karakter = 0.2 detik
 		_timer_tampilkan_pesan.wait_time = 0.2 * teks.length()
 		_timer_tampilkan_pesan.start()
-func _sembunyikan_pesan():
+func _sembunyikan_pesan() -> void:
 	if !pesan:
 		$hud/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
-func _tampilkan_panel_informasi():
+func _tampilkan_panel_informasi() -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 		await get_tree().create_timer($pemutar_musik/animasi.current_animation_length).timeout
@@ -1749,31 +1749,31 @@ func _tampilkan_panel_informasi():
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$informasi/animasi.play("tampilkan")
 	$informasi/panel/oke.grab_focus()
-func _sembunyikan_panel_informasi():
+func _sembunyikan_panel_informasi() -> void:
 	$informasi/animasi.play("tutup")
 	$menu_utama/animasi.play("tampilkan")
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
-func _ketika_menekan_link_informasi(tautan : String):
+func _ketika_menekan_link_informasi(tautan : String) -> void:
 	if tautan != "":
 		var t_inf_link = TranslationServer.translate("%tinggalkan_permainan")
 		var fungsi_buka_tautan = Callable(OS, "shell_open")
 		_tampilkan_popup_konfirmasi_peringatan($informasi/panel/oke, fungsi_buka_tautan.bind(tautan), t_inf_link % [tautan])
-func _laporkan_bug(): _ketika_menekan_link_informasi("https://github.com/zinzui12345/dreamline/issues")
-func _sarankan_fitur():
+func _laporkan_bug() -> void: _ketika_menekan_link_informasi("https://github.com/zinzui12345/dreamline/issues")
+func _sarankan_fitur() -> void:
 	pass
-func _ketika_mengatur_informasi_performa(visibilitas : bool):
+func _ketika_mengatur_informasi_performa(visibilitas : bool) -> void:
 	$performa.visible = visibilitas
 	$versi.visible = visibilitas
-func _buka_log():
+func _buka_log() -> void:
 	var aa = Panku.module_manager.get_module("native_logger")
 	aa.open_window()
-func _tampilkan_konsol(): Panku.toggle_console_action_just_pressed.emit()
-func lepaskan_kursor_mouse(): Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-func berhenti_mengedit_objek():
+func _tampilkan_konsol() -> void: Panku.toggle_console_action_just_pressed.emit()
+func lepaskan_kursor_mouse() -> void: Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+func berhenti_mengedit_objek() -> void:
 	if edit_objek != null:
 		server.edit_objek(edit_objek.name, false)
-func tampilkan_editor_kode():
+func tampilkan_editor_kode() -> void:
 	if !is_instance_valid(karakter):
 		if $pemutar_musik.visible:
 			$pemutar_musik/animasi.play("sembunyikan")
@@ -1783,7 +1783,7 @@ func tampilkan_editor_kode():
 			$karakter/animasi.play("animasi_panel/tutup")
 		$menu_utama/animasi.play("lipat")
 	$blok_kode/animasi.play("tampilkan")
-func tutup_editor_kode():
+func tutup_editor_kode() -> void:
 	# 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
 	$blok_kode/panel_kode.hapus_blok_kode()
 	# 14/06/24 :: hapus palet sintaks untuk mengurangi penggunaan memori
@@ -1795,14 +1795,14 @@ func tutup_editor_kode():
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
 	$blok_kode/animasi.play("sembunyikan")
-func tampilkan_dialog(file_dialog : DialogueResource):
-	var penampil_dialog: Node = load("res://ui/dialog.tscn").instantiate()
+func tampilkan_dialog(file_dialog : DialogueResource) -> void:
+	var penampil_dialog : Node = load("res://ui/dialog.tscn").instantiate()
 	$dialog.add_child(penampil_dialog)
 	penampil_dialog.start(file_dialog, "0", [])
 	if is_instance_valid(karakter):
 		karakter._atur_kendali(false)
 		karakter._atur_penarget(false)
-func tutup_dialog(_file_dialog):
+func tutup_dialog(_file_dialog : Resource) -> void:
 	if is_instance_valid(karakter):
 		if Input.is_action_pressed("lompat"): Input.action_release("lompat")
 		karakter._atur_kendali(true)
