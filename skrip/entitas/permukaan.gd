@@ -70,15 +70,11 @@ extends Node3D
 # data vegetasi
 var pohon = [
  "res://skena/objek/pohon_besar_1.scn",
+ "res://skena/objek/pohon_besar_2.scn",
  {
 	"detail":	load("res://model/alam/pohon2/detail.res"),
  	"lod1": 	load("res://model/alam/pohon2/lod1.res"), 	"jarak_lod1": 	15,
  	"lod2": 	load("res://model/alam/pohon2/lod2.res"), 	"jarak_lod2": 	50
- },
- { 
-	"detail": load("res://model/alam/placeholder_pohon.tres"),
-	"lod1": null,	"jarak_lod1": 0,
-	"lod2": null,	"jarak_lod2": 0
  },
  { 
 	"detail": load("res://model/alam/placeholder_pohon.tres"),

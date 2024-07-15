@@ -452,9 +452,12 @@ func _physics_process(delta : float) -> void:
 		# maju / mundur
 		if Input.is_action_pressed("berlari"):
 			if is_on_floor():
-				arah.z = Input.get_action_strength("berlari") * 2
 				if Input.is_action_pressed("mundur"):
 					arah.z = -Input.get_action_strength("berlari") * 2
+				elif jongkok:
+					arah.z = Input.get_action_strength("berlari") * 1.5
+				else:
+					arah.z = Input.get_action_strength("berlari") * 2
 			elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"):
 				arah.z = lerp(arah.z, Input.get_action_strength("berlari") * 2, 0.5 * delta)
 		elif Input.is_action_pressed("maju"):
@@ -495,6 +498,8 @@ func _physics_process(delta : float) -> void:
 						arah.y = clampf(arah.y * 1.4, 180 * delta, 250 * delta)
 						if Input.is_action_pressed("mundur"):
 							arah.z = -clampf(arah.z * 1.05, 0.0, 250 * delta)
+						elif jongkok:
+							arah.z = clampf(arah.z * 1.025, 0.0, 450 * delta)
 						else:
 							arah.z = clampf(arah.z * 1.025, 0.0, 250 * delta)
 				elif is_on_floor():

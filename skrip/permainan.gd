@@ -623,7 +623,6 @@ func _muat_map(file_map : StringName) -> void:
 										if data_frame.kondisi.lompat and not server.timeline.trek[entitas_]["lompat?"]:
 											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 											server.timeline.trek[entitas_]["lompat?"] = true
-											Panku.notify(data_frame.kondisi.lompat)
 										elif not data_frame.kondisi.lompat and server.timeline.trek[entitas_]["lompat?"]:
 											#skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
 											server.timeline.trek[entitas_]["lompat?"] = false

@@ -6,10 +6,10 @@ var posisi_relatif_pengamat : Node3D
 var raycast_occlusion_culling : RayCast3D
 
 # Mulai modus server
-func _ready():
+func _ready() -> void:
 	var argumen : Array = OS.get_cmdline_args() # ["res://skena/dreamline.tscn", "--server", "empty"]
-	var jumlah_argumen  = argumen.size()
-	for arg in jumlah_argumen:
+	var jumlah_argumen : int = argumen.size()
+	for arg : int in jumlah_argumen:
 		if argumen[arg] == "--server":
 			server.publik = true
 			if arg < jumlah_argumen - 2 and argumen[arg+1] != "" and argumen[arg+2] != "":
@@ -39,7 +39,7 @@ func _ready():
 	raycast_occlusion_culling.exclude_parent = false
 	add_child(raycast_occlusion_culling)
 
-func hapus_map():
+func hapus_map() -> void:
 	if get_node_or_null("lingkungan") != null:
 		get_node("lingkungan").queue_free()
 	server.permainan.map.free()
@@ -49,15 +49,15 @@ func hapus_map():
 	if $objek.get_child_count() > 0:
 		for _objek in $objek.get_children():
 			_objek.queue_free()
-func hapus_instance_pemain():
-	var jumlah_pemain = $pemain.get_child_count()
-	for p in jumlah_pemain:
+func hapus_instance_pemain() -> void:
+	var jumlah_pemain := $pemain.get_child_count()
+	for p : int in jumlah_pemain:
 		#print_debug("menghapus pemain [%s/%s]" % [jumlah_pemain-p, jumlah_pemain])
 		$pemain.get_child(jumlah_pemain - (p + 1)).queue_free()
 	server.pemain.clear()
 
 # Optimasi rendering | Object Culling
-func _process(delta):
+func _process(_delta : float) -> void:
 	if server.mode_replay and not server.mode_uji_performa: pass # 06/07/24 :: jangan optimasi ketika memainkan replay
 	elif is_instance_valid(server.permainan.karakter) and $objek.get_child_count() > 0:
 		# atur collider raycast occlusion culling jika belum ada
@@ -75,7 +75,7 @@ func _process(delta):
 			tmp_bb_fisik_pengamat.size = Vector3(0.5, 0.5, 0.5)
 		
 		# loop setiap objek
-		for m_objek in $objek.get_children():
+		for m_objek : Node in $objek.get_children():
 			# Direction Culling / Frustum Culling
 			if server.permainan.gunakan_frustum_culling:
 				# dapatkan posisi global kamera
@@ -85,7 +85,7 @@ func _process(delta):
 				var posisi_objek : Vector3 = m_objek.global_position
 				
 				# kalkulasi jarak kamera dengan objek
-				var jarak_objek = posisi_pengamat.distance_to(posisi_objek)
+				var jarak_objek : float = posisi_pengamat.distance_to(posisi_objek)
 				
 				# jika jarak kamera dengan objek lebih dari jarak render objek * 0.5
 				if jarak_objek > (m_objek.jarak_render * 0.5):
@@ -99,7 +99,7 @@ func _process(delta):
 					)
 					
 					# kalkulasi sudut arah_target_pengamat
-					var sudut = abs(arah_target_pengamat.rotation_degrees.y)
+					var sudut : float = abs(arah_target_pengamat.rotation_degrees.y)
 					
 					# jika objek berada di belakang kamera
 					if sudut > (pengamat.fov * 1.125):
@@ -143,7 +143,7 @@ func _process(delta):
 							raycast_occlusion_culling.add_exception(m_objek) # 03/07/24 :: ini mengatasi jika m_objek adalah objek solid
 						# cek apakah raycast mengenai sesuatu
 						raycast_occlusion_culling.force_raycast_update()
-						var mengenai_sesuatu = raycast_occlusion_culling.is_colliding()
+						var mengenai_sesuatu : bool = raycast_occlusion_culling.is_colliding()
 						# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
 						if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == pengamat:
 							m_objek.cek_titik = 0

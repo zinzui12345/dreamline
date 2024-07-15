@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
 [ext_resource type="PackedScene" uid="uid://df2034e3s77u4" path="res://skena/objek/placeholder_objek.tscn" id="4_irs5o"]
 [ext_resource type="PackedScene" uid="uid://51cj87m200qe" path="res://skena/entitas/dialog_informasi.scn" id="5_7b8gh"]
-[ext_resource type="PackedScene" uid="uid://ctmoh02tjixam" path="res://skena/objek/batu_1.scn" id="5_oai5r"]
+[ext_resource type="PackedScene" uid="uid://cccryyod08shv" path="res://skena/objek/pohon_besar_1.scn" id="5_s7ela"]
 [ext_resource type="Resource" uid="uid://c0bxc3cnjlp2i" path="res://ui/dialog/intro.dialogue" id="6_5qiq2"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_kxi72"]
@@ -65,8 +65,8 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1)
 data_dialog = ExtResource("6_5qiq2")
 
-[node name="batu_1" parent="." instance=ExtResource("5_oai5r")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9259, 0.467803, -4.46296)
-
 [node name="placeholder_objek" parent="." instance=ExtResource("4_irs5o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.10546, -0.000658154, -4.67946)
+
+[node name="pohon_besar_1" parent="." instance=ExtResource("5_s7ela")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -0.6, -4)

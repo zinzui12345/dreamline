@@ -27,6 +27,10 @@ var pool_objek : Dictionary = {}
 var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "spawn" ? "hapus"
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
+var b_cek_data_timeline : Dictionary
+var b_indeks_timeline : Array
+var b_nama_file_timeline : String
+var b_file_timeline : FileAccess
 
 const jarak_render_karakter = 50
 const jarak_render_entitas = 10		# FIXME : set ke 50!
@@ -104,29 +108,31 @@ func _process(_delta : float) -> void:
 				# atur frame timeline
 				if permainan.dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
 					if timeline.size() > 700:
-						var b_data_timeline = timeline["data"]
+						b_cek_data_timeline = timeline["data"]
 						# hasilkan nama_file
-						var nama_file_timeline = "timeline_%s-%s-%s_%s.timelinepart" % [map, nama, timeline["data"]["id"], timeline["data"]["urutan"]]
+						b_nama_file_timeline = "timeline_%s-%s-%s_%s.timelinepart" % [map, nama, timeline["data"]["id"], timeline["data"]["urutan"]]
 						# simpan data timeline ke nama_file
 						# - hapus timeline["data"], sisakan data frame
 						timeline.erase("data")
 						# - kalau direktori bagian belum ada, buat
 						if !DirAccess.dir_exists_absolute("user://timeline_part"):
 							DirAccess.make_dir_absolute("user://timeline_part")
-						var file = FileAccess.open("user://timeline_part/"+nama_file_timeline, FileAccess.WRITE)
+						b_file_timeline = FileAccess.open("user://timeline_part/"+b_nama_file_timeline, FileAccess.WRITE)
 						# - jangan langsung stor, hapus dulu frame yang kosong!
-						var indeks_timeline = timeline.keys()
-						for frame in indeks_timeline.size(): 
-							if timeline[indeks_timeline[frame]].size() < 1:
-								timeline.erase(indeks_timeline[frame])
-						indeks_timeline.clear()
-						file.store_var(timeline)
-						file.close()
+						b_indeks_timeline = timeline.keys()
+						for frame : int in b_indeks_timeline.size(): 
+							if timeline[b_indeks_timeline[frame]].size() < 1:
+								timeline.erase(b_indeks_timeline[frame])
+						b_file_timeline.store_var(timeline)
 						# kosongkan data frame timeline
 						timeline.clear()
-						timeline["data"] = b_data_timeline
+						timeline["data"] = b_cek_data_timeline
 						# tambah urutan
 						timeline["data"]["urutan"] += 1
+						# 15/07/24 :: unset variabel
+						b_indeks_timeline.clear()
+						b_file_timeline.close()
+						b_nama_file_timeline = ""
 					else:
 						timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 				

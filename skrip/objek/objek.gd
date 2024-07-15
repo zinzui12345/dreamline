@@ -40,7 +40,7 @@ func _setup() -> void:
 				global_transform.origin,
 				rotation,
 				jarak_render,
-				get("properti").duplicate(true)
+				get("properti").duplicate(true) # 15/07/24 :: jangan duplikat ini, tapi loop kemudian buat dengan nilai dari variabel sesungguhnya!
 			)
 		queue_free()
 	else:
