@@ -47,19 +47,16 @@ points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3syrd"]
 resource_name = "tembok_putih"
-cull_mode = 2
 albedo_color = Color(0.853244, 0.853244, 0.853244, 1)
 roughness = 0.552786
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6fg54"]
 resource_name = "tembok_merah"
-cull_mode = 2
 albedo_color = Color(0.882352, 0.218649, 0.218649, 1)
 roughness = 0.552786
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y1ljg"]
 resource_name = "kaca"
-cull_mode = 2
 albedo_color = Color(0, 0, 0, 1)
 roughness = 0.381818
 
@@ -145,7 +142,6 @@ shadow_mesh = SubResource("ArrayMesh_au8ui")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f7cp8"]
 resource_name = "lantai"
-cull_mode = 2
 albedo_texture = ExtResource("7_em3pv")
 metallic = 0.268182
 roughness_texture = ExtResource("9_hkcep")
@@ -328,7 +324,6 @@ shadow_mesh = SubResource("ArrayMesh_wi4a2")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wyi6v"]
 resource_name = "besi_biru"
-cull_mode = 2
 albedo_color = Color(0, 0, 1, 1)
 metallic = 0.636364
 roughness = 0.0846046
@@ -369,7 +364,6 @@ shadow_mesh = SubResource("ArrayMesh_5y8bt")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q6jko"]
 resource_name = "besi_merah"
-cull_mode = 2
 albedo_color = Color(0.882352, 0.218649, 0.218649, 1)
 metallic = 0.636364
 roughness = 0.0846046

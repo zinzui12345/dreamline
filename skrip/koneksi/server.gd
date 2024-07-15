@@ -137,20 +137,20 @@ func _process(_delta : float) -> void:
 						timeline["data"]["frame"] = Time.get_ticks_msec() - timeline["data"]["mulai"]
 				
 				# tentukan visibilitas tiap pemain berdasarkan pemain lain
-				var indeks_pool_pemain = pemain.keys()
+				var indeks_pool_pemain : Array = pemain.keys()
 				for i_pool_pemain in indeks_pool_pemain:
-					var id_pemain = pemain[i_pool_pemain]["id_client"]
+					var id_pemain : int = pemain[i_pool_pemain]["id_client"]
 					
 					# hanya proses pemain yang aktif
 					if id_pemain != 0:
 						# 30/06/24 :: loop pemain lain, kemudian cek visibilitasnya
 						for pemain_target in indeks_pool_pemain:
-							var id_pemain_target = pemain[pemain_target]["id_client"]
-							var data_pemain_target = pemain[pemain_target]
+							var id_pemain_target : int = pemain[pemain_target]["id_client"]
+							var data_pemain_target : Dictionary = pemain[pemain_target]
 							# hanya proses pemain selain pemain dan pemain yang aktif
 							if id_pemain != id_pemain_target and id_pemain_target != 0:
 								# cek jarak pemain dengan pemain target
-								var jarak_pemain = pemain[i_pool_pemain]["posisi"].distance_to(pemain[pemain_target]["posisi"])
+								var jarak_pemain : float = pemain[i_pool_pemain]["posisi"].distance_to(pemain[pemain_target]["posisi"])
 								# pastikan keadaan visibilitas pool
 								if cek_visibilitas_pemain.get(id_pemain) == null:
 									cek_visibilitas_pemain[id_pemain] = {}
