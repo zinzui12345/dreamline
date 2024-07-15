@@ -373,6 +373,7 @@ func putuskan():
 	# setup pool
 	pool_entitas.clear()
 	pool_objek.clear()
+	cek_visibilitas_pemain.clear()
 	cek_visibilitas_pool_entitas.clear()
 	cek_visibilitas_pool_objek.clear()
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
