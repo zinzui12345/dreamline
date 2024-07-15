@@ -35,12 +35,18 @@ func _setup() -> void:
 	if !is_instance_valid(server.permainan): return
 	if get_parent().get_path() != server.permainan.dunia.get_node("objek").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
+			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada objek | ini digunakan untuk menambahkan objek ke server
+			for properti_kustom : Array in get("properti"):
+				_sp_properti.append([
+					properti_kustom[0],
+					get(properti_kustom[0])
+				])
 			server._tambahkan_objek(
 				get("jalur_instance"),
 				global_transform.origin,
 				rotation,
 				jarak_render,
-				get("properti").duplicate(true) # 15/07/24 :: jangan duplikat ini, tapi loop kemudian buat dengan nilai dari variabel sesungguhnya!
+				_sp_properti
 			)
 		queue_free()
 	else:
