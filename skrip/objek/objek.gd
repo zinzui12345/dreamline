@@ -2,17 +2,17 @@
 extends Node3D
 class_name objek
 
-var id_pengubah : int = -1:				# id peer/pemain yang mengubah objek ini
+var id_pengubah : int = -1:					# id peer/pemain yang mengubah objek ini
 	set(id):
 		if id == client.id_koneksi:
 			set_process(true)
 		else:
 			set_process(false)
 		id_pengubah = id
-var cek_properti : Dictionary = {}		# simpan beberapa properti di tiap frame untuk membandingkan perubahan
-#const properti = []					# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ]) | properti harus di @export!
-#const jalur_instance = ""				# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
-#const abaikan_occlusion_culling = true	# hanya tambahkan jika objek tidak ingin dikalkulasi pada occlusion culling
+var cek_properti : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+#const properti = []						# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ]) | properti harus di @export!
+#const jalur_instance = ""					# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
+#const abaikan_occlusion_culling = true		# hanya tambahkan jika objek tidak ingin dikalkulasi pada occlusion culling
 
 @export var wilayah_render : AABB :
 	# FIXME : gak work kalo objek terputar
@@ -25,11 +25,12 @@ var cek_properti : Dictionary = {}		# simpan beberapa properti di tiap frame unt
 				tmp_aabb.append(aabb.get_endpoint(titik))
 			titik_sudut = tmp_aabb
 		wilayah_render = aabb
-@export var jarak_render : int = 10		# jarak maks render
-@export var titik_sudut : Array = []	# titik tiap sudut AABB untuk occlusion culling
-@export var cek_titik : int = 0			# simpan titik terakhir occlusion culling
-@export var tak_terlihat : bool = false	# simpan kondisi frustum culling
-@export var terhalang : bool = false	# simpan kondisi occlusion culling
+@export var jarak_render : int = 10			# jarak maks render
+@export var radius_keterlihatan : int = 50	# area batas frustum culling
+@export var titik_sudut : Array = []		# titik tiap sudut AABB untuk occlusion culling
+@export var cek_titik : int = 0				# simpan titik terakhir occlusion culling
+@export var tak_terlihat : bool = false		# simpan kondisi frustum culling
+@export var terhalang : bool = false		# simpan kondisi occlusion culling
 
 func _ready() -> void: call_deferred("_setup")
 func _setup() -> void:

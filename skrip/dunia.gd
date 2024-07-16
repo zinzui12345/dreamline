@@ -87,8 +87,8 @@ func _process(_delta : float) -> void:
 				# kalkulasi jarak kamera dengan objek
 				var jarak_objek : float = posisi_pengamat.distance_to(posisi_objek)
 				
-				# jika jarak kamera dengan objek lebih dari 10 # FIXME : buat variabel radius keterlihatan!
-				if jarak_objek > 10:
+				# jika jarak kamera dengan objek lebih dari radius keterlihatan
+				if jarak_objek > m_objek.radius_keterlihatan:
 					# atur posisi dan rotasi posisi_relatif_pengamat dengan posisi dan rotasi pengamat
 					posisi_relatif_pengamat.global_position = pengamat.global_position
 					posisi_relatif_pengamat.global_rotation_degrees = pengamat.global_rotation_degrees
