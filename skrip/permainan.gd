@@ -952,6 +952,7 @@ func putuskan_server(paksa : bool = false) -> void:
 					server.putuskan()
 				$menu_utama/menu/Panel/buat_server.grab_focus()
 		elif koneksi == MODE_KONEKSI.CLIENT:
+			if edit_objek != null: _berhenti_mengedit_objek()
 			client.putuskan_server()
 			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
