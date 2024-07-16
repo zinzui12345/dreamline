@@ -1,4 +1,4 @@
-[gd_scene load_steps=312 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=320 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://drpqx4dyihtlx" path="res://ui/ikon/ikon_posisi_objek.svg" id="6_eofx6"]
 [ext_resource type="Texture2D" uid="uid://dbltu38krgfjg" path="res://ui/ikon/ikon_tombol_setelan.svg" id="6_ps5t2"]
 [ext_resource type="Texture2D" uid="uid://bilfr77a8syp3" path="res://ui/frekuensi-mikrofon.svg" id="6_tsv27"]
+[ext_resource type="Texture2D" uid="uid://b7tn5ukllv270" path="res://ui/ikon/ikon_tombol_kirim_pesan.svg" id="6_y0cdn"]
 [ext_resource type="Texture2D" uid="uid://bc0g7tkpje5k0" path="res://ui/ikon/ikon_tombol_server.svg" id="7_ayqde"]
 [ext_resource type="Texture2D" uid="uid://u5qa5utnccrr" path="res://ui/ikon/ikon_rotasi_objek.svg" id="7_o72dh"]
 [ext_resource type="Texture2D" uid="uid://7v57f8qv74uo" path="res://ui/ikon/ikon_tombol_menu.svg" id="8_gqe5w"]
@@ -79,6 +80,91 @@
 [ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 
+[sub_resource type="Animation" id="Animation_6qw4d"]
+resource_name = "sembunyikan"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../mode_bermain:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../mode_bermain:mouse_filter")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [2, 1]
+}
+
+[sub_resource type="Animation" id="Animation_548c5"]
+resource_name = "tampilkan"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../../../mode_bermain:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../../../mode_bermain:mouse_filter")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6geu8"]
+_data = {
+"sembunyikan": SubResource("Animation_6qw4d"),
+"tampilkan": SubResource("Animation_548c5")
+}
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
 border_width_left = 5
@@ -99,8 +185,69 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07rji"]
+bg_color = Color(0.0509804, 0.431373, 0.992157, 1)
+border_color = Color(0.0509804, 0.431373, 0.992157, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s7y2d"]
+bg_color = Color(0.0392157, 0.345098, 0.792157, 1)
+border_color = Color(0.0392157, 0.345098, 0.792157, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3v5s"]
+bg_color = Color(0.0313726, 0.258824, 0.596078, 1)
+border_color = Color(0.0313726, 0.258824, 0.596078, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ndal"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wepbn"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xarl6"]
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ninhs"]
+bg_color = Color(0.690196, 0.164706, 0.215686, 1)
+border_color = Color(0.690196, 0.164706, 0.215686, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="Animation" id="Animation_kfwqj"]
 resource_name = "sembunyikan"
+step = 0.015
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -149,10 +296,71 @@ tracks/3/keys = {
 "update": 1,
 "values": [2, 2]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("kirim_pesan:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../panel:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.15, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("kirim_pesan:anchor_bottom")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../panel:anchor_bottom")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.45, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.75, 0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../tutup:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.045, 1.005),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_phfil"]
 resource_name = "tampilkan"
 length = 0.3
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -201,72 +409,71 @@ tracks/3/keys = {
 "update": 1,
 "values": [2, 1]
 }
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_v0gts"]
-_data = {
-"sembunyikan": SubResource("Animation_kfwqj"),
-"tampilkan": SubResource("Animation_phfil")
-}
-
-[sub_resource type="Animation" id="Animation_6qw4d"]
-resource_name = "sembunyikan"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../../mode_bermain:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("kirim_pesan:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
-
-[sub_resource type="Animation" id="Animation_548c5"]
-resource_name = "tampilkan"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("../panel:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../../mode_bermain:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("kirim_pesan:anchor_bottom")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+"values": [0.0, 1.0]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("../panel:anchor_bottom")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 1.0, 1.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("../tutup:modulate")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.26, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_6geu8"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_v0gts"]
 _data = {
-"sembunyikan": SubResource("Animation_6qw4d"),
-"tampilkan": SubResource("Animation_548c5")
+"sembunyikan": SubResource("Animation_kfwqj"),
+"tampilkan": SubResource("Animation_phfil")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_60lyf"]
@@ -4805,26 +5012,82 @@ stretch_mode = 3
 script = ExtResource("4_qrdv8")
 
 [node name="pesan" type="Control" parent="hud"]
-editor_description = "mouse_filter diatur animasi, jadi jangan diubah!"
 layout_mode = 1
-anchor_left = 0.016
-anchor_top = 0.32
-anchor_right = 0.625
-anchor_bottom = 0.413
-offset_left = -0.384001
-offset_top = -1.52588e-05
-offset_bottom = 0.199997
-grow_horizontal = 2
-grow_vertical = 2
+anchor_left = 0.008
+anchor_top = 0.013
+anchor_right = 0.008
+anchor_bottom = 0.013
+offset_left = -0.192
+offset_top = 0.2
+offset_right = 639.808
+offset_bottom = 256.2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
-[node name="input_pesan" type="LineEdit" parent="hud/pesan"]
+[node name="panel" type="Panel" parent="hud/pesan"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="daftar_pesan" type="RichTextLabel" parent="hud/pesan"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.016
+anchor_top = 0.027
+anchor_right = 0.987
+anchor_bottom = 0.687
+offset_left = -2.24
+offset_top = 1.088
+offset_right = 0.319946
+offset_bottom = 0.127991
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+bbcode_enabled = true
+scroll_active = false
+scroll_following = true
+metadata/_edit_lock_ = true
+
+[node name="animasi" type="AnimationPlayer" parent="hud/pesan/daftar_pesan"]
+libraries = {
+"": SubResource("AnimationLibrary_6geu8")
+}
+
+[node name="layout_input_pesan" type="Control" parent="hud/pesan"]
+editor_description = "mouse_filter diatur animasi, jadi jangan diubah!"
+layout_mode = 1
+anchor_left = 0.012
+anchor_top = 0.719
+anchor_right = 0.012
+anchor_bottom = 0.719
+offset_left = 0.32
+offset_top = -0.0640106
+offset_right = 624.32
+offset_bottom = 63.936
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="input_pesan" type="LineEdit" parent="hud/pesan/layout_input_pesan"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.884615
+grow_horizontal = 2
 grow_vertical = 0
+focus_neighbor_left = NodePath(".")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath("../kirim_pesan")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../kirim_pesan")
+focus_previous = NodePath(".")
 mouse_filter = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
@@ -4833,33 +5096,70 @@ theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
 theme_override_styles/focus = SubResource("StyleBoxFlat_c6tox")
 caret_blink = true
+metadata/_edit_use_anchors_ = true
 
-[node name="animasi" type="AnimationPlayer" parent="hud/pesan"]
-libraries = {
-"": SubResource("AnimationLibrary_v0gts")
-}
-
-[node name="daftar_pesan" type="RichTextLabel" parent="hud"]
+[node name="kirim_pesan" type="Button" parent="hud/pesan/layout_input_pesan"]
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.016
-anchor_top = 0.027
-anchor_right = 0.625
-anchor_bottom = 0.307
-offset_left = -0.384001
-offset_top = -0.200001
-offset_bottom = -0.200012
-mouse_filter = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-bbcode_enabled = true
-scroll_active = false
-scroll_following = true
+anchor_left = 0.897
+anchor_right = 1.0
+offset_left = 0.271973
+grow_vertical = 0
+focus_neighbor_left = NodePath("../input_pesan")
+focus_neighbor_top = NodePath("../../tutup")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath(".")
+focus_next = NodePath("../../tutup")
+focus_previous = NodePath("../input_pesan")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_07rji")
+theme_override_styles/hover = SubResource("StyleBoxFlat_s7y2d")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_v3v5s")
+theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
+icon = ExtResource("6_y0cdn")
+alignment = 0
+icon_alignment = 1
 
-[node name="animasi" type="AnimationPlayer" parent="hud/daftar_pesan"]
+[node name="tutup" type="Button" parent="hud/pesan"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.887
+anchor_top = 0.4065
+anchor_right = 0.987
+anchor_bottom = 0.6565
+offset_left = 0.320007
+offset_top = -0.0640106
+offset_right = 0.319946
+offset_bottom = -0.0640106
+grow_vertical = 0
+focus_neighbor_left = NodePath("../layout_input_pesan/input_pesan")
+focus_neighbor_top = NodePath(".")
+focus_neighbor_right = NodePath(".")
+focus_neighbor_bottom = NodePath("../layout_input_pesan/kirim_pesan")
+focus_next = NodePath(".")
+focus_previous = NodePath("../layout_input_pesan/kirim_pesan")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_c2goa")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_wepbn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xarl6")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ninhs")
+theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
+icon = ExtResource("14_xsr60")
+alignment = 0
+icon_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="animasi" type="AnimationPlayer" parent="hud/pesan"]
+root_node = NodePath("../layout_input_pesan")
 libraries = {
-"": SubResource("AnimationLibrary_6geu8")
+"": SubResource("AnimationLibrary_v0gts")
 }
 
 [node name="daftar_pemain" type="Control" parent="hud"]
@@ -4956,6 +5256,7 @@ offset_left = -6.10352e-05
 offset_top = 0.199997
 offset_right = 0.383972
 offset_bottom = -72.0
+metadata/_edit_lock_ = true
 
 [node name="aksi1" type="TextureRect" parent="hud/bantuan_input"]
 visible = false
@@ -5388,6 +5689,7 @@ offset_bottom = -0.200001
 grow_horizontal = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="posisi" type="Control" parent="hud/frekuensi_mic"]
 layout_mode = 1
@@ -5502,10 +5804,19 @@ offset_right = 48.0
 offset_bottom = 34.0
 
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
+visible = false
+modulate = Color(1, 1, 1, 0)
 texture_repeat = 3
 layout_mode = 1
+metadata/_edit_lock_ = true
+
+[node name="ParallaxLayer" parent="latar/latar_parallax" index="0"]
+modulate = Color(1, 1, 1, 0)
 
 [node name="Cute4" parent="latar/latar_parallax/ParallaxLayer" index="0"]
+metadata/_edit_lock_ = true
+
+[node name="dim" parent="latar" index="1"]
 metadata/_edit_lock_ = true
 
 [node name="kontrol_sentuh" type="Control" parent="."]
@@ -5963,6 +6274,7 @@ offset_left = 112.0
 offset_right = -0.192017
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true
 
 [node name="panel" type="Panel" parent="buat_server"]
 layout_mode = 1
@@ -6239,6 +6551,7 @@ offset_right = -0.192017
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="panel" type="Panel" parent="daftar_server"]
 custom_minimum_size = Vector2(755, 600)
@@ -6464,6 +6777,7 @@ offset_right = -0.192017
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="panel" type="Panel" parent="karakter"]
 custom_minimum_size = Vector2(755, 600)
@@ -7482,6 +7796,7 @@ offset_right = 0.471985
 offset_bottom = 0.199989
 theme_override_styles/panel = SubResource("StyleBoxFlat_hr6tp")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="album" type="Panel" parent="pemutar_musik"]
 layout_mode = 1
@@ -8057,6 +8372,7 @@ anchor_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="panel_kode" parent="blok_kode" instance=ExtResource("72_fg215")]
 layout_mode = 1
@@ -8818,6 +9134,8 @@ stream = SubResource("AudioStreamMicrophone_skxpm")
 mix_target = 2
 bus = &"Suara Pemain"
 
+[connection signal="pressed" from="hud/pesan/layout_input_pesan/kirim_pesan" to="." method="_kirim_pesan"]
+[connection signal="pressed" from="hud/pesan/tutup" to="." method="_tampilkan_input_pesan"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_posisi" to="." method="_pilih_tab_posisi_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_rotasi" to="." method="_pilih_tab_rotasi_objek"]
 [connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_skala" to="." method="_pilih_tab_skala_objek"]

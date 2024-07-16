@@ -804,12 +804,12 @@ func _kirim_suara() -> void:
 		effect.set_recording_active(true)
 		print("kirim suara...")
 func _kirim_pesan() -> void:
-	if $hud/pesan/input_pesan.text != "":
-		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(client.id_sesi, $hud/pesan/input_pesan.text)
-		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_sesi, $hud/pesan/input_pesan.text)
-		$hud/pesan/input_pesan.text = ""
-	$hud/pesan/input_pesan.release_focus()
-	$hud/pesan/input_pesan.grab_focus()
+	if $hud/pesan/layout_input_pesan/input_pesan.text != "":
+		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(client.id_sesi, $hud/pesan/layout_input_pesan/input_pesan.text)
+		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_sesi, $hud/pesan/layout_input_pesan/input_pesan.text)
+		$hud/pesan/layout_input_pesan/input_pesan.text = ""
+	$hud/pesan/layout_input_pesan/input_pesan.release_focus()
+	$hud/pesan/layout_input_pesan/input_pesan.grab_focus()
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
 	karakter._atur_kendali(false)
@@ -1695,8 +1695,8 @@ func _sembunyikan_setelan_permainan() -> void:
 func _tampilkan_input_pesan() -> void:
 	$kontrol_sentuh/chat.release_focus()
 	if pesan:
-		$hud/pesan/input_pesan.release_focus()
-		$hud/daftar_pesan/animasi.play("sembunyikan")
+		$hud/pesan/layout_input_pesan/input_pesan.release_focus()
+		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
 		$hud/pesan/animasi.play("sembunyikan")
 		if $daftar_objek/Panel.anchor_top < 1 or edit_objek != null: pass # jangan tangkap mouse ketika menutup input pesan pada saat membuat/mengedit objek
 		else:
@@ -1705,9 +1705,9 @@ func _tampilkan_input_pesan() -> void:
 			karakter._atur_kendali(true)
 		pesan = false
 	else:
-		$hud/daftar_pesan/animasi.play("tampilkan")
+		$hud/pesan/daftar_pesan/animasi.play("tampilkan")
 		$hud/pesan/animasi.play("tampilkan")
-		$hud/pesan/input_pesan.grab_focus()  
+		$hud/pesan/layout_input_pesan/input_pesan.grab_focus()  
 		if $daftar_objek/Panel.anchor_top < 1 or edit_objek != null: pass # jangan ubah kendali pemain ketika membuka input pesan pada saat membuat/mengedit objek
 		else:
 			$kontrol_sentuh/mic.visible = false
@@ -1716,8 +1716,8 @@ func _tampilkan_input_pesan() -> void:
 		pesan = true
 func _tampilkan_pesan(teks : String) -> void:
 	# TODO : rekam ke timeline
-	$hud/daftar_pesan/animasi.play("tampilkan")
-	$hud/daftar_pesan.append_text("\n"+teks)
+	$hud/pesan/daftar_pesan/animasi.play("tampilkan")
+	$hud/pesan/daftar_pesan.append_text("\n"+teks)
 	if !pesan:
 		# 15 karakter = 3 detik
 		# jadi 5 karakter = 1 detik
@@ -1726,7 +1726,7 @@ func _tampilkan_pesan(teks : String) -> void:
 		_timer_tampilkan_pesan.start()
 func _sembunyikan_pesan() -> void:
 	if !pesan:
-		$hud/daftar_pesan/animasi.play("sembunyikan")
+		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
 func _tampilkan_panel_informasi() -> void:
 	if $pemutar_musik.visible:
