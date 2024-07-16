@@ -87,8 +87,8 @@ func _process(_delta : float) -> void:
 				# kalkulasi jarak kamera dengan objek
 				var jarak_objek : float = posisi_pengamat.distance_to(posisi_objek)
 				
-				# jika jarak kamera dengan objek lebih dari jarak render objek * 0.5
-				if jarak_objek > (m_objek.jarak_render * 0.5):
+				# jika jarak kamera dengan objek lebih dari 10 # FIXME : buat variabel radius keterlihatan!
+				if jarak_objek > 10:
 					# atur posisi dan rotasi posisi_relatif_pengamat dengan posisi dan rotasi pengamat
 					posisi_relatif_pengamat.global_position = pengamat.global_position
 					posisi_relatif_pengamat.global_rotation_degrees = pengamat.global_rotation_degrees
@@ -129,7 +129,8 @@ func _process(_delta : float) -> void:
 			
 			# Occlusion Culling
 			# FIXME : jangan cek ketika posisi pengamat berada didekat objek / titik
-			if !m_objek.tak_terlihat: # 23/06/24 :: jangan cek ketika arah pengamat membelakangi objek
+			# 23/06/24 :: jangan cek ketika arah pengamat membelakangi objek atau occlusion culling dinonaktifkan
+			if !m_objek.tak_terlihat and (m_objek.get("abaikan_occlusion_culling") == null or m_objek.get("abaikan_occlusion_culling") == false):
 				if server.permainan.gunakan_occlusion_culling and m_objek.titik_sudut.size() > 0:
 					# pastikan cek titik yang valid
 					if m_objek.cek_titik < m_objek.titik_sudut.size():

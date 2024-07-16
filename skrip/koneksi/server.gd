@@ -80,6 +80,7 @@ const jarak_render_entitas = 10		# FIXME : set ke 50!
 # pool_objek spawn dan de-spawn secara batch di client
 # client dapat me-non-aktifkan culling pool_objek untuk tech demo
 # tiap objek pool_objek memiliki jarak rendernya masing-masing
+# objek dapat diabaikan dari occlusion culling
 # occlusion culling diproses secara lokal di client
 # pool_objek{
 # 	"objek_1" : {
@@ -688,11 +689,11 @@ func _pemain_terputus(id_pemain):
 					break
 				#else:
 				#	Panku.notify("Kirara Magic - Sweet Dream")
-@rpc("any_peer") func _tambahkan_entitas(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array):
+@rpc("any_peer") func _tambahkan_entitas(jalur_skena : String, posisi : Vector3, rotasi : Vector3, properti : Array) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
 			jumlah_entitas += 1
-			var nama_entitas = "entitas_"+str(jumlah_entitas)
+			var nama_entitas : StringName = "entitas_"+str(jumlah_entitas)
 			# INFO : tambahkan entitas ke array pool_entitas
 			pool_entitas[nama_entitas] = {
 				"jalur_instance": jalur_skena,
@@ -716,11 +717,11 @@ func _pemain_terputus(id_pemain):
 				}
 		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
-@rpc("any_peer") func _tambahkan_objek(jalur_skena : String, posisi : Vector3, rotasi : Vector3, jarak_render : int, properti : Array):
+@rpc("any_peer") func _tambahkan_objek(jalur_skena : String, posisi : Vector3, rotasi : Vector3, jarak_render : int, properti : Array) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
 			jumlah_objek += 1
-			var nama_objek = "objek_"+str(jumlah_objek)
+			var nama_objek : StringName = "objek_"+str(jumlah_objek)
 			# INFO : tambahkan objek ke array pool_objek
 			pool_objek[nama_objek] = {
 				"jarak_render"	: jarak_render,
