@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="4_v0af0"]
 [ext_resource type="Texture2D" uid="uid://d1skccyhbqj77" path="res://material/lantai/lantai_028/warna.jpg" id="7_em3pv"]
 [ext_resource type="PackedScene" uid="uid://bfrbndvi106iv" path="res://model/bangunan/interior_mercusuar.scn" id="7_jv2ni"]
-[ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_batu.scn" id="7_mxxfs"]
+[ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_pantai.scn" id="7_mxxfs"]
 [ext_resource type="Texture2D" uid="uid://bi73ncsngh3y1" path="res://material/lantai/lantai_028/normal.jpg" id="8_ii5vm"]
 [ext_resource type="Texture2D" uid="uid://b2vsyr550v2qm" path="res://material/lantai/lantai_028/roughness.jpg" id="9_hkcep"]
 
