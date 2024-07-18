@@ -33,7 +33,7 @@ var b_nama_file_timeline : String
 var b_file_timeline : FileAccess
 
 const jarak_render_karakter = 50
-const jarak_render_entitas = 10		# FIXME : set ke 50!
+const jarak_render_entitas = 50
 
 # .: Timeline :.
 # frame : Int

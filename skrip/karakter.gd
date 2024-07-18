@@ -57,7 +57,7 @@ var _ragdoll : bool = false :
 var _timer_ragdoll : Timer
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
-var menarget : bool = false						# kondisi apakah sedang menarget objek
+var menarget : bool = false					# kondisi apakah sedang menarget objek
 var objek_target : Node3D					# node/objek yang di target
 var posisi_target : Vector3					# posisi titik temu target
 var mode_menyerang : StringName = "a"		# ini mode serangan misalnya: a / b

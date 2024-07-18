@@ -51,11 +51,6 @@ extends Node3D
 @export var tekstur : Image
 @export var potongan = []
 @export var vegetasi = []
-@export var hapus_rid_vegetasi = false :
-	set(nilai):
-		if nilai:
-			hapus_rid()
-		hapus_rid_vegetasi = false
 @export var perbarui = false :
 	set(nilai):
 		if nilai:
@@ -206,9 +201,6 @@ func _process(_delta):
 							#	potongan[pt]["pusat_y"]
 							#)
 							potongan[pt]["m_render"] = "detail"
-							
-							atur_visibilitas_lod_potongan_vegetasi(pt, false)
-							atur_visibilitas_vegetasi_potongan(pt, posisi_pengamat, pengamat.global_rotation, pengamat.fov)
 						
 						# hanya render potongan yang terlihat di pandangan pengamat
 						else:
@@ -254,63 +246,19 @@ func _process(_delta):
 										if !potongan_node.visible:
 											potongan_node.visible = true
 											atur_fisik_potongan(pt, true)
-										if jarak_render < jarak:
-											atur_visibilitas_potongan_vegetasi(pt, true)
-											atur_visibilitas_lod_potongan_vegetasi(pt, false)
-											potongan[pt]["m_render"] = "lod"
-										else:
-											atur_visibilitas_potongan_vegetasi(pt, false)
-											potongan[pt]["m_render"] = "gpu instance"
-											if gunakan_occlusion_culling and potongan[pt].get("aabb") != null:
-												var aabb_instance = potongan[pt]["aabb"]
-												
-												# dapatkan aabb instance lod vegetasi
-												# loop tiap posisi aabb :
-												# - atur posisi raycast ke posisi sudut aabb
-												# - arahkan raycast ke pengamat
-												# - dapatkan objek yang terkena raycast:
-												# - - jika objek raycast adalah pengamat, hentikan proses eksekusi | return
-												# non-aktifkan visibilitas instance lod vegetasi.
-												# 15/01/24 :: occlusion culling mengecek kedalaman (depth) tiap pixel, itu cukup rumit pada hardware rendah, apalagi jika terdapat banyak objek
-												# ^ sama seperti frustum culling, metode ini meng-kalkulasi (axis-aligned bounding box) AABB / (bounding box) dari suatu objek
-												# + dibandingkan dengan occlusion culling aslinya, metode ini menggunakan lebih sedikit instruksi pada CPU
-												# - tetapi visibilitas objek kurang akurat, kadang tetap di-render walau semestinya tidak terlihat
-												
-												# jangan pake loop, karena gak bisa di-jeda | pake fungsi yang saling memanggil!
-												var hasil = await _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, 0)
-												
-												# debug
-												#print_debug("kalkulasi occlusion culling pada potongan_" + potongan[pt]["indeks"])
-												#gunakan_occlusion_culling = false # cek satu potongan
-												
-												if hasil:
-													# kalau true, berarti vegetasi terhalang
-													atur_visibilitas_lod_potongan_vegetasi(pt, false)
-													potongan[pt]["m_render"] = "occluded"
-													#print_debug(" potongan_"+str(potongan[pt]["indeks"])+" terhalang")
-												else:
-													atur_visibilitas_lod_potongan_vegetasi(pt, true)
-													#print_debug(" potongan_"+str(potongan[pt]["indeks"])+" nampak")
-											else:	atur_visibilitas_lod_potongan_vegetasi(pt, true)
 									elif jarak_render >= jarak and potongan_node.visible:
 										potongan_node.visible = false
 										atur_fisik_potongan(pt, false)
-										atur_visibilitas_potongan_vegetasi(pt, false)
-										atur_visibilitas_lod_potongan_vegetasi(pt, false)
 										potongan[pt]["m_render"] = "cull"
 								elif potongan_node.visible:
 									potongan_node.visible = false
 									atur_fisik_potongan(pt, false)
-									atur_visibilitas_potongan_vegetasi(pt, false)
-									atur_visibilitas_lod_potongan_vegetasi(pt, false)
 									potongan[pt]["m_render"] = ""
 								arah_target_pengamat.rotation_degrees.y = 0
 					else:
 						if !get_node("tanah/bentuk_" + potongan[pt]["indeks"]).visible:
 							get_node("tanah/bentuk_" + potongan[pt]["indeks"]).visible = true
 							atur_fisik_potongan(pt, true)
-						atur_visibilitas_potongan_vegetasi(pt, true)
-						atur_visibilitas_lod_potongan_vegetasi(pt, false)
 						potongan[pt]["m_render"] = "detail"
 		
 		# posisikan shader air (kalau ada) mengikuti posisi horizontal pengamat
@@ -331,7 +279,6 @@ func _exit_tree():
 			var tmp = $tanah.get_node("placeholder_permukaan")
 			$tanah.remove_child(tmp)
 			tmp.queue_free()
-	else: hapus_vegetasi()
 
 func hasilkan_terrain():
 	var arr_mesh = ArrayMesh.new()
@@ -353,7 +300,6 @@ func hasilkan_terrain():
 	print("menghasilkan vertex dari pixel")
 	surftool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	if hasilkan_vegetasi:
-		if vegetasi.size() > 0: hapus_vegetasi(); hapus_rid()
 		vegetasi = []
 		print("menempatkan vegetasi")
 	for y in gambar_noise.get_height()+1:
@@ -445,24 +391,6 @@ func hasilkan_terrain():
 		if is_instance_valid(fisik) and fisik.get_child_count() > 0: fisik.remove_child(fisik.get_child(0))
 		print("memotong bentuk : 4 * 4 => 16")
 		slice_terrain(gambar_noise, mat)
-func hapus_vegetasi():
-	print("menghapus vegetasi permukaan")
-	for pt in potongan.size():
-		var indeks_vegetasi = potongan[pt]["vegetasi"].keys()
-		var indeks_instance_vegetasi = potongan[pt]["instance"].keys()
-		for vg in potongan[pt]["vegetasi"].size():
-			if potongan[pt]["vegetasi"][indeks_vegetasi[vg]].get("detail") != null:
-				RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["detail"])
-				RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod1"])
-				RenderingServer.free_rid(potongan[pt]["vegetasi"][indeks_vegetasi[vg]]["lod2"])
-		for ld2 in potongan[pt]["instance"].size():
-			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["instance"])
-			RenderingServer.free_rid(potongan[pt]["instance"][indeks_instance_vegetasi[ld2]]["multimesh"])
-func hapus_rid():
-	print("menghapus rid vegetasi")
-	for pt in potongan.size():
-		potongan[pt]["instance"].clear()
-		potongan[pt]["vegetasi"].clear()
 
 func simpan_terrain():
 	var packed_scene 	= PackedScene.new()
@@ -516,63 +444,7 @@ func muat_terrain():
 			
 			print("menghasilkan vegetasi")
 			for v in vegetasi.size():
-				var instance : RID = RenderingServer.instance_create()
-				var instance_lod1 : RID; var instance_lod2 : RID
-				var detail = null; var lod1; var lod2;
-				var jarak_lod1 = 25; var jarak_lod2 = 45
-				var jarak_render = 400; var transisi_render = 1;
 				var posisi_vegetasi = vegetasi[v]["posisi"]
-				
-				match vegetasi[v]["tipe"]:
-					"pohon":
-						if pohon[vegetasi[v]["model"]] is Dictionary:
-							detail	= pohon[vegetasi[v]["model"]]["detail"];
-							lod1 	= pohon[vegetasi[v]["model"]]["lod1"];	jarak_lod1 = pohon[vegetasi[v]["model"]]["jarak_lod1"];
-							lod2 	= pohon[vegetasi[v]["model"]]["lod2"];	jarak_lod2 = pohon[vegetasi[v]["model"]]["jarak_lod2"];
-					"semak": detail = semak[vegetasi[v]["model"]];  jarak_render = 50; transisi_render = 10
-				
-				if detail != null:
-					var xform = Transform3D(vegetasi[v]["rotasi"], posisi_vegetasi)
-					
-					RenderingServer.instance_set_scenario(instance, scenario)
-					RenderingServer.instance_set_base(instance, detail)
-					RenderingServer.instance_geometry_set_visibility_range(instance, 0, jarak_render, 0, transisi_render, RenderingServer.VISIBILITY_RANGE_FADE_DEPENDENCIES)
-					RenderingServer.instance_set_transform(instance, xform)
-				
-					if is_instance_valid(lod1):
-						instance_lod1 = RenderingServer.instance_create2(lod1, scenario)
-						RenderingServer.instance_attach_object_instance_id(instance, instance_lod1.get_id())
-						RenderingServer.instance_geometry_set_visibility_range(
-							instance,
-							0, 					# begin
-							jarak_lod1,			# end
-							0,					# begin margin
-							transisi_render,	# end margin
-							RenderingServer.VISIBILITY_RANGE_FADE_DEPENDENCIES
-						)
-						RenderingServer.instance_geometry_set_visibility_range(
-							instance_lod1,
-							jarak_lod1, 		# begin
-							jarak_lod2,			# end
-							transisi_render,	# begin margin
-							transisi_render,	# end margin
-							RenderingServer.VISIBILITY_RANGE_FADE_DEPENDENCIES
-						)
-						RenderingServer.instance_set_transform(instance_lod1, xform)
-						#RenderingServer.instance_set_ignore_culling(instance_lod1, true)
-					if is_instance_valid(lod2):
-						instance_lod2 = RenderingServer.instance_create2(lod2, scenario)
-						RenderingServer.instance_attach_object_instance_id(instance, instance_lod2.get_id())
-						RenderingServer.instance_geometry_set_visibility_range(
-							instance_lod2,
-							jarak_lod2, 			# begin
-							jarak_lod2+jarak_render,# end
-							transisi_render,		# begin margin
-							transisi_render,		# end margin
-							RenderingServer.VISIBILITY_RANGE_FADE_DEPENDENCIES
-						)
-						RenderingServer.instance_set_transform(instance_lod2, xform)
-				
 				if potongan.size() > 0:
 					for pt in potongan.size():
 						var posisi = {
@@ -589,172 +461,21 @@ func muat_terrain():
 						if posisi_vegetasi.z >= posisi.y and posisi_vegetasi.z <= (posisi.y + batas.y): pass
 						else: continue
 						
-						match vegetasi[v]["tipe"]:
-							"batu":
-								if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+						if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+							match vegetasi[v]["tipe"]:
+								"batu":
 									var model_vegetasi = load(batu[vegetasi[v]["model"]])
 									var instance_vegetasi = model_vegetasi.instantiate()
 									instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
 									instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
 									add_child(instance_vegetasi)
-							"pohon":
-								if pohon[vegetasi[v]["model"]] is String:
-									if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+								"pohon":
+									if pohon[vegetasi[v]["model"]] is String:
 										var model_vegetasi = load(pohon[vegetasi[v]["model"]])
 										var instance_vegetasi = model_vegetasi.instantiate()
 										instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
 										instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
 										add_child(instance_vegetasi)
-							"pencemaran", "bunga_nektar":
-								potongan[pt]["vegetasi"][v] = {
-									"terlihat":	true,
-									"id_spawner": v
-								}
-							_:
-								potongan[pt]["vegetasi"][v] = {
-									"terlihat":	true,
-									"detail":	instance,
-									"lod1":		instance_lod1,
-									"lod2":		instance_lod2
-								}
-			
-			# 04/01/24 : buat MeshInstance3D gabungan dari lod2 sebagai lod3 | GPU Instancing
-			if potongan.size() > 0:
-				for pt in potongan.size():
-					potongan[pt]["instance"] = {}
-					if potongan[pt]["vegetasi"].size() > 0:
-						var indeks_vegetasi = potongan[pt]["vegetasi"].keys()
-						for v in potongan[pt]["vegetasi"].size():
-							if vegetasi[indeks_vegetasi[v]]["tipe"] == "pohon" and pohon[vegetasi[indeks_vegetasi[v]]["model"]]["lod2"] != null: # hanya pohon yang bisa terlihat dari kejauhan
-								var indeks = vegetasi[indeks_vegetasi[v]]["tipe"]+"_"+str(vegetasi[indeks_vegetasi[v]]["model"])
-								var mesh_lod2 : RID = pohon[vegetasi[indeks_vegetasi[v]]["model"]]["lod2"]
-								var multimesh : RID
-								
-								if potongan[pt]["instance"].get(indeks) == null:
-									multimesh = RenderingServer.multimesh_create()
-									var instance : RID = RenderingServer.instance_create()
-									
-									RenderingServer.instance_set_base(instance, multimesh)
-									RenderingServer.instance_set_scenario(instance, scenario)
-									RenderingServer.multimesh_set_mesh(multimesh, mesh_lod2)
-									
-									potongan[pt]["m_render"] = "detail"
-									potongan[pt]["instance"][indeks] = {}
-									potongan[pt]["instance"][indeks]["terlihat"] = true
-									potongan[pt]["instance"][indeks]["instance"] = instance
-									potongan[pt]["instance"][indeks]["jumlah_instance"] = 1
-									potongan[pt]["instance"][indeks]["multimesh"] = multimesh
-									potongan[pt]["instance"][indeks]["buffer_transformasi"] = PackedFloat32Array()
-								else:
-									multimesh = potongan[pt]["instance"][indeks]["multimesh"]
-									potongan[pt]["instance"][indeks]["jumlah_instance"] += 1
-								
-								potongan[pt]["instance"][indeks]["buffer_transformasi"].append_array(
-									[
-										1, 0, 0, vegetasi[indeks_vegetasi[v]]["posisi"].x,
-										0, 1, 0, vegetasi[indeks_vegetasi[v]]["posisi"].y,
-										0, 0, 1, vegetasi[indeks_vegetasi[v]]["posisi"].z
-									]
-								)
-							elif vegetasi[indeks_vegetasi[v]]["tipe"] == "pencemaran" or vegetasi[indeks_vegetasi[v]]["tipe"] == "bunga_nektar":
-								total_spawner[vegetasi[indeks_vegetasi[v]]["tipe"]] += 1
-						
-						var indeks_instance = potongan[pt]["instance"].keys()
-						for i in potongan[pt]["instance"].size():
-							var multimesh = potongan[pt]["instance"][indeks_instance[i]]["multimesh"]
-							if potongan[pt].get("aabb") == null: potongan[pt]["aabb"] = AABB()
-							if multimesh.is_valid():
-								RenderingServer.multimesh_allocate_data(multimesh, potongan[pt]["instance"][indeks_instance[i]]["jumlah_instance"], RenderingServer.MULTIMESH_TRANSFORM_3D)
-								RenderingServer.multimesh_set_buffer(multimesh, potongan[pt]["instance"][indeks_instance[i]]["buffer_transformasi"])
-								potongan[pt]["instance"][indeks_instance[i]].erase("buffer_transformasi")
-								potongan[pt]["aabb"] = potongan[pt]["aabb"].merge(RenderingServer.multimesh_get_aabb(multimesh))
-							
-						if potongan[pt]["instance"].size() > 0:
-							var aabb = potongan[pt]["aabb"]
-							var tmp_aabb = []
-							var potongan_tengah = Vector3(
-									potongan[pt]["pusat_x"],
-									0,
-									potongan[pt]["pusat_y"]
-								)
-							for titik in 8:
-								var tmp_vektor = aabb.get_endpoint(titik)
-								# sesuaikan posisi aabb dengan titik tengah
-								tmp_vektor.x += aabb.size.x / 2
-								tmp_vektor.z += aabb.size.z / 2
-								# ubah posisi abb menjadi posisi global
-								tmp_vektor = potongan_tengah + tmp_vektor
-								# sesuaikan posisi y aabb
-								if tmp_vektor.y < 1:
-									raycast_occlusion_culling.global_position = Vector3(tmp_vektor.x, 100, tmp_vektor.z)
-									raycast_occlusion_culling.global_rotation_degrees = (Vector3i(-90, 0, 0))
-									raycast_occlusion_culling.force_raycast_update()
-									# raycast_debug
-									#get_node("raycast_debug_"+str(titik+1)).global_position = raycast_occlusion_culling.global_position
-									#get_node("raycast_debug_"+str(titik+1)).global_rotation_degrees = raycast_occlusion_culling.global_rotation_degrees
-									var mengenai_permukaan = raycast_occlusion_culling.is_colliding()
-									if mengenai_permukaan: tmp_vektor.y = raycast_occlusion_culling.get_collision_point().y
-								# terapkan ke array
-								tmp_aabb.append(tmp_vektor)
-							potongan[pt]["aabb"] = tmp_aabb
-						
-						potongan_yang_memiliki_vegetasi.append(pt)
-			
-			# 25/01/24 : distribusi spawner ke seluruh wilayah permukaan
-			var distribusi_posisi_spawner_pada_potongan = {
-				"pencemaran": [],
-				"bunga_nektar": []
-			}
-			var total_spawner_di_tiap_potongan = {
-				"pencemaran": 	(total_spawner.pencemaran * 0.05)	/	potongan_yang_memiliki_vegetasi.size(),
-				"bunga_nektar": (total_spawner.bunga_nektar * 0.03)	/	potongan_yang_memiliki_vegetasi.size()
-			}
-			
-			# jangan tambahkan spawner di client
-			if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-				for ptv in potongan_yang_memiliki_vegetasi:
-					distribusi_posisi_spawner_pada_potongan["pencemaran"] = []
-					distribusi_posisi_spawner_pada_potongan["bunga_nektar"] = []
-					
-					for spw in potongan[ptv]["vegetasi"]:
-						if potongan[ptv]["vegetasi"][spw].get("id_spawner") != null:
-							distribusi_posisi_spawner_pada_potongan[
-								vegetasi[
-									potongan[ptv]["vegetasi"][spw]["id_spawner"]
-								]["tipe"]
-							].append(
-								vegetasi[
-									potongan[ptv]["vegetasi"][spw]["id_spawner"]
-								]["posisi"]
-							)
-					
-					var tipe_distribusi = distribusi_posisi_spawner_pada_potongan.keys()
-					for dspw in distribusi_posisi_spawner_pada_potongan.size():
-						for distribusi in total_spawner_di_tiap_potongan[tipe_distribusi[dspw]]:
-							var indeks_acak = randi() % distribusi_posisi_spawner_pada_potongan[tipe_distribusi[dspw]].size()
-							var posisi_distribusi = distribusi_posisi_spawner_pada_potongan[tipe_distribusi[dspw]][indeks_acak]
-							
-							raycast_occlusion_culling.global_position = Vector3(posisi_distribusi.x, 100, posisi_distribusi.z)
-							raycast_occlusion_culling.global_rotation_degrees = (Vector3i(-90, 0, 0))
-							raycast_occlusion_culling.force_raycast_update()
-							var mengenai_permukaan = raycast_occlusion_culling.is_colliding()
-							if mengenai_permukaan: posisi_distribusi.y = raycast_occlusion_culling.get_collision_point().y
-							
-							match tipe_distribusi[dspw]:
-								"pencemaran":
-									var model_vegetasi = load("res://skena/entitas/pencemaran.scn")
-									var vegetation_instance = model_vegetasi.instantiate()
-									vegetation_instance.transform.origin = posisi_distribusi
-									vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
-									add_child(vegetation_instance)
-								"bunga_nektar":
-									var model_vegetasi = load("res://skena/entitas/bunga_nektar.scn")
-									var vegetation_instance = model_vegetasi.instantiate()
-									vegetation_instance.transform.origin = posisi_distribusi
-									vegetation_instance.transform.basis = Basis(Vector3(0, 1, 0), deg_to_rad(randf_range(0, 360)))
-									add_child(vegetation_instance)
-							distribusi_posisi_spawner_pada_potongan[tipe_distribusi[dspw]].remove_at(indeks_acak)
-			
 	else: print("tidak ada data permukaan")
 
 func slice_terrain(gambar_noise, material):
@@ -891,85 +612,6 @@ func tempatkan_vegetasi(posisi : Vector3):
 	if data_vegetasi.get("tipe") != null:
 		data_vegetasi["posisi"] = posisi
 		vegetasi.append(data_vegetasi)
-func atur_visibilitas_vegetasi_potongan(id_potongan, posisi_pengamat, rotasi_pengamat, fov_pengamat):	# atur visibilitas vegetasi satu per-satu relatif terhadap pengamat pada suatu potongan
-	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
-	for vg in potongan[id_potongan]["vegetasi"].size():
-		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]].get("detail") != null and \
-		  potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():
-			var posisi_vegetasi : Vector3 = vegetasi[indeks_vegetasi[vg]]["posisi"]
-			var arah_pengamat = Vector3.FORWARD.rotated(Vector3.UP, rotasi_pengamat.y)
-			var jarak_pengamat = posisi_vegetasi.distance_to(posisi_pengamat)
-			var pengamat_ke_vegetasi : Vector3 = posisi_vegetasi - posisi_pengamat
-			pengamat_ke_vegetasi.y = 0 # gak usah cek ketinggian!
-			#print(posisi_vegetasi) # HACK : mencetak banyak data dalam waktu bersamaan akan memperlambat kinerja cpu
-			
-			arah_pengamat = arah_pengamat.normalized()
-			pengamat_ke_vegetasi = pengamat_ke_vegetasi.normalized()
-			
-			var dot_product = arah_pengamat.dot(pengamat_ke_vegetasi)
-			var sudut_arah = rad_to_deg(acos(dot_product))
-			
-			# lakukan culling hanya jika jarak vegetasi dan pengamat > 10 atau sudut_arah lebih dari fov pengamat
-			# jarak 10 ditujukan supaya pengamat dapat tetap melihat vegetasi dari dekat, ini dikarenakan bentuk model vegetasi
-			if sudut_arah <= (fov_pengamat + (fov_pengamat * 0.405453467695)) or jarak_pengamat < 10:
-				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] != true:
-					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], true)
-					if gunakan_level_of_detail:
-						if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
-							RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], true)
-						if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
-							RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], true)
-					potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = true
-			else:
-				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] != false:
-					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], false)
-					if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
-						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], false)
-					if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
-						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], false)
-					potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = false
-func atur_visibilitas_potongan_vegetasi(id_potongan, nilai : bool): 									# atur visibilitas semua vegetasi pada suatu potongan
-	var indeks_vegetasi = potongan[id_potongan]["vegetasi"].keys()
-	for vg in potongan[id_potongan]["vegetasi"].size():
-		if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]].get("detail") != null:
-			if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] != nilai:
-				if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"].is_valid():
-					RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"], nilai)
-				else: print("instance ["+str(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["detail"])+"] tidak valid!")
-				if gunakan_level_of_detail or !nilai:
-					if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"].is_valid():
-						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod1"], nilai)
-					if potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"].is_valid():
-						RenderingServer.instance_set_visible(potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["lod2"], nilai)
-				potongan[id_potongan]["vegetasi"][indeks_vegetasi[vg]]["terlihat"] = nilai
-func atur_visibilitas_lod_potongan_vegetasi(id_potongan, nilai : bool): 								# atur visibilitas semua lod vegetasi pada suatu potongan
-	var indeks_instance = potongan[id_potongan]["instance"].keys()
-	for i in potongan[id_potongan]["instance"].size():
-		if potongan[id_potongan]["instance"][indeks_instance[i]]["instance"].is_valid():
-			if potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] != nilai:
-				RenderingServer.instance_set_visible(potongan[id_potongan]["instance"][indeks_instance[i]]["instance"], nilai)
-				potongan[id_potongan]["instance"][indeks_instance[i]]["terlihat"] = nilai
 func atur_fisik_potongan(id_potongan : int, nilai : bool):
 	if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: pass
 	else: get_node("tanah/fisik/fisik_" + potongan[id_potongan]["indeks"]).disabled = !nilai
-
-func _kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik):
-	if titik < 8:
-		raycast_occlusion_culling.global_position = aabb_instance[titik]
-		raycast_occlusion_culling.look_at(pengamat.global_position)
-		raycast_occlusion_culling.force_raycast_update()
-		# raycast_debug
-		#get_node("titik_debug/titik_"+str(titik+1)).global_position = aabb_instance[titik]
-		#get_node("raycast_debug_"+str(titik+1)).global_position = aabb_instance[titik]
-		#get_node("raycast_debug_"+str(titik+1)).look_at(pengamat.global_position)
-		var mengenai_pengamat = await raycast_occlusion_culling.is_colliding()
-		if mengenai_pengamat:
-			var objek_raycast = raycast_occlusion_culling.get_collider()
-			if objek_raycast.get_parent() == pengamat: return false
-			else:
-				var hasil_1 = await self._kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik + 1)
-				return hasil_1
-		else:
-			var hasil_1 = await self._kalkulasi_sudut_occlusion_culling_vegetasi(aabb_instance, raycast_occlusion_culling, titik + 1)
-			return hasil_1
-	else: return true

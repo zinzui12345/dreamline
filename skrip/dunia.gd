@@ -1,6 +1,9 @@
 extends Node3D
 
 var pengamat : Camera3D
+var jarak_objek : float
+var posisi_objek : Vector3
+var posisi_pengamat : Vector3
 var arah_target_pengamat : Marker3D
 var posisi_relatif_pengamat : Node3D
 var raycast_occlusion_culling : RayCast3D
@@ -79,13 +82,13 @@ func _process(_delta : float) -> void:
 			# Direction Culling / Frustum Culling
 			if server.permainan.gunakan_frustum_culling:
 				# dapatkan posisi global kamera
-				var posisi_pengamat : Vector3 = pengamat.global_position
+				posisi_pengamat = pengamat.global_position
 				
 				# dapatkan posisi global kamera
-				var posisi_objek : Vector3 = m_objek.global_position
+				posisi_objek = m_objek.global_position
 				
 				# kalkulasi jarak kamera dengan objek
-				var jarak_objek : float = posisi_pengamat.distance_to(posisi_objek)
+				jarak_objek = posisi_pengamat.distance_to(posisi_objek)
 				
 				# jika jarak kamera dengan objek lebih dari radius keterlihatan
 				if jarak_objek > m_objek.radius_keterlihatan:

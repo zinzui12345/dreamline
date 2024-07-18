@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 16/07/24 alpha"
+const versi = "Dreamline v1.4.4 18/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -225,6 +225,8 @@ func _ready() -> void:
 		$hud/bantuan_input.visible = false
 		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
 		dunia.get_node("matahari").directional_shadow_max_distance /= 2
+		# sesuaikan zoom blok kode
+		$blok_kode/panel_kode._ketika_mengatur_skala(1.5)
 	
 	# setup dialog
 	DialogueManager.dialogue_ended.connect(tutup_dialog)

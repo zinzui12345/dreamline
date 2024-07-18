@@ -2,16 +2,16 @@
 extends Node3D
 class_name entitas
 
-var id_proses = -1:			# id peer/pemain yang memproses entitas ini
+var id_proses : int = -1:			# id peer/pemain yang memproses entitas ini
 	set(id):
 		atur_pemroses(id)
 		id_proses = id
-var cek_kondisi = {}		# simpan beberapa properti di tiap frame untuk membandingkan perubahan
-#const sinkron_kondisi = []	# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
-#const jalur_instance = ""	# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
+var cek_kondisi : Dictionary = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+#const sinkron_kondisi = []			# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
+#const jalur_instance = ""			# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
 
-func _ready(): call_deferred("_setup")
-func _setup():
+func _ready() -> void: call_deferred("_setup")
+func _setup() -> void:
 	if !is_instance_valid(server.permainan): return
 	if get_parent().get_path() != server.permainan.dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
@@ -25,20 +25,20 @@ func _setup():
 	else:
 		mulai()
 
-@onready var posisi_awal = global_transform.origin
-@onready var rotasi_awal = rotation
+@onready var posisi_awal : Vector3 = global_transform.origin
+@onready var rotasi_awal : Vector3 = rotation
 
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
-func mulai():
+func mulai() -> void:
 	pass
 # fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
-func proses(_waktu_delta : float):
+func proses(_waktu_delta : float) -> void:
 	pass
 # fungsi yang akan dipanggil ketika id_proses diubah
-func atur_pemroses(_id_pemroses : int):
+func atur_pemroses(_id_pemroses : int) -> void:
 	pass
 # fungsi untuk menghapus entitas, menghilangkan dari dunia dan server
-func hilangkan():
+func hilangkan() -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		# hapus dari dictionary pool_entitas pada server
 		server.pool_entitas.erase(name)
@@ -51,7 +51,7 @@ func hilangkan():
 	# hapus instance
 	queue_free()
 
-func _process(delta):
+func _process(delta : float) -> void:
 	# hentikan proses jika node tidak berada dalam permainan
 	if !is_instance_valid(server.permainan): set_process(false); return
 	
