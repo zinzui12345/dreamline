@@ -19,9 +19,7 @@ func pilih():
 					jalur_objek,
 					server.permainan.pasang_objek,
 					Vector3.ZERO,
-					[
-						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
-					]
+					[]
 				)
 			elif cek_tipe_objek is objek:
 				server._tambahkan_objek(
@@ -39,9 +37,7 @@ func pilih():
 					jalur_objek,
 					server.permainan.pasang_objek,
 					Vector3.ZERO,
-					[
-						[\"warna_1\", Color(randf(), randf(), randf(), 1)]
-					]
+					[]
 				)
 			elif cek_tipe_objek is objek:
 				server.rpc_id(

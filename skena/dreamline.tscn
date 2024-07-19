@@ -1,4 +1,4 @@
-[gd_scene load_steps=320 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=325 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -68,6 +68,7 @@
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
 [ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="32_clll1"]
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
+[ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english.svg" id="63_r5flb"]
@@ -1180,8 +1181,25 @@ _data = {
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32pwm"]
 bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_right = 1
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utkpx"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5syxs"]
+bg_color = Color(0.336877, 0.336877, 0.336877, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n6rxd"]
+bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scf8i"]
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g3k4m"]
 bg_color = Color(0, 0, 0, 0.4)
@@ -6076,9 +6094,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.021
-anchor_top = 0.062
+anchor_top = 0.175139
 anchor_right = 0.979
-anchor_bottom = 0.942
+anchor_bottom = 0.941999
 offset_left = -0.128002
 offset_top = 0.0119991
 offset_right = 0.127991
@@ -6086,13 +6104,32 @@ offset_bottom = -0.108002
 grow_horizontal = 2
 grow_vertical = 2
 columns = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="placeholder_entitas" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
+texture_normal = ExtResource("39_jspvy")
+metadata/jalur_objek = "res://skena/entitas/bola_pantai.scn"
 
 [node name="placeholder_objek" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
 metadata/jalur_objek = "res://skena/objek/placeholder_objek.tscn"
+
+[node name="tutup" type="Button" parent="daftar_objek/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("12_kho47")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_utkpx")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5syxs")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_n6rxd")
+theme_override_styles/focus = SubResource("StyleBoxFlat_scf8i")
+text = "/
+"
 
 [node name="tutup" type="TextureButton" parent="daftar_objek"]
 visible = false
@@ -9174,6 +9211,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
 [connection signal="button_down" from="mode_bermain/main" to="." method="pilih_mode_bermain"]
 [connection signal="button_down" from="mode_bermain/edit" to="." method="pilih_mode_edit"]
+[connection signal="pressed" from="daftar_objek/Panel/tutup" to="." method="_tutup_daftar_objek"]
 [connection signal="pressed" from="daftar_objek/tutup" to="." method="_tutup_daftar_objek"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/lanjutkan" to="." method="_lanjutkan"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/putuskan" to="." method="_putuskan"]

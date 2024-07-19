@@ -156,62 +156,69 @@ var cek_perubahan_kondisi : Dictionary = {}	# simpan beberapa properti di tiap f
 func atur_model() -> void:
 	# alis | FaceBrow
 	var tmp_alis : Material
-	if Konfigurasi.shader_karakter:
-		tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/shader/alis.material")
-	else:
-		tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/normal/alis.material")
-	get_node("%GeneralSkeleton/wajah").set_surface_override_material(material["alis"]["id_material"][0], tmp_alis)
+	if get_node("%GeneralSkeleton/wajah").get_surface_override_material_count() > 0:
+		if Konfigurasi.shader_karakter:
+			tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/shader/alis.material")
+		else:
+			tmp_alis = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["alis"])+"/material/normal/alis.material")
+		get_node("%GeneralSkeleton/wajah").set_surface_override_material(material["alis"]["id_material"][0], tmp_alis)
 	
 	# mata | EyeIris
 	var tmp_mata : Material
-	if Konfigurasi.shader_karakter:
-		tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/shader/mata.material")
-	else:
-		tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/normal/mata.material")
-	get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][0], tmp_mata)
+	if get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).get_surface_override_material_count() > 0:
+		if Konfigurasi.shader_karakter:
+			tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/shader/mata.material")
+		else:
+			tmp_mata = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["mata"])+"/material/normal/mata.material")
+		get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][0], tmp_mata)
 	
 	# garis_mata | FaceEyeline | bulu_mata_a
 	var tmp_bulu_mata_a : Material
-	if Konfigurasi.shader_karakter:
-		tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/shader/bulu_mata_a.material")
-	else:
-		tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/normal/bulu_mata_a.material")
-	get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][1], tmp_bulu_mata_a)
+	if get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).get_surface_override_material_count() > 0:
+		if Konfigurasi.shader_karakter:
+			tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/shader/bulu_mata_a.material")
+		else:
+			tmp_bulu_mata_a = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["garis_mata"])+"/material/normal/bulu_mata_a.material")
+		get_node("%GeneralSkeleton/"+material["mata"]["jalur_node"]).set_surface_override_material(material["mata"]["id_material"][1], tmp_bulu_mata_a)
 	
 	# rambut
-	var src_mdl_rambut : MeshInstance3D = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
-	var tmp_mdl_rambut : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["rambut"])+"/rambut.scn").instantiate()
-	src_mdl_rambut.set_name("b_rambut")
-	tmp_mdl_rambut.set_name("rambut")
-	get_node("%GeneralSkeleton").add_child(tmp_mdl_rambut)
-	src_mdl_rambut.queue_free()
+	if get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"]).get_surface_override_material_count() > 0:
+		var src_mdl_rambut : MeshInstance3D = get_node("%GeneralSkeleton/"+material["rambut"]["jalur_node"])
+		var tmp_mdl_rambut : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["rambut"])+"/rambut.scn").instantiate()
+		src_mdl_rambut.set_name("b_rambut")
+		tmp_mdl_rambut.set_name("rambut")
+		get_node("%GeneralSkeleton").add_child(tmp_mdl_rambut)
+		src_mdl_rambut.queue_free()
 	
 	# baju
-	var tmp_mdl_baju : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
-	var src_mdl_baju : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
-	tmp_mdl_baju.name = "baju"
-	src_mdl_baju.name = "b_baju"
-	get_node("%GeneralSkeleton").add_child(tmp_mdl_baju.duplicate())
-	tmp_mdl_baju.queue_free()
-	src_mdl_baju.queue_free()
+	if get_node("%GeneralSkeleton/"+material["baju"]["jalur_node"]).get_surface_override_material_count() > 0:
+		var tmp_mdl_baju : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["baju"])+"/baju.scn").instantiate()
+		var src_mdl_baju : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["baju"]["jalur_node"])
+		tmp_mdl_baju.name = "baju"
+		src_mdl_baju.name = "b_baju"
+		get_node("%GeneralSkeleton").add_child(tmp_mdl_baju.duplicate())
+		tmp_mdl_baju.queue_free()
+		src_mdl_baju.queue_free()
 	
 	# celana
-	var tmp_mdl_celana : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
-	var src_mdl_celana : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
-	tmp_mdl_celana.name = "celana"
-	src_mdl_celana.name = "b_celana"
-	get_node("%GeneralSkeleton").add_child(tmp_mdl_celana.duplicate())
-	tmp_mdl_celana.queue_free()
-	src_mdl_celana.queue_free()
+	if get_node("%GeneralSkeleton/"+material["celana"]["jalur_node"]).get_surface_override_material_count() > 0:
+		var tmp_mdl_celana : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["celana"])+"/celana.scn").instantiate()
+		var src_mdl_celana : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["celana"]["jalur_node"])
+		tmp_mdl_celana.name = "celana"
+		src_mdl_celana.name = "b_celana"
+		get_node("%GeneralSkeleton").add_child(tmp_mdl_celana.duplicate())
+		tmp_mdl_celana.queue_free()
+		src_mdl_celana.queue_free()
 	
 	# sepatu
-	var tmp_mdl_sepatu : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
-	var src_mdl_sepatu : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
-	tmp_mdl_sepatu.name = "sepatu"
-	src_mdl_sepatu.name = "b_sepatu"
-	get_node("%GeneralSkeleton").add_child(tmp_mdl_sepatu.duplicate())
-	tmp_mdl_sepatu.queue_free()
-	src_mdl_sepatu.queue_free()
+	if get_node("%GeneralSkeleton/"+material["sepatu"]["jalur_node"]).get_surface_override_material_count() > 0:
+		var tmp_mdl_sepatu : MeshInstance3D = load("res://karakter/"+$model.get_child(0).name+"/preset"+str(model["sepatu"])+"/sepatu.scn").instantiate()
+		var src_mdl_sepatu : MeshInstance3D = get_node("%GeneralSkeleton").get_node(material["sepatu"]["jalur_node"])
+		tmp_mdl_sepatu.name = "sepatu"
+		src_mdl_sepatu.name = "b_sepatu"
+		get_node("%GeneralSkeleton").add_child(tmp_mdl_sepatu.duplicate())
+		tmp_mdl_sepatu.queue_free()
+		src_mdl_sepatu.queue_free()
 	
 	atur_warna() # set ulang warna
 func atur_warna() -> void:
@@ -431,7 +438,7 @@ func _input(event : InputEvent) -> void:
 			if menarget:
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
-						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
+						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()	# FIXME : ini gak work karena kendali pemain == false!
 						elif objek_target.has_method("gunakan") or objek_target.is_in_group("dapat_diedit"):
 							server.edit_objek(objek_target.name, true)
 						elif objek_target.name == "bidang_raycast" and \
@@ -445,7 +452,7 @@ func _input(event : InputEvent) -> void:
 			else:
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
-						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()
+						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()	# FIXME : ini gak work karena kendali pemain == false!
 func _physics_process(delta : float) -> void:
 	# kendalikan karakter dengan input
 	if kontrol:

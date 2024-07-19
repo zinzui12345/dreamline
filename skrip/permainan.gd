@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 18/07/24 alpha"
+const versi = "Dreamline v1.4.4 19/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -156,12 +156,13 @@ func _ready() -> void:
 		dunia = await load("res://skena/dunia.scn").instantiate()
 		get_tree().get_root().call_deferred("add_child", dunia)
 		dunia.set_process(false)
-	# Muat data karakter
+	# INFO : (1) muat data konfigurasi atau terapkan konfigurasi default
 	if FileAccess.file_exists(Konfigurasi.data_pemain):
 		var file : FileAccess = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
 		data = file.get_var()
 		file.close()
-	# INFO : (1) non-aktifkan proses untuk placeholder karakter
+	# Muat data karakter
+	# INFO : (2) non-aktifkan proses untuk placeholder karakter
 	get_node("%karakter/lulu").set_process(false)
 	get_node("%karakter/lulu").set_physics_process(false)
 	get_node("%karakter/lulu").model["alis"] 		= data["alis"]
@@ -217,7 +218,7 @@ func _ready() -> void:
 	server.set_process(false)
 	server.process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# INFO : (2) muat data konfigurasi atau terapkan konfigurasi default
+	# INFO : (2b) sesuaikan fungsi antarmuka pada smartphone
 	if OS.get_distribution_name() == "Android":
 		# aktifkan otomatis kontrol sentuh di android
 		Konfigurasi.mode_kontrol_sentuh = true
@@ -225,8 +226,6 @@ func _ready() -> void:
 		$hud/bantuan_input.visible = false
 		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
 		dunia.get_node("matahari").directional_shadow_max_distance /= 2
-		# sesuaikan zoom blok kode
-		$blok_kode/panel_kode._ketika_mengatur_skala(1.5)
 	
 	# setup dialog
 	DialogueManager.dialogue_ended.connect(tutup_dialog)
@@ -1632,7 +1631,7 @@ func _mainkan_musik_latar() -> void:
 		if musik != null:
 			$pemutar_musik/AudioStreamPlayer.stream = musik
 			$pemutar_musik/AudioStreamPlayer.play()
-			$pemutar_musik/judul.text = "New Horizons Remix"
+			$pemutar_musik/judul.text = "New Horizons (Remix)"
 			$pemutar_musik/artis.text = "Kirara Magic"
 			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
 	else:
@@ -1784,6 +1783,9 @@ func tampilkan_editor_kode() -> void:
 		if $karakter.visible:
 			$karakter/animasi.play("animasi_panel/tutup")
 		$menu_utama/animasi.play("lipat")
+	if OS.get_distribution_name() == "Android":
+		$blok_kode/panel_kode._ketika_mengatur_skala(1.5)
+		$blok_kode/panel_kode/kontrol_skala/pengatur_skala.value = 1.5
 	$blok_kode/animasi.play("tampilkan")
 func tutup_editor_kode() -> void:
 	# 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
