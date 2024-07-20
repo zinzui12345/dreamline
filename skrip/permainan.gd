@@ -34,7 +34,7 @@ class_name Permainan
 # 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 1.4.4 - Demo Uji Performa
 
-const versi = "Dreamline v1.4.4 19/07/24 alpha"
+const versi = "Dreamline v1.4.4 20/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -283,16 +283,12 @@ func _process(delta : float) -> void:
 			elif !jeda: _jeda()
 			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
-		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda):
-			$mode_bermain.visible = false
-			$hud/daftar_pemain/animasi.play("tampilkan")
+		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda): _tampilkan_daftar_pemain()
 		if Input.is_action_just_pressed("tampilkan_pesan") and !jeda: _tampilkan_input_pesan()
 		if Input.is_action_just_pressed("ui_text_completion_accept") and pesan: _kirim_pesan()
 		
 		if Input.is_action_just_released("berbicara"): _berbicara(false)
-		if Input.is_action_just_released("daftar_pemain") and $hud/daftar_pemain/panel.anchor_left > -1:
-			$mode_bermain.visible = true
-			$hud/daftar_pemain/animasi.play_backwards("tampilkan")
+		if Input.is_action_just_released("daftar_pemain") and $hud/daftar_pemain/panel.anchor_left > -1: _sembunyikan_daftar_pemain()
 		
 		# kontrol rotasi pandangan ketika mengedit objek
 		if get_node_or_null("pengamat") != null and !server.mode_replay and !server.mode_uji_performa:
@@ -1695,6 +1691,7 @@ func _sembunyikan_setelan_permainan() -> void:
 			break
 func _tampilkan_input_pesan() -> void:
 	$kontrol_sentuh/chat.release_focus()
+	if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
 	if pesan:
 		$hud/pesan/layout_input_pesan/input_pesan.release_focus()
 		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
@@ -1729,6 +1726,16 @@ func _sembunyikan_pesan() -> void:
 	if !pesan:
 		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
+func _ketika_menekan_tombol_daftar_pemain():
+	$kontrol_sentuh/daftar_pemain.release_focus()
+	if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
+	else:							_tampilkan_daftar_pemain()
+func _tampilkan_daftar_pemain():
+	$mode_bermain.visible = false
+	$hud/daftar_pemain/animasi.play("tampilkan")
+func _sembunyikan_daftar_pemain():
+	$mode_bermain.visible = true
+	$hud/daftar_pemain/animasi.play_backwards("tampilkan")
 func _tampilkan_panel_informasi() -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
@@ -1906,6 +1913,7 @@ func _ketika_menyimpan_data_karakter():
 # menu
 func _jeda():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
+		if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
 		if get_node_or_null("pengamat") != null and !server.mode_replay \
 			and !server.mode_uji_performa and $pengamat/kamera/rotasi_vertikal/pandangan.current:
 			pass
@@ -1917,6 +1925,7 @@ func _jeda():
 		$mode_bermain.visible = false
 		$kontrol_sentuh/menu.visible = false
 		$kontrol_sentuh/chat.visible = false
+		$kontrol_sentuh/daftar_pemain.visible = false
 		$menu_jeda/menu/animasi.play("tampilkan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.grab_focus()
 		jeda = true
@@ -1930,6 +1939,7 @@ func _lanjutkan():
 		$mode_bermain.visible = true
 		$kontrol_sentuh/menu.visible = true
 		$kontrol_sentuh/chat.visible = true
+		$kontrol_sentuh/daftar_pemain.visible = true
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.release_focus()
 		jeda = false

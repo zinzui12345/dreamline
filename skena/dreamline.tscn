@@ -1,4 +1,4 @@
-[gd_scene load_steps=325 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=326 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -68,6 +68,7 @@
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
 [ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="32_clll1"]
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
+[ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
@@ -488,7 +489,7 @@ bg_color = Color(0.8, 0.8, 0.8, 1)
 [sub_resource type="Animation" id="Animation_3kb00"]
 resource_name = "tampilkan"
 length = 0.4
-step = 0.01
+step = 0.005
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -521,6 +522,18 @@ tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.005, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:top_level")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.005, 0.395),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -5181,6 +5194,7 @@ libraries = {
 }
 
 [node name="daftar_pemain" type="Control" parent="hud"]
+visible = false
 layout_mode = 1
 anchor_right = 0.281188
 anchor_bottom = 1.00033
@@ -5201,55 +5215,57 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_60lyf")
 [node name="informasi" type="Panel" parent="hud/daftar_pemain/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.028
-anchor_top = 0.013
-anchor_right = 0.972
-anchor_bottom = 0.16
-offset_left = -0.0640144
-offset_top = 0.200026
-offset_right = 0.0634766
-offset_bottom = 0.000312805
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.00052
+offset_bottom = 152.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_akc24")
 
 [node name="nama_server" type="Label" parent="hud/daftar_pemain/panel/informasi"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.029
-anchor_top = 0.091
+anchor_top = 0.0531111
 anchor_right = 0.971
-anchor_bottom = 0.386
+anchor_bottom = 0.235667
 offset_left = 0.112
-offset_top = -0.00800037
+offset_top = 0.352
 offset_right = -0.11203
-offset_bottom = 0.0319977
+offset_bottom = 0.0639992
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "localhost"
+metadata/_edit_use_anchors_ = true
 
 [node name="alamat_ip" type="Label" parent="hud/daftar_pemain/panel/informasi"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0289981
-anchor_top = 0.386
-anchor_right = 0.970763
-anchor_bottom = 0.909
-offset_left = 0.112518
-offset_top = 0.0319977
-offset_right = -0.0474854
-offset_bottom = 0.00799561
+anchor_left = 0.029
+anchor_top = 0.278
+anchor_right = 0.971
+anchor_bottom = 1.0
+offset_left = 0.112
+offset_top = -0.0320053
+offset_right = -0.11203
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "192.168.254.123
-"
+dummy0 : fe80:0:0:0:e6c:e3ff:fe1b:d009
+ap0 : 192:168:8:13
+ccmni0 : 10.147.225.180"
 clip_text = true
 text_overrun_behavior = 3
+metadata/_edit_use_anchors_ = true
 
 [node name="gulir" type="ScrollContainer" parent="hud/daftar_pemain/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.0277777
-anchor_top = 0.173334
-anchor_right = 0.97222
-anchor_bottom = 0.98667
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 160.0
+offset_right = -8.00052
+offset_bottom = -7.99799
 grow_horizontal = 2
 metadata/_edit_use_anchors_ = true
 
@@ -5754,6 +5770,7 @@ offset_right = 0.471985
 offset_bottom = 0.199989
 theme_override_styles/panel = SubResource("StyleBoxFlat_0ugl5")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="posisi_durasi" type="HSlider" parent="hud/timeline"]
 layout_mode = 1
@@ -5820,6 +5837,7 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 48.0
 offset_bottom = 34.0
+metadata/_edit_lock_ = true
 
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 visible = false
@@ -6026,6 +6044,24 @@ button_mask = 5
 icon = ExtResource("18_m6a3h")
 icon_alignment = 1
 
+[node name="daftar_pemain" type="Button" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -238.0
+offset_top = 18.0
+offset_right = -178.0
+offset_bottom = 76.0
+grow_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+button_mask = 5
+icon = ExtResource("36_fyuuk")
+icon_alignment = 1
+
 [node name="mode_bermain" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
@@ -6048,6 +6084,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_vftos")
 toggle_mode = true
 icon = ExtResource("16_hou3c")
 icon_alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="edit" type="Button" parent="mode_bermain"]
 layout_mode = 2
@@ -6060,6 +6097,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_4gpu4")
 toggle_mode = true
 icon = ExtResource("17_jdpsl")
 icon_alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="daftar_objek" type="Control" parent="."]
 layout_mode = 1
@@ -9209,6 +9247,7 @@ bus = &"Suara Pemain"
 [connection signal="button_up" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]
 [connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
+[connection signal="pressed" from="kontrol_sentuh/daftar_pemain" to="." method="_ketika_menekan_tombol_daftar_pemain"]
 [connection signal="button_down" from="mode_bermain/main" to="." method="pilih_mode_bermain"]
 [connection signal="button_down" from="mode_bermain/edit" to="." method="pilih_mode_edit"]
 [connection signal="pressed" from="daftar_objek/Panel/tutup" to="." method="_tutup_daftar_objek"]
