@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=35 format=3 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
 [ext_resource type="ArrayMesh" uid="uid://d0ylp0id374jd" path="res://model/detail_air.res" id="4_dha2v"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_pantai.scn" id="7_mxxfs"]
 [ext_resource type="Texture2D" uid="uid://bi73ncsngh3y1" path="res://material/lantai/lantai_028/normal.jpg" id="8_ii5vm"]
 [ext_resource type="Texture2D" uid="uid://b2vsyr550v2qm" path="res://material/lantai/lantai_028/roughness.jpg" id="9_hkcep"]
+[ext_resource type="PackedScene" uid="uid://cp8dhj1vcicak" path="res://skena/objek/patung_moai.scn" id="11_18if7"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fu78a"]
 albedo_texture = ExtResource("4_v0af0")
@@ -10188,3 +10189,6 @@ shape = SubResource("ConvexPolygonShape3D_6qded")
 
 [node name="interior_mercusuar" parent="." instance=ExtResource("7_jv2ni")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 303, 4.8, 107.35)
+
+[node name="patung_moai" parent="." instance=ExtResource("11_18if7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49, 9, 255)
