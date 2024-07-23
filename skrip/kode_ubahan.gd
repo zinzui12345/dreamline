@@ -3,8 +3,6 @@ class_name kode_ubahan
 
 @export var kode : String = "func gunakan():\n\tPanku.notify(\"ini adalah contoh kode\")"
 
-# FIXME : sinkronkan kondisi ketika memanggil fungsi
-
 func _ready() -> void: atur_kode(kode)
 
 func dapatkan_kode() -> String:

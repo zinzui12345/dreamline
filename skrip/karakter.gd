@@ -411,7 +411,14 @@ func _input(event : InputEvent) -> void:
 					_:
 						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
 							if objek_target.id_pengubah < 1:
-								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
+								server.fungsikan_objek(
+									objek_target.get_node("kode_ubahan").get_path(),
+									"panggil_fungsi_kode",
+									[
+										"gunakan",
+										multiplayer.get_unique_id()
+									]
+								)
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
 							var arah_dorongan := Vector3(0, 0, 5)

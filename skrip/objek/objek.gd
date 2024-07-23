@@ -59,22 +59,13 @@ func mulai() -> void:
 	pass
 # fungsi untuk memindahkan posisi lokal objek berdasarkan jarak
 func pindahkan(arah : Vector3) -> void:
-	if id_pengubah < 1:
-		if client.id_koneksi == 1:
-			server._edit_objek(name, 1, true, false)
-		else:
-			server.rpc_id(1, "_edit_objek", name, client.id_koneksi, true, false)
-		var posisi_perpindahan : Vector3 = global_transform.origin + arah
-		# FIXME : cek apakah privilage edit telah didapatkan
-		await get_tree().create_timer(0.05).timeout
-		cek_properti["posisi"] = posisi_perpindahan
-		set_indexed("global_transform:origin", posisi_perpindahan)
-		if client.id_koneksi == 1:
-			server._sesuaikan_properti_objek(1, name, [["position", cek_properti["posisi"]]])
-			server._edit_objek(name, 1, false, false)
-		else:
-			server.rpc_id(1, "_sesuaikan_properti_objek", client.id_koneksi, name, [["position", cek_properti["posisi"]]])
-			server.rpc_id(1, "_edit_objek", name, client.id_koneksi, false, false)
+	var posisi_perpindahan : Vector3 = global_transform.origin + arah
+	cek_properti["posisi"] = posisi_perpindahan
+	set_indexed("global_transform:origin", posisi_perpindahan)
+	#if client.id_koneksi == 1: # gimana kalo di server de-spawn?
+		#server._edit_objek(name, 1, true, false)
+		#server._sesuaikan_properti_objek(1, name, [["position", cek_properti["posisi"]]])
+		#server._edit_objek(name, 1, false, false)
 # fungsi untuk menghapus objek, menghilangkan dari dunia dan server
 func hilangkan() -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
