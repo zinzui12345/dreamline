@@ -134,11 +134,13 @@ func _mode_render_pre():
 				# tampilkan shader penanda bentuk objek
 				for isi_objek in objek_.get_children():
 					if isi_objek is MeshInstance3D:
-						isi_objek.set(\"material_override\", shader_tampilan_bentuk_objek)
-					elif isi_objek is Node3D and isi_objek.name == \"model\":
-						for isi_isi_objek in isi_objek.get_children():
-							if isi_isi_objek is MeshInstance3D:
-								isi_isi_objek.set(\"material_override\", shader_tampilan_bentuk_objek)
+						isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek)
+					elif isi_objek is Node3D:
+						match isi_objek.name:
+							\"model\", \"detail\", \"lod_1\", \"lod_2\", \"lod_3\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek)
 				# tunggu 0.5 detik
 				await get_tree().create_timer(0.5).timeout
 				# sesuaikan persentase proses rendering
@@ -147,11 +149,13 @@ func _mode_render_pre():
 				# hapus shader penanda bentuk objek
 				for isi_objek in objek_.get_children():
 					if isi_objek is MeshInstance3D:
-						isi_objek.set(\"material_override\", null)
-					elif isi_objek is Node3D and isi_objek.name == \"model\":
-						for isi_isi_objek in isi_objek.get_children():
-							if isi_isi_objek is MeshInstance3D:
-								isi_isi_objek.set(\"material_override\", null)
+						isi_objek.set(\"material_overlay\", null)
+					elif isi_objek is Node3D:
+						match isi_objek.name:
+							\"model\", \"detail\", \"lod_1\", \"lod_2\", \"lod_3\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", null)
 			else: return
 		# 13. tunggu 0.5 detik
 		await get_tree().create_timer(0.5).timeout
