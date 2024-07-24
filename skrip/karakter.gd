@@ -411,14 +411,7 @@ func _input(event : InputEvent) -> void:
 					_:
 						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
 							if objek_target.id_pengubah < 1:
-								server.fungsikan_objek(
-									objek_target.get_node("kode_ubahan").get_path(),
-									"panggil_fungsi_kode",
-									[
-										"gunakan",
-										multiplayer.get_unique_id()
-									]
-								)
+								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
 							var arah_dorongan := Vector3(0, 0, 5)
@@ -723,7 +716,7 @@ func _ketika_ditabrak(node : CollisionObject3D) -> void:
 		hantaman = hantaman * node.radius_tabrak
 		if hantaman >= 10:
 			atur_ragdoll(true, percepatan / 2)
-			server.fungsikan_objek(get_path(), "atur_ragdoll", [true, percepatan/2])
+			#server.fungsikan_objek(get_path(), "atur_ragdoll", [true, percepatan/2]) # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client
 	
 	# TODO : nyawa!?
 	 
@@ -736,8 +729,8 @@ func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
 		if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
 			_timer_ragdoll.stop()
 			atur_ragdoll(false, posisi_bangkit)
-			server.fungsikan_objek(get_path(), "atur_ragdoll", [false, posisi_bangkit])
+			#server.fungsikan_objek(get_path(), "atur_ragdoll", [false, posisi_bangkit])  # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client
 		elif $"%GeneralSkeleton/fisik kerangka".global_position.y < server.permainan.batas_bawah: # atur ulang posisi kalau terjatuh dari dunia
 			_timer_ragdoll.stop()
 			atur_ragdoll(false, global_position)
-			server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])
+			#server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])  # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client

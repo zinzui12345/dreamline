@@ -60,12 +60,12 @@ func mulai() -> void:
 # fungsi untuk memindahkan posisi lokal objek berdasarkan jarak
 func pindahkan(arah : Vector3) -> void:
 	var posisi_perpindahan : Vector3 = global_transform.origin + arah
-	cek_properti["posisi"] = posisi_perpindahan
+	server.fungsikan_objek(
+		name,
+		"pindahkan",
+		[ arah ]
+	)
 	set_indexed("global_transform:origin", posisi_perpindahan)
-	#if client.id_koneksi == 1: # gimana kalo di server de-spawn?
-		#server._edit_objek(name, 1, true, false)
-		#server._sesuaikan_properti_objek(1, name, [["position", cek_properti["posisi"]]])
-		#server._edit_objek(name, 1, false, false)
 # fungsi untuk menghapus objek, menghilangkan dari dunia dan server
 func hilangkan() -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:

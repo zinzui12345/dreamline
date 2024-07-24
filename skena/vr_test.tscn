@@ -5,12 +5,11 @@
 [sub_resource type="GDScript" id="GDScript_yrqdk"]
 script/source = "extends Node3D
 
-var interface = XRServer.find_interface(\"Native mobile\")
-
 func _ready():
+	var interface : MobileVRInterface = XRServer.find_interface(\"Native mobile\")
 	if interface and interface.initialize():
-		var vp: Viewport = get_viewport()
-		vp.use_xr = true
+		interface.eye_height = 0
+		get_viewport().use_xr = true
 "
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wvhdn"]

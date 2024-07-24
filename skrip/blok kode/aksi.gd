@@ -63,6 +63,20 @@ func atur_nilai(nilai : String):
 		$pemisah_vertikal/data_aksi/parameter.visible = true
 		$pemisah_vertikal/data_aksi/nama_fungsi.visible = true
 func dapatkan_nilai() -> String:
+	#var hasil_kode = "dreamin chuchu"
+	#var pecah_baris_hasil_kode = self.fungsi[0].split(".", true, 1)
+	#if pecah_baris_hasil_kode.size() > 1:
+		## cek [0] apakah (objek), [1] fungsi
+		## mis. permainan -> pesan()
+		#var pecah_nama_fungsi = pecah_baris_hasil_kode[1].split('(', true, 1)
+		#match pecah_baris_hasil_kode[0]:
+			#"objek":
+				#hasil_kode = "server.fungsikan_objek(get_parent().get_parent().name, \"" + pecah_nama_fungsi[0] + "\", [" + parameter + "]" + self.fungsi[1]
+			#_:
+				#hasil_kode = self.fungsi[0] + parameter + self.fungsi[1]
+	#else:
+		#hasil_kode = self.fungsi[0] + parameter + self.fungsi[1]
+	#return hasil_kode
 	return self.fungsi[0] + parameter + self.fungsi[1]
 func edit_nilai():
 	if node_induk != null:

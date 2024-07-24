@@ -297,6 +297,7 @@ func _perluas_tampilan(): $animasi.play("perluas")
 func _perkecil_tampilan(): $animasi.play("perkecil")
 
 func _ketika_menutup_panel():
+	kompilasi_blok_kode()
 	emit_signal("tutup_panel")
 
 func _uji_tambah_aksi():

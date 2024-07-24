@@ -517,6 +517,7 @@ text = ">
 "
 
 [node name="terapkan" type="Button" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.883

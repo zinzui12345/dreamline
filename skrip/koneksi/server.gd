@@ -472,11 +472,11 @@ func edit_objek(nama_objek : String, fungsi : bool):
 func terapkan_percepatan_objek(jalur_objek : String, nilai_percepatan : Vector3):
 	_terapkan_percepatan_objek(jalur_objek, nilai_percepatan)
 	rpc("_terapkan_percepatan_objek", jalur_objek, nilai_percepatan)
-func fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array = []):
+func fungsikan_objek(nama_objek : StringName, nama_fungsi : StringName, parameter : Array = []):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		_fungsikan_objek(jalur_objek, nama_fungsi, parameter)
+		_fungsikan_objek(nama_objek, nama_fungsi, parameter)
 	else:
-		rpc_id(1, "_fungsikan_objek", jalur_objek, nama_fungsi, parameter)
+		rpc_id(1, "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
 func hapus_objek(jalur_objek):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		# TODO : hapus dari pool_entitas kalo ada!
@@ -752,14 +752,24 @@ func _pemain_terputus(id_pemain):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
 		rpc("_gunakan_entitas", nama_entitas, id_pengguna, fungsi)
-@rpc("any_peer") func _fungsikan_objek(jalur_objek : NodePath, nama_fungsi : StringName, parameter : Array): # FIXME : harusnya pake nama objek!
-	var objek_difungsikan = get_node_or_null(jalur_objek)
+@rpc("any_peer") func _fungsikan_objek(nama_objek : String, nama_fungsi : StringName, parameter : Array):
+	var objek_difungsikan = permainan.dunia.get_node_or_null("objek/" + nama_objek)
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if nama_fungsi == "pindahkan" and parameter.size() > 0 and parameter[0] is Vector3:
+			_sesuaikan_properti_objek(
+				pool_objek[nama_objek]["id_pengubah"],
+				nama_objek,
+				[
+					["position", pool_objek[nama_objek]["posisi"] + parameter[0]]
+				]
+			)
+			return
 	if objek_difungsikan != null:
 		var panggil_fungsi : Callable
 		if objek_difungsikan.has_method(nama_fungsi):
 			panggil_fungsi = Callable(objek_difungsikan, nama_fungsi)
-		#elif objek_difungsikan.has_node("kode_ubahan"):
-			#panggil_fungsi = Callable(objek_difungsikan.get_node("kode_ubahan"), nama_fungsi)
+		elif objek_difungsikan.has_node("kode_ubahan") and objek_difungsikan.get_node("kode_ubahan").has_method(nama_fungsi):
+			panggil_fungsi = Callable(objek_difungsikan.get_node("kode_ubahan"), nama_fungsi)
 		if panggil_fungsi != null:
 			for nilai_parameter in parameter.size():
 				panggil_fungsi = panggil_fungsi.bind(
@@ -768,9 +778,6 @@ func _pemain_terputus(id_pemain):
 					]
 				)
 			panggil_fungsi.call()
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		
-		rpc("_fungsikan_objek", jalur_objek, nama_fungsi, parameter)
 @rpc("any_peer") func _edit_objek(nama_objek, id_pengubah, fungsi, tampilkan_ui = true):
 	var jalur_objek = ""
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
