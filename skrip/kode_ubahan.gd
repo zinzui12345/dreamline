@@ -9,6 +9,9 @@ func dapatkan_kode() -> String:
 	return kode
 
 func atur_kode(_kode : String) -> void:
+	# debug kode input
+	#print_debug(_kode)
+	
 	# compile _kode ke komponen GDScript
 	var eksekusi := GDScript.new()
 	eksekusi.source_code = "extends Node\n\n" + _kode

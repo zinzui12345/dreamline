@@ -44,12 +44,14 @@ func buat_blok_kode(kode : String):
 				cabang = load("res://ui/blok kode/kondisi/if.tscn").instantiate()
 				fungsi.get_node("pemisah_vertikal_2/area_aksi").add_child(cabang)
 				cabang.atur_nilai(baris.substr(1))
+				cabang.id_kondisi = randi()
 				cabang.node_fungsi = fungsi
 				cabang.node_induk = fungsi
 				# cek node sebelumya, kalau aksi, cek_urutan()!
 				if fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child(fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child_count() - 2) is blok_aksi:
 					fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child(fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child_count() - 2).cek_urutan()
 				indentasi += 1
+			# jika baris adalah aksi kondisi
 			elif cabang != null and baris.substr(indentasi, 1) == "\t":
 				# cek sub-kondisi
 				if baris.substr(indentasi + 1).match("if *:"):
@@ -61,13 +63,27 @@ func buat_blok_kode(kode : String):
 					tmp_cabang.cek_urutan()
 					cabang = tmp_cabang
 					indentasi += 1
+				# jika baris berada di luar indentasi sub kondisi
 				else:
 					cabang.tambahkan_aksi(baris.substr(indentasi + 1))
+			# jika baris berada di luar indentasi kondisi
 			elif cabang != null and baris.substr(indentasi, 1) != "\t" and baris.substr(indentasi - 1, 1) == "\t" and cabang.node_induk is blok_kondisi:
 				indentasi -= 1
 				var tmp_cabang = cabang.node_induk
 				cabang = tmp_cabang
 				cabang.tambahkan_aksi(baris.substr(indentasi + 1))
+			# sub kondisi/cabang
+			elif cabang != null and baris.substr(indentasi, 1) != "\t" and baris.substr(indentasi - 1, 1) == "\t" and baris.substr(indentasi) == "else:":
+				var id_cabang : int = cabang.id_kondisi
+				cabang = load("res://ui/blok kode/kondisi/else.tscn").instantiate()
+				fungsi.get_node("pemisah_vertikal_2/area_aksi").add_child(cabang)
+				cabang.atur_nilai(baris.substr(1))
+				cabang.id_kondisi = id_cabang
+				cabang.sub_kondisi = true
+				cabang.node_fungsi = fungsi
+				cabang.node_induk = fungsi
+				fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child(fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child_count() - 1).cek_urutan()
+			# jika baris berada di luar indentasi semua kondisi
 			else:
 				indentasi = 0
 				cabang = null

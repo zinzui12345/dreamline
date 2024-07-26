@@ -764,6 +764,17 @@ func _pemain_terputus(id_pemain):
 				]
 			)
 			return
+		elif (nama_fungsi == "buka" or nama_fungsi == "tutup") and parameter.size() == 0:
+			var _tmp_kondisi : bool
+			if nama_fungsi == "buka": _tmp_kondisi = true
+			_sesuaikan_properti_objek(
+				pool_objek[nama_objek]["id_pengubah"],
+				nama_objek,
+				[
+					["kondisi", _tmp_kondisi]
+				]
+			)
+			return
 	if objek_difungsikan != null:
 		var panggil_fungsi : Callable
 		if objek_difungsikan.has_method(nama_fungsi):

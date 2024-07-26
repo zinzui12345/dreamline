@@ -5,9 +5,11 @@ var nilai : String = ""
 var urutan : int = -1
 var node_induk : Control
 var node_fungsi : blok_fungsi
+var id_kondisi : int = 0
+var sub_kondisi : bool
 var terlipat : bool = false
 
-func cek_urutan():
+func cek_urutan() -> void:
 	if urutan == -1:
 		for id_cek_urutan in get_parent().get_child_count():
 			if get_parent().get_child(id_cek_urutan) == self:
@@ -18,19 +20,25 @@ func cek_urutan():
 			$pemisah_vertikal/geser_keatas.disabled = true
 			if urutan == (get_parent().get_child_count() - 1):
 				$pemisah_vertikal/geser_kebawah.disabled = true
+			elif urutan == (get_parent().get_child_count() - 2) and !sub_kondisi and get_parent().get_child(urutan + 1) is blok_kondisi and get_parent().get_child(urutan + 1).id_kondisi == self.id_kondisi:
+				$pemisah_vertikal/geser_kebawah.disabled = true
 			else:
 				$pemisah_vertikal/geser_kebawah.disabled = false
 		elif urutan == (get_parent().get_child_count() - 2) and get_parent().get_child(urutan + 1) is blok_pass:
 			$pemisah_vertikal/geser_keatas.disabled = false
 			$pemisah_vertikal/geser_kebawah.disabled = true
 			get_parent().get_child(urutan - 1).cek_urutan()
+		elif urutan == (get_parent().get_child_count() - 2) and !sub_kondisi and get_parent().get_child(urutan + 1) is blok_kondisi and get_parent().get_child(urutan + 1).id_kondisi == self.id_kondisi:
+			$pemisah_vertikal/geser_keatas.disabled = false
+			$pemisah_vertikal/geser_kebawah.disabled = true
 		elif urutan == (get_parent().get_child_count() - 1):
 			$pemisah_vertikal/geser_kebawah.disabled = true
 			get_parent().get_child(urutan - 1).cek_urutan()
 		else:
 			$pemisah_vertikal/geser_keatas.disabled = false
 			$pemisah_vertikal/geser_kebawah.disabled = false
-func geser_keatas():
+			if sub_kondisi: get_parent().get_child(urutan - 1).cek_urutan()
+func geser_keatas() -> void:
 	if urutan > 0:
 		# dapatkan node blok aksi
 		var aksi_1 = get_parent().get_child(urutan - 1)
@@ -47,7 +55,11 @@ func geser_keatas():
 		aksi_2.urutan = tmp_urtan_aksi_1
 		aksi_1.cek_urutan()
 		aksi_2.cek_urutan()
-func geser_kebawah():
+		if urutan < get_parent().get_child_count() - 2:
+			var aksi_3 = get_parent().get_child(urutan + 2)
+			if aksi_3 is blok_kondisi and aksi_3.id_kondisi == aksi_2.id_kondisi and aksi_3.sub_kondisi:
+				aksi_3.geser_keatas()
+func geser_kebawah() -> void:
 	if urutan < get_parent().get_child_count() - 1:
 		# dapatkan node blok aksi
 		var aksi_1 = self
@@ -64,8 +76,17 @@ func geser_kebawah():
 		aksi_2.urutan = tmp_urtan_aksi_1
 		aksi_1.cek_urutan()
 		aksi_2.cek_urutan()
+		if urutan < get_parent().get_child_count() - 1:
+			var aksi_3 = get_parent().get_child(urutan - 1)
+			if aksi_3 is blok_kondisi and aksi_3.id_kondisi == aksi_1.id_kondisi and aksi_3.sub_kondisi:
+				aksi_1.geser_kebawah()
+				aksi_3.geser_kebawah()
+				aksi_3.geser_kebawah()
+		#elif aksi_1.sub_kondisi:
+			#print_debug("punya gelar S3 IT tapi gak bisa ngoding, chuakkks!")
+			#get_parent().get_child(urutan - 1).cek_urutan()
 
-func atur_ukuran(skala : float):
+func atur_ukuran(skala : float) -> void:
 	$pemisah_vertikal/nilai_kondisi.set(
 		"theme_override_font_sizes/font_size",
 		16 * skala
@@ -92,7 +113,7 @@ func atur_ukuran(skala : float):
 	for b_blok_aksi in $pemisah_vertikal_2/area_aksi.get_children():
 		if b_blok_aksi.has_method("atur_ukuran"):
 			b_blok_aksi.atur_ukuran(skala)
-func atur_nilai(t_nilai : String):
+func atur_nilai(t_nilai : String) -> void:
 	nilai = t_nilai
 	$pemisah_vertikal/nilai_kondisi.text = " "+t_nilai
 func dapatkan_nilai() -> String:
@@ -108,13 +129,13 @@ func dapatkan_nilai_aksi() -> Array[String]:
 				daftar_aksi.append("\t" + b_aksi)
 	return daftar_aksi
 
-func tambahkan_aksi(kode : String):
+func tambahkan_aksi(kode : String) -> void:
 	if node_fungsi != null:
 		node_fungsi.tambahkan_aksi(kode, str(node_fungsi.get_path_to(self)) + "/pemisah_vertikal_2/area_aksi")
 func dapatkan_aksi(pilih_urutan) -> Control:
 	return $pemisah_vertikal_2/area_aksi.get_child(pilih_urutan)
 
-func lipat():
+func lipat() -> void:
 	for n_blok_aksi in $pemisah_vertikal_2/area_aksi.get_children():
 		if terlipat:	n_blok_aksi.visible = true
 		else:			n_blok_aksi.visible = false

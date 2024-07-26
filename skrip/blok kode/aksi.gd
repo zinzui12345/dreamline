@@ -203,8 +203,14 @@ func geser_keatas():
 		node_induk.node_fungsi.panel_kode.pilih_scope = node_induk.node_induk
 		if node_induk.urutan > 0:
 			node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk.get_parent().get_child(node_induk.urutan - 1)
-			node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_2.dapatkan_nilai())
+			if node_induk.node_fungsi.panel_kode.pilih_aksi is blok_kondisi:
+				# pindah ke urutan terakhir pada blok kondisi sebelumnya
+				node_induk.node_fungsi.panel_kode.pilih_aksi.tambahkan_aksi(aksi_2.dapatkan_nilai())
+			else:
+				# pindahkan ke atas blok induk
+				node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_2.dapatkan_nilai())
 		else:
+			# pindahkan ke atas blok induk (menjadi urutan pertama)
 			node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk
 			node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_2.dapatkan_nilai())
 			node_induk.geser_kebawah()
@@ -244,8 +250,27 @@ func geser_kebawah():
 	elif node_induk is blok_kondisi:
 		#print_debug("we are the kids from yesterday!")
 		node_induk.node_fungsi.panel_kode.pilih_scope = node_induk.node_induk
-		node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk
-		node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_1.dapatkan_nilai())
+		if node_induk.urutan < node_induk.get_parent().get_child_count() - 1:
+			node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk.get_parent().get_child(node_induk.urutan + 1)
+			if node_induk.node_fungsi.panel_kode.pilih_aksi is blok_kondisi:
+				#print_debug("nya~")
+				var aksi_2 = node_induk.node_fungsi.panel_kode.pilih_aksi
+				if aksi_2.dapatkan_aksi(0) != null and !(aksi_2.dapatkan_aksi(0) is blok_pass):
+					 # atur ke urutan pertama
+					aksi_2.node_fungsi.panel_kode.pilih_scope = aksi_2
+					aksi_2.node_fungsi.panel_kode.pilih_aksi = aksi_2.dapatkan_aksi(0)
+					aksi_2.node_fungsi.panel_kode.tambah_blok_aksi(aksi_1.dapatkan_nilai())
+					aksi_2.dapatkan_aksi(0).geser_kebawah()
+				else:
+					aksi_2.tambahkan_aksi(aksi_1.dapatkan_nilai())
+			else:
+				# pindahkan ke bawah blok induk
+				node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_1.dapatkan_nilai())
+		else:
+			#print_debug("life is not shikanokonokoshitantan")
+			# pindahkan ke bawah blok induk (menjadi urutan terakhir)
+			node_induk.node_fungsi.panel_kode.pilih_aksi = node_induk
+			node_induk.node_fungsi.panel_kode.tambah_blok_aksi(aksi_1.dapatkan_nilai())
 		aksi_1.hapus()
 func pilih():
 	#print_debug("@panel_kode::pilih_aksi = "+str(get_path()))
