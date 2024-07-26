@@ -31,6 +31,11 @@ var cek_properti : Dictionary = {}			# simpan beberapa properti di tiap frame un
 @export var cek_titik : int = 0				# simpan titik terakhir occlusion culling
 @export var tak_terlihat : bool = false		# simpan kondisi frustum culling
 @export var terhalang : bool = false		# simpan kondisi occlusion culling
+@export var kode : String :					# jika menggunakan kode ubahan
+	set(kode_baru):
+		if get_node_or_null("kode_ubahan") != null:
+			if $kode_ubahan.kode != kode_baru: $kode_ubahan.atur_kode(kode_baru)
+			kode = kode_baru
 
 func _ready() -> void: call_deferred("_setup")
 func _setup() -> void:

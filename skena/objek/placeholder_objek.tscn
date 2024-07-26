@@ -14,10 +14,6 @@ const jalur_instance = \"res://skena/objek/placeholder_objek.tscn\"
 
 @export var mesh : Mesh
 @export var mat : Material
-@export var kode : String :
-	set(kode_baru):
-		if $kode_ubahan.kode != kode_baru: $kode_ubahan.atur_kode(kode_baru)
-		kode = kode_baru
 
 func mulai():
 	mesh = $bentuk.mesh.duplicate()

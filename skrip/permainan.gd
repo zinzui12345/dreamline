@@ -3,38 +3,39 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 | 1.3.5 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 1.3.5 - Implementasi Timeline
-# 09 Agu 2023 | 1.3.5 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 | 1.3.6 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 1.3.6 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 | 1.3.6 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
-# 06 Sep 2023 | 1.3.7 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 1.3.7 - Implementasi shader karakter menggunakan MToon
-# 21 Sep 2023 | 1.3.7 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 1.3.8 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 1.3.8 - Penambahan Text Chat
-# 09 Okt 2023 | 1.3.8 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
-# 10 Okt 2023 | 1.3.9 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 1.3.9 - Tombol Sentuh Fleksibel
-# 14 Okt 2023 | 1.3.9 - Penambahan Mode Edit Objek
-# 21 Okt 2023 | 1.4.0 - Mode Edit Objek telah berhasil di-implementasikan
-# 31 Okt 2023 | 1.4.0 - Perbaikan kesalahan kontrol sentuh
-# 08 Nov 2023 | 1.4.0 - Implementasi Koneksi Publik menggunakan UPnP
-# 17 Nov 2023 | 1.4.1 - Implementasi Proyektil
-# 27 Nov 2023 | 1.4.1 - Penambahan kemampuan penghindaran npc terhadap musuhnya
-# 10 Des 2023 | 1.4.1 - Perbaikan ragdoll karakter
-# 19 Des 2023 | 1.4.2 - Tampilan bar nyawa npc_ai
-# 04 Jan 2024 | 1.4.2 - Implementasi GPU Instancing pada Vegetasi Terrain
-# 14 Jan 2024 | 1.4.2 - Penambahan Editor Kode
-# 04 Feb 2024 | 1.4.3 - Penerapan pemutar ulang Timeline
-# 14 Apr 2024 | 1.4.3 - Implementasi Object Pooling pada entitas
-# 18 Apr 2024 | 1.4.3 - Penambahan Dialog Informasi
-# 04 Mei 2024 | 1.4.4 - Implementasi Object Pooling pada objek
-# 04 Jun 2024 | 1.4.4 - Penambahan Editor Blok Kode
-# 04 Jul 2024 | 1.4.4 - Demo Uji Performa
+# 07 Jul 2023 | 0.1.1 - Implementasi LAN Server berbasis Cross-Play
+# 04 Agu 2023 | 0.1.2 - Implementasi Timeline
+# 09 Agu 2023 | 0.1.3 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 11 Agu 2023 | 0.1.4 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 14 Agu 2023 | 0.1.5 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 15 Agu 2023 | 0.1.6 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 06 Sep 2023 | 0.1.7 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 18 Sep 2023 | 0.1.8 - Implementasi shader karakter menggunakan MToon
+# 21 Sep 2023 | 0.1.9 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 23 Sep 2023 | 0.2.1 - Penambahan entity posisi spawn pemain
+# 25 Sep 2023 | 0.2.2 - Penambahan Text Chat
+# 09 Okt 2023 | 0.2.3 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 10 Okt 2023 | 0.2.4 - Penambahan senjata Bola salju raksasa
+# 12 Okt 2023 | 0.2.5 - Tombol Sentuh Fleksibel
+# 14 Okt 2023 | 0.2.6 - Penambahan Mode Edit Objek
+# 21 Okt 2023 | 0.2.7 - Mode Edit Objek telah berhasil di-implementasikan
+# 31 Okt 2023 | 0.2.8 - Perbaikan kesalahan kontrol sentuh
+# 08 Nov 2023 | 0.2.9 - Implementasi Koneksi Publik menggunakan UPnP
+# 17 Nov 2023 | 0.3.1 - Implementasi Proyektil
+# 27 Nov 2023 | 0.3.2 - Penambahan kemampuan penghindaran npc terhadap musuhnya
+# 10 Des 2023 | 0.3.3 - Perbaikan ragdoll karakter
+# 19 Des 2023 | 0.3.4 - Tampilan bar nyawa npc_ai
+# 04 Jan 2024 | 0.3.5 - Implementasi GPU Instancing pada Vegetasi Terrain
+# 14 Jan 2024 | 0.3.6 - Penambahan Editor Kode
+# 04 Feb 2024 | 0.3.7 - Penerapan pemutar ulang Timeline
+# 14 Apr 2024 | 0.3.8 - Implementasi Object Pooling pada entitas
+# 18 Apr 2024 | 0.3.9 - Penambahan Dialog Informasi
+# 04 Mei 2024 | 0.4.1 - Implementasi Object Pooling pada objek
+# 04 Jun 2024 | 0.4.2 - Penambahan Editor Blok Kode
+# 04 Jul 2024 | 0.4.3 - Demo Uji Performa
+# 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 
-const versi = "Dreamline v1.4.4 20/07/24 alpha"
+const versi = "Dreamline v0.4.4 26/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1560,6 +1561,13 @@ func _ketika_mengubah_kode_objek() -> void:
 					["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "ikon"]
 				]
 			})
+		if edit_objek is pintu:
+			sintaks_aksi.merge({
+				"Pintu" : [
+					["buka()", "get_node(\"../../\").buka()", "ikon"],
+					["tutup()", "get_node(\"../../\").tutup()", "ikon"]
+				]
+			})
 		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
 		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
 		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
@@ -1795,6 +1803,8 @@ func tampilkan_editor_kode() -> void:
 		$blok_kode/panel_kode/kontrol_skala/pengatur_skala.value = 1.5
 	$blok_kode/animasi.play("tampilkan")
 func tutup_editor_kode() -> void:
+	# 26/07/24 :: terapkan perubahan kode
+	$blok_kode/panel_kode.kompilasi_blok_kode()
 	# 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
 	$blok_kode/panel_kode.hapus_blok_kode()
 	# 14/06/24 :: hapus palet sintaks untuk mengurangi penggunaan memori
