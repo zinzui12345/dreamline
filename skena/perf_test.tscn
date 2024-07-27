@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://dodo3q7h6ujaa"]
+[gd_scene load_steps=40 format=3 uid="uid://dodo3q7h6ujaa"]
 
 [ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
 [ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
@@ -12,13 +12,26 @@
 script/source = "# 28/12/23
 extends Control
 
+# TODO : 27/07/24 :: hasil benchmark pre rendering
+# * dapatkan jumlah fps ketika memulai pre rendering
+# * dapatkan jumlah vertex ketika memulai pre rendering
+# * kalkulasi total jumlah objek yang dirender
+# * kalkulasi total waktu (milidetik) proses rendering satu objek
+# * kalkulasi total waktu (milidetik) proses rendering satu vertex
+# * hasilkan grafik jumlah vertex tiap objek yang di-render
+# misal 60 fps, maka satu frame adalah 16.666666666666 milidetik atau 1000/60
+# jika jumlah objek adalah 213 maka total waktu rendering per objek adalah 0.0782472613458 milidetik atau 16.666666666666/213
+# jika jumlah vertex adalah 104840 maka total waktu rendering per vertex adalah 0.000161055951746779 milidetik atau 16.666666666666/104840
+
 var shader_tampilan_bentuk_objek : StandardMaterial3D = load(\"res://material/dev/tampilan_bentuk_objek.material\")
+var shader_tampilan_bentuk_objek_lod : StandardMaterial3D = load(\"res://material/dev/tampilan_bentuk_objek_lod.material\")
 var _proses_pre_render : bool = false :
 	set(proses):
 		if proses:	$mode_render/realtime.disabled = true
 		else: 		$mode_render/realtime.disabled = false
 		_proses_pre_render = proses
 var _pencahayaan_pre : Environment
+var waktu_tunda_frame_pre : float = 0.1
 
 func _ready():
 	server.permainan.karakter = $viewport_utama/viewport/dummy_karakter
@@ -53,6 +66,8 @@ func _atur_level_of_detail(nilai):
 # ketika memilih mode rendering
 func _mode_render_realtime():
 	if not _proses_pre_render:
+		# sembunyikan hasil performa rendering
+		$panel_hasil_render.visible = false
 		# set keadaan tombol
 		$mode_render/realtime.button_pressed = true
 		$mode_render/pre.button_pressed = false
@@ -84,11 +99,18 @@ func _mode_render_pre():
 		$viewport_utama/viewport/pengamat_pre.rotation = $viewport_utama/viewport/pengamat.rotation
 		# sembunyikan informasi performa
 		$informasi_performa.visible = false
+		$panel_hasil_render.visible = false
 		# tampilkan proses rendering
 		$panel_bawah/Panel/PersenMemuat.text = \"0%\"
 		$panel_bawah/Panel/ProsesMemuat.value = 0
 		$panel_bawah/animasi.play(\"tampilkan\")
 		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play(\"kuru_kuru\")
+		# dapatkan performa rendering
+		var jumlah_penggambaran = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
+		var kecepatan_frame = Engine.get_frames_per_second()
+		var total_objek = server.permainan.dunia.get_node(\"objek\").get_child_count()
+		var total_sudut = $viewport_utama/viewport.get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME)
+		var total_memori = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED)
 		#region tampilan fase rendering
 		# 1. hentikan proses culling
 		server.set_process(false)
@@ -120,11 +142,8 @@ func _mode_render_pre():
 		urutan_objek.sort()
 		# 10. balik urutan objek
 		urutan_objek.reverse()
-		await get_tree().create_timer(0.5).timeout
-		# 11. tampilkan kembali lingkungan
-		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
-		await get_tree().create_timer(0.5).timeout
-		# 12. loop urutan objek
+		await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+		# 11. loop urutan objek
 		for _objek_ in urutan_objek:
 			if $viewport_utama/viewport/pengamat_pre.current:
 				# dapatkan objek
@@ -137,12 +156,15 @@ func _mode_render_pre():
 						isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek)
 					elif isi_objek is Node3D:
 						match isi_objek.name:
-							\"model\", \"detail\", \"lod_1\", \"lod_2\", \"lod_3\":
+							\"model\", \"detail\", \"lod_1\":
 								for isi_isi_objek in isi_objek.get_children():
 									if isi_isi_objek is MeshInstance3D:
 										isi_isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek)
-				# tunggu 0.5 detik
-				await get_tree().create_timer(0.5).timeout
+							\"lod_2\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek_lod)
+				await get_tree().create_timer(waktu_tunda_frame_pre).timeout
 				# sesuaikan persentase proses rendering
 				$panel_bawah/Panel/ProsesMemuat.value += 1
 				$panel_bawah/Panel/PersenMemuat.text = str(($panel_bawah/Panel/ProsesMemuat.value / urutan_objek.size()) * 100)+\"%\"
@@ -152,21 +174,39 @@ func _mode_render_pre():
 						isi_objek.set(\"material_overlay\", null)
 					elif isi_objek is Node3D:
 						match isi_objek.name:
-							\"model\", \"detail\", \"lod_1\", \"lod_2\", \"lod_3\":
+							\"model\", \"detail\", \"lod_1\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", null)
+							\"lod_2\":
 								for isi_isi_objek in isi_objek.get_children():
 									if isi_isi_objek is MeshInstance3D:
 										isi_isi_objek.set(\"material_overlay\", null)
 			else: return
-		# 13. tunggu 0.5 detik
-		await get_tree().create_timer(0.5).timeout
-		# 14. tampilkan kembali pencahayaan
+		# 12. tunggu selama waktu_tunda_frame_pre detik
+		await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+		# 13. tampilkan kembali pencahayaan
 		$viewport_utama/viewport/pengamat_pre.environment = null
 		if aktifkan_pencahayaan:
 			server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", true)
+		await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+		# 14. tampilkan kembali lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
 		#endregion
 		# sembunyikan proses rendering
 		$panel_bawah/animasi.play_backwards(\"tampilkan\")
 		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
+		# kalkulasi hasil performa rendering
+		var hasil_performa = \"\"
+		var waktu_frame : float = 1000 / kecepatan_frame
+		hasil_performa += \"Penggambaran			: \"+str(jumlah_penggambaran)+\" / \"+str(snappedf(waktu_frame / jumlah_penggambaran, 0.00001))+\" milidetik\\n\"
+		hasil_performa += \"Kecepatan Frame		: \"+str(kecepatan_frame)+\" per detik / \"+str(snappedf(waktu_frame, 0.00001))+\" milidetik\\n\"
+		hasil_performa += \"Total Objek				: \"+str(total_objek)+\" per frame / \"+str(snappedf(waktu_frame / total_objek, 0.0001))+\" milidetik\\n\"
+		hasil_performa += \"Total Sudut				: \"+str(total_sudut)+\" per frame / \"+str(snappedf(waktu_frame / total_sudut, 0.0001))+\" milidetik\\n\"
+		hasil_performa += \"Total Memori				: \"+String.humanize_size(total_memori)
+		# tampilkan hasil performa rendering
+		$panel_hasil_render/statistik.text = hasil_performa
+		$panel_hasil_render.visible = true
 		_proses_pre_render = false
 
 # ketika memilih tampilan viewport culling
@@ -242,6 +282,12 @@ corner_radius_top_left = 3
 corner_radius_bottom_left = 3
 corner_detail = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onoxo"]
+bg_color = Color(0.769432, 0.769432, 0.769432, 1)
+corner_radius_top_left = 1
+corner_radius_bottom_left = 1
+corner_detail = 4
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_haqqv"]
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_right = 1
@@ -256,6 +302,13 @@ bg_color = Color(0.2, 0.2, 0.196078, 1)
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1fao"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki0n8"]
 bg_color = Color(0, 0, 0, 0.25098)
@@ -395,6 +448,9 @@ _data = {
 "tampilkan": SubResource("Animation_gh1a4")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djxsm"]
+bg_color = Color(0, 0, 0, 0.686275)
+
 [node name="perf_test" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -411,6 +467,7 @@ anchor_right = 0.75
 anchor_bottom = 1.0
 offset_right = -6.10352e-05
 stretch = true
+metadata/_edit_lock_ = true
 
 [node name="viewport" type="SubViewport" parent="viewport_utama"]
 handle_input_locally = false
@@ -439,15 +496,18 @@ offset_right = 144.0
 offset_bottom = 72.0
 theme_override_constants/separation = 0
 alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="realtime" type="Button" parent="mode_render"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_disabled_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_t10m1")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1x4vu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_q6o23")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_onoxo")
 toggle_mode = true
 button_pressed = true
 icon = ExtResource("2_wn08a")
@@ -461,6 +521,7 @@ theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_haqqv")
 theme_override_styles/hover = SubResource("StyleBoxFlat_heqqv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_wimlv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m1fao")
 toggle_mode = true
 icon = ExtResource("3_pxv10")
 icon_alignment = 1
@@ -503,6 +564,7 @@ gpu_graph = NodePath("VBoxContainer/GPUGraph/Graph")
 information = NodePath("VBoxContainer/Information")
 settings = NodePath("VBoxContainer/Settings")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="informasi_performa"]
 layout_mode = 1
@@ -866,6 +928,7 @@ anchor_bottom = 0.333
 offset_left = -6.10352e-05
 offset_bottom = 0.199997
 theme_override_styles/panel = SubResource("StyleBoxFlat_42ksx")
+metadata/_edit_lock_ = true
 
 [node name="opsi_fc" type="CheckButton" parent="panel_opsi"]
 layout_mode = 1
@@ -984,6 +1047,7 @@ offset_left = -6.10352e-05
 offset_top = 0.199997
 offset_bottom = -3.05176e-05
 stretch = true
+metadata/_edit_lock_ = true
 
 [node name="SubViewport" type="SubViewport" parent="viewport_culling"]
 handle_input_locally = false
@@ -1042,6 +1106,7 @@ anchor_bottom = 1.0
 offset_left = -6.10352e-05
 offset_top = -3.05176e-05
 theme_override_styles/panel = SubResource("StyleBoxFlat_jn6nk")
+metadata/_edit_lock_ = true
 
 [node name="label_fov" type="Label" parent="panel_opsi_2"]
 layout_mode = 1
@@ -1127,6 +1192,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="Panel" type="Panel" parent="panel_bawah"]
 layout_mode = 1
@@ -1204,6 +1270,59 @@ libraries = {
 libraries = {
 "": SubResource("AnimationLibrary_fy5nv")
 }
+
+[node name="panel_hasil_render" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -164.0
+offset_right = 256.0
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_djxsm")
+
+[node name="statistik" type="RichTextLabel" parent="panel_hasil_render"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("6_ada2g")
+theme_override_fonts/italics_font = ExtResource("5_80doc")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/italics_font_size = 16
+text = "Penggambaran			: 121 / 0.13774 milidetik
+Kecepatan Frame		: 60 per detik / 16.65384 milidetik
+Total Objek				: 213 per frame / 0.07825 milidetik
+Total Sudut				: 104840 per frame / 0.00016 milidetik
+Total Memori				: 182.2 MiB"
+
+[node name="grafik" type="Panel" parent="panel_hasil_render"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 184.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki0n8")
 
 [connection signal="pressed" from="mode_render/realtime" to="." method="_mode_render_realtime"]
 [connection signal="pressed" from="mode_render/pre" to="." method="_mode_render_pre"]
