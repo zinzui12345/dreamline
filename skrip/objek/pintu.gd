@@ -1,7 +1,7 @@
 extends objek
 class_name pintu
 
-const abaikan_occlusion_culling = true	
+const abaikan_occlusion_culling = true
 const properti = [
 	["warna_1", Color("00FF00")],
 	["kondisi", false],
@@ -9,7 +9,12 @@ const properti = [
 ]
 
 @export var jalur_instance : String = ""
-@export var kondisi : bool = false
+@export var kondisi : bool = false :
+	set(terbuka):
+		if _telah_spawn:
+			if terbuka:	$animasi.play("buka")
+			else:		$animasi.play("tutup")
+		kondisi = terbuka
 @export var warna_1 : Color = Color("#00ff00") :
 	set(warna_baru):
 		terapkan_warna(warna_baru)
@@ -18,6 +23,7 @@ const properti = [
 @export var material_pintu_lod : StandardMaterial3D
 
 var _warna_pintu : Color
+var _telah_spawn : bool
 
 func mulai() -> void:
 	set("wilayah_render", $area_render.get_aabb())
@@ -25,6 +31,7 @@ func mulai() -> void:
 	$kode_ubahan.atur_kode(properti[2][1])
 	if kondisi:	$animasi.play("terbuka")
 	else:		$animasi.play("tertutup")
+	_telah_spawn = true
 
 func terapkan_warna(warnanya : Color) -> void:
 	if get_node_or_null("engsel/pintu/detail") != null:
