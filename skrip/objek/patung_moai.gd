@@ -1,4 +1,5 @@
 extends objek
+class_name patung
 
 const properti = [
 	["kondisi", false],

@@ -35,7 +35,7 @@ class_name Permainan
 # 04 Jul 2024 | 0.4.3 - Demo Uji Performa
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 
-const versi = "Dreamline v0.4.4 26/07/24 alpha"
+const versi = "Dreamline v0.4.4 29/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1109,6 +1109,7 @@ func _tampilkan_permainan() -> void:
 	$hud.visible = true
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	$kontrol_sentuh/chat.visible = true
+	$kontrol_sentuh/daftar_pemain.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
 func _sembunyikan_antarmuka_permainan() -> void:
 	$hud/bantuan_input/aksi1.visible = false
@@ -1568,6 +1569,12 @@ func _ketika_mengubah_kode_objek() -> void:
 					["tutup()", "get_node(\"../../\").tutup()", "ikon"]
 				]
 			})
+		elif edit_objek is patung:
+			sintaks_aksi.merge({
+				"🗿" : [
+					["???", "get_node(\"../../\").berbunyi(true)", "ikon"]
+				]
+			})
 		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
 		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
 		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
@@ -1644,7 +1651,10 @@ func _mainkan_musik_latar() -> void:
 	#pass
 func _ketika_musik_latar_selesai_dimainkan() -> void:
 	await get_tree().create_timer(10.0).timeout
-	_mainkan_musik_latar()
+	if not is_instance_valid(karakter):
+		_mainkan_musik_latar()
+	else:
+		_hentikan_musik_latar()
 func _hentikan_musik_latar() -> void:
 	$pemutar_musik/AudioStreamPlayer.stop()
 	$pemutar_musik/AudioStreamPlayer.stream = null
