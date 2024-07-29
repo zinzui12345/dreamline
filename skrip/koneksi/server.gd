@@ -764,6 +764,15 @@ func _pemain_terputus(id_pemain):
 				]
 			)
 			return
+		elif nama_fungsi == "berbunyi" and parameter.size() == 1:
+			_sesuaikan_properti_objek(
+				pool_objek[nama_objek]["id_pengubah"],
+				nama_objek,
+				[
+					["kondisi", parameter[0]]
+				]
+			)
+			return
 		elif (nama_fungsi == "buka" or nama_fungsi == "tutup") and parameter.size() == 0:
 			var _tmp_kondisi : bool
 			if nama_fungsi == "buka": _tmp_kondisi = true
