@@ -35,7 +35,7 @@ class_name Permainan
 # 04 Jul 2024 | 0.4.3 - Demo Uji Performa
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 
-const versi = "Dreamline v0.4.4 29/07/24 alpha"
+const versi = "Dreamline v0.4.4 30/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -828,7 +828,18 @@ func _edit_objek(jalur : String) -> void:
 	$kontrol_sentuh/kontrol_pandangan.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/jalur.text = jalur
+	$hud/daftar_properti_objek/panel/translasi_x.editable = false
+	$hud/daftar_properti_objek/panel/translasi_y.editable = false
+	$hud/daftar_properti_objek/panel/translasi_z.editable = false
+	$hud/daftar_properti_objek/panel/pilih_tab_posisi.disabled = true
+	$hud/daftar_properti_objek/panel/pilih_tab_rotasi.disabled = true
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.disabled = true
+	$hud/daftar_properti_objek/panel/tambah_translasi_x.disabled = true
+	$hud/daftar_properti_objek/panel/tambah_translasi_y.disabled = true
+	$hud/daftar_properti_objek/panel/tambah_translasi_z.disabled = true
+	$hud/daftar_properti_objek/panel/kurangi_translasi_x.disabled = true
+	$hud/daftar_properti_objek/panel/kurangi_translasi_y.disabled = true
+	$hud/daftar_properti_objek/panel/kurangi_translasi_z.disabled = true
 	#$hud/daftar_properti_objek/panel_2/perdekat_objek.min_value = -Konfigurasi.jarak_render
 	$hud/daftar_properti_objek/panel_2/perdekat_objek.value = $pengamat.get_node("%pandangan").position.z
 	$mode_bermain.visible = false
@@ -845,6 +856,18 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.atur_nilai(edit_objek.get("warna_2"))
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.visible = true
+	if edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false:
+		$hud/daftar_properti_objek/panel/translasi_x.editable = true
+		$hud/daftar_properti_objek/panel/translasi_y.editable = true
+		$hud/daftar_properti_objek/panel/translasi_z.editable = true
+		$hud/daftar_properti_objek/panel/pilih_tab_posisi.disabled = false
+		$hud/daftar_properti_objek/panel/pilih_tab_rotasi.disabled = false
+		$hud/daftar_properti_objek/panel/tambah_translasi_x.disabled = false
+		$hud/daftar_properti_objek/panel/tambah_translasi_y.disabled = false
+		$hud/daftar_properti_objek/panel/tambah_translasi_z.disabled = false
+		$hud/daftar_properti_objek/panel/kurangi_translasi_x.disabled = false
+		$hud/daftar_properti_objek/panel/kurangi_translasi_y.disabled = false
+		$hud/daftar_properti_objek/panel/kurangi_translasi_z.disabled = false
 	if edit_objek.get("skala") != null:
 		$hud/daftar_properti_objek/panel/pilih_tab_skala.disabled = false
 	# 06/06/24 :: cek apakah objek memiliki node skrip, kemudian aktifkan visibilitas tombol edit skrip
@@ -1424,7 +1447,7 @@ func _pilih_tab_posisi_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_y.editable = false
 	$hud/daftar_properti_objek/panel/translasi_z.release_focus()
 	$hud/daftar_properti_objek/panel/translasi_z.editable = false
-	if edit_objek != null:
+	if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = -2147483648
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 2147483647
@@ -1448,7 +1471,7 @@ func _pilih_tab_rotasi_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/translasi_y.editable = false
 	$hud/daftar_properti_objek/panel/translasi_z.editable = false
-	if edit_objek != null:
+	if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = -359
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 359
@@ -1472,7 +1495,7 @@ func _pilih_tab_skala_objek() -> void:
 	$hud/daftar_properti_objek/panel/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/translasi_y.editable = false
 	$hud/daftar_properti_objek/panel/translasi_z.editable = false
-	if edit_objek != null:
+	if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/translasi_x.min_value = 0.1
 		$hud/daftar_properti_objek/panel/translasi_x.max_value = 100
@@ -1517,7 +1540,7 @@ func _kurang_translasi_z_objek() -> void:
 func _ketika_translasi_x_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/translasi_x.editable:
 		#Panku.notify("ceritakan padanya~")
-		if edit_objek != null:
+		if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
 				edit_objek.set_indexed("global_transform:origin:x", nilai)
@@ -1527,7 +1550,7 @@ func _ketika_translasi_x_objek_diubah(nilai : float) -> void:
 				edit_objek.set_indexed("skala:x", nilai)
 func _ketika_translasi_y_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/translasi_y.editable:
-		if edit_objek != null:
+		if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
 				edit_objek.set_indexed("global_transform:origin:y", nilai)
@@ -1537,7 +1560,7 @@ func _ketika_translasi_y_objek_diubah(nilai : float) -> void:
 				edit_objek.set_indexed("skala:y", nilai)
 func _ketika_translasi_z_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/translasi_z.editable:
-		if edit_objek != null:
+		if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/pilih_tab_posisi.button_pressed:
 				edit_objek.set_indexed("global_transform:origin:z", nilai)
