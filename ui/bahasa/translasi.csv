@@ -68,6 +68,9 @@ SKALARESOLUSI,Skala Resolusi,Resolution Scale
 ,,
 # proses memuat,,
 kompilasi_shader,Memuat Shader...,Compiling Shader...
+kompilasi_karakter,Membuat Karakter Pemain,Creating Player Character
+%memuat_map%,Memuat Map...,Loading Map...
+%memuat_pemain%,Menambahkan Pemain ke dunia,Adding Player to world
 ,,
 # menu jeda,,
 %lanjutkan,  Lanjutkan,  Resume

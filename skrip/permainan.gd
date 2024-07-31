@@ -398,6 +398,7 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	$proses_memuat/panel_bawah/animasi.play("tampilkan")
 	$proses_memuat/panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
+	$proses_memuat/panel_bawah/Panel/LabelMemuat.text = "kompilasi_karakter"
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = "0%"
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat.value = 0
 	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
@@ -416,6 +417,7 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 		for t_karakter in get_node("%karakter").get_children(): t_karakter.queue_free()
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = true
 	_atur_persentase_memuat(5)
+	_atur_teks_memuat("%memuat_map%")
 	await get_tree().create_timer(0.25).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	data["posisi"] = posisi
 	data["rotasi"] = rotasi
@@ -441,6 +443,7 @@ func _muat_map(file_map : StringName) -> void:
 			# tambah pengamat objek
 			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
 			call_deferred("_atur_persentase_memuat", 70)
+			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
 			call_deferred("add_child", pengamat_objek)
 			# tambahkan pemain
 			call_deferred("_tambahkan_pemain", 1, data)
@@ -673,6 +676,7 @@ func _muat_map(file_map : StringName) -> void:
 			# tambah pengamat objek
 			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
 			call_deferred("_atur_persentase_memuat", 70)
+			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
 			call_deferred("add_child", pengamat_objek)
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
@@ -1116,6 +1120,8 @@ func _atur_persentase_memuat(nilai : int) -> void:
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.get_animation("proses").track_set_key_value(0, 1, nilai)
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.play("proses")
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = str(nilai)+"%"
+func _atur_teks_memuat(nilai : String) -> void:
+	$proses_memuat/panel_bawah/Panel/LabelMemuat.text = nilai
 func _tampilkan_permainan() -> void:
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
