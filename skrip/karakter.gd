@@ -604,7 +604,7 @@ func _physics_process(delta : float) -> void:
 	arah_gerakan = get_real_velocity() * transform.basis
 	
 	# sinkronkan perubahan kondisi
-	if id_pemain == client.id_koneksi:
+	if id_pemain == client.id_koneksi and client.id_koneksi > 0:
 		# buat variabel pembanding
 		var perubahan_kondisi : Array = []
 		

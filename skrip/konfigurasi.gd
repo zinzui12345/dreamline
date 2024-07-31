@@ -39,11 +39,11 @@ var kode_bahasa : Array[StringName] = [
 
 func muat() -> void:
 	if !FileAccess.file_exists(data_konfigurasi):
-		Panku.notify("Tidak ada file konfigurasi yang ditemukan")
-		Panku.notify("Membuat file konfigurasi")
+		#Panku.notify("Tidak ada file konfigurasi yang ditemukan")
+		#Panku.notify("Membuat file konfigurasi")
 		simpan()
 	else:
-		Panku.notify("Memuat file konfigurasi")
+		Panku.notify("%muat_pengaturan")
 	
 	var file : FileAccess = FileAccess.open(data_konfigurasi, FileAccess.READ)
 	var data = file.get_var()

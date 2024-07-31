@@ -28,7 +28,12 @@ var _telah_spawn : bool
 func mulai() -> void:
 	set("wilayah_render", $area_render.get_aabb())
 	terapkan_warna(warna_1)
-	$kode_ubahan.atur_kode(properti[2][1])
+	if kode == "":
+		$kode_ubahan.atur_kode(properti[2][1])
+		kode = properti[2][1]
+	else:
+		$kode_ubahan.atur_kode(kode)
+		kode = kode
 	if kondisi:	$animasi.play("terbuka")
 	else:		$animasi.play("tertutup")
 	_telah_spawn = true

@@ -72,8 +72,8 @@
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
-[ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english.svg" id="63_r5flb"]
-[ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia.svg" id="64_gnps4"]
+[ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english_kecil.svg" id="63_r5flb"]
+[ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia_kecil.svg" id="64_gnps4"]
 [ext_resource type="Texture2D" uid="uid://b68vyh4ydqyy8" path="res://ui/ikon/ikon_bug.svg" id="65_y0rvh"]
 [ext_resource type="Texture2D" uid="uid://rbbpim0jwhdx" path="res://ui/ikon/ikon_lampu.svg" id="66_j76b2"]
 [ext_resource type="Texture2D" uid="uid://b5frug6id5d0s" path="res://ui/ikon/ikon_analog.svg" id="67_5s073"]
@@ -4774,6 +4774,18 @@ tracks/3/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:top_level")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
 
 [sub_resource type="Animation" id="Animation_8jjes"]
 resource_name = "tutup"
@@ -4814,6 +4826,18 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:top_level")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.29, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mmswf"]

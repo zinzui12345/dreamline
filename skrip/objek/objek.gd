@@ -40,7 +40,7 @@ var cek_properti : Dictionary = {}			# simpan beberapa properti di tiap frame un
 
 func _ready() -> void: call_deferred("_setup")
 func _setup() -> void:
-	if !is_instance_valid(server.permainan): return
+	if !is_instance_valid(server.permainan) or !is_instance_valid(server.permainan.dunia): return
 	if get_parent().get_path() != server.permainan.dunia.get_node("objek").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada objek | ini digunakan untuk menambahkan objek ke server

@@ -35,7 +35,7 @@ class_name Permainan
 # 04 Jul 2024 | 0.4.3 - Demo Uji Performa
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 
-const versi = "Dreamline v0.4.4 30/07/24 alpha"
+const versi = "Dreamline v0.4.4 31/07/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -132,7 +132,20 @@ enum PERAN_KARAKTER {
 #region setup
 func _enter_tree() -> void:
 	get_tree().get_root().set("min_size", Vector2(980, 600))
-	Konfigurasi.muat()
+func _ready() -> void:
+	var loader = await load("res://skena/loader.scn").instantiate()
+	get_tree().get_root().call_deferred("add_child", loader)
+	$hud.visible = false
+	$mode_bermain.visible = false
+	$kontrol_sentuh.visible = false
+	$kontrol_sentuh/aksi_2.visible = false
+	$hud/daftar_properti_objek/DragPad.visible = false
+func _setup() -> void:
+	if dunia == null:
+		dunia = await load("res://skena/dunia.scn").instantiate()
+		get_tree().get_root().call_deferred("add_child", dunia)
+		dunia.set_process(false)
+	# INFO : (1) muat data konfigurasi atau terapkan konfigurasi default
 	$setelan.visible = false
 	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled = true
 	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.selected = Konfigurasi.bahasa
@@ -152,17 +165,6 @@ func _enter_tree() -> void:
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = false
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.value = Konfigurasi.sensitivitasPandangan
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = true
-func _ready() -> void:
-	if dunia == null:
-		dunia = await load("res://skena/dunia.scn").instantiate()
-		get_tree().get_root().call_deferred("add_child", dunia)
-		dunia.set_process(false)
-	# INFO : (1) muat data konfigurasi atau terapkan konfigurasi default
-	if FileAccess.file_exists(Konfigurasi.data_pemain):
-		var file : FileAccess = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
-		data = file.get_var()
-		file.close()
-	# Muat data karakter
 	# INFO : (2) non-aktifkan proses untuk placeholder karakter
 	get_node("%karakter/lulu").set_process(false)
 	get_node("%karakter/lulu").set_physics_process(false)
@@ -199,11 +201,6 @@ func _ready() -> void:
 	match data["gender"]: # di dunia ini cuman ada 2 gender!
 		'P': $karakter/panel/tab/tab_personalitas/pilih_gender.select(0); _ketika_mengubah_gender_karakter(0)
 		'L': $karakter/panel/tab/tab_personalitas/pilih_gender.select(1); _ketika_mengubah_gender_karakter(1)
-	$hud.visible = false
-	$mode_bermain.visible = false
-	$kontrol_sentuh.visible = false
-	$kontrol_sentuh/aksi_2.visible = false
-	$hud/daftar_properti_objek/DragPad.visible = false
 	
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
@@ -1570,6 +1567,10 @@ func _ketika_translasi_z_objek_diubah(nilai : float) -> void:
 				edit_objek.set_indexed("skala:z", nilai)
 func _ketika_mengubah_kode_objek() -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
+		# 31/07/24 :: jangan lanjutkan jika kode kosong
+		if edit_objek.get_node("kode_ubahan").dapatkan_kode() == "":
+			_tampilkan_popup_informasi_("NULL")
+			return
 		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
 		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
 		# 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
@@ -1844,6 +1845,7 @@ func tutup_editor_kode() -> void:
 	$blok_kode/panel_kode.hapus_palet_sintaks()
 	# 11/06/24 :: putuskan signal jalankan_kode dari editor ke objek
 	if is_instance_valid(edit_objek) and $blok_kode/panel_kode.is_connected("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode):
+		edit_objek.kode = edit_objek.get_node("kode_ubahan").kode
 		$blok_kode/panel_kode.disconnect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
 	# kalau bukan dalam permainan, tampilkan kembali menu utama
 	if !is_instance_valid(karakter):

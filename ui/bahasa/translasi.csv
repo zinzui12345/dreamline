@@ -43,6 +43,7 @@ KELUAR,Keluar,Exit
 %setelan,Setelan,Settings
 TAMPILAN,Tampilan,Appearance
 bahasa,Bahasa,Language
+pilih_bahasa,Pilih Bahasa,Select Language
 %input,Masukan,Input
 sensitivitas_gestur,Sensitivitas Gestur,Gesture Sensitivity
 kontrol_gerak,Kontrol Gerakan,Movement Control
@@ -65,6 +66,9 @@ SKALARESOLUSI,Skala Resolusi,Resolution Scale
 %jumlah_pemain,Jumlah Pemain,Max Player
 %akses,Akses,Access
 ,,
+# proses memuat,,
+kompilasi_shader,Memuat Shader...,Compiling Shader...
+,,
 # menu jeda,,
 %lanjutkan,  Lanjutkan,  Resume
 %statistik,  Statistik,  Statistics
@@ -75,6 +79,7 @@ SKALARESOLUSI,Skala Resolusi,Resolution Scale
 KONEKSISUKSES,Koneksi terhubung dengan peladen,Connected to
 %koneksigagal,Tidak dapat terhubung dengan peladen,Unable to connect the server
 %koneksiputus,Koneksi peladen telah terputus,Server disconnected
+%namakosong,Nama Pemain tidak boleh kosong!,Player Name cannot be empty!
 %ipkosong,Alamat IP tidak boleh kosong!,IP Address cannot empty!
 %iptakvalid,Alamat IP tidak valid!,Invalid IP Address!
 LOGINFORMASI,INFORMASI,INFO
@@ -84,6 +89,7 @@ PERINTAHSALAH,Perintah `%s` tidak ditemukan.,Command `%s` not found.
 %spawnpemain,spawn pemain,spawning player
 %putuskanserver,Menghentikan peladen,Stopping server
 %belum_tersedia,Fitur ini belum tersedia.,Not available yet.
+%muat_pengaturan,Memuat file konfigurasi,Loading configuration
 %simpan_pengaturan,Menyimpan konfigurasi,Saving configuration
 %simpan_karakter,Menyimpan Karakter,Saving Character
 ,,
@@ -99,6 +105,7 @@ ARAH,Arah,Direction
 # input,,
 INPUTSPASI,spasi,space
 INPUTHAPUS,hapus,delete
+%inputnama%,ketik namamu disini...,type your name here...
 %inputperintah%,Masukkan perintah disini...,Input expression here...
 ,,
 # aksi,,
@@ -114,6 +121,9 @@ INPUTHAPUS,hapus,delete
 %bantuan,Bantuan,Help
 ,,
 # dialog,,
+login_akun,Masuk,Login
+profil_pemain,Profil Pemain,Player Profile
+atau,atau,or
 t5d0f95face,Selamat datang di dreamline!,Welcome to dreamline!
 tc6ded773c4,Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa bermain bersama siapapun dengan perangkat apapun,This is a Sandbox [b]Multiplayer Cross-Platform[/b] game where you can play with anyone with any platform
 ,,
@@ -128,7 +138,10 @@ pindahkan(arah),pindahkan(arah),move(direction)
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
 %putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
+%lanjut,Lanjut,Next
 %lanjutkan%,Lanjutkan,Continue
+%login_guest%,Bermain tanpa Akun,Play without Account
+%login_google%,Masuk dengan Google,Sign in with Google
 %tinggalkan_permainan,Ini akan menutup permainan dan mengalihkan ke situs eksternal:\n%s\nLanjutkan?,This will close the game and redirect to: %s\nContinue?
 ,,
 # placeholder,,
