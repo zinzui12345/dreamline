@@ -12,7 +12,7 @@
 script/source = "# 28/12/23
 extends Control
 
-# TODO : 27/07/24 :: hasil benchmark pre rendering
+# 27/07/24 :: hasil benchmark pre rendering
 # * dapatkan jumlah fps ketika memulai pre rendering
 # * dapatkan jumlah vertex ketika memulai pre rendering
 # * kalkulasi total jumlah objek yang dirender

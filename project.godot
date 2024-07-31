@@ -60,6 +60,7 @@ enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://a
 [file_customization]
 
 folder_colors={
+"res://audio/": "yellow",
 "res://karakter/": "red",
 "res://skena/": "orange",
 "res://skrip/": "teal",

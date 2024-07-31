@@ -29,7 +29,7 @@ func atur_kode(_kode : String) -> void:
 	
 	# atur nilai
 	kode = _kode
-	if get_parent().kode != _kode: get_parent().kode = _kode
+	#if get_parent().kode == "": get_parent().kode = _kode
 
 func panggil_fungsi_kode(nama_fungsi : String, id_pengguna : int) -> void:
 	if $compiler.has_method(nama_fungsi):
