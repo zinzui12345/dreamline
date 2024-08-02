@@ -185,6 +185,10 @@ func buat_palet_sintaks(nama_grup : String, data : Dictionary):
 		$palet_sintaks.add_child(node_kelas_sintaks)
 		node_kelas_sintaks.name = kelas_sintaks
 		node_kelas_sintaks.text = kelas_sintaks + " >"
+		match kelas_sintaks:
+			"Permainan":	node_kelas_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/permainan.svg")
+			"Objek":		node_kelas_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/objek.svg")
+			"Pintu":		node_kelas_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/pintu.svg")
 		if data[kelas_sintaks] is Array and data[kelas_sintaks].size() > 0:
 			for aksi_sintaks in data[kelas_sintaks]:
 				var nama_fungsi_aksi = aksi_sintaks[0]
@@ -198,6 +202,7 @@ func buat_palet_sintaks(nama_grup : String, data : Dictionary):
 				node_kelas_sintaks.daftar_aksi.add_child(node_aksi_sintaks)
 				node_aksi_sintaks.text = nama_fungsi_aksi
 				node_aksi_sintaks.kode = kode_sintaks_aksi
+				if jalur_ikon_aksi != "": node_aksi_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/"+jalur_ikon_aksi+".svg")
 		daftar_kelas_sintaks.append(node_kelas_sintaks)
 	$palet_sintaks.add_child(label_pemisah)
 func hapus_palet_sintaks():

@@ -134,9 +134,12 @@ tc6ded773c4,Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kam
 gunakan():, gunakan():, use():
 Permainan >,Permainan >,Game >
 Objek >,Objek >,Object >
+Pintu >,Pintu >,Door >
 notifikasi(teks),notifikasi(teks),notify(text)
 pesan(teks),pesan(teks),message(text)
 pindahkan(arah),pindahkan(arah),move(direction)
+buka(),buka(),open()
+tutup(),tutup(),close()
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?

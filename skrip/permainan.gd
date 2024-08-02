@@ -35,7 +35,7 @@ class_name Permainan
 # 04 Jul 2024 | 0.4.3 - Demo Uji Performa
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 
-const versi = "Dreamline v0.4.4 31/07/24 alpha"
+const versi = "Dreamline v0.4.4 02/08/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1582,27 +1582,27 @@ func _ketika_mengubah_kode_objek() -> void:
 		# 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
 		var sintaks_aksi : Dictionary = {
 			"Permainan" : [
-				["notifikasi(teks)", "Panku.notify(\"teks\")", "ikon"],
-				["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "ikon"]
+				["notifikasi(teks)", "Panku.notify(\"teks\")", "notifikasi"],
+				["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "popup"]
 			]
 		}
 		if edit_objek is objek:
 			sintaks_aksi.merge({
 				"Objek" : [
-					["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "ikon"]
+					["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "pindahkan_objek"]
 				]
 			})
 		if edit_objek is pintu:
 			sintaks_aksi.merge({
 				"Pintu" : [
-					["buka()", "get_node(\"../../\").buka()", "ikon"],
-					["tutup()", "get_node(\"../../\").tutup()", "ikon"]
+					["buka()", "get_node(\"../../\").buka()", "pintu_buka"],
+					["tutup()", "get_node(\"../../\").tutup()", "pintu"]
 				]
 			})
 		elif edit_objek is patung:
 			sintaks_aksi.merge({
 				"🗿" : [
-					["???", "get_node(\"../../\").berbunyi(true)", "ikon"]
+					["???", "get_node(\"../../\").berbunyi(true)", "bunyi"]
 				]
 			})
 		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
