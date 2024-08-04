@@ -1,16 +1,37 @@
-[gd_scene load_steps=13 format=3 uid="uid://ce18wkwg6vqvt"]
+[gd_scene load_steps=27 format=3 uid="uid://ce18wkwg6vqvt"]
 
 [ext_resource type="PackedScene" uid="uid://b2vpadafsxpem" path="res://skena/objek/pintu_1_statis.scn" id="1_mkepy"]
 [ext_resource type="PackedScene" uid="uid://bscagsoyxo350" path="res://skena/dunia.scn" id="2_5vn7j"]
+[ext_resource type="Texture2D" uid="uid://dvgas6v58188m" path="res://ui/blok kode/sintaks/ikon/pintu.svg" id="3_elu4k"]
+[ext_resource type="Texture2D" uid="uid://dv1eeh17dqpy0" path="res://ui/ikon/ikon_mode_edit.svg" id="4_5051f"]
+[ext_resource type="Texture2D" uid="uid://c3peiregx7r21" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_right.svg" id="5_o8na6"]
+[ext_resource type="Texture2D" uid="uid://b68vyh4ydqyy8" path="res://ui/ikon/ikon_bug.svg" id="6_vfqy5"]
+[ext_resource type="Texture2D" uid="uid://cfm1b6vmrnbjv" path="res://ui/blok kode/sintaks/ikon/pintu_buka.svg" id="7_1wijr"]
+[ext_resource type="Texture2D" uid="uid://dsjkya7g111eu" path="res://ui/ikon/ikon_mode_bermain.svg" id="8_p8sng"]
+[ext_resource type="Texture2D" uid="uid://d4hweagh0guib" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left.svg" id="8_wif4n"]
+[ext_resource type="Texture2D" uid="uid://mp6cg7otogqg" path="res://ui/tombol/edit_objek.svg" id="10_pwjl0"]
+[ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="11_x1flv"]
+[ext_resource type="Texture2D" uid="uid://bj23rml8mf5xp" path="res://ui/tombol/gunakan_objek.svg" id="12_246ih"]
 
 [sub_resource type="GDScript" id="GDScript_w4vbv"]
 script/source = "extends StaticBody3D
 
 func _ready() -> void:
-	#$pintu_1_statis/kode_ubahan.kode = \"func gunakan():\\n\\tPanku.notify(\\\"tidak terjadi apa apa\\\")\"
 	$pintu_1_statis.kode = \"func gunakan():\\n\\tPanku.notify(\\\"tidak terjadi apa apa\\\")\"
-	Panku.notify($pintu_1_statis.kode)
-	#pass
+	var material_tampilan_bantuan = StandardMaterial3D.new()
+	var tekstur_bantuan = ImageTexture.new()
+	if OS.get_distribution_name() == \"Android\":
+		$panel_bantuan/SubViewport/Control/bantuan_pc.visible = false
+		$panel_bantuan/SubViewport/Control/bantuan_mobile.visible = true
+	else:
+		$panel_bantuan/SubViewport/Control/bantuan_pc.visible = true
+		$panel_bantuan/SubViewport/Control/bantuan_mobile.visible = false
+	$display_panel_bantuan.set_surface_override_material(0, material_tampilan_bantuan)
+	await RenderingServer.frame_post_draw
+	tekstur_bantuan.set_image($panel_bantuan/SubViewport.get_texture().get_image())
+	$panel_bantuan/SubViewport.render_target_clear_mode = SubViewport.CLEAR_MODE_NEVER
+	$panel_bantuan/SubViewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	material_tampilan_bantuan.albedo_texture = tekstur_bantuan
 "
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_788wh"]
@@ -139,6 +160,45 @@ shadow_mesh = SubResource("ArrayMesh_ia5ou")
 [sub_resource type="PlaneMesh" id="PlaneMesh_46vnl"]
 size = Vector2(15, 15)
 
+[sub_resource type="GDScript" id="GDScript_3ynht"]
+script/source = "extends Area3D
+
+func _ketika_dimasuki_sesuatu(body):
+	if body == server.permainan.karakter:
+		var tween_cahaya_surga : Tween = get_tree().create_tween()
+		var file_dialog = load(\"res://ui/dialog/intro.dialogue\")
+		tween_cahaya_surga.tween_property(
+			server.permainan.get_node(\"hud/efek_cahaya\"),
+			\"modulate\",
+			Color(1,1,1,1),
+			0.5
+		)
+		tween_cahaya_surga.play()
+		server.permainan.tampilkan_dialog(file_dialog, \"perkenalan\")
+		await DialogueManager.dialogue_ended
+		tween_cahaya_surga.stop()
+		tween_cahaya_surga = get_tree().create_tween()
+		tween_cahaya_surga.tween_property(
+			server.permainan.get_node(\"hud/efek_cahaya\"),
+			\"modulate\",
+			Color(0,0,0,1),
+			0.5
+		)
+		tween_cahaya_surga.play()
+		await get_tree().create_timer(0.25).timeout
+		server.permainan.tampilkan_dialog(file_dialog, \"tentang_permainan\")
+		await DialogueManager.dialogue_ended
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_271nj"]
+size = Vector3(1.70453, 2.35498, 1.48938)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1m05u"]
+bg_color = Color(0.445488, 0.445488, 0.445488, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ctdyg"]
+size = Vector2(4.52, 4.52)
+
 [node name="Level0" type="StaticBody3D"]
 script = SubResource("GDScript_w4vbv")
 
@@ -169,3 +229,363 @@ material_override = SubResource("StandardMaterial3D_3wk0h")
 mesh = SubResource("PlaneMesh_46vnl")
 
 [node name="dunia" parent="." instance=ExtResource("2_5vn7j")]
+
+[node name="area_tujuan" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19233, 4.86433)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = SubResource("GDScript_3ynht")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="area_tujuan"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0027771, -0.0192871, 0.24469)
+shape = SubResource("BoxShape3D_271nj")
+
+[node name="panel_bantuan" type="SubViewportContainer" parent="."]
+offset_left = -452.0
+offset_top = -452.0
+metadata/_edit_lock_ = true
+
+[node name="SubViewport" type="SubViewport" parent="panel_bantuan"]
+handle_input_locally = false
+size = Vector2i(452, 452)
+
+[node name="Control" type="Control" parent="panel_bantuan/SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="panel_bantuan/SubViewport/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1m05u")
+
+[node name="bantuan_pc" type="VBoxContainer" parent="panel_bantuan/SubViewport/Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_pc"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+texture = ExtResource("3_elu4k")
+stretch_mode = 5
+
+[node name="Label2" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer"]
+custom_minimum_size = Vector2(110, 50)
+layout_mode = 2
+texture = ExtResource("4_5051f")
+stretch_mode = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_pc"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer2"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+texture = ExtResource("3_elu4k")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer2"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("5_o8na6")
+stretch_mode = 5
+
+[node name="Label4" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer2"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect3" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("6_vfqy5")
+stretch_mode = 5
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_pc"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer3"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer3"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("7_1wijr")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer3"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect3" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer3"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("5_o8na6")
+stretch_mode = 5
+
+[node name="Label4" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer3"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect4" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer3"]
+custom_minimum_size = Vector2(110, 90)
+layout_mode = 2
+texture = ExtResource("8_p8sng")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_pc"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer4"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer4"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("3_elu4k")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer4"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_pc/HBoxContainer4"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("8_wif4n")
+stretch_mode = 5
+
+[node name="bantuan_mobile" type="VBoxContainer" parent="panel_bantuan/SubViewport/Control"]
+visible = false
+layout_mode = 0
+offset_right = 310.0
+offset_bottom = 352.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_mobile"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("3_elu4k")
+stretch_mode = 5
+
+[node name="Label2" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer"]
+custom_minimum_size = Vector2(110, 50)
+layout_mode = 2
+texture = ExtResource("4_5051f")
+stretch_mode = 5
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_mobile"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer2"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("3_elu4k")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer2"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("10_pwjl0")
+stretch_mode = 5
+
+[node name="Label4" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer2"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect3" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer2"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("6_vfqy5")
+stretch_mode = 5
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_mobile"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer3"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer3"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("7_1wijr")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer3"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect3" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer3"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("11_x1flv")
+stretch_mode = 5
+
+[node name="Label4" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer3"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect4" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer3"]
+custom_minimum_size = Vector2(110, 90)
+layout_mode = 2
+texture = ExtResource("8_p8sng")
+expand_mode = 4
+stretch_mode = 5
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="panel_bantuan/SubViewport/Control/bantuan_mobile"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer4"]
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer4"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("3_elu4k")
+stretch_mode = 5
+
+[node name="Label3" type="Label" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer4"]
+custom_minimum_size = Vector2(10, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "-> "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect2" type="TextureRect" parent="panel_bantuan/SubViewport/Control/bantuan_mobile/HBoxContainer4"]
+custom_minimum_size = Vector2(110, 110)
+layout_mode = 2
+texture = ExtResource("12_246ih")
+stretch_mode = 6
+
+[node name="display_panel_bantuan" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.25, 0, -3.7749e-08, 0, 0.25, 0, 3.7749e-08, 0, -0.25, -1.85793, 1.29, 3.8)
+mesh = SubResource("QuadMesh_ctdyg")
+
+[connection signal="body_entered" from="area_tujuan" to="area_tujuan" method="_ketika_dimasuki_sesuatu"]

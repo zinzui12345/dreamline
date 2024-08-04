@@ -1,4 +1,4 @@
-[gd_scene load_steps=326 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=327 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -978,6 +978,9 @@ tracks/1/keys = {
 _data = {
 "tampilkan": SubResource("Animation_rhu7g")
 }
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj7vl"]
+bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2jlpn"]
 radius = 45.0
@@ -5226,6 +5229,7 @@ offset_right = 0.0639992
 offset_bottom = -0.200001
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="panel" type="Panel" parent="hud/daftar_pemain"]
 layout_mode = 1
@@ -5861,6 +5865,18 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 48.0
 offset_bottom = 34.0
+metadata/_edit_lock_ = true
+
+[node name="efek_cahaya" type="Panel" parent="hud"]
+modulate = Color(0, 0, 0, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nj7vl")
 metadata/_edit_lock_ = true
 
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]

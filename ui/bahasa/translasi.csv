@@ -128,7 +128,11 @@ login_akun,Masuk,Login
 profil_pemain,Profil Pemain,Player Profile
 atau,atau,or
 t5d0f95face,Selamat datang di dreamline!,Welcome to dreamline!
-tc6ded773c4,Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa bermain bersama siapapun dengan perangkat apapun,This is a Sandbox [b]Multiplayer Cross-Platform[/b] game where you can play with anyone with any platform
+tc6ded773c4,Ini adalah [i]game[/i] Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa bermain bersama siapapun dengan perangkat apapun,This is a Sandbox [b]Multiplayer Cross-Platform[/b] game where you can play with anyone with any platform
+tccc576dbcf,Tujuan utama dari [i]game[/i] ini adalah [b]menyusun blok kode[/b] untuk memfungsikan suatu objek,The main goal of this game is to [b]arrange code blocks[/b] for operate an object
+t5f907a0801,kamu juga bisa membuat objek dan memprogramnya sesuai keinginan.,you can also create objects and program them as desired.
+tcf6af195fc,Ubah atau tambahkan blok kode pada objek tertentu untuk menyelesaikan rintangan,Modify or add code blocks to a spesific object for fix obstacles
+t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemudian edit objek,to add or modify an object code block` use edit mode and then edit the object
 ,,
 # editor kode,,
 gunakan():, gunakan():, use():
