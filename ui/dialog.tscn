@@ -1,339 +1,179 @@
-[gd_scene load_steps=8 format=3 uid="uid://73jm5qjy52vq"]
-
-[ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_a8ve6"]
-
-[sub_resource type="GDScript" id="GDScript_0htr2"]
-script/source = "extends Node
-
-
-@onready var balloon: ColorRect = $Balloon
-@onready var margin: MarginContainer = $Balloon/Margin
-@onready var character_label: RichTextLabel = $Balloon/Margin/VBox/CharacterLabel
-@onready var dialogue_label := $Balloon/Margin/VBox/DialogueLabel
-@onready var responses_menu: VBoxContainer = $Balloon/Margin/VBox/Responses
-@onready var response_template: RichTextLabel = %ResponseTemplate
-
-## The dialogue resource
-var resource: DialogueResource
-
-## Temporary game states
-var temporary_game_states: Array = []
-
-## See if we are waiting for the player
-var is_waiting_for_input: bool = false
-
-## See if we are running a long mutation and should hide the balloon
-var will_hide_balloon: bool = false
-
-## The current line
-var dialogue_line: DialogueLine:
-	set(next_dialogue_line):
-		is_waiting_for_input = false
-
-		if not next_dialogue_line:
-			queue_free()
-			return
-
-		# Remove any previous responses
-		for child in responses_menu.get_children():
-			responses_menu.remove_child(child)
-			child.queue_free()
-
-		dialogue_line = next_dialogue_line
-
-		character_label.visible = not dialogue_line.character.is_empty()
-		character_label.text = tr(dialogue_line.character, \"dialogue\")
-
-		dialogue_label.modulate.a = 0
-		dialogue_label.custom_minimum_size.x = dialogue_label.get_parent().size.x - 1
-		dialogue_label.dialogue_line = dialogue_line
-
-		# Show any responses we have
-		responses_menu.modulate.a = 0
-		if dialogue_line.responses.size() > 0:
-			for response in dialogue_line.responses:
-				# Duplicate the template so we can grab the fonts, sizing, etc
-				var item: RichTextLabel = response_template.duplicate(0)
-				item.name = \"Response%d\" % responses_menu.get_child_count()
-				if not response.is_allowed:
-					item.name = String(item.name) + \"Disallowed\"
-					item.modulate.a = 0.4
-				item.text = response.text
-				item.show()
-				responses_menu.add_child(item)
-
-		# Show our balloon
-		balloon.show()
-		will_hide_balloon = false
-
-		dialogue_label.modulate.a = 1
-		if not dialogue_line.text.is_empty():
-			dialogue_label.type_out()
-			await dialogue_label.finished_typing
-
-		# Wait for input
-		if dialogue_line.responses.size() > 0:
-			responses_menu.modulate.a = 1
-			configure_menu()
-		elif dialogue_line.time != null:
-			var time = dialogue_line.text.length() * 0.02 if dialogue_line.time == \"auto\" else dialogue_line.time.to_float()
-			await get_tree().create_timer(time).timeout
-			next(dialogue_line.next_id)
-		else:
-			is_waiting_for_input = true
-			balloon.focus_mode = Control.FOCUS_ALL
-			balloon.grab_focus()
-	get:
-		return dialogue_line
-
-
-func _ready() -> void:
-	response_template.hide()
-	balloon.hide()
-	balloon.custom_minimum_size.x = balloon.get_viewport_rect().size.x
-
-	Engine.get_singleton(\"DialogueManager\").mutated.connect(_on_mutated)
-
-
-func _unhandled_input(_event: InputEvent) -> void:
-	# Only the balloon is allowed to handle input while it's showing
-	get_viewport().set_input_as_handled()
-
-
-## Start some dialogue
-func start(dialogue_resource: DialogueResource, title: String, extra_game_states: Array = []) -> void:
-	temporary_game_states = extra_game_states
-	is_waiting_for_input = false
-	resource = dialogue_resource
-
-	self.dialogue_line = await resource.get_next_dialogue_line(title, temporary_game_states)
-
-
-## Go to the next line
-func next(next_id: String) -> void:
-	self.dialogue_line = await resource.get_next_dialogue_line(next_id, temporary_game_states)
-
-## Visibility
-func fade_in(): $AnimationPlayer.play(\"fade_in\"); $Balloon.grab_focus()
-func fade_out(): $AnimationPlayer.play(\"fade_out\")
-
-
-### Helpers
-
-
-# Set up keyboard movement and signals for the response menu
-func configure_menu() -> void:
-	balloon.focus_mode = Control.FOCUS_NONE
-
-	var items = get_responses()
-	for i in items.size():
-		var item: Control = items[i]
-
-		item.focus_mode = Control.FOCUS_ALL
-
-		item.focus_neighbor_left = item.get_path()
-		item.focus_neighbor_right = item.get_path()
-
-		if i == 0:
-			item.focus_neighbor_top = item.get_path()
-			item.focus_previous = item.get_path()
-		else:
-			item.focus_neighbor_top = items[i - 1].get_path()
-			item.focus_previous = items[i - 1].get_path()
-
-		if i == items.size() - 1:
-			item.focus_neighbor_bottom = item.get_path()
-			item.focus_next = item.get_path()
-		else:
-			item.focus_neighbor_bottom = items[i + 1].get_path()
-			item.focus_next = items[i + 1].get_path()
-
-		item.mouse_entered.connect(_on_response_mouse_entered.bind(item))
-		item.gui_input.connect(_on_response_gui_input.bind(item))
-
-	items[0].grab_focus()
-
-
-# Get a list of enabled items
-func get_responses() -> Array:
-	var items: Array = []
-	for child in responses_menu.get_children():
-		if \"Disallowed\" in child.name: continue
-		items.append(child)
-
-	return items
-
-
-func handle_resize() -> void:
-	if not is_instance_valid(margin):
-		call_deferred(\"handle_resize\")
-		return
-
-	balloon.custom_minimum_size.y = margin.size.y
-	# Force a resize on only the height
-	balloon.size.y = 0
-	var viewport_size = balloon.get_viewport_rect().size
-	balloon.global_position = Vector2((viewport_size.x - balloon.size.x) * 0.5, viewport_size.y - balloon.size.y)
-
-
-### Signals
-
-
-func _on_mutated(_mutation: Dictionary) -> void:
-	is_waiting_for_input = false
-	will_hide_balloon = true
-	get_tree().create_timer(0.1).timeout.connect(func():
-		if will_hide_balloon:
-			will_hide_balloon = false
-			balloon.hide()
-	)
-
-
-func _on_response_mouse_entered(item: Control) -> void:
-	if \"Disallowed\" in item.name: return
-
-	item.grab_focus()
-
-
-func _on_response_gui_input(event: InputEvent, item: Control) -> void:
-	if \"Disallowed\" in item.name: return
-
-	get_viewport().set_input_as_handled()
-
-	if event is InputEventMouseButton and event.is_pressed() and event.button_index == 1:
-		next(dialogue_line.responses[item.get_index()].next_id)
-	elif event.is_action_pressed(\"ui_accept\") and item in get_responses():
-		next(dialogue_line.responses[item.get_index()].next_id)
-
-
-func _on_balloon_gui_input(event: InputEvent) -> void:
-	if not is_waiting_for_input: return
-	if dialogue_line.responses.size() > 0: return
-
-	# When there are no response options the balloon itself is the clickable thing
-	get_viewport().set_input_as_handled()
-
-	if event is InputEventMouseButton and event.is_pressed() and event.button_index == 1:
-		next(dialogue_line.next_id)
-	elif event.is_action_pressed(\"ui_accept\") and get_viewport().gui_get_focus_owner() == balloon:
-		next(dialogue_line.next_id)
-
-
-func _on_margin_resized() -> void:
-	handle_resize()
-"
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5d24i"]
-content_margin_left = 40.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(1, 1, 1, 0.25098)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oj3c8"]
-content_margin_left = 40.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-draw_center = false
-
-[sub_resource type="Animation" id="Animation_vf4bd"]
-resource_name = "fade_in"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_uv1lt"]
-resource_name = "fade_out"
-length = 0.4
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1leld"]
-_data = {
-"fade_in": SubResource("Animation_vf4bd"),
-"fade_out": SubResource("Animation_uv1lt")
-}
-
-[node name="ExampleBalloon" type="Node2D"]
-script = SubResource("GDScript_0htr2")
-
-[node name="Balloon" type="ColorRect" parent="."]
-
-[node name="Margin" type="MarginContainer" parent="Balloon"]
-layout_mode = 0
+[gd_scene load_steps=15 format=3 uid="uid://0oxqnecb81l"]
+
+[ext_resource type="Script" path="res://addons/dialogue_manager/example_balloon/example_balloon.gd" id="1_dx877"]
+[ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_ubve0"]
+[ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="2_xspl8"]
+[ext_resource type="FontFile" uid="uid://co7iy1ydh6h4u" path="res://ui/fonta/noto_sans_bold.ttf" id="3_4ktra"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_reponses_menu.gd" id="3_5hgbq"]
+[ext_resource type="FontFile" uid="uid://c32o2cnow484n" path="res://ui/fonta/noto_sans_italic.ttf" id="4_nmjbk"]
+[ext_resource type="FontFile" uid="uid://c1jk62f52u06p" path="res://ui/fonta/noto_sans_bold-italic.ttf" id="5_fverd"]
+[ext_resource type="FontFile" uid="uid://cyrts7v2aistq" path="res://ui/fonta/Monaco_Linux.ttf" id="7_wikys"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.329412, 0.329412, 0.329412, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ri4m3"]
+bg_color = Color(0.121569, 0.121569, 0.121569, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0njw"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uy0d5"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Theme" id="Theme_qq3yp"]
+default_font_size = 20
+Button/styles/disabled = SubResource("StyleBoxFlat_spyqn")
+Button/styles/focus = SubResource("StyleBoxFlat_ri4m3")
+Button/styles/hover = SubResource("StyleBoxFlat_e0njw")
+Button/styles/normal = SubResource("StyleBoxFlat_e0njw")
+MarginContainer/constants/margin_bottom = 15
+MarginContainer/constants/margin_left = 30
+MarginContainer/constants/margin_right = 30
+MarginContainer/constants/margin_top = 15
+Panel/styles/panel = SubResource("StyleBoxFlat_uy0d5")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_trvkb"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="ExampleBalloon" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_dx877")
+
+[node name="Balloon" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 119.0
+anchor_bottom = 1.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 10
-metadata/_edit_layout_mode = 1
+grow_vertical = 2
+theme = SubResource("Theme_qq3yp")
 
-[node name="VBox" type="VBoxContainer" parent="Balloon/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="CharacterLabel" type="RichTextLabel" parent="Balloon/Margin/VBox"]
-layout_mode = 2
+[node name="Panel" type="Panel" parent="Balloon"]
+clip_children = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = -183.0
+offset_right = -19.0
+offset_bottom = -19.0
+grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 1
-theme_override_colors/default_color = Color(0.219608, 0.219608, 0.219608, 1)
-theme_override_font_sizes/normal_font_size = 21
-bbcode_enabled = true
-text = "Character"
-fit_content = true
-scroll_active = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_trvkb")
 
-[node name="DialogueLabel" parent="Balloon/Margin/VBox" instance=ExtResource("2_a8ve6")]
+[node name="Dialogue" type="MarginContainer" parent="Balloon/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Balloon/Panel/Dialogue"]
 layout_mode = 2
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/normal_font_size = 21
-text = "Dialogue"
 
-[node name="Responses" type="VBoxContainer" parent="Balloon/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="ResponseTemplate" type="RichTextLabel" parent="Balloon/Margin/VBox"]
+[node name="CharacterLabel" type="RichTextLabel" parent="Balloon/Panel/Dialogue/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/default_color = Color(0, 0.2, 0.313726, 1)
-theme_override_font_sizes/normal_font_size = 21
-theme_override_styles/focus = SubResource("StyleBoxFlat_5d24i")
-theme_override_styles/normal = SubResource("StyleBoxFlat_oj3c8")
+mouse_filter = 1
+theme_override_colors/default_color = Color(0.314316, 0.314316, 0.314316, 1)
+theme_override_fonts/normal_font = ExtResource("2_xspl8")
+theme_override_fonts/bold_font = ExtResource("3_4ktra")
+theme_override_fonts/italics_font = ExtResource("4_nmjbk")
+theme_override_fonts/bold_italics_font = ExtResource("5_fverd")
 bbcode_enabled = true
-text = "Response"
+text = "Nama Karakter"
 fit_content = true
 scroll_active = false
-shortcut_keys_enabled = false
-meta_underlined = false
-hint_underlined = false
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_1leld")
-}
+[node name="DialogueLabel" parent="Balloon/Panel/Dialogue/VBoxContainer" instance=ExtResource("2_ubve0")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("2_xspl8")
+theme_override_fonts/bold_font = ExtResource("3_4ktra")
+theme_override_fonts/italics_font = ExtResource("4_nmjbk")
+theme_override_fonts/bold_italics_font = ExtResource("5_fverd")
+theme_override_fonts/mono_font = ExtResource("7_wikys")
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 23
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/bold_italics_font_size = 23
+theme_override_font_sizes/mono_font_size = 21
+text = "[code][tampilan kode][/code] Ini [i]adalah[/i] [b]contoh dialog[/b] yang akan ditampilkan...
+Ini adalah game Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa [b][i]bermain bersama siapapun dengan perangkat apapun[/i][/b]"
+
+[node name="Responses" type="MarginContainer" parent="Balloon"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -147.0
+offset_top = -558.0
+offset_right = 494.0
+offset_bottom = -154.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ResponsesMenu" type="VBoxContainer" parent="Balloon/Responses" node_paths=PackedStringArray("response_template")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 2
+script = ExtResource("3_5hgbq")
+response_template = NodePath("ResponseExample")
+
+[node name="ResponseExample" type="Button" parent="Balloon/Responses/ResponsesMenu"]
+layout_mode = 2
+text = "Contoh Respon"
 
 [connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
-[connection signal="resized" from="Balloon/Margin" to="." method="_on_margin_resized"]
+[connection signal="response_selected" from="Balloon/Responses/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]

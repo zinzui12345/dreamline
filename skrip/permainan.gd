@@ -34,8 +34,9 @@ class_name Permainan
 # 04 Jun 2024 | 0.4.2 - Penambahan Editor Blok Kode
 # 04 Jul 2024 | 0.4.3 - Demo Uji Performa
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
+# 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 02/08/24 alpha"
+const versi = "Dreamline v0.4.4 04/08/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1133,6 +1134,7 @@ func _tampilkan_permainan() -> void:
 	$mode_bermain/main.button_pressed = true
 	$mode_bermain/edit.button_pressed = false
 	$hud.visible = true
+	$hud/efek_cahaya.modulate = Color(0, 0, 0, 0)
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/daftar_pemain.visible = true
@@ -1857,10 +1859,10 @@ func tutup_editor_kode() -> void:
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
 	$blok_kode/animasi.play("sembunyikan")
-func tampilkan_dialog(file_dialog : DialogueResource) -> void:
+func tampilkan_dialog(file_dialog : DialogueResource, id_dialog) -> void:
 	var penampil_dialog : Node = load("res://ui/dialog.tscn").instantiate()
 	$dialog.add_child(penampil_dialog)
-	penampil_dialog.start(file_dialog, "0", [])
+	penampil_dialog.start(file_dialog, id_dialog, [])
 	if is_instance_valid(karakter):
 		karakter._atur_kendali(false)
 		karakter._atur_penarget(false)
@@ -1971,7 +1973,7 @@ func _jeda():
 		else:
 			if memasang_objek: _tutup_daftar_objek(true)
 			if $dialog.get_node_or_null("ExampleBalloon") != null:
-				$dialog.get_node("ExampleBalloon").fade_out()
+				$dialog.get_node("ExampleBalloon").visible = false
 			karakter._atur_kendali(false)
 		$mode_bermain.visible = false
 		$kontrol_sentuh/menu.visible = false
@@ -1985,7 +1987,7 @@ func _lanjutkan():
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if is_instance_valid(edit_objek): pass
 		elif $dialog.get_node_or_null("ExampleBalloon") != null:
-			$dialog.get_node("ExampleBalloon").fade_in()
+			$dialog.get_node("ExampleBalloon").visible = true
 		else: karakter._atur_kendali(true)
 		$mode_bermain.visible = true
 		$kontrol_sentuh/menu.visible = true

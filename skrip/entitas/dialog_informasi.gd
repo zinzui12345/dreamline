@@ -51,6 +51,7 @@ func fokus():
 func gunakan(id_pengguna):
 	if id_pengguna == client.id_koneksi:
 		if dialog != null:
+			# FIXME : tambahkan id_dialog
 			server.permainan.tampilkan_dialog(dialog)
 		else:
 			Panku.notify("berkas dialog tidak tersedia")
