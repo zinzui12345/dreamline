@@ -9283,8 +9283,6 @@ bus = &"Suara Pemain"
 [connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
 [connection signal="button_down" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_tekan"]
 [connection signal="button_up" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_lepas"]
-[connection signal="button_down" from="kontrol_sentuh/aksi_1" to="." method="_aksi_1_tekan"]
-[connection signal="button_up" from="kontrol_sentuh/aksi_1" to="." method="_aksi_1_lepas"]
 [connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]
 [connection signal="button_up" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]

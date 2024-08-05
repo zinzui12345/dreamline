@@ -1136,6 +1136,7 @@ func _tampilkan_permainan() -> void:
 	$hud.visible = true
 	$hud/efek_cahaya.modulate = Color(0, 0, 0, 0)
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
+	_ketika_mengatur_mode_kontrol_gerak(Konfigurasi.mode_kontrol_gerak)
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/daftar_pemain.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
