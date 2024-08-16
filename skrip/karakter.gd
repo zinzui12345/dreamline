@@ -682,6 +682,9 @@ func _process(_delta : float) -> void:
 		$pengamat/kamera.position.x = 0
 		$pengamat.position.y 		= get_node("%mata_kiri").position.y
 		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
+		$fisik_kepala.rotation		= get_node("%mata_kiri").rotation
+		$fisik_kepala.position.y	= get_node("%mata_kiri").position.y
+		$fisik_kepala.position.z	= get_node("%mata_kiri").position.z
 
 func _ketika_ditabrak(node : CollisionObject3D) -> void:
 	var percepatan : Vector3 = node.get_linear_velocity()
