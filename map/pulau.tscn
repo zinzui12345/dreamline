@@ -1,10 +1,9 @@
-[gd_scene load_steps=36 format=3 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=30 format=3 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
 [ext_resource type="ArrayMesh" uid="uid://d0ylp0id374jd" path="res://model/detail_air.res" id="4_dha2v"]
 [ext_resource type="Shader" uid="uid://bbo1abph4arco" path="res://material/air.tres" id="4_hpns3"]
 [ext_resource type="Image" uid="uid://bllj5hw6hqn7k" path="res://map/pulau/pulau.png" id="4_kp02e"]
-[ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="4_v0af0"]
 [ext_resource type="Texture2D" uid="uid://d1skccyhbqj77" path="res://material/lantai/lantai_028/warna.jpg" id="7_em3pv"]
 [ext_resource type="PackedScene" uid="uid://bfrbndvi106iv" path="res://model/bangunan/interior_mercusuar.scn" id="7_jv2ni"]
 [ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_pantai.scn" id="7_mxxfs"]
@@ -29,11 +28,6 @@ render_priority = 0
 shader = ExtResource("4_hpns3")
 shader_parameter/ColorParameter = Color(0, 0.266667, 0.533333, 1)
 shader_parameter/posisi_offset = Vector2(0, 0)
-
-[sub_resource type="BoxMesh" id="BoxMesh_njgt3"]
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ilglt"]
-points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3syrd"]
 resource_name = "tembok_putih"
@@ -289,19 +283,6 @@ data = PackedVector3Array(0, -16.2209, -6.3397, 4.4828, -11.5356, -4.4828, 0, -1
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6qded"]
 points = PackedVector3Array(-7.61905, -0.619048, -7.61905, 7.61905, 0.571429, 7.61905, 7.61905, -0.619048, 7.61905, 7.61905, 0.571429, -7.61905, -7.61905, 0.571429, 7.61905, -7.61905, -0.619048, 7.61905, 7.61905, -0.619048, -7.61905, -7.61905, 0.571429, -7.61905)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fu78a"]
-albedo_texture = ExtResource("4_v0af0")
-uv1_scale = Vector3(25, 25, 25)
-point_size = 128.0
-
-[sub_resource type="QuadMesh" id="QuadMesh_56wji"]
-material = SubResource("StandardMaterial3D_fu78a")
-size = Vector2(2000, 2000)
-orientation = 1
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_oj1l1"]
-size = Vector3(50, 1, 50)
 
 [node name="lingkungan" type="Node3D"]
 
@@ -10672,16 +10653,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -45.05, 0)
 [node name="bola" parent="." instance=ExtResource("7_mxxfs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.315, 5.229, 17.622)
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." groups=["dapat_diedit"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.78239, 0)
-can_sleep = false
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
-mesh = SubResource("BoxMesh_njgt3")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("ConvexPolygonShape3D_ilglt")
-
 [node name="mercusar" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 303, 9.75, 107.35)
 collision_mask = 0
@@ -10735,15 +10706,3 @@ jarak_render = 50
 
 [node name="patung_moai" parent="." instance=ExtResource("11_18if7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49, 13.95, 255)
-
-[node name="lantai" type="StaticBody3D" parent="." groups=["dapat_diedit"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0500002, 0)
-
-[node name="m_lantai" type="MeshInstance3D" parent="lantai"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-mesh = SubResource("QuadMesh_56wji")
-skeleton = NodePath("../..")
-
-[node name="f_lantai" type="CollisionShape3D" parent="lantai"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-shape = SubResource("BoxShape3D_oj1l1")

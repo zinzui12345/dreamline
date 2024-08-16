@@ -25,3 +25,10 @@ Begitupula dengan pemrograman, kamu dapat membuat daftar instruksi A dan B yang 
 instruksi A akan selalu dijalankan, sedangkan instruksi B hanya dijalankan jika instruksi A gagal atau tidak sesuai dengan kondisi. [ID:te9fe7abcc9]
 
 => END
+
+~ perulangan
+
+sekarang mari memahami perulagan!
+perulangan adalah suatu kontrol eksekusi yang memungkinkan suatu blok kode dijalankan selama berulang kali
+
+=> END

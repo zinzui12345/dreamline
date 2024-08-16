@@ -31,7 +31,9 @@ var _proses_pre_render : bool = false :
 		else: 		$mode_render/realtime.disabled = false
 		_proses_pre_render = proses
 var _pencahayaan_pre : Environment
-var waktu_tunda_frame_pre : float = 0.1
+var waktu_tunda_frame_pre : float = 0
+var waktu_tunda_frame_pre_u : float = 0.05
+var waktu_tunda_frame_pre_o : float = 0.1
 
 func _ready():
 	server.permainan.karakter = $viewport_utama/viewport/dummy_karakter
@@ -92,6 +94,11 @@ func _mode_render_pre():
 		# set keadaan tombol
 		$mode_render/realtime.button_pressed = false
 		$mode_render/pre.button_pressed = true
+		# set timing mode optimasi
+		if $panel_opsi/opsi_fc.button_pressed:
+			waktu_tunda_frame_pre = waktu_tunda_frame_pre_o
+		else:
+			waktu_tunda_frame_pre = waktu_tunda_frame_pre_u
 		# tukar pengamat
 		$viewport_utama/viewport/pengamat_pre.current = true
 		$viewport_utama/viewport/pengamat_pre.fov = $viewport_utama/viewport/pengamat.fov
@@ -992,6 +999,7 @@ anchor_top = 0.52
 anchor_right = 0.25
 anchor_bottom = 0.66
 offset_left = 0.0319996
+disabled = true
 button_pressed = true
 
 [node name="pilih_lod" type="Button" parent="panel_opsi"]
@@ -1018,6 +1026,7 @@ anchor_top = 0.72
 anchor_right = 0.25
 anchor_bottom = 0.86
 offset_left = 0.0319996
+disabled = true
 button_pressed = true
 
 [node name="pilih_mipmap" type="Button" parent="panel_opsi"]
