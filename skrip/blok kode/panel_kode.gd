@@ -3,6 +3,7 @@ extends Panel
 signal jalankan_kode(kode : String)
 signal tutup_panel()
 
+var tipe_kode = "objek"
 var jalur_edit_aksi : NodePath
 var fungsi_edit_aksi : Array[String]
 var pilih_scope
@@ -43,10 +44,10 @@ func buat_blok_kode(kode : String):
 			if baris.substr(1).match("if *:"):
 				cabang = load("res://ui/blok kode/kondisi/if.tscn").instantiate()
 				fungsi.get_node("pemisah_vertikal_2/area_aksi").add_child(cabang)
-				cabang.atur_nilai(baris.substr(1))
 				cabang.id_kondisi = randi()
 				cabang.node_fungsi = fungsi
 				cabang.node_induk = fungsi
+				cabang.atur_nilai(baris.substr(1))
 				# cek node sebelumya, kalau aksi, cek_urutan()!
 				if fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child(fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child_count() - 2) is blok_aksi:
 					fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child(fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child_count() - 2).cek_urutan()
@@ -57,9 +58,9 @@ func buat_blok_kode(kode : String):
 				if baris.substr(indentasi + 1).match("if *:"):
 					var tmp_cabang = load("res://ui/blok kode/kondisi/if.tscn").instantiate()
 					cabang.get_node("pemisah_vertikal_2/area_aksi").add_child(tmp_cabang)
-					tmp_cabang.atur_nilai(baris.substr(indentasi + 1))
 					tmp_cabang.node_fungsi = fungsi
 					tmp_cabang.node_induk = cabang
+					tmp_cabang.atur_nilai(baris.substr(indentasi + 1))
 					tmp_cabang.cek_urutan()
 					cabang = tmp_cabang
 					indentasi += 1
@@ -77,11 +78,11 @@ func buat_blok_kode(kode : String):
 				var id_cabang : int = cabang.id_kondisi
 				cabang = load("res://ui/blok kode/kondisi/else.tscn").instantiate()
 				fungsi.get_node("pemisah_vertikal_2/area_aksi").add_child(cabang)
-				cabang.atur_nilai(baris.substr(1))
 				cabang.id_kondisi = id_cabang
 				cabang.sub_kondisi = true
 				cabang.node_fungsi = fungsi
 				cabang.node_induk = fungsi
+				cabang.atur_nilai(baris.substr(1))
 				fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child(fungsi.get_node("pemisah_vertikal_2/area_aksi").get_child_count() - 1).cek_urutan()
 			# jika baris berada di luar indentasi semua kondisi
 			else:
@@ -185,6 +186,7 @@ func buat_palet_sintaks(nama_grup : String, data : Dictionary):
 		$palet_sintaks.add_child(node_kelas_sintaks)
 		node_kelas_sintaks.name = kelas_sintaks
 		node_kelas_sintaks.text = kelas_sintaks + " >"
+		# INFO : sesuaikan ikon kelas objek pada palet
 		match kelas_sintaks:
 			"Permainan":	node_kelas_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/permainan.svg")
 			"Objek":		node_kelas_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/objek.svg")
@@ -200,7 +202,13 @@ func buat_palet_sintaks(nama_grup : String, data : Dictionary):
 				else:
 					node_aksi_sintaks = load("res://ui/blok kode/sintaks/aksi.scn").instantiate()
 				node_kelas_sintaks.daftar_aksi.add_child(node_aksi_sintaks)
+				# set teks default
 				node_aksi_sintaks.text = nama_fungsi_aksi
+				# 13/08/24 :: # INFO : terjemahkan teks aksi objek pada palet sintaks
+				if tipe_kode == "pintu":
+					match nama_fungsi_aksi:
+						"buka()":	node_aksi_sintaks.text = "%aksi_buka_pintu"
+						"tutup()":	node_aksi_sintaks.text = "%aksi_tutup_pintu"
 				node_aksi_sintaks.kode = kode_sintaks_aksi
 				if jalur_ikon_aksi != "": node_aksi_sintaks.icon = load("res://ui/blok kode/sintaks/ikon/"+jalur_ikon_aksi+".svg")
 		daftar_kelas_sintaks.append(node_kelas_sintaks)

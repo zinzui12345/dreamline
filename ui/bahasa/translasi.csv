@@ -144,6 +144,12 @@ pesan(teks),pesan(teks),message(text)
 pindahkan(arah),pindahkan(arah),move(direction)
 buka(),buka(),open()
 tutup(),tutup(),close()
+# blok kode,,
+%blok_pass, lewati, pass
+%aksi_buka_pintu, buka pintu, open door
+%aksi_tutup_pintu, tutup pintu, close door
+ %kondisi_pintu_terbuka, ketika pintu terbuka:, if door is open:
+ %kondisi_lain, selain itu:, else:
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?

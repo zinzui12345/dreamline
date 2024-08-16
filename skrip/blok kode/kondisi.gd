@@ -115,6 +115,12 @@ func atur_ukuran(skala : float) -> void:
 			b_blok_aksi.atur_ukuran(skala)
 func atur_nilai(t_nilai : String) -> void:
 	nilai = t_nilai
+	if t_nilai == "else:": t_nilai = "%kondisi_lain"
+	if node_fungsi.get("panel_kode") != null and node_fungsi.panel_kode.get("tipe_kode") != null:
+		#print_debug("tak perlu tunggu tunggu hebat, untuk berani memulai apa yang kau impikan~")
+		# INFO : terjemahkan teks kondisi
+		match node_fungsi.panel_kode.tipe_kode + '>' + t_nilai:
+			"pintu>if get_node(\"../../\").kondisi:":	t_nilai = "%kondisi_pintu_terbuka"
 	$pemisah_vertikal/nilai_kondisi.text = " "+t_nilai
 func dapatkan_nilai() -> String:
 	return nilai

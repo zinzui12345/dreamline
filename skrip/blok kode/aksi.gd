@@ -50,6 +50,16 @@ func atur_nilai(nilai : String):
 			nama_fungsi += "()"
 		if pecah_parameter[0] != "":
 			nama_fungsi += pecah_parameter[0].reverse()
+		# set teks default
+		nama_fungsi = s_fungsi
+		var cek_induk = node_induk
+		if node_induk.get("panel_kode") == null and node_induk.node_induk.get("panel_kode") != null: cek_induk = node_induk.node_induk
+		if cek_induk.get("panel_kode") != null and cek_induk.panel_kode.get("tipe_kode") != null:
+			#print_debug("mizuoka hana")
+			# 07/08/24 :: # INFO : terjemahkan teks tampilan sintaks aksi
+			match cek_induk.panel_kode.tipe_kode + '>' + s_fungsi:
+				"pintu>get_node(\"../../\").buka":	nama_fungsi = "%aksi_buka_pintu"
+				"pintu>get_node(\"../../\").tutup":	nama_fungsi = "%aksi_tutup_pintu"
 		set("theme_override_styles/normal", load("res://ui/blok kode/warna/aksi.stylebox"))
 	$pemisah_vertikal/data_aksi/nama_fungsi.text = nama_fungsi
 	$pemisah_vertikal/data_aksi/nama_fungsi_n.text = nama_fungsi

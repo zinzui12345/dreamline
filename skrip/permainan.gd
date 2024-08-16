@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 04/08/24 alpha"
+const versi = "Dreamline v0.4.4 14/08/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1580,8 +1580,6 @@ func _ketika_mengubah_kode_objek() -> void:
 		if edit_objek.get_node("kode_ubahan").dapatkan_kode() == "":
 			_tampilkan_popup_informasi_("NULL")
 			return
-		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
-		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
 		# 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
 		var sintaks_aksi : Dictionary = {
 			"Permainan" : [
@@ -1589,12 +1587,13 @@ func _ketika_mengubah_kode_objek() -> void:
 				["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "popup"]
 			]
 		}
-		if edit_objek is objek:
+		if edit_objek is objek and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 			sintaks_aksi.merge({
 				"Objek" : [
 					["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "pindahkan_objek"]
 				]
 			})
+			$blok_kode/panel_kode.tipe_kode = "objek"
 		if edit_objek is pintu:
 			sintaks_aksi.merge({
 				"Pintu" : [
@@ -1602,6 +1601,7 @@ func _ketika_mengubah_kode_objek() -> void:
 					["tutup()", "get_node(\"../../\").tutup()", "pintu"]
 				]
 			})
+			$blok_kode/panel_kode.tipe_kode = "pintu"
 		elif edit_objek is patung:
 			sintaks_aksi.merge({
 				"🗿" : [
@@ -1609,6 +1609,8 @@ func _ketika_mengubah_kode_objek() -> void:
 				]
 			})
 		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
+		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
+		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
 		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
 		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
 		tampilkan_editor_kode()
@@ -1670,18 +1672,18 @@ func _tutup_popup_konfirmasi_peringatan() -> void:
 	$popup_konfirmasi_peringatan.penampil.grab_focus()
 	AudioServer.set_bus_effect_enabled(1, 1, false)
 func _mainkan_musik_latar() -> void:
-	if $pemutar_musik/AudioStreamPlayer.stream == null:
-		var musik : AudioStream = load("res://audio/soundtrack/Animal Crossing Kirara Magic Remix.mp3")
-		if musik != null:
-			$pemutar_musik/AudioStreamPlayer.stream = musik
-			$pemutar_musik/AudioStreamPlayer.play()
-			$pemutar_musik/judul.text = "New Horizons (Remix)"
-			$pemutar_musik/artis.text = "Kirara Magic"
-			$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	else:
-		$pemutar_musik/AudioStreamPlayer.play()
-		$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
-	#pass
+	#if $pemutar_musik/AudioStreamPlayer.stream == null:
+		#var musik : AudioStream = load("res://audio/soundtrack/Animal Crossing Kirara Magic Remix.mp3")
+		#if musik != null:
+			#$pemutar_musik/AudioStreamPlayer.stream = musik
+			#$pemutar_musik/AudioStreamPlayer.play()
+			#$pemutar_musik/judul.text = "New Horizons (Remix)"
+			#$pemutar_musik/artis.text = "Kirara Magic"
+			#$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	#else:
+		#$pemutar_musik/AudioStreamPlayer.play()
+		#$pemutar_musik/posisi_durasi.max_value = $pemutar_musik/AudioStreamPlayer.stream.get_length()
+	pass
 func _ketika_musik_latar_selesai_dimainkan() -> void:
 	await get_tree().create_timer(10.0).timeout
 	if not is_instance_valid(karakter):
