@@ -1425,6 +1425,7 @@ func _pilih_tab_sepatu_karakter() -> void:
 func pilih_mode_bermain() -> void:
 	if is_instance_valid(karakter) and !jeda:
 		$hud/kompas.visible = true
+		$hud/info_posisi.visible = false
 		$mode_bermain/main.button_pressed = true
 		$mode_bermain/edit.button_pressed = false
 		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
@@ -1435,6 +1436,7 @@ func pilih_mode_bermain() -> void:
 func pilih_mode_edit() -> void:
 	if is_instance_valid(karakter) and !jeda:
 		$hud/kompas.visible = false
+		$hud/info_posisi.visible = true
 		$mode_bermain/main.button_pressed = false
 		$mode_bermain/edit.button_pressed = true
 		karakter.peran = Permainan.PERAN_KARAKTER.Arsitek

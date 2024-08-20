@@ -543,6 +543,7 @@ func _physics_process(delta : float) -> void:
 			server.permainan.dunia.get_node("kursor_objek").global_transform.origin = posisi_target
 			# tampilkan tombol buat objek
 			server.permainan.set("tombol_aksi_1", "pasang_objek")
+			server.permainan.get_node("hud/info_posisi").text = "(%s, %s, %s)" % [ posisi_target.x, posisi_target.y, posisi_target.z ]
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 		elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_a.get_collider():
@@ -558,6 +559,10 @@ func _physics_process(delta : float) -> void:
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
 		if peran == Permainan.PERAN_KARAKTER.Arsitek and objek_target.is_in_group("dapat_diedit"):
 			server.permainan.set("tombol_aksi_2", "edit_objek")
+			if objek_target.has_node("kode_ubahan"):
+				server.permainan.get_node("hud/info_posisi").text = objek_target.name + " <<"
+			else:
+				server.permainan.get_node("hud/info_posisi").text = objek_target.name
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 		elif objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
@@ -583,6 +588,7 @@ func _physics_process(delta : float) -> void:
 			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
 	elif is_instance_valid(objek_target):
 		objek_target = null
+		server.permainan.get_node("hud/info_posisi").text = ""
 		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false

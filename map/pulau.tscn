@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=31 format=3 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
 [ext_resource type="ArrayMesh" uid="uid://d0ylp0id374jd" path="res://model/detail_air.res" id="4_dha2v"]
@@ -11,6 +11,13 @@
 [ext_resource type="Texture2D" uid="uid://b2vsyr550v2qm" path="res://material/lantai/lantai_028/roughness.jpg" id="9_hkcep"]
 [ext_resource type="PackedScene" uid="uid://b3kf5nao5w8gx" path="res://skena/objek/pintu_1.scn" id="10_jta6o"]
 [ext_resource type="PackedScene" uid="uid://cp8dhj1vcicak" path="res://skena/objek/patung_moai.scn" id="11_18if7"]
+
+[sub_resource type="GDScript" id="GDScript_ckf6o"]
+script/source = "extends Node3D
+
+func _ready():
+	$pintu_mercusuar.kode = \"func gunakan():\\n\\tif get_node(\\\"../../\\\").kondisi:\\n\\t\\tpass\\n\\telse:\\n\\t\\tPanku.notify(\\\"!\\\")\"
+"
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_nopol"]
 size = Vector2(1500, 1500)
@@ -284,7 +291,8 @@ data = PackedVector3Array(0, -16.2209, -6.3397, 4.4828, -11.5356, -4.4828, 0, -1
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_6qded"]
 points = PackedVector3Array(-7.61905, -0.619048, -7.61905, 7.61905, 0.571429, 7.61905, 7.61905, -0.619048, 7.61905, 7.61905, 0.571429, -7.61905, -7.61905, 0.571429, 7.61905, -7.61905, -0.619048, 7.61905, 7.61905, -0.619048, -7.61905, -7.61905, 0.571429, -7.61905)
 
-[node name="lingkungan" type="Node3D"]
+[node name="pulau" type="Node3D"]
+script = SubResource("GDScript_ckf6o")
 
 [node name="permukaan" type="Node3D" parent="."]
 script = ExtResource("3_kx3r3")
@@ -10645,7 +10653,7 @@ skeleton = NodePath("../..")
 [node name="tanah" type="Node3D" parent="permukaan"]
 
 [node name="posisi_spawn" type="Marker3D" parent="."]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -164.522, 3.922, 16.845)
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 358, 5, 82)
 
 [node name="batas_bawah" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -45.05, 0)
@@ -10701,6 +10709,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 303, 9.75, 107.35)
 
 [node name="pintu_mercusuar" parent="." instance=ExtResource("10_jta6o")]
 transform = Transform3D(0.374607, 0, -0.927184, 0, 1, 0, 0.927184, 0, 0.374607, 298.427, 9.6467, 109.276)
+jalur_instance = "res://skena/objek/pintu_1_statis.scn"
 warna_1 = Color(1, 0, 0, 1)
 jarak_render = 50
 
