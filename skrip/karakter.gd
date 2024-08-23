@@ -57,6 +57,7 @@ var _ragdoll : bool = false :
 var _timer_ragdoll : Timer
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
+var penarget_serangan_b : RayCast3D
 var menarget : bool = false					# kondisi apakah sedang menarget objek
 var objek_target : Node3D					# node/objek yang di target
 var posisi_target : Vector3					# posisi titik temu target
@@ -74,7 +75,8 @@ var menyerang : bool = false :
 				match gestur:
 					"berdiri":
 						match mode_menyerang:
-							"a": $pose.set("parameters/mode_menyerang_berdiri/current_state", "mendorong")
+							"a": $pose.set("parameters/mode_menyerang_berdiri/transition_request", "mendorong")
+							"b": $pose.set("parameters/mode_menyerang_berdiri/transition_request", "menendang")
 						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			menyerang = serang
 var jongkok : bool = false
@@ -350,6 +352,7 @@ func _ready() -> void:
 	$pose.active = true
 	penarget = get_node("pengamat/%target")
 	penarget_serangan_a = $area_serang_a
+	penarget_serangan_b = $area_serang_b
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		$area_tabrak.monitoring = true
 		$area_tabrak.connect("body_entered", _ketika_ditabrak)
@@ -373,6 +376,7 @@ func _atur_kendali(nilai : bool) -> void:
 	if kontrol != nilai:
 		$pengamat.fungsikan(nilai)
 		$area_serang_a.enabled = nilai
+		$area_serang_b.enabled = nilai
 		kontrol = nilai
 func _atur_penarget(nilai : bool) -> void:
 	penarget.enabled = nilai
@@ -434,6 +438,21 @@ func _input(event : InputEvent) -> void:
 								if objek_target != null:
 									server.dorong_pemain(id_target, arah_dorongan.rotated(Vector3.UP, rotation.y))
 								set("menyerang", false)
+						elif penarget_serangan_b.is_colliding() and gestur == "berdiri" and not menyerang:
+							objek_target = penarget_serangan_b.get_collider()
+							var arah_tendangan := Vector3(0, 2, 8)
+							if objek_target.is_in_group("dapat_ditendang"):
+								if objek_target.get("linear_velocity") != null:
+									mode_menyerang = "b"
+									set("menyerang", true)
+									await get_tree().create_timer(0.2).timeout
+									if objek_target != null:
+										server.terapkan_percepatan_objek(
+											objek_target.get_path(),
+											arah_tendangan.rotated(Vector3.UP, rotation.y)
+										)
+									await get_tree().create_timer(0.2).timeout
+									set("menyerang", false)
 		if Input.is_action_just_pressed("aksi2"):
 			if menarget:
 				match peran:
@@ -548,6 +567,10 @@ func _physics_process(delta : float) -> void:
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 		elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_a.get_collider():
 			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		elif penarget_serangan_b.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_b.get_collider() and objek_target.is_in_group("dapat_ditendang"):
+			server.permainan.set("tombol_aksi_1", "tendang_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
 		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):

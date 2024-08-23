@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 14/08/24 alpha"
+const versi = "Dreamline v0.4.4 23/08/24 alpha"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -96,6 +96,7 @@ var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 			"gunakan_objek":	$hud/bantuan_input/aksi1/teks.text = "%gunakan"
 			"dorong_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%dorong"
 			"lempar_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%lempar"
+			"tendang_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%tendang"
 var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_2:

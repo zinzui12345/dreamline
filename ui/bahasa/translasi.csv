@@ -120,6 +120,7 @@ INPUTHAPUS,hapus,delete
 %dorong,Dorong,Push
 %angkat,Angkat,Pickup
 %lempar,Lempar,Throw
+%tendang,Tendang,Kick
 %jatuhkan,Jatuhkan,Drop
 %bantuan,Bantuan,Help
 ,,
