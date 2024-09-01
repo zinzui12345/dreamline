@@ -245,10 +245,10 @@ skeleton = NodePath("../../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="World"]
 root_node = NodePath("../..")
-autoplay = "Pan Camera3D"
 libraries = {
 "": SubResource("AnimationLibrary_e2lg2")
 }
+autoplay = "Pan Camera3D"
 
 [node name="Wall" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.10108)
@@ -265,7 +265,10 @@ glow_border_effect_renderer = NodePath("../../../GlowBorderEffectRenderer")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
 transform = Transform3D(0.677896, 0.593802, -0.433424, -0.391479, 0.790599, 0.470847, 0.622254, -0.149509, 0.768405, 4.2185, 0.229401, 0)
+light_cull_mask = 4293919745
 shadow_enabled = true
+shadow_blur = 0.0
+directional_shadow_mode = 0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -2.49609, 0)

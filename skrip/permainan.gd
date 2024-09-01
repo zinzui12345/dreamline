@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 23/08/24 alpha"
+const versi = "Dreamline v0.4.4 01/09/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -801,7 +801,17 @@ func _kirim_suara() -> void:
 			client.data_suara = tmp_data_suara.compress(FileAccess.COMPRESSION_ZSTD)
 		effect.set_recording_active(false)
 		if client.data_suara.size() == 0: pass
-		else: server.rpc("_terima_suara_pemain", client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara)#; server._terima_suara_pemain(client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara) # testing
+		else:
+			for p : int in dunia.get_node("pemain").get_child_count():
+				if dunia.get_node("pemain").get_child(p).id_pemain != client.id_koneksi:
+					server.rpc_id(
+						dunia.get_node("pemain").get_child(p).id_pemain,
+						"_terima_suara_pemain",
+						client.id_koneksi,
+						client.data_suara,
+						tmp_ukuran_buffer_suara
+					)
+			#server._terima_suara_pemain(client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara) # loopback
 		effect.set_recording_active(true)
 		print("kirim suara...")
 func _kirim_pesan() -> void:
