@@ -16,7 +16,8 @@ func bicara(lanjutkan : bool = false) -> void:
 	stream = audio_stream_wav
 	play()
 	sedang_berbicara = true
+	%balon_bicara.visible = true
 
 func _ketika_buffer_selesai_dimainkan() -> void:
-	if array_suara.size() > 0: bicara(true)
-	else: stop(); sedang_berbicara = false
+	if array_suara.size() > 0: bicara(true);	%balon_bicara.visible = true
+	else: stop();	sedang_berbicara = false;	%balon_bicara.visible = false
