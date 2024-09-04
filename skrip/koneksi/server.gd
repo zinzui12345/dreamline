@@ -477,9 +477,15 @@ func fungsikan_objek(nama_objek : StringName, nama_fungsi : StringName, paramete
 		_fungsikan_objek(nama_objek, nama_fungsi, parameter)
 	else:
 		rpc_id(1, "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
-func hapus_objek(jalur_objek):
+func hapus_objek(jalur_objek : String) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		# TODO : hapus dari pool_entitas kalo ada!
+		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
+		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
+		if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
+		if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
+		# cek_visibilitas_pool_objek[id_pemain][nama_objek_dihapus]
+		# cek_visibilitas_pool_entitas[id_pemain][nama_entitas]
+		Panku.notify("menghapus objek : "+str(nama_objek_dihapus))
 		_hapus_objek(jalur_objek)
 		rpc("_hapus_objek", jalur_objek)
 

@@ -341,14 +341,15 @@ func _process(delta : float) -> void:
 		else:
 			info_jumlah_sudut = str(get_tree().get_root().get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME))
 		if is_instance_valid(dunia): info_jumlah_entitas = dunia.get_node("entitas").get_child_count()
-		$performa.text = "%s : %s | %s : %s  | %s : %s | VRAM : %s" % [
+		$performa.text = "%s : %s | %s : %s  | %s : %s | VRAM : %s | Object Culling : %s" % [
 			TranslationServer.translate("VERTEKS"),
 			info_jumlah_sudut,
 			TranslationServer.translate("ENTITAS"),
 			info_jumlah_entitas,
 			TranslationServer.translate("DRAW"),
 			RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
-			String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED))
+			String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED)),
+			str((gunakan_frustum_culling or gunakan_occlusion_culling))
 		]
 	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps | "+info_mode_koneksi
 func _notification(what : int) -> void:

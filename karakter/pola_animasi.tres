@@ -146,9 +146,11 @@ animation = &"animasi/duduk_mengendara diam"
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_3dhkw"]
 input_0/name = "berdiri"
 input_0/auto_advance = false
+input_0/break_loop_at_end = false
 input_0/reset = true
 input_1/name = "duduk"
 input_1/auto_advance = false
+input_1/break_loop_at_end = false
 input_1/reset = true
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_06nhi"]
@@ -167,20 +169,25 @@ filters = ["%GeneralSkeleton:Chest", "%GeneralSkeleton:Hips", "%GeneralSkeleton:
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_ap2pd"]
 input_0/name = "mendorong"
 input_0/auto_advance = false
+input_0/break_loop_at_end = false
 input_0/reset = true
 input_1/name = "menendang"
 input_1/auto_advance = false
+input_1/break_loop_at_end = false
 input_1/reset = true
 
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_125qw"]
 input_0/name = "normal"
 input_0/auto_advance = false
+input_0/break_loop_at_end = false
 input_0/reset = true
 input_1/name = "mengendara"
 input_1/auto_advance = false
+input_1/break_loop_at_end = false
 input_1/reset = true
 input_2/name = "dibonceng_1"
 input_2/auto_advance = false
+input_2/break_loop_at_end = false
 input_2/reset = true
 
 [resource]

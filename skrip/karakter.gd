@@ -766,3 +766,9 @@ func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
 			_timer_ragdoll.stop()
 			atur_ragdoll(false, global_position)
 			#server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])  # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client
+func _ketika_langkah_kaki_kiri() -> void:
+	#Panku.notify("kiri")
+	pass
+func _ketika_langkah_kaki_kanan() -> void:
+	#Panku.notify("kanan")
+	pass

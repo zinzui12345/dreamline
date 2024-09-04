@@ -167,14 +167,6 @@ _data = {
 "tampilkan": SubResource("Animation_548c5")
 }
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
-bg_color = Color(0.8, 0.8, 0.8, 1)
-border_width_left = 5
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6tox"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 2
@@ -187,9 +179,21 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07rji"]
-bg_color = Color(0.0509804, 0.431373, 0.992157, 1)
-border_color = Color(0.0509804, 0.431373, 0.992157, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8cefx"]
+bg_color = Color(0.8, 0.8, 0.8, 1)
+border_width_left = 5
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ndal"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -211,21 +215,9 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ndal"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wepbn"]
-bg_color = Color(0.862745, 0.207843, 0.270588, 1)
-border_color = Color(0.862745, 0.207843, 0.270588, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_07rji"]
+bg_color = Color(0.0509804, 0.431373, 0.992157, 1)
+border_color = Color(0.0509804, 0.431373, 0.992157, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -242,6 +234,14 @@ corner_radius_bottom_left = 4
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ninhs"]
 bg_color = Color(0.690196, 0.164706, 0.215686, 1)
 border_color = Color(0.690196, 0.164706, 0.215686, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wepbn"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -551,8 +551,12 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwfet"]
-bg_color = Color(1, 1, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jji8h"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
@@ -583,12 +587,8 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jji8h"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwfet"]
+bg_color = Color(1, 1, 1, 1)
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
@@ -635,6 +635,18 @@ LineEdit/colors/font_color = Color(1, 0.12549, 0.12549, 1)
 LineEdit/font_sizes/font_size = 25
 LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8xdra"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_la51y"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 2
@@ -649,18 +661,6 @@ corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_02p8k"]
 bg_color = Color(0.705882, 0.705882, 0.705882, 1)
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8xdra"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
@@ -708,15 +708,15 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_right = 10
 border_color = Color(0, 0.388235, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unh21"]
-bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4dv7u"]
+bg_color = Color(0, 0, 0, 0)
+border_width_right = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x3dnh"]
 bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4dv7u"]
-bg_color = Color(0, 0, 0, 0)
-border_width_right = 3
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unh21"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd4q"]
 
@@ -991,17 +991,17 @@ radius = 45.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_28tvu"]
 radius = 50.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovj3w"]
-bg_color = Color(1, 1, 1, 0.0392157)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m033d"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ildd4"]
 bg_color = Color(1, 1, 1, 1)
@@ -1017,23 +1017,17 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m033d"]
-bg_color = Color(1, 1, 1, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m22gl"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 1
-corner_radius_bottom_left = 1
-corner_detail = 4
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovj3w"]
+bg_color = Color(1, 1, 1, 0.0392157)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w24bl"]
 bg_color = Color(0, 0, 0, 1)
@@ -1044,10 +1038,10 @@ corner_radius_top_left = 3
 corner_radius_bottom_left = 3
 corner_detail = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b06or"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m22gl"]
 bg_color = Color(1, 1, 1, 1)
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
+corner_radius_top_left = 1
+corner_radius_bottom_left = 1
 corner_detail = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xw7bh"]
@@ -1057,6 +1051,12 @@ bg_color = Color(0, 0, 0, 1)
 bg_color = Color(0.2, 0.2, 0.196078, 1)
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b06or"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
 corner_detail = 4
 
 [sub_resource type="Animation" id="Animation_phy3t"]
@@ -1203,8 +1203,10 @@ border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 7
 corner_radius_top_right = 7
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utkpx"]
-bg_color = Color(0.168627, 0.168627, 0.168627, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scf8i"]
+bg_color = Color(0, 0, 0, 0)
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5syxs"]
 bg_color = Color(0.336877, 0.336877, 0.336877, 1)
@@ -1212,22 +1214,14 @@ bg_color = Color(0.336877, 0.336877, 0.336877, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n6rxd"]
 bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scf8i"]
-bg_color = Color(0, 0, 0, 0)
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utkpx"]
+bg_color = Color(0.168627, 0.168627, 0.168627, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g3k4m"]
 bg_color = Color(0, 0, 0, 0.4)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7sbe3"]
 bg_color = Color(0, 0, 0, 0.6)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kakqt"]
-bg_color = Color(1, 1, 0.984314, 0.796078)
-border_width_left = 20
-border_width_right = 20
-border_color = Color(1, 1, 0.984314, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hhe0"]
 bg_color = Color(1, 1, 1, 1)
@@ -1241,10 +1235,10 @@ border_width_left = 15
 border_width_right = 15
 border_color = Color(0.6, 0.6, 0.6, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wl3h5"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kakqt"]
 bg_color = Color(1, 1, 0.984314, 0.796078)
-border_width_left = 15
-border_width_right = 15
+border_width_left = 20
+border_width_right = 20
 border_color = Color(1, 1, 0.984314, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a3qu8"]
@@ -1259,10 +1253,10 @@ border_width_left = 10
 border_width_right = 10
 border_color = Color(0.6, 0.6, 0.6, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5gwl4"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wl3h5"]
 bg_color = Color(1, 1, 0.984314, 0.796078)
-border_width_left = 19
-border_width_right = 19
+border_width_left = 15
+border_width_right = 15
 border_color = Color(1, 1, 0.984314, 0.796078)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iegqa"]
@@ -1276,6 +1270,12 @@ border_blend = true
 border_width_left = 10
 border_width_right = 10
 border_color = Color(0.6, 0.6, 0.6, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5gwl4"]
+bg_color = Color(1, 1, 0.984314, 0.796078)
+border_width_left = 19
+border_width_right = 19
+border_color = Color(1, 1, 0.984314, 0.796078)
 
 [sub_resource type="Animation" id="Animation_x2qnu"]
 resource_name = "sembunyikan"
@@ -1400,11 +1400,13 @@ border_width_left = 1
 border_width_right = 2
 border_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_otp41"]
-bg_color = Color(0.862745, 0.207843, 0.270588, 1)
-border_width_left = 10
-border_width_right = 8
-border_color = Color(0.862745, 0.207843, 0.270588, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pg4ow"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8a76m"]
 bg_color = Color(0.690196, 0.164706, 0.215686, 1)
@@ -1418,19 +1420,11 @@ border_width_left = 10
 border_width_right = 10
 border_color = Color(0.517647, 0.12549, 0.160784, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pg4ow"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ssrga"]
-bg_color = Color(0.0509804, 0.431373, 0.992157, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_otp41"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
 border_width_left = 10
 border_width_right = 8
-border_color = Color(0.0509804, 0.431373, 0.992157, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4jonv"]
 bg_color = Color(0.0392157, 0.345098, 0.792157, 1)
@@ -1443,6 +1437,12 @@ bg_color = Color(0.0313726, 0.258824, 0.596078, 1)
 border_width_left = 10
 border_width_right = 10
 border_color = Color(0.0313726, 0.258824, 0.596078, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ssrga"]
+bg_color = Color(0.0509804, 0.431373, 0.992157, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.0509804, 0.431373, 0.992157, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_etfwu"]
 bg_color = Color(1, 1, 1, 1)
@@ -2120,12 +2120,6 @@ _data = {
 "tutup": SubResource("Animation_1vkyc")
 }
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d10v8"]
-bg_color = Color(0.862745, 0.207843, 0.270588, 1)
-border_width_left = 10
-border_width_right = 8
-border_color = Color(0.862745, 0.207843, 0.270588, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbtue"]
 bg_color = Color(0.690196, 0.164706, 0.215686, 1)
 border_width_left = 10
@@ -2138,10 +2132,16 @@ border_width_left = 10
 border_width_right = 10
 border_color = Color(0.517647, 0.12549, 0.160784, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pl8u"]
-bg_color = Color(0.8, 0.8, 0.8, 1)
-border_width_left = 15
-border_width_right = 15
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d10v8"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hsvym"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_top = 3
+border_color = Color(0.247059, 0.247059, 0.247059, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ir4p6"]
 bg_color = Color(0.207843, 0.207843, 0.207843, 1)
@@ -2155,10 +2155,10 @@ border_width_left = 15
 border_width_right = 15
 border_color = Color(0.247059, 0.247059, 0.247059, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hsvym"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_top = 3
-border_color = Color(0.247059, 0.247059, 0.247059, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pl8u"]
+bg_color = Color(0.8, 0.8, 0.8, 1)
+border_width_left = 15
+border_width_right = 15
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ajma5"]
 
@@ -2755,12 +2755,6 @@ ambient_light_color = Color(0.776471, 0.776471, 0.776471, 1)
 ambient_light_sky_contribution = 0.0
 tonemap_mode = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ruhgq"]
-bg_color = Color(0.862745, 0.207843, 0.270588, 1)
-border_width_left = 10
-border_width_right = 8
-border_color = Color(0.862745, 0.207843, 0.270588, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aax07"]
 bg_color = Color(0.690196, 0.164706, 0.215686, 1)
 border_width_left = 10
@@ -2773,11 +2767,11 @@ border_width_left = 10
 border_width_right = 10
 border_color = Color(0.517647, 0.12549, 0.160784, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8b42g"]
-bg_color = Color(0.423529, 0.458824, 0.490196, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ruhgq"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
 border_width_left = 10
 border_width_right = 8
-border_color = Color(0.423529, 0.458824, 0.490196, 1)
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bq6he"]
 bg_color = Color(0.286275, 0.313726, 0.341176, 1)
@@ -2791,6 +2785,12 @@ border_width_left = 10
 border_width_right = 10
 border_color = Color(0.203922, 0.227451, 0.25098, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8b42g"]
+bg_color = Color(0.423529, 0.458824, 0.490196, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.423529, 0.458824, 0.490196, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a0684"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpycx"]
@@ -2801,8 +2801,13 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2c4lk"]
-bg_color = Color(1, 1, 1, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnkxy"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -2822,13 +2827,8 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qnkxy"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2c4lk"]
+bg_color = Color(1, 1, 1, 0)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -3246,12 +3246,6 @@ border_width_right = 15
 border_color = Color(1, 1, 1, 1)
 border_blend = true
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qmdwo"]
-bg_color = Color(1, 1, 0.984314, 0.796078)
-border_width_left = 17
-border_width_right = 17
-border_color = Color(1, 1, 0.984314, 0.796078)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lhgek"]
 bg_color = Color(1, 1, 1, 1)
 border_width_left = 17
@@ -3263,6 +3257,12 @@ border_blend = true
 border_width_left = 11
 border_width_right = 11
 border_color = Color(0.6, 0.6, 0.6, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qmdwo"]
+bg_color = Color(1, 1, 0.984314, 0.796078)
+border_width_left = 17
+border_width_right = 17
+border_color = Color(1, 1, 0.984314, 0.796078)
 
 [sub_resource type="Animation" id="Animation_8n7xu"]
 resource_name = "lipat"
@@ -4708,9 +4708,10 @@ script/source = "extends Control
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ods8j"]
 bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1kttg"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bk8sk"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-border_color = Color(0.8, 0.8, 0.8, 0)
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7ji0"]
 bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
@@ -4720,10 +4721,9 @@ border_color = Color(0.258824, 0.258824, 0.258824, 1)
 bg_color = Color(0.0588235, 0.317647, 0.196078, 1)
 border_color = Color(0.8, 0.8, 0.8, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bk8sk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1kttg"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_bottom = 3
-border_color = Color(0, 0, 0, 1)
+border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="Animation" id="Animation_w2hc4"]
 resource_name = "tampilkan"
@@ -4856,12 +4856,6 @@ script/source = "extends Control
 @export var fungsi		: Callable
 "
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphea"]
-bg_color = Color(0.862745, 0.207843, 0.270588, 1)
-border_width_left = 80
-border_width_right = 80
-border_color = Color(0.862745, 0.207843, 0.270588, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mf4jx"]
 bg_color = Color(0.690196, 0.164706, 0.215686, 1)
 border_width_left = 85
@@ -4874,11 +4868,11 @@ border_width_left = 80
 border_width_right = 10
 border_color = Color(0.517647, 0.12549, 0.160784, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bb8i"]
-bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
-border_width_left = 90
-border_width_right = 8
-border_color = Color(0.0980392, 0.529412, 0.329412, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bphea"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_width_left = 80
+border_width_right = 80
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t0irj"]
 bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
@@ -4892,6 +4886,12 @@ border_width_left = 90
 border_width_right = 10
 border_color = Color(0.0588235, 0.317647, 0.196078, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bb8i"]
+bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
+border_width_left = 90
+border_width_right = 8
+border_color = Color(0.0980392, 0.529412, 0.329412, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1o77"]
 bg_color = Color(0, 0, 0, 0.588235)
 
@@ -4904,16 +4904,6 @@ corner_radius_bottom_left = 5
 corner_detail = 10
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5sdqg"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffx2c"]
-bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
-border_width_left = 32
-border_width_right = 8
-border_color = Color(0.0980392, 0.529412, 0.329412, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p2ley"]
 bg_color = Color(0.0784314, 0.423529, 0.262745, 1)
@@ -4935,13 +4925,23 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffx2c"]
+bg_color = Color(0.0980392, 0.529412, 0.329412, 1)
+border_width_left = 32
+border_width_right = 8
+border_color = Color(0.0980392, 0.529412, 0.329412, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bl8y3"]
 bg_color = Color(1, 1, 0.976471, 0.960784)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5u37"]
 bg_color = Color(0.0588235, 0.317647, 0.196078, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2vfcn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3ulh"]
 bg_color = Color(0.4, 0.4, 0.4, 0)
 border_width_left = 8
 border_width_right = 8
@@ -4959,17 +4959,11 @@ border_width_left = 8
 border_width_right = 8
 border_color = Color(0.4, 0.4, 0.4, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p3ulh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2vfcn"]
 bg_color = Color(0.4, 0.4, 0.4, 0)
 border_width_left = 8
 border_width_right = 8
 border_color = Color(0.4, 0.4, 0.4, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wouw"]
-bg_color = Color(0.862745, 0.207843, 0.270588, 1)
-border_width_left = 10
-border_width_right = 8
-border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qapco"]
 bg_color = Color(0.690196, 0.164706, 0.215686, 1)
@@ -4982,6 +4976,12 @@ bg_color = Color(0.517647, 0.12549, 0.160784, 1)
 border_width_left = 10
 border_width_right = 10
 border_color = Color(0.517647, 0.12549, 0.160784, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wouw"]
+bg_color = Color(0.862745, 0.207843, 0.270588, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.862745, 0.207843, 0.270588, 1)
 
 [sub_resource type="Animation" id="Animation_ixdyn"]
 resource_name = "proses_konfirmasi"
@@ -5147,12 +5147,12 @@ focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath("../kirim_pesan")
 focus_previous = NodePath(".")
 mouse_filter = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
 theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
 theme_override_styles/focus = SubResource("StyleBoxFlat_c6tox")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
 caret_blink = true
 metadata/_edit_use_anchors_ = true
 
@@ -5174,10 +5174,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_07rji")
+theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_s7y2d")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_v3v5s")
-theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
+theme_override_styles/normal = SubResource("StyleBoxFlat_07rji")
 icon = ExtResource("6_y0cdn")
 alignment = 0
 icon_alignment = 1
@@ -5205,10 +5205,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_wepbn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xarl6")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ninhs")
-theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wepbn")
 icon = ExtResource("14_xsr60")
 alignment = 0
 icon_alignment = 1
@@ -5429,10 +5429,10 @@ anchor_right = 0.357859
 anchor_bottom = 0.213001
 offset_right = -0.0640135
 offset_bottom = 0.200026
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 theme_override_styles/hover = SubResource("StyleBoxFlat_mhy42")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
-theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 toggle_mode = true
 button_pressed = true
 action_mode = 0
@@ -5449,10 +5449,10 @@ anchor_right = 0.652998
 anchor_bottom = 0.213001
 offset_right = -0.0640135
 offset_bottom = 0.200026
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 theme_override_styles/hover = SubResource("StyleBoxFlat_i4v6x")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
-theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 toggle_mode = true
 action_mode = 0
 icon = ExtResource("7_o72dh")
@@ -5468,10 +5468,10 @@ anchor_right = 0.948136
 anchor_bottom = 0.213001
 offset_right = -0.0640135
 offset_bottom = 0.200026
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 theme_override_styles/hover = SubResource("StyleBoxFlat_vdwij")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
-theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 toggle_mode = true
 action_mode = 0
 icon = ExtResource("8_uxrq1")
@@ -5501,14 +5501,14 @@ anchor_right = 0.708
 anchor_bottom = 0.349667
 offset_right = 0.0956573
 offset_bottom = 0.200729
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "-"
 metadata/_edit_use_anchors_ = true
 
@@ -5521,14 +5521,14 @@ anchor_right = 0.902442
 anchor_bottom = 0.349667
 offset_right = 0.0956573
 offset_bottom = 0.200729
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
@@ -5555,14 +5555,14 @@ anchor_right = 0.708
 anchor_bottom = 0.464668
 offset_right = 0.0956573
 offset_bottom = 0.200729
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "-"
 metadata/_edit_use_anchors_ = true
 
@@ -5575,14 +5575,14 @@ anchor_right = 0.902442
 anchor_bottom = 0.464668
 offset_right = 0.0956573
 offset_bottom = 0.200729
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
@@ -5609,14 +5609,14 @@ anchor_right = 0.708
 anchor_bottom = 0.578001
 offset_right = 0.0956573
 offset_bottom = 0.200729
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "-"
 metadata/_edit_use_anchors_ = true
 
@@ -5629,14 +5629,14 @@ anchor_right = 0.902442
 anchor_bottom = 0.578001
 offset_right = 0.0956573
 offset_bottom = 0.200729
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
@@ -5684,9 +5684,9 @@ offset_right = 25.0
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("12_kho47")
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_unh21")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_x3dnh")
 theme_override_styles/focus = SubResource("StyleBoxFlat_4dv7u")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_x3dnh")
+theme_override_styles/normal = SubResource("StyleBoxFlat_unh21")
 text = ">
 "
 
@@ -6082,10 +6082,10 @@ offset_top = 16.0
 offset_right = -16.0
 offset_bottom = 78.0
 grow_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
 button_mask = 5
 icon = ExtResource("8_gqe5w")
 icon_alignment = 1
@@ -6100,10 +6100,10 @@ offset_top = 18.0
 offset_right = -98.0
 offset_bottom = 76.0
 grow_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
 button_mask = 5
 icon = ExtResource("18_m6a3h")
 icon_alignment = 1
@@ -6118,10 +6118,10 @@ offset_top = 18.0
 offset_right = -178.0
 offset_bottom = 76.0
 grow_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
 button_mask = 5
 icon = ExtResource("36_fyuuk")
 icon_alignment = 1
@@ -6142,9 +6142,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_m22gl")
 theme_override_styles/hover = SubResource("StyleBoxFlat_w24bl")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vftos")
+theme_override_styles/normal = SubResource("StyleBoxFlat_m22gl")
 toggle_mode = true
 icon = ExtResource("16_hou3c")
 icon_alignment = 1
@@ -6155,9 +6155,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_b06or")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xw7bh")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4gpu4")
+theme_override_styles/normal = SubResource("StyleBoxFlat_b06or")
 toggle_mode = true
 icon = ExtResource("17_jdpsl")
 icon_alignment = 1
@@ -6226,10 +6226,10 @@ offset_bottom = 31.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("12_kho47")
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_utkpx")
+theme_override_styles/focus = SubResource("StyleBoxFlat_scf8i")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5syxs")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_n6rxd")
-theme_override_styles/focus = SubResource("StyleBoxFlat_scf8i")
+theme_override_styles/normal = SubResource("StyleBoxFlat_utkpx")
 text = "/
 "
 
@@ -6325,14 +6325,14 @@ anchor_top = 0.386667
 anchor_right = 1.0
 anchor_bottom = 0.493333
 offset_bottom = 8.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_kakqt")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0hhe0")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_qogat")
+theme_override_styles/normal = SubResource("StyleBoxFlat_kakqt")
 button_mask = 7
 text = "%lanjutkan"
 icon = ExtResource("3_sojxf")
@@ -6347,14 +6347,14 @@ anchor_top = 0.56
 anchor_right = 1.0
 anchor_bottom = 0.666667
 offset_bottom = 8.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_wl3h5")
 theme_override_styles/hover = SubResource("StyleBoxFlat_a3qu8")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_5k18m")
+theme_override_styles/normal = SubResource("StyleBoxFlat_wl3h5")
 button_mask = 7
 text = "%statistik"
 icon = ExtResource("4_fdf7p")
@@ -6369,14 +6369,14 @@ anchor_top = 0.773333
 anchor_right = 1.0
 anchor_bottom = 0.88
 offset_bottom = 8.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_5gwl4")
 theme_override_styles/hover = SubResource("StyleBoxFlat_iegqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4ngvc")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5gwl4")
 button_mask = 7
 text = "%putuskan"
 icon = ExtResource("5_d421m")
@@ -6396,10 +6396,10 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 56.0
 offset_bottom = 56.0
-theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cfipv")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
 button_mask = 5
 icon = ExtResource("6_ps5t2")
 icon_alignment = 1
@@ -6458,10 +6458,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_otp41")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_8a76m")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_sa70y")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_otp41")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 alignment = 0
@@ -6484,10 +6484,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_ssrga")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_4jonv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dpwwp")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ssrga")
 text = "%mulai"
 icon = ExtResource("43_p021k")
 alignment = 0
@@ -6540,14 +6540,14 @@ offset_bottom = 27.872
 grow_horizontal = 2
 grow_vertical = 2
 focus_next = NodePath("../jumlah_pemain")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
-theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
-theme_override_colors/clear_button_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 theme_override_colors/clear_button_color_pressed = Color(0, 0, 0, 1)
+theme_override_colors/clear_button_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_f3ltm")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_f3ltm")
 clear_button_enabled = true
 caret_blink = true
 metadata/_edit_use_anchors_ = true
@@ -6597,14 +6597,14 @@ offset_left = -0.25
 offset_top = -1.52588e-05
 offset_right = 0.109924
 offset_bottom = -0.0800171
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_ye1ao")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ye1ao")
 text = "-"
 metadata/_edit_use_anchors_ = true
 
@@ -6618,14 +6618,14 @@ anchor_bottom = 0.5
 offset_left = 0.22998
 offset_top = -1.52588e-05
 offset_right = -0.204041
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_ye1ao")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
-theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ye1ao")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
@@ -6663,11 +6663,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%lokal"
 popup/item_0/icon = ExtResource("10_ggwxk")
-popup/item_0/id = 0
 popup/item_1/text = "%publik"
 popup/item_1/icon = ExtResource("11_662sn")
 popup/item_1/id = 1
@@ -6730,10 +6729,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_d10v8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_bbtue")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_2qeoj")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_d10v8")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 alignment = 0
@@ -6755,14 +6754,14 @@ grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../batal")
 focus_neighbor_right = NodePath("../sambungkan")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
-theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
-theme_override_colors/clear_button_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
 theme_override_colors/clear_button_color_pressed = Color(0, 0, 0, 1)
+theme_override_colors/clear_button_color = Color(0.0784314, 0.0784314, 0.0784314, 1)
+theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_f3ltm")
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_f3ltm")
 clear_button_enabled = true
 caret_blink = true
 
@@ -6781,10 +6780,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_ssrga")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_4jonv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dpwwp")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ssrga")
 text = "%sambungkan"
 icon = ExtResource("9_qt3gh")
 alignment = 0
@@ -6800,17 +6799,17 @@ offset_left = 0.208
 offset_top = -57.2
 offset_right = 0.0400085
 offset_bottom = -1.2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
-theme_override_styles/normal = SubResource("StyleBoxFlat_5pl8u")
+theme_override_styles/focus = SubResource("StyleBoxFlat_hsvym")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ir4p6")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_lih6s")
-theme_override_styles/focus = SubResource("StyleBoxFlat_hsvym")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5pl8u")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_ajma5")
@@ -6828,17 +6827,17 @@ anchor_bottom = 0.282
 offset_top = -57.2
 offset_right = 0.375977
 offset_bottom = -1.2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
-theme_override_styles/normal = SubResource("StyleBoxFlat_5pl8u")
+theme_override_styles/focus = SubResource("StyleBoxFlat_uygn8")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ir4p6")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_lih6s")
-theme_override_styles/focus = SubResource("StyleBoxFlat_uygn8")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5pl8u")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vegoh")
 text = "%internet"
@@ -7026,10 +7025,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_ruhgq")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_aax07")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_swl0v")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ruhgq")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 alignment = 0
@@ -7051,10 +7050,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_8b42g")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_bq6he")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_db4a1")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8b42g")
 text = "%simpan"
 icon = ExtResource("11_rwow7")
 alignment = 0
@@ -7070,12 +7069,14 @@ anchor_bottom = 0.92
 offset_right = -0.289368
 offset_bottom = -1.52588e-05
 theme_override_styles/panel = SubResource("StyleBoxEmpty_a0684")
+current_tab = 0
 tabs_visible = false
 metadata/_edit_lock_ = true
 
 [node name="tab_personalitas" type="Panel" parent="karakter/panel/tab"]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
+metadata/_tab_index = 0
 
 [node name="label_nama" type="Label" parent="karakter/panel/tab/tab_personalitas"]
 layout_mode = 1
@@ -7109,12 +7110,12 @@ grow_horizontal = 2
 grow_vertical = 2
 focus_neighbor_left = NodePath("../../../batal")
 focus_neighbor_right = NodePath("../../../simpan")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
 theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
-theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
 theme_override_styles/focus = SubResource("StyleBoxFlat_c6tox")
+theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
 caret_blink = true
 metadata/_edit_use_anchors_ = true
 
@@ -7153,11 +7154,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%cewek"
 popup/item_0/icon = ExtResource("13_yyl5t")
-popup/item_0/id = 0
 popup/item_1/text = "%cowok"
 popup/item_1/icon = ExtResource("14_oalbb")
 popup/item_1/id = 1
@@ -7166,6 +7166,7 @@ popup/item_1/id = 1
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
+metadata/_tab_index = 1
 
 [node name="ScrollContainer" type="ScrollContainer" parent="karakter/panel/tab/tab_wajah"]
 layout_mode = 1
@@ -7205,10 +7206,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%alis0"
-popup/item_0/id = 0
 popup/item_1/text = "%alis1"
 popup/item_1/id = 1
 
@@ -7230,10 +7230,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%model0"
-popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
 metadata/_edit_use_anchors_ = true
@@ -7255,10 +7254,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%model0"
-popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
 
@@ -7278,6 +7276,7 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
+metadata/_tab_index = 2
 
 [node name="label_rambut" type="Label" parent="karakter/panel/tab/tab_rambut"]
 layout_mode = 1
@@ -7314,10 +7313,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%model0"
-popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
 
@@ -7351,6 +7349,7 @@ offset_right = -0.000320435
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
+metadata/_tab_index = 3
 
 [node name="label_baju" type="Label" parent="karakter/panel/tab/tab_baju"]
 layout_mode = 1
@@ -7387,10 +7386,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%baju0"
-popup/item_0/id = 0
 popup/item_1/text = "%baju1"
 popup/item_1/id = 1
 
@@ -7424,6 +7422,7 @@ offset_right = -0.000320435
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
+metadata/_tab_index = 4
 
 [node name="label_celana" type="Label" parent="karakter/panel/tab/tab_celana"]
 layout_mode = 1
@@ -7460,10 +7459,9 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "%celana0"
-popup/item_0/id = 0
 popup/item_1/text = "%celana1"
 popup/item_1/id = 1
 
@@ -7497,6 +7495,7 @@ offset_right = -0.000320435
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jpycx")
+metadata/_tab_index = 5
 
 [node name="label_sepatu" type="Label" parent="karakter/panel/tab/tab_sepatu"]
 layout_mode = 1
@@ -7533,11 +7532,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 32
 theme_override_styles/focus = SubResource("StyleBoxFlat_7vfyb")
 theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
-item_count = 2
 selected = 0
 fit_to_longest_item = false
+item_count = 2
 popup/item_0/text = "%sepatu0"
-popup/item_0/id = 0
 popup/item_1/text = "%sepatu1"
 popup/item_1/id = 1
 
@@ -7579,13 +7577,13 @@ offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
-theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_vcssk")
@@ -7605,13 +7603,13 @@ offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
-theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_bcbie")
 icon = ExtResource("16_623mo")
@@ -7630,13 +7628,13 @@ offset_top = -29.8
 offset_right = 25.7342
 offset_bottom = 30.2
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
-theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vcssk")
 icon = ExtResource("20_x7tnp")
@@ -7655,13 +7653,13 @@ offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
-theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vcssk")
 icon = ExtResource("22_xronm")
@@ -7681,13 +7679,13 @@ offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
-theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vcssk")
 icon = ExtResource("25_qgmii")
@@ -7707,13 +7705,13 @@ offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
-theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2c4lk")
 toggle_mode = true
 button_group = SubResource("ButtonGroup_vcssk")
 icon = ExtResource("26_ifmuk")
@@ -7766,15 +7764,15 @@ anchor_bottom = 0.493334
 offset_bottom = 8.0
 focus_neighbor_left = NodePath("../../../setelan")
 focus_neighbor_bottom = NodePath("../gabung_server")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_m3mbe")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_2dl5y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4ngvc")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_m3mbe")
 button_mask = 7
 text = "%buat_server"
 icon = ExtResource("7_ayqde")
@@ -7794,16 +7792,16 @@ anchor_bottom = 0.666667
 offset_bottom = 8.0
 focus_neighbor_top = NodePath("../buat_server")
 focus_neighbor_bottom = NodePath("../karakter")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_disabled_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_m3mbe")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_2dl5y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4ngvc")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_m3mbe")
 button_mask = 7
 text = "%gabung_server"
 icon = ExtResource("8_wsntl")
@@ -7822,15 +7820,15 @@ anchor_bottom = 0.88
 offset_bottom = 8.0
 focus_neighbor_left = NodePath("../../../keluar")
 focus_neighbor_top = NodePath("../gabung_server")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_qmdwo")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lhgek")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ysvot")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_qmdwo")
 button_mask = 7
 text = "%karakter"
 icon = ExtResource("9_3dohi")
@@ -7849,10 +7847,10 @@ offset_right = 56.0
 offset_bottom = 56.0
 focus_neighbor_right = NodePath("../menu/Panel/buat_server")
 focus_neighbor_bottom = NodePath("../musik")
-theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cfipv")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
 button_mask = 5
 icon = ExtResource("10_gun25")
 icon_alignment = 1
@@ -7868,10 +7866,10 @@ offset_bottom = 112.0
 focus_neighbor_top = NodePath("../info")
 focus_neighbor_right = NodePath("../menu/Panel/buat_server")
 focus_neighbor_bottom = NodePath("../setelan")
-theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cfipv")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
 button_mask = 5
 icon = ExtResource("11_lbgy5")
 icon_alignment = 1
@@ -7887,10 +7885,10 @@ offset_bottom = 168.0
 focus_neighbor_top = NodePath("../musik")
 focus_neighbor_right = NodePath("../menu/Panel/buat_server")
 focus_neighbor_bottom = NodePath("../keluar")
-theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cfipv")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
 button_mask = 5
 icon = ExtResource("6_ps5t2")
 icon_alignment = 1
@@ -7909,10 +7907,10 @@ offset_bottom = -16.0
 grow_vertical = 0
 focus_neighbor_top = NodePath("../setelan")
 focus_neighbor_right = NodePath("../menu/Panel/buat_server")
-theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cfipv")
-theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/normal = SubResource("StyleBoxFlat_cfipv")
 button_mask = 5
 icon = ExtResource("12_evk18")
 icon_alignment = 1
@@ -8096,10 +8094,9 @@ focus_next = NodePath("../layar_penuh")
 focus_previous = NodePath(".")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
-item_count = 3
 selected = 0
+item_count = 3
 popup/item_0/text = "Auto"
-popup/item_0/id = 0
 popup/item_1/text = "English"
 popup/item_1/icon = ExtResource("63_r5flb")
 popup/item_1/id = 1
@@ -8117,12 +8114,12 @@ focus_neighbor_top = NodePath("../pilih_bahasa")
 focus_neighbor_bottom = NodePath("../laporkan_bug")
 focus_next = NodePath("../laporkan_bug")
 focus_previous = NodePath("../pilih_bahasa")
-theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
-theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%mode_layar_penuh"
@@ -8245,8 +8242,8 @@ focus_neighbor_bottom = NodePath("../sensitivitas_gestur")
 focus_next = NodePath("../sensitivitas_gestur")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "Analog"
 popup/item_0/icon = ExtResource("67_5s073")
 popup/item_0/id = 1
@@ -8368,12 +8365,12 @@ focus_neighbor_left = NodePath(".")
 focus_neighbor_bottom = NodePath("../tampilkan_log")
 focus_next = NodePath("../tampilkan_log")
 focus_previous = NodePath(".")
-theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
-theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 button_pressed = true
@@ -8459,9 +8456,9 @@ anchor_top = -0.533
 anchor_right = 0.875
 offset_right = -6.10352e-05
 offset_bottom = 0.199982
+theme_override_colors/current_line_color = Color(0, 0, 0, 1)
 theme_override_colors/background_color = Color(0, 0, 0, 0.823529)
 theme_override_colors/selection_color = Color(0, 0, 0, 0.784314)
-theme_override_colors/current_line_color = Color(0, 0, 0, 1)
 theme_override_colors/line_number_color = Color(0.815686, 0.764706, 0.494118, 1)
 text = "/* deklarasikan nilai disini */
 nilai a = 5
@@ -8774,10 +8771,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1kttg")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
 theme_override_styles/hover = SubResource("StyleBoxFlat_a7ji0")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_nas3a")
-theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_1kttg")
 text = "%oke"
 icon_alignment = 1
 
@@ -8868,10 +8865,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_bphea")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_mf4jx")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_g6ho3")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_bphea")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 alignment = 0
@@ -8896,10 +8893,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_t0irj")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tsova")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_1bb8i")
 text = "%oke"
 icon = ExtResource("28_s2n4g")
 alignment = 0
@@ -8985,8 +8982,8 @@ grow_vertical = 2
 theme_override_colors/default_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
 theme_override_fonts/normal_font = ExtResource("3_c2goa")
 theme_override_fonts/italics_font = ExtResource("3_2ugog")
-theme_override_font_sizes/normal_font_size = 17
 theme_override_font_sizes/bold_italics_font_size = 17
+theme_override_font_sizes/normal_font_size = 17
 bbcode_enabled = true
 text = "Dreamline adalah [color=\"373737\"]permainan multi-platform revolusioner yang memungkinkan kita mengekspresikan kreatifitas dan imajinasi secara bebas[/color], game ini dapat dimainkan oleh segala usia dan kalangan.
 
@@ -9006,8 +9003,8 @@ grow_vertical = 2
 theme_override_colors/default_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
 theme_override_fonts/normal_font = ExtResource("3_c2goa")
 theme_override_fonts/italics_font = ExtResource("3_2ugog")
-theme_override_font_sizes/normal_font_size = 17
 theme_override_font_sizes/bold_italics_font_size = 17
+theme_override_font_sizes/normal_font_size = 17
 bbcode_enabled = true
 text = "author : ProgrammerIndonesia44
 beta tester:"
@@ -9027,8 +9024,8 @@ grow_vertical = 2
 theme_override_colors/default_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
 theme_override_fonts/normal_font = ExtResource("3_c2goa")
 theme_override_fonts/italics_font = ExtResource("3_2ugog")
-theme_override_font_sizes/normal_font_size = 17
 theme_override_font_sizes/bold_italics_font_size = 17
+theme_override_font_sizes/normal_font_size = 17
 bbcode_enabled = true
 text = "Muhammad Farel Ilyas
 Ahmad Hanif"
@@ -9048,8 +9045,8 @@ grow_vertical = 2
 theme_override_colors/default_color = Color(0.270588, 0.270588, 0.996078, 1)
 theme_override_fonts/normal_font = ExtResource("3_c2goa")
 theme_override_fonts/italics_font = ExtResource("3_2ugog")
-theme_override_font_sizes/normal_font_size = 18
 theme_override_font_sizes/bold_italics_font_size = 18
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
 text = "[color=\"808000\"]☀️[/color] [url=\"\"]Panduan Bermain[/url]
 [color=\"fe2afe\"]😇️[/color] [url=\"https://t.me/cinta_buatan\"]Komunitas[/url]
@@ -9076,10 +9073,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_ffx2c")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
 theme_override_styles/hover = SubResource("StyleBoxFlat_p2ley")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_3vnvs")
-theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ffx2c")
 text = "%oke"
 icon = ExtResource("28_s2n4g")
 alignment = 0
@@ -9176,17 +9173,17 @@ focus_neighbor_right = NodePath("../batal")
 focus_neighbor_bottom = NodePath("../batal")
 focus_next = NodePath("../batal")
 focus_previous = NodePath(".")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_2vfcn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_p3ulh")
 theme_override_styles/hover = SubResource("StyleBoxFlat_r6txo")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vc703")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_p3ulh")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2vfcn")
 action_mode = 0
 text = "%lanjutkan%"
 icon = ExtResource("28_s2n4g")
@@ -9213,10 +9210,10 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_5wouw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
 theme_override_styles/hover = SubResource("StyleBoxFlat_qapco")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ndue1")
-theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5wouw")
 text = "%batal"
 icon = ExtResource("14_xsr60")
 metadata/_edit_use_anchors_ = true
@@ -9243,7 +9240,7 @@ grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
-text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB"
+text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB | culling : true"
 horizontal_alignment = 2
 
 [node name="versi" type="Label" parent="."]
