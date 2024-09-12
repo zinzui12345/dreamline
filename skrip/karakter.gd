@@ -53,7 +53,41 @@ var _ragdoll : bool = false :
 		$pengamat.position.z 		= 0
 		$pengamat/kamera.position.x = 0
 		$pengamat/kamera.position.z = 0
-		_ragdoll = nilai
+		if nilai and !_ragdoll:
+			var tmp_ragdoll : Node3D = load("res://karakter/ragdoll.scn").instantiate()
+			$"%GeneralSkeleton".add_child(tmp_ragdoll.get_node("GeneralSkeleton"+gender+"/fisik kerangka").duplicate())
+			$pose.active = false # 10/09/24 :: di godot 4.3 udah gk perlu disable animasi, supaya posisi pandangannya ngikutin posisi ragdoll
+			$fisik.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+			if id_pemain == client.id_koneksi: $pengamat.atur_mode(3)
+			$area_tabrak/area.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+			$"%GeneralSkeleton/fisik kerangka".active = true # 10/09/24 :: HACK : kalo modifier non-aktif tetap bisa simulasi collision-nya (ini bisa di pake buat nge cek joint nya)
+			$"%GeneralSkeleton/fisik kerangka".physical_bones_start_simulation()
+			$"%GeneralSkeleton/fisik kerangka/fisik pusat".apply_central_impulse(_percepatan_ragdoll)
+			$"%GeneralSkeleton/fisik kerangka/fisik perut".apply_central_impulse(_percepatan_ragdoll)
+			$"%GeneralSkeleton/fisik kerangka/fisik pinggang".apply_central_impulse(_percepatan_ragdoll)
+			$"%GeneralSkeleton/fisik kerangka/fisik paha kiri".apply_central_impulse(_percepatan_ragdoll)
+			$"%GeneralSkeleton/fisik kerangka/fisik paha kanan".apply_central_impulse(_percepatan_ragdoll)
+			if id_pemain > 0 and id_pemain == client.id_koneksi:
+				if _timer_ragdoll == null:
+					_timer_ragdoll = Timer.new()
+					_timer_ragdoll.name = "timer bangkit"
+					add_child(_timer_ragdoll)
+					_timer_ragdoll.wait_time = 3
+					_timer_ragdoll.connect("timeout", _ketika_bangkit)
+				_timer_ragdoll.start()
+			tmp_ragdoll.queue_free()
+			_ragdoll = true
+		elif !nilai and _ragdoll:
+			if id_pemain == client.id_koneksi: $pengamat.atur_mode(1)
+			$"%GeneralSkeleton/fisik kerangka".physical_bones_stop_simulation()
+			$"%GeneralSkeleton".get_node("fisik kerangka").queue_free()
+			$pose.active = true
+			$fisik.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+			$area_tabrak/area.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+			global_position = _percepatan_ragdoll
+			_percepatan_ragdoll = Vector3.ZERO
+			_ragdoll = false
+var _percepatan_ragdoll : Vector3
 var _timer_ragdoll : Timer
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
@@ -292,41 +326,6 @@ func atur_warna() -> void:
 							tmp_mtl.albedo_color = warna["rambut"]
 						else:
 							tmp_mtl.albedo_color = warna[indeks_material[mt]]
-func atur_ragdoll(nilai : bool, percepatan := Vector3.ZERO) -> void:
-	if nilai and !_ragdoll:
-		var tmp_ragdoll : Node3D = load("res://karakter/ragdoll.scn").instantiate()
-		for f : int in (tmp_ragdoll.get_child(0).get_child_count()):
-			if tmp_ragdoll.get_child(0).get_child(f) is PhysicalBone3D:
-				$"%GeneralSkeleton".add_child(tmp_ragdoll.get_child(0).get_child(f).duplicate())
-		tmp_ragdoll.queue_free()
-		_ragdoll = true
-		$pose.active = false
-		$fisik.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
-		if id_pemain == client.id_koneksi: $pengamat.atur_mode(3)
-		#$area_tabrak/area.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
-		$"%GeneralSkeleton".physical_bones_start_simulation()
-		$"%GeneralSkeleton/fisik kerangka".apply_central_impulse(percepatan)
-		$"%GeneralSkeleton/fisik kerangka/fisik pinggang".apply_central_impulse(percepatan)
-		$"%GeneralSkeleton/fisik kerangka/fisik paha kiri".apply_central_impulse(percepatan)
-		$"%GeneralSkeleton/fisik kerangka/fisik paha kanan".apply_central_impulse(percepatan)
-		$"%GeneralSkeleton/fisik kerangka/fisik pinggang/fisik perut".apply_central_impulse(percepatan)
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			if _timer_ragdoll == null:
-				_timer_ragdoll = Timer.new()
-				_timer_ragdoll.name = "timer bangkit"
-				add_child(_timer_ragdoll)
-				_timer_ragdoll.wait_time = 3
-				_timer_ragdoll.connect("timeout", _ketika_bangkit)
-			_timer_ragdoll.start()
-	elif !nilai and _ragdoll:
-		if id_pemain == client.id_koneksi: $pengamat.atur_mode(1)
-		$"%GeneralSkeleton".physical_bones_stop_simulation()
-		$"%GeneralSkeleton".get_node("fisik kerangka").queue_free()
-		$pose.active = true
-		$fisik.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
-		#$area_tabrak/area.disabled = false # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
-		global_position = percepatan
-		_ragdoll = false
 func hapus() -> void:
 	set_physics_process(false)
 	set_process(false)
@@ -652,10 +651,14 @@ func _physics_process(delta : float) -> void:
 			cek_perubahan_kondisi["gestur_jongkok"] = 0.0
 		if cek_perubahan_kondisi.get("mode_menyerang") == null:
 			cek_perubahan_kondisi["mode_menyerang"] = "a"
+		if cek_perubahan_kondisi.get("arah_terserang") == null:
+			cek_perubahan_kondisi["arah_terserang"] = Vector3.ZERO
 		if cek_perubahan_kondisi.get("melompat") == null:
 			cek_perubahan_kondisi["melompat"] = false
 		if cek_perubahan_kondisi.get("menyerang") == null:
 			cek_perubahan_kondisi["menyerang"] = false
+		if cek_perubahan_kondisi.get("mati") == null:
+			cek_perubahan_kondisi["mati"] = false
 		
 		# cek apakah kondisi berubah
 		if cek_perubahan_kondisi["posisi"] != position:
@@ -672,10 +675,14 @@ func _physics_process(delta : float) -> void:
 			perubahan_kondisi.append(["gestur_jongkok", gestur_jongkok])
 		if cek_perubahan_kondisi["mode_menyerang"] != mode_menyerang:
 			perubahan_kondisi.append(["mode_menyerang", mode_menyerang])
+		if cek_perubahan_kondisi["arah_terserang"] != _percepatan_ragdoll:
+			perubahan_kondisi.append(["arah_terserang", _percepatan_ragdoll])
 		if cek_perubahan_kondisi["melompat"] != melompat:
 			perubahan_kondisi.append(["melompat", melompat])
 		if cek_perubahan_kondisi["menyerang"] != menyerang:
 			perubahan_kondisi.append(["menyerang", menyerang])
+		if cek_perubahan_kondisi["mati"] != _ragdoll:
+			perubahan_kondisi.append(["mati", _ragdoll])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
 		if perubahan_kondisi.size() > 0:
@@ -685,6 +692,7 @@ func _physics_process(delta : float) -> void:
 				server.rpc_id(1, "_sesuaikan_kondisi_pemain", client.id_sesi, client.id_koneksi, perubahan_kondisi)
 		
 		# simpan perubahan kondisi untuk di-cek lagi
+		cek_perubahan_kondisi["mati"] = _ragdoll
 		cek_perubahan_kondisi["posisi"] = position
 		cek_perubahan_kondisi["rotasi"] = rotation
 		cek_perubahan_kondisi["melompat"] = melompat
@@ -694,6 +702,7 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["arah_pandangan"] = arah_pandangan
 		cek_perubahan_kondisi["gestur_jongkok"] = gestur_jongkok
 		cek_perubahan_kondisi["mode_menyerang"] = mode_menyerang
+		cek_perubahan_kondisi["arah_terserang"] = _percepatan_ragdoll
 	
 	# terapkan arah gerakan
 	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
@@ -747,25 +756,25 @@ func _ketika_ditabrak(node : CollisionObject3D) -> void:
 	if node.get("radius_tabrak") != null:
 		hantaman = hantaman * node.radius_tabrak
 		if hantaman >= 10:
-			atur_ragdoll(true, percepatan / 2)
-			#server.fungsikan_objek(get_path(), "atur_ragdoll", [true, percepatan/2]) # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client
+			_percepatan_ragdoll = percepatan / 2
+			_ragdoll = true
 	
 	# TODO : nyawa!?
 	 
 	#Panku.notify(node.name+" menabrak "+name+" : "+str(hantaman))
 func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
 	if is_instance_valid($"%GeneralSkeleton/fisik kerangka"):
-		var total_percepatan_kerangka : Vector3 = $"%GeneralSkeleton/fisik kerangka".linear_velocity.abs()
+		var total_percepatan_kerangka : Vector3 = $"%GeneralSkeleton/fisik kerangka/fisik pusat".linear_velocity.abs()
 		var percepatan_kerangka : float = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
 		var posisi_bangkit : Vector3 = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
 		if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
 			_timer_ragdoll.stop()
-			atur_ragdoll(false, posisi_bangkit)
-			#server.fungsikan_objek(get_path(), "atur_ragdoll", [false, posisi_bangkit])  # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client
+			_percepatan_ragdoll = posisi_bangkit
+			_ragdoll = false
 		elif $"%GeneralSkeleton/fisik kerangka".global_position.y < server.permainan.batas_bawah: # atur ulang posisi kalau terjatuh dari dunia
 			_timer_ragdoll.stop()
-			atur_ragdoll(false, global_position)
-			#server.fungsikan_objek(get_path(), "atur_ragdoll", [false, global_position])  # FIXME : sinkronkan kondisi ragdoll dengan timeline dan client
+			_percepatan_ragdoll = global_position
+			_ragdoll = false
 func _ketika_langkah_kaki_kiri() -> void:
 	#Panku.notify("kiri")
 	pass

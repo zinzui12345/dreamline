@@ -867,11 +867,13 @@ func _pemain_terputus(id_pemain):
 			for kondisi_pemain in properti_kondisi:
 				if kondisi_pemain[0] == "posisi":			pemain[id_sesi_pemain]["posisi"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "rotasi":			pemain[id_sesi_pemain]["rotasi"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "mati":			pemain[id_sesi_pemain]["kondisi"]["mati"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "mode_gestur":	pemain[id_sesi_pemain]["kondisi"]["mode_gestur"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "arah_gerakan":	pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "arah_pandangan":	pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "gestur_jongkok":	pemain[id_sesi_pemain]["kondisi"]["gestur_jongkok"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "mode_menyerang":	pemain[id_sesi_pemain]["kondisi"]["mode_menyerang"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "arah_terserang":	pemain[id_sesi_pemain]["kondisi"]["arah_terserang"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "melompat":		r_melompat = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "menyerang":		r_menyerang = kondisi_pemain[1]
 			# rpc sinkronkan kondisi id_pemain ke semua pemain yang spawn id_pemain
@@ -1069,7 +1071,8 @@ func _pemain_terputus(id_pemain):
 		if permainan.dunia.get_node("pemain").get_node_or_null(str(id_pemain)) != null:
 			var _pemain = permainan.dunia.get_node("pemain").get_node(str(id_pemain))
 			for kondisi in kondisi_pemain:
-				if kondisi[0] == "posisi":				_pemain.position = kondisi[1]
+				if kondisi[0] == "mati":				_pemain._ragdoll = kondisi[1]
+				elif kondisi[0] == "posisi":			_pemain.position = kondisi[1]
 				elif kondisi[0] == "rotasi":			_pemain.rotation = kondisi[1]
 				elif kondisi[0] == "melompat":			_pemain.melompat = kondisi[1]
 				elif kondisi[0] == "menyerang":			_pemain.menyerang = kondisi[1]
@@ -1078,6 +1081,7 @@ func _pemain_terputus(id_pemain):
 				elif kondisi[0] == "arah_pandangan":	_pemain.arah_pandangan = kondisi[1]
 				elif kondisi[0] == "gestur_jongkok":	_pemain.gestur_jongkok = kondisi[1]
 				elif kondisi[0] == "mode_menyerang":	_pemain.mode_menyerang = kondisi[1]
+				elif kondisi[0] == "arah_terserang":	_pemain._percepatan_ragdoll = kondisi[1]
 @rpc("authority") func _sinkronkan_kondisi_entitas(nama_entitas : String, kondisi_entitas : Array):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("entitas").get_node_or_null(nama_entitas) != null:

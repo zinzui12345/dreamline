@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 01/09/24 Early Access"
+const versi = "Dreamline v0.4.4 12/09/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -655,7 +655,7 @@ func _muat_map(file_map : StringName) -> void:
 										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
 										skenario.length = waktu
-							elif data_frame.tipe == "hapus":
+							elif data_frame.tipe == "hapus" and server.timeline.has(entitas_):
 								# hapus entitas
 								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
 								# jika entitas adalah pemain, matikan visibilitas dari daftar pemain
@@ -1127,6 +1127,15 @@ func _mainkan_replay() -> void:
 		$hud/timeline/posisi_durasi.max_value = pemutar_animasi.current_animation_length
 		$hud/timeline/posisi_durasi.value = pemutar_animasi.current_animation_position
 		$hud/timeline/mainkan.disabled = true
+func _arahkan_pengamat_ke_aktor_replay() -> void:
+	if server.mode_replay and not server.mode_uji_performa:
+		if get_node_or_null("pengamat") != null:
+			get_node("pengamat").set(
+				"global_position",
+				dunia.get_node("pemain").get_child(
+					randi_range(0, dunia.get_node("pemain").get_child_count() - 1)
+				).global_position
+			)
 
 # UI
 func _atur_persentase_memuat(nilai : int) -> void:
