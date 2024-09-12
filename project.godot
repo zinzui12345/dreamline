@@ -71,6 +71,11 @@ folder_colors={
 
 import/fbx/enabled=false
 
+[global_group]
+
+dapat_ditendang="Ini digunakan untuk objek fisik atau musuh berukuran kecil yang dapat ditendang oleh pemain"
+dapat_diedit="Agar objek dapat diedit pada mode edit"
+
 [godot_idea_board]
 
 directory_path="res://addons/godot-idea-board/savedata/"
