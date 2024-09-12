@@ -5662,6 +5662,15 @@ layout_mode = 2
 [node name="warna_2" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
+[node name="warna_3" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+layout_mode = 2
+
+[node name="warna_4" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+layout_mode = 2
+
+[node name="warna_5" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+layout_mode = 2
+
 [node name="edit_skrip" type="Button" parent="hud/daftar_properti_objek/panel"]
 visible = false
 layout_mode = 1
@@ -5852,6 +5861,18 @@ offset_top = -56.0
 offset_right = 56.0
 offset_bottom = -16.0
 grow_vertical = 0
+
+[node name="ke pemain" type="Button" parent="hud/timeline"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 64.0
+offset_top = -56.0
+offset_right = 104.0
+offset_bottom = -16.0
+grow_vertical = 0
+text = "t"
 
 [node name="animasi" type="AnimationPlayer" parent="hud/timeline"]
 libraries = {
@@ -9291,6 +9312,7 @@ bus = &"Suara Pemain"
 [connection signal="touch_stop" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
 [connection signal="value_changed" from="hud/daftar_properti_objek/panel_2/perdekat_objek" to="." method="_ketika_mengubah_jarak_pandangan_objek"]
 [connection signal="pressed" from="hud/timeline/mainkan" to="." method="_mainkan_replay"]
+[connection signal="pressed" from="hud/timeline/ke pemain" to="." method="_arahkan_pengamat_ke_aktor_replay"]
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]

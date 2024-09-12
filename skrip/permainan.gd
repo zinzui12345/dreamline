@@ -860,7 +860,7 @@ func _edit_objek(jalur : String) -> void:
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "tutup_panel_objek"
 	_touchpad_disentuh = false
-	# TODO : dapetin properti kustom objek; mis. warna, kondisi
+	# TODO : dapetin properti kustom objek; mis. kondisi
 	for p in $hud/daftar_properti_objek/panel/properti_kustom/baris.get_children(): p.visible = false
 	if edit_objek.get("warna_1") != null:
 		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
@@ -870,6 +870,18 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.atur_nilai(edit_objek.get("warna_2"))
 		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_2.visible = true
+	if edit_objek.get("warna_3") != null:
+		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_3.atur_nilai(edit_objek.get("warna_3"))
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_3.visible = true
+	if edit_objek.get("warna_4") != null:
+		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_4.atur_nilai(edit_objek.get("warna_4"))
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_4.visible = true
+	if edit_objek.get("warna_5") != null:
+		$hud/daftar_properti_objek/panel/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_5.atur_nilai(edit_objek.get("warna_5"))
+		$hud/daftar_properti_objek/panel/properti_kustom/baris/warna_5.visible = true
 	if edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false:
 		$hud/daftar_properti_objek/panel/translasi_x.editable = true
 		$hud/daftar_properti_objek/panel/translasi_y.editable = true
