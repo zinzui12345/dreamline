@@ -160,6 +160,9 @@ func _lepas(id):
 		#call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 	#call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
 	if id == client.id_koneksi:
+		server.permainan.dunia.get_node("pemain/"+str(id)).rotation.x = 0
+		server.permainan.dunia.get_node("pemain/"+str(id)).rotation.z = 0
+		
 		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
