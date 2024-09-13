@@ -729,7 +729,8 @@ func _ketika_ditabrak(node : CollisionObject3D) -> void:
 	var hantaman : int = 0
 	
 	# Terapkan arah Area
-	$area_tabrak.look_at(node.global_position, Vector3.UP, true)
+	if $area_tabrak.global_position != node.global_position:
+		$area_tabrak.look_at(node.global_position, Vector3.UP, true)
 	$area_tabrak.rotation_degrees.x = 0
 	$area_tabrak.rotation_degrees.z = 0
 	
