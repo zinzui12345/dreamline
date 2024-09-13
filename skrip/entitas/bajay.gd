@@ -7,7 +7,8 @@ const sinkron_kondisi = [
 	["warna_3", Color("ff0021")],
 	["warna_4", Color("ff5318")],
 	["warna_5", Color("000000")],
-	["id_pengemudi", -1]
+	["id_pengemudi", -1],
+	["steering", 0.0]
 ]
 const jalur_instance = "res://skena/entitas/bajay.tscn"
 const batas_putaran_stir = 0.5
@@ -91,10 +92,11 @@ func mulai() -> void:
 	$model/detail/subreker_depan.set_surface_override_material(0, mat5)
 # fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
 func proses(waktu_delta : float) -> void:
-	if id_pengemudi == multiplayer.get_unique_id():
+	if id_pengemudi != -1 and server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).global_position = global_position
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).rotation = rotation
-		
+	
+	if id_pengemudi == multiplayer.get_unique_id():
 		if arah_kemudi.y > 0:	set("engine_force", kekuatan_mesin * arah_kemudi.y)
 		elif arah_kemudi.y < 0:	set("engine_force", kecepatan_mundur * arah_kemudi.y)
 		else:					set("engine_force", arah_kemudi.y)
