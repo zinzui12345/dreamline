@@ -380,6 +380,21 @@ func putuskan():
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
 
+func buat_koneksi_virtual():
+	interface = MultiplayerAPI.create_default_interface()
+	peer = ENetMultiplayerPeer.new()
+	broadcast = ServerAdvertiser.new()
+	peer.create_server(10567, 1)
+	interface.set_multiplayer_peer(peer)
+	get_tree().set_multiplayer(interface)
+	interface.set_refuse_new_connections(true)
+func putuskan_koneksi_virtual():
+	peer.close()
+	peer = null
+	interface.clear()
+	interface.set_root_path(NodePath("/root"))
+	interface = null
+
 func spawn_pool_pemain(id_pemain : int, id_spawn_pemain : int, data : Dictionary):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if id_pemain == 1: _spawn_visibilitas_pemain(id_spawn_pemain, data)
