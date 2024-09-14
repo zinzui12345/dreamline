@@ -1,3 +1,4 @@
+# 11/07/21
 extends entitas
 
 const radius_tabrak : int = 10
@@ -8,7 +9,8 @@ const sinkron_kondisi = [
 	["warna_4", Color("ff5318")],
 	["warna_5", Color("000000")],
 	["id_pengemudi", -1],
-	["steering", 0.0]
+	["steering", 0.0],
+	["engine_force", 0.0]
 ]
 const jalur_instance = "res://skena/entitas/bajay.tscn"
 const batas_putaran_stir = 0.5
@@ -20,13 +22,14 @@ var id_pengemudi = -1:
 			server.permainan.dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengemudi")
 			
 			# otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
-			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null:
+			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null and is_inside_tree():
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($setir/rotasi_stir/pos_tangan_kanan.get_path())
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
-			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null:
+			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null and is_inside_tree():
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
-			#call("add_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
+			
+			call("add_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 		else:
 			if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "berdiri")
@@ -35,6 +38,8 @@ var id_pengemudi = -1:
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
+				
+				call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 		id_pengemudi = id
 var arah_kemudi : Vector2
 var arah_belok : float
@@ -85,11 +90,16 @@ func mulai() -> void:
 	warna_4 = warna_4
 	warna_5 = warna_5
 	$model/detail/bodi.set_surface_override_material(0, mat1)
+	$model/lod1/bodi_lod1.set_surface_override_material(0, mat1)
 	$model/detail/bodi.set_surface_override_material(1, mat2)
+	$model/lod1/bodi_lod1.set_surface_override_material(1, mat2)
 	$model/detail/bodi.set_surface_override_material(10, mat3)
+	$model/lod1/bodi_lod1.set_surface_override_material(8, mat3)
 	$model/detail/bodi.set_surface_override_material(5, mat4)
 	$model/detail/bodi.set_surface_override_material(11, mat5)
+	$model/lod1/bodi_lod1.set_surface_override_material(9, mat5)
 	$model/detail/subreker_depan.set_surface_override_material(0, mat5)
+	id_pengemudi = id_pengemudi
 # fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
 func proses(waktu_delta : float) -> void:
 	if id_pengemudi != -1 and server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
