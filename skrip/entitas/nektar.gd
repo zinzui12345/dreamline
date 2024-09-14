@@ -118,7 +118,7 @@ func _ketika_menabrak(node: Node):
 				(node.nyawa * 10) + damage
 			)
 			_hancur()
-			server.fungsikan_objek(self.get_path(), "_hancur", [])
+			server.fungsikan_objek(name, "_hancur", [])
 		elif node.get("kelompok") != null:
 			match node.kelompok:
 				npc_ai.grup.musuh:
@@ -127,7 +127,7 @@ func _ketika_menabrak(node: Node):
 						node.nyawa
 					)
 					_hancur()
-					server.fungsikan_objek(self.get_path(), "_hancur", [])
+					server.fungsikan_objek(name, "_hancur", [])
 		id_pelempar = -1
 		$halangan_navigasi.avoidance_enabled = true
 	# TODO : efek partikel hantam

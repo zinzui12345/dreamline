@@ -352,13 +352,12 @@ func _ready() -> void:
 	penarget = get_node("pengamat/%target")
 	penarget_serangan_a = $area_serang_a
 	penarget_serangan_b = $area_serang_b
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		$area_tabrak.monitoring = true
-		$area_tabrak.connect("body_entered", _ketika_ditabrak)
 	# INFO : atur layer visibilitas model
 	if id_pemain > 0 and id_pemain == client.id_koneksi:
 		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, true)
 		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, false)
+		$area_tabrak.monitoring = true
+		$area_tabrak.connect("body_entered", _ketika_ditabrak)
 	else:
 		get_node("%GeneralSkeleton/badan/badan_f").set_layer_mask_value(2, false)
 		get_node("%GeneralSkeleton/tangan").set_layer_mask_value(2, true)
