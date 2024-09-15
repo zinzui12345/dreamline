@@ -99,6 +99,7 @@ func mulai() -> void:
 	$model/detail/bodi.set_surface_override_material(11, mat5)
 	$model/lod1/bodi_lod1.set_surface_override_material(9, mat5)
 	$model/detail/subreker_depan.set_surface_override_material(0, mat5)
+	$model/detail/subreker_depan_lod1.set_surface_override_material(0, mat5)
 	id_pengemudi = id_pengemudi
 # fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
 func proses(waktu_delta : float) -> void:
@@ -137,7 +138,7 @@ func _input(_event): # lepas walaupun tidak di-fokus
 		else:									self.brake = 0
 
 func fokus():
-	server.permainan.set("tombol_aksi_2", "angkat_sesuatu")
+	server.permainan.set("tombol_aksi_2", "kemudikan_sesuatu")
 func gunakan(id_pemain):
 	if id_pengemudi == id_pemain:					server.gunakan_entitas(name, "_lepas")
 	elif id_pengemudi == -1: 						server.gunakan_entitas(name, "_kemudikan")
@@ -153,10 +154,10 @@ func _kemudikan(id):
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
-		server.permainan.set("tombol_aksi_1", "lempar_sesuatu")
+		server.permainan.set("tombol_aksi_1", "klakson_kendaraan")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 		server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
-		server.permainan.set("tombol_aksi_2", "jatuhkan_sesuatu")
+		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
 		

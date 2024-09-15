@@ -92,21 +92,24 @@ var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 			get_node("kontrol_sentuh/aksi_1/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_1 = ikon
 		match ikon:
-			"pasang_objek":		$hud/bantuan_input/aksi1/teks.text = "%pasang"
-			"gunakan_objek":	$hud/bantuan_input/aksi1/teks.text = "%gunakan"
-			"dorong_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%dorong"
-			"lempar_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%lempar"
-			"tendang_sesuatu":	$hud/bantuan_input/aksi1/teks.text = "%tendang"
+			"pasang_objek":			$hud/bantuan_input/aksi1/teks.text = "%pasang"
+			"gunakan_objek":		$hud/bantuan_input/aksi1/teks.text = "%gunakan"
+			"dorong_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%dorong"
+			"lempar_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%lempar"
+			"tendang_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%tendang"
+			"klakson_kendaraan":	$hud/bantuan_input/aksi1/teks.text = "%klakson"
 var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_2:
 			get_node("kontrol_sentuh/aksi_2").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_2 = ikon
 		match ikon:
-			"edit_objek":		$hud/bantuan_input/aksi2/teks.text = "%edit"
-			"angkat_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%angkat"
-			"jatuhkan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
-			"tanyakan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%bantuan"
+			"berjalan":				$hud/bantuan_input/aksi2/teks.text = "%keluar_k"
+			"edit_objek":			$hud/bantuan_input/aksi2/teks.text = "%edit"
+			"angkat_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%angkat"
+			"jatuhkan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
+			"tanyakan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%bantuan"
+			"kemudikan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%kemudikan"
 var tombol_aksi_3 : StringName = "berlari" :
 	set(ikon):
 		if ikon != tombol_aksi_3:
