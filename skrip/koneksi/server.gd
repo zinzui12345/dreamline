@@ -837,6 +837,19 @@ func _pemain_terputus(id_pemain):
 					pool_entitas[nama_objek]["id_proses"] = -1
 			elif pool_entitas[nama_objek]["id_pengubah"] == 0:
 				if fungsi:
+					# cek properti pada entitas tertentu untuk membatalkan pengeditan objek
+					if pool_entitas[nama_objek].has("kondisi"):
+						var batalkan_pengeditan = false
+						var cek_sub_kondisi : Dictionary
+						for sub_kondisi in pool_entitas[nama_objek]["kondisi"].size():
+							cek_sub_kondisi[pool_entitas[nama_objek]["kondisi"][sub_kondisi][0]] = sub_kondisi
+						# 15/09/24 :: deteksi dan cegah pengeditan pada kendaraan yang sedang dikemudikan
+						if cek_sub_kondisi.has("engine_force") and cek_sub_kondisi.has("id_pengemudi"):
+							#Panku.notify("mengedit kendaraan")
+							#Panku.notify("pengemudi : "+str(pool_entitas[nama_objek]["kondisi"][cek_sub_kondisi["id_pengemudi"]]))
+							if pool_entitas[nama_objek]["kondisi"][cek_sub_kondisi["id_pengemudi"]][1] != -1: batalkan_pengeditan = true
+						cek_sub_kondisi.clear()
+						if batalkan_pengeditan: return
 					# rpc atur id_pengubah sebagai pemroses entitas dan pengubah objek ke semua peer
 					sinkronkan_kondisi_entitas(-1, nama_objek, [
 						["id_proses", id_pengubah],
