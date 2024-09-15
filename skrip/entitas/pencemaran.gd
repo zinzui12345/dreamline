@@ -34,7 +34,7 @@ func _ketika_interval_spawn():
 	if $spawn_npc.get_child_count() < jumlah_spawn and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		total_spawn += 1
 		spawn(Vector3.ZERO, "npc_jamur_"+str(total_spawn))
-		server.fungsikan_objek(self.get_path(), "spawn", [Vector3.ZERO, "npc_jamur_"+str(total_spawn)])
+		server.fungsikan_objek(name, "spawn", [Vector3.ZERO, "npc_jamur_"+str(total_spawn)])
 		# TODO : navigasi ke posisi random berdasarkan radius shape area_pencemaran
 		# TODO : efek partikel spawn
 		#Panku.notify("spawn .")
