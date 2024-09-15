@@ -123,6 +123,9 @@ INPUTHAPUS,hapus,delete
 %tendang,Tendang,Kick
 %jatuhkan,Jatuhkan,Drop
 %bantuan,Bantuan,Help
+%kemudikan,Naiki,Drive
+%klakson,Klakson,Horn
+%keluar_k,Turun,Exit
 ,,
 # dialog,,
 login_akun,Masuk,Login
