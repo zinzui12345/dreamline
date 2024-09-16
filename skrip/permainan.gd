@@ -1472,6 +1472,7 @@ func pilih_mode_bermain() -> void:
 		$mode_bermain/main.button_pressed = true
 		$mode_bermain/edit.button_pressed = false
 		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
+		if dunia.get_node("kursor_objek").visible: dunia.get_node("kursor_objek").visible = false
 		Panku.notify("mode bermain")
 		$mode_bermain/main.release_focus()
 	if server.mode_replay and not server.mode_uji_performa:
