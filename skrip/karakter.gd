@@ -56,6 +56,8 @@ var _ragdoll : bool = false :
 		if nilai and !_ragdoll:
 			var tmp_ragdoll : Node3D = load("res://karakter/ragdoll.scn").instantiate()
 			$"%GeneralSkeleton".add_child(tmp_ragdoll.get_node("GeneralSkeleton"+gender+"/fisik kerangka").duplicate())
+			set("arah_pandangan", Vector2.ZERO) # 15/09/24 : reset arah pandangan agar posisi leher tidak offset | tetep aja. mungkin karena _process() di pengamat???
+			Panku.notify("0 ==> "+str($pose.get("parameters/arah_y_pandangan/blend_position")))
 			$pose.active = false # 10/09/24 :: di godot 4.3 udah gk perlu disable animasi, supaya posisi pandangannya ngikutin posisi ragdoll
 			$fisik.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
 			if id_pemain == client.id_koneksi: $pengamat.atur_mode(3)
@@ -63,7 +65,7 @@ var _ragdoll : bool = false :
 			$"%GeneralSkeleton/fisik kerangka".active = true # 10/09/24 :: HACK : kalo modifier non-aktif tetap bisa simulasi collision-nya (ini bisa di pake buat nge cek joint nya)
 			$"%GeneralSkeleton/fisik kerangka".physical_bones_start_simulation()
 			$"%GeneralSkeleton/fisik kerangka/fisik pusat".apply_central_impulse(_percepatan_ragdoll)
-			$"%GeneralSkeleton/fisik kerangka/fisik perut".apply_central_impulse(_percepatan_ragdoll)
+			$"%GeneralSkeleton/fisik kerangka/fisik dada".apply_central_impulse(_percepatan_ragdoll)
 			$"%GeneralSkeleton/fisik kerangka/fisik pinggang".apply_central_impulse(_percepatan_ragdoll)
 			$"%GeneralSkeleton/fisik kerangka/fisik paha kiri".apply_central_impulse(_percepatan_ragdoll)
 			$"%GeneralSkeleton/fisik kerangka/fisik paha kanan".apply_central_impulse(_percepatan_ragdoll)
@@ -776,8 +778,12 @@ func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
 			_percepatan_ragdoll = global_position
 			_ragdoll = false
 func _ketika_langkah_kaki_kiri() -> void:
-	#Panku.notify("kiri")
-	pass
+	# 16/09/24 :: Placeholder :: audio default di semua permukaan (hapus ini jika raycast material objek visual sudah di implementasikan!)
+	if $model/bunyi_kaki_kiri.stream == null:
+		$model/bunyi_kaki_kiri.stream = load("res://audio/pemain/langkah_a01.wav")
+	$model/bunyi_kaki_kiri.play()
 func _ketika_langkah_kaki_kanan() -> void:
-	#Panku.notify("kanan")
-	pass
+	# 16/09/24 :: Placeholder :: audio default di semua permukaan (hapus ini jika raycast material objek visual sudah di implementasikan!)
+	if $model/bunyi_kaki_kanan.stream == null:
+		$model/bunyi_kaki_kanan.stream = load("res://audio/pemain/langkah_a02.wav")
+	$model/bunyi_kaki_kanan.play()
