@@ -10,7 +10,8 @@ const sinkron_kondisi = [
 	["warna_5", Color("000000")],
 	["id_pengemudi", -1],
 	["steering", 0.0],
-	["engine_force", 0.0]
+	["engine_force", 0.0],
+	["klakson", false]
 ]
 const jalur_instance = "res://skena/entitas/bajay.tscn"
 const batas_putaran_stir = 0.5
@@ -18,10 +19,11 @@ const batas_putaran_stir = 0.5
 var id_pengemudi = -1:
 	set(id):
 		if id != -1:
+			# sesuaikan pose pengemudi
 			server.permainan.dunia.get_node("pemain/"+str(id)).set("gestur", "duduk")
 			server.permainan.dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengemudi")
 			
-			# otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
+			# atur IK tangan pengemudi | otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
 			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null and is_inside_tree():
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($setir/rotasi_stir/pos_tangan_kanan.get_path())
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
@@ -29,26 +31,47 @@ var id_pengemudi = -1:
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
 				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
 			
+			# aktifkan audio
+			$AudioMesin.play()
+			$AudioAkselerasiMesin.volume_db = -30
+			
+			# nonaktifkan fisik dengan pengemudi
 			call("add_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 		else:
 			if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
+				# atur ulang pose pengemudi
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "berdiri")
 				
+				# nonaktifkan IK tangan pengemudi
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").set_target_node("")
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
 				
-				call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
+				# nonaktifkan audio
+				#$AudioMesin.stream.set_clip_auto_advance(1, AudioStreamInteractive.AUTO_ADVANCE_ENABLED)
+				$AudioMesin.stop()
+				$AudioAkselerasiMesin.volume_db = -30
+				$AudioAkselerasiMesin.stop()
+				
+				# aktifkan fisik dengan pengemudi
+				call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)))
 		id_pengemudi = id
 var arah_kemudi : Vector2
 var arah_belok : float
-var kecepatan_normal = 80
-var kecepatan_maksimal = 150
-var kecepatan_mundur = 60
-var kekuatan_mesin = kecepatan_normal
-var kekuatan_rem = 3
-var kecepatan_laju = 0
+var rem : bool
+var klakson : bool :
+	set(bunyi):
+		if bunyi:	$AudioKlakson.play()
+		else:		$AudioKlakson.stop()
+		klakson = bunyi
+var kecepatan_normal : int = 80
+var kecepatan_maksimal : int = 150
+var kecepatan_mundur : int = 60
+var kekuatan_mesin : int = kecepatan_normal
+var kekuatan_rem : int = 3
+var kecepatan_laju : float = 0
+var percepatan : float
 
 var mat1 : StandardMaterial3D
 var mat2 : StandardMaterial3D
@@ -112,7 +135,7 @@ func proses(waktu_delta : float) -> void:
 		elif arah_kemudi.y < 0:	set("engine_force", kecepatan_mundur * arah_kemudi.y)
 		else:					set("engine_force", arah_kemudi.y)
 		
-		kecepatan_laju = self.linear_velocity * transform.basis
+		kecepatan_laju = (self.linear_velocity * transform.basis).z
 		
 		if arah_kemudi.x != 0:
 			arah_belok = arah_kemudi.x * batas_putaran_stir
@@ -121,9 +144,13 @@ func proses(waktu_delta : float) -> void:
 		
 		self.steering = move_toward(self.steering, arah_belok, 1.5 * waktu_delta)
 		$setir/rotasi_stir.rotation_degrees.y = self.steering * 110
+	if id_pengemudi != -1:
+		_atur_audio_mesin(waktu_delta)
+		percepatan = kecepatan_laju
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengemudi == multiplayer.get_unique_id() and server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).kontrol:
-		if Input.is_action_just_pressed("aksi1"):		Panku.notify("bip!")
+		if Input.is_action_just_pressed("aksi1"):		klakson = true
+		if Input.is_action_just_released("aksi1"):		klakson = false
 		if Input.is_action_just_pressed("aksi2"):		await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
 		
 		if Input.is_action_pressed("maju"): 	arah_kemudi.y = Input.get_action_strength("maju")
@@ -151,8 +178,10 @@ func hapus(): # ketika tampilan dihapus
 	queue_free()
 
 func _kemudikan(id):
+	# atur pengemudi
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(false)
+		server.permainan.dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_1", "klakson_kendaraan")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
@@ -165,18 +194,18 @@ func _kemudikan(id):
 		var tmp_kondisi = [["id_proses", id], ["id_pengemudi", id]]
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
 		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+	
 	# atur id_pengemudi dan id_proses
 	id_pengemudi = id
 	id_proses = id
 func _lepas(id):
-	#if server.permainan.dunia.get_node("pemain").get_node_or_null(str(id)) != null:
-		#call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
-	#call("apply_central_force", Vector3(0, 25, 50).rotated(Vector3.UP, rotation.y))
+	# atur pengemudi
 	if id == client.id_koneksi:
 		server.permainan.dunia.get_node("pemain/"+str(id)).rotation.x = 0
 		server.permainan.dunia.get_node("pemain/"+str(id)).rotation.z = 0
 		
 		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(true)
+		server.permainan.dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
@@ -189,3 +218,48 @@ func _lepas(id):
 	# atur ulang id_pengemudi dan id_proses
 	id_pengemudi = -1
 	id_proses = -1
+func _atur_audio_mesin(delta : float):
+	if self.engine_force > 0:
+		if !$AudioAkselerasiMesin.playing:
+			$AudioAkselerasiMesin.playing = true
+		elif $AudioAkselerasiMesin.volume_db < 0:
+			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 0.0, 1.25 * delta)
+		if $AudioPeringatan.playing: $AudioPeringatan.playing = false
+		$AudioAkselerasiMesin.pitch_scale = clamp(kecepatan_laju / 7, 0.7, 2.7)
+	elif self.engine_force < 0:
+		if !$AudioAkselerasiMesin.playing:
+			$AudioAkselerasiMesin.playing = true
+		elif $AudioAkselerasiMesin.volume_db < 0:
+			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 0.0, 1.5 * delta)
+		$AudioAkselerasiMesin.pitch_scale = clamp(-kecepatan_laju / 5, 0.7, 1.8)
+		if !$AudioPeringatan.playing and kecepatan_laju < -1: $AudioPeringatan.playing = true
+	else:
+		if $AudioAkselerasiMesin.playing:
+			if $AudioAkselerasiMesin.volume_db > -30:
+				$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, -30.0, delta)
+				$AudioAkselerasiMesin.pitch_scale = lerp($AudioAkselerasiMesin.pitch_scale, 1.0, delta)
+			else:
+				$AudioAkselerasiMesin.playing = false
+		if $AudioPeringatan.playing: $AudioPeringatan.playing = false
+	if abs(kecepatan_laju) > 1:
+		if self.brake > 0.5 and rem == false:
+			if !$roda_depan/AudioRem.playing: $roda_depan/AudioRem.play()
+			if !$roda_belakang_kiri/AudioRem.playing: $roda_belakang_kiri/AudioRem.play()
+			if !$roda_belakang_kanan/AudioRem.playing: $roda_belakang_kanan/AudioRem.play()
+			rem = true
+		elif self.brake < 0.1:
+			if $roda_depan/AudioRem.playing: $roda_depan/AudioRem.stop()
+			if $roda_belakang_kiri/AudioRem.playing: $roda_belakang_kiri/AudioRem.stop()
+			if $roda_belakang_kanan/AudioRem.playing: $roda_belakang_kanan/AudioRem.stop()
+			rem = false
+		$roda_depan/AudioRem.pitch_scale = clamp(abs(kecepatan_laju/10), 0.6, 1)
+		$roda_belakang_kiri/AudioRem.pitch_scale = clamp(abs(kecepatan_laju/10), 0.8, 1.05)
+		$roda_belakang_kanan/AudioRem.pitch_scale = clamp(abs(kecepatan_laju/10), 0.8, 1.05)
+	elif rem == true:
+		if $roda_depan/AudioRem.playing: $roda_depan/AudioRem.stop()
+		if $roda_belakang_kiri/AudioRem.playing: $roda_belakang_kiri/AudioRem.stop()
+		if $roda_belakang_kanan/AudioRem.playing: $roda_belakang_kanan/AudioRem.stop()
+		rem = false
+	if (kecepatan_laju - percepatan) < -1:
+		if !$AudioTabrak.playing:
+			$AudioTabrak.play()
