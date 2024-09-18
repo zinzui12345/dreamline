@@ -56,12 +56,17 @@ var _ragdoll : bool = false :
 		if nilai and !_ragdoll:
 			var tmp_ragdoll : Node3D = load("res://karakter/ragdoll.scn").instantiate()
 			$"%GeneralSkeleton".add_child(tmp_ragdoll.get_node("GeneralSkeleton"+gender+"/fisik kerangka").duplicate())
-			set("arah_pandangan", Vector2.ZERO) # 15/09/24 : reset arah pandangan agar posisi leher tidak offset | tetep aja. mungkin karena _process() di pengamat???
-			Panku.notify("0 ==> "+str($pose.get("parameters/arah_y_pandangan/blend_position")))
-			$pose.active = false # 10/09/24 :: di godot 4.3 udah gk perlu disable animasi, supaya posisi pandangannya ngikutin posisi ragdoll
-			$fisik.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
-			if id_pemain == client.id_koneksi: $pengamat.atur_mode(3)
-			$area_tabrak/area.disabled = true # Can't change this state while flushing queries. Use call_deferred() or set_deferred() to change monitoring state instead.
+			#$pose.active = false # 10/09/24 :: di godot 4.3 udah gk perlu disable animasi, supaya posisi pandangannya ngikutin posisi ragdoll
+			$fisik.set_deferred("disabled", true)
+			if id_pemain == client.id_koneksi:
+				$pengamat.atur_mode(3)
+				# 16/09/24 :: reset arah pandangan agar posisi leher tidak offset | tetep aja. mungkin karena _process() di pengamat???
+				$"%GeneralSkeleton".set_bone_pose_rotation($"%GeneralSkeleton".find_bone("Neck"), Quaternion(0, 0, 0, 1))
+				$"%GeneralSkeleton".set_bone_pose_rotation($"%GeneralSkeleton".find_bone("Head"), Quaternion(0, 0, 0, 1))
+				set("arah_pandangan", Vector2.ZERO)
+				# 16/09/24 :: reset arah
+				set("arah", Vector3.ZERO)
+			$area_tabrak/area.set_deferred("disabled", true)
 			$"%GeneralSkeleton/fisik kerangka".active = true # 10/09/24 :: HACK : kalo modifier non-aktif tetap bisa simulasi collision-nya (ini bisa di pake buat nge cek joint nya)
 			$"%GeneralSkeleton/fisik kerangka".physical_bones_start_simulation()
 			$"%GeneralSkeleton/fisik kerangka/fisik pusat".apply_central_impulse(_percepatan_ragdoll)
@@ -91,6 +96,7 @@ var _ragdoll : bool = false :
 			_ragdoll = false
 var _percepatan_ragdoll : Vector3
 var _timer_ragdoll : Timer
+var _coba_reset_ragdoll : int = 0
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
 var penarget_serangan_b : RayCast3D
@@ -515,7 +521,7 @@ func _physics_process(delta : float) -> void:
 		
 		# lompat
 		if Input.is_action_pressed("lompat"):
-			if !melompat:
+			if !melompat and !_ragdoll:
 				if Input.is_action_pressed("berlari") and arah.z > 1.0:
 					if is_on_floor():
 						arah.y = 180 * delta
@@ -531,12 +537,20 @@ func _physics_process(delta : float) -> void:
 				elif is_on_floor():
 					melompat = true
 					arah.y = 150 * delta
+			if is_on_floor() and _ragdoll:
+				if _coba_reset_ragdoll > 40:
+					_timer_ragdoll.stop()
+					_percepatan_ragdoll = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
+					_coba_reset_ragdoll = 0
+					_ragdoll = false
+				else:
+					_coba_reset_ragdoll += 1
 		elif is_on_floor() and melompat:
 			melompat = false
 		
 		# jongkok
 		if Input.is_action_just_pressed("jongkok"):
-			if arah.x == 0.0 and arah.z == 0.0:
+			if arah.x == 0.0 and arah.z == 0.0 and gestur != "duduk":
 				if !jongkok:
 					#$pose.set("parameters/gestur/transition_request", "jongkok")
 					var tween : Tween = get_tree().create_tween()
@@ -760,8 +774,6 @@ func _ketika_ditabrak(node : CollisionObject3D) -> void:
 		if hantaman >= 10:
 			_percepatan_ragdoll = percepatan / 2
 			_ragdoll = true
-	
-	# TODO : nyawa!?
 	 
 	#Panku.notify(node.name+" menabrak "+name+" : "+str(hantaman))
 func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
@@ -769,7 +781,7 @@ func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
 		var total_percepatan_kerangka : Vector3 = $"%GeneralSkeleton/fisik kerangka/fisik pusat".linear_velocity.abs()
 		var percepatan_kerangka : float = total_percepatan_kerangka.x + total_percepatan_kerangka.y + total_percepatan_kerangka.z
 		var posisi_bangkit : Vector3 = $"%GeneralSkeleton/fisik kerangka/fisik pusat".global_position
-		if percepatan_kerangka < 0.1: # atur ulang setelah tidak ada gaya
+		if percepatan_kerangka < 0.1:	# atur ulang setelah tidak ada gaya
 			_timer_ragdoll.stop()
 			_percepatan_ragdoll = posisi_bangkit
 			_ragdoll = false

@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 14/09/24 Early Access"
+const versi = "Dreamline v0.4.4 18/09/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1473,7 +1473,7 @@ func pilih_mode_bermain() -> void:
 		$mode_bermain/edit.button_pressed = false
 		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
 		if dunia.get_node("kursor_objek").visible: dunia.get_node("kursor_objek").visible = false
-		Panku.notify("mode bermain")
+		#Panku.notify("mode bermain")
 		$mode_bermain/main.release_focus()
 	if server.mode_replay and not server.mode_uji_performa:
 		%timeline/animasi.play_backwards("tampilkan")
@@ -1484,7 +1484,7 @@ func pilih_mode_edit() -> void:
 		$mode_bermain/main.button_pressed = false
 		$mode_bermain/edit.button_pressed = true
 		karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
-		Panku.notify("mode edit")
+		#Panku.notify("mode edit")
 		$mode_bermain/edit.release_focus()
 	if server.mode_replay and not server.mode_uji_performa:
 		%timeline/animasi.play("tampilkan")
