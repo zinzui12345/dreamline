@@ -149,9 +149,14 @@ func proses(waktu_delta : float) -> void:
 		percepatan = kecepatan_laju
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengemudi == multiplayer.get_unique_id() and server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).kontrol:
-		if Input.is_action_just_pressed("aksi1"):		klakson = true
-		if Input.is_action_just_released("aksi1"):		klakson = false
-		if Input.is_action_just_pressed("aksi2"):		await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
+		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
+			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			else: klakson = true
+		if Input.is_action_just_released("aksi1") or Input.is_action_just_released("aksi1_sentuh"):
+			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_released("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			else: klakson = false
+		if Input.is_action_just_pressed("aksi2"):
+			await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
 		
 		if Input.is_action_pressed("maju"): 	arah_kemudi.y = Input.get_action_strength("maju")
 		elif Input.is_action_pressed("mundur"):	arah_kemudi.y = -Input.get_action_strength("mundur")

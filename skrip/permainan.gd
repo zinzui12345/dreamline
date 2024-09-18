@@ -143,6 +143,7 @@ func _ready() -> void:
 	$hud.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
+	$kontrol_sentuh/aksi_1.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
 	$hud/daftar_properti_objek/DragPad.visible = false
 func _setup() -> void:
