@@ -1,4 +1,4 @@
-[gd_scene load_steps=327 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=328 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -81,6 +81,7 @@
 [ext_resource type="PackedScene" uid="uid://d2k86ht18kg0d" path="res://ui/blok kode/panel_kode.tscn" id="72_fg215"]
 [ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
+[ext_resource type="Texture2D" uid="uid://cjrflqocbkufn" path="res://ui/ikon/ikon_vr.svg" id="74_jekg6"]
 
 [sub_resource type="Animation" id="Animation_6qw4d"]
 resource_name = "sembunyikan"
@@ -8145,6 +8146,17 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%mode_layar_penuh"
 
+[node name="mode_vr" type="Button" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../layar_penuh")
+focus_neighbor_bottom = NodePath("../sarankan_fitur")
+focus_next = NodePath("../sarankan_fitur")
+focus_previous = NodePath("../layar_penuh")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
+text = "%mode_vr"
+icon = ExtResource("74_jekg6")
+
 [node name="pemisah 3" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_umum"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -9379,6 +9391,7 @@ bus = &"Suara Pemain"
 [connection signal="finished" from="pemutar_musik/AudioStreamPlayer" to="." method="_ketika_musik_latar_selesai_dimainkan"]
 [connection signal="item_selected" from="setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa" to="." method="_ketika_mengatur_bahasa"]
 [connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh" to="." method="_ketika_mengatur_mode_layar_penuh"]
+[connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr" to="." method="_aktifkan_mode_vr"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/laporkan_bug" to="." method="_laporkan_bug"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/sarankan_fitur" to="." method="_sarankan_fitur"]
 [connection signal="value_changed" from="setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render" to="." method="_ketika_mengatur_jarak_render"]

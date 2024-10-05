@@ -54,7 +54,7 @@ musik_latar,Volume Musik,Music Volume
 jarak_render,Jarak Render,Render Distance
 GRAFIK,Grafik,Graphics
 BALIKBAYANGAN,Balikkan render bayangan,Invert shadow
-MODEVR,Mode Virtual Reality,VR Mode
+%mode_vr,Mode Virtual Reality,VR Mode
 SKALARESOLUSI,Skala Resolusi,Resolution Scale
 %setelan_umum,Setelan Umum,General Settings
 %mode_layar_penuh,Mode Layar Penuh,Toggle Fullscreen

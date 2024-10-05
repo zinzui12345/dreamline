@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://vmu30s8uhlbt"]
+
+[ext_resource type="Script" path="res://skrip/entitas/pengamat_vr.gd" id="1_am60v"]
+
+[node name="pengamat_vr" type="XROrigin3D"]
+process_mode = 3
+script = ExtResource("1_am60v")
+
+[node name="XRCamera3D" type="XRCamera3D" parent="."]
+cull_mask = 5
+
+[node name="arah_pemain" type="Node3D" parent="XRCamera3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)

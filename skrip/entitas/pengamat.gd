@@ -31,7 +31,8 @@ func _process(delta : float) -> void:
 					get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
 					_karakter.rotation_degrees.y -= rotasi.y
 					gerakan = Vector2.ZERO
-					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
+					if _karakter.get("_input_arah_pandangan") != null:
+						_karakter._input_arah_pandangan = Vector2.ZERO
 					if _karakter.get("arah_pandangan") != null:
 						if get_node("%pandangan").rotation_degrees.x > 0:
 							_karakter.arah_pandangan.y = get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan

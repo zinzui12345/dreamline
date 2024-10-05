@@ -1,11 +1,12 @@
-[gd_scene load_steps=12 format=3 uid="uid://c66hkaxlhije1"]
+[gd_scene load_steps=17 format=3 uid="uid://c66hkaxlhije1"]
 
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_a2jeh"]
+[ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/rulu/rulu.scn" id="2_kkrc0"]
 
 [sub_resource type="GDScript" id="GDScript_yrqdk"]
 script/source = "extends Node3D
 
-func _ready():
+func _ready() -> void:
 	var interface : MobileVRInterface = XRServer.find_interface(\"Native mobile\")
 	if interface and interface.initialize():
 		interface.eye_height = 0
@@ -48,6 +49,24 @@ size = Vector3(100, 1, 100)
 
 [sub_resource type="BoxMesh" id="BoxMesh_fkvxr"]
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_fkyxt"]
+size = Vector2(1, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_cdesf"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n4tu4"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_cdesf")
+
+[sub_resource type="GDScript" id="GDScript_akp3l"]
+script/source = "extends MeshInstance3D
+
+func _process(delta: float) -> void:
+	$\"../SubViewport/Control/Label\".text = str($\"../pengamat/XRCamera3D\".rotation_degrees)
+	$\"../lulu\".rotation_degrees.y = $\"../pengamat/XRCamera3D/\".rotation_degrees.y + $\"../pengamat/XRCamera3D/arah_pemain\".rotation_degrees.y
+"
+
 [node name="uji_vr" type="Node3D"]
 script = SubResource("GDScript_yrqdk")
 
@@ -89,7 +108,36 @@ transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107
 [node name="batas_bawah" type="Marker3D" parent="lingkungan"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7, 0)
 
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="SubViewport/Control"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 32
+text = "(null)"
+
 [node name="pengamat" type="XROrigin3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="XRCamera3D" type="XRCamera3D" parent="pengamat"]
 cull_mask = 5
+
+[node name="arah_pemain" type="Node3D" parent="pengamat/XRCamera3D"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="lulu" parent="." instance=ExtResource("2_kkrc0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+process_mode = 3
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, -1.25)
+mesh = SubResource("PlaneMesh_fkyxt")
+surface_material_override/0 = SubResource("StandardMaterial3D_n4tu4")
+script = SubResource("GDScript_akp3l")

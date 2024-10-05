@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 18/09/24 Early Access"
+const versi = "Dreamline v0.4.4 05/10/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -228,11 +228,16 @@ func _setup() -> void:
 		Konfigurasi.mode_kontrol_sentuh = true
 		# non-aktifkan bantuan tombol aksi
 		$hud/bantuan_input.visible = false
+		# non-aktifkan mode layar penuh
+		$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.visible = false
 		# karena resolusi bayangan adalah 1/2, maka set jaraknya juga
 		dunia.get_node("matahari").directional_shadow_max_distance /= 2
 	
 	# setup dialog
 	DialogueManager.dialogue_ended.connect(tutup_dialog)
+	
+	# sembunyikan mode vr
+	$setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr.visible = false
 	
 	# INFO : (3) tampilkan menu utama
 	$latar.tampilkan()
@@ -1168,6 +1173,8 @@ func _atur_persentase_memuat(nilai : int) -> void:
 func _atur_teks_memuat(nilai : String) -> void:
 	$proses_memuat/panel_bawah/Panel/LabelMemuat.text = nilai
 func _tampilkan_permainan() -> void:
+	if OS.get_distribution_name() == "Android":
+		$setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr.visible = true
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
 	_hentikan_musik_latar()
@@ -1185,6 +1192,8 @@ func _tampilkan_permainan() -> void:
 	$kontrol_sentuh/daftar_pemain.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
 func _sembunyikan_antarmuka_permainan() -> void:
+	if OS.get_distribution_name() == "Android":
+		$setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr.visible = false
 	$hud/bantuan_input/aksi1.visible = false
 	$hud/bantuan_input/aksi2.visible = false
 	$hud/kompas.set_physics_process(false)
@@ -1870,6 +1879,8 @@ func _ketika_menekan_link_informasi(tautan : String) -> void:
 func _laporkan_bug() -> void: _ketika_menekan_link_informasi("https://github.com/zinzui12345/dreamline/issues")
 func _sarankan_fitur() -> void:
 	pass
+func _aktifkan_mode_vr():
+	_ketika_mengatur_mode_vr(true)
 func _ketika_mengatur_informasi_performa(visibilitas : bool) -> void:
 	$performa.visible = visibilitas
 	$versi.visible = visibilitas
@@ -2076,6 +2087,20 @@ func _keluar():
 	_tampilkan_popup_konfirmasi($menu_utama/keluar, Callable(get_tree(), "quit"), "%keluar%")
 
 # konfigurasi
+func _ketika_mengatur_mode_vr(nilai):
+	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
+		if nilai:
+			var pengamat_vr = load("res://skena/pengamat_vr.tscn").instantiate()
+			karakter.get_node("pengamat").atur_mode(1)
+			karakter.get_node("pengamat").set_process(false)
+			dunia.add_child(pengamat_vr)
+			pengamat_vr._aktifkan()
+			pengamat_vr.karakter = karakter
+			_lanjutkan()
+		elif dunia.get_node_or_null("pengamat_vr") != null:
+			karakter.get_node("pengamat").set_process(true)
+			dunia.get_node("pengamat_vr")._nonaktifkan()
+			dunia.get_node("pengamat_vr").queue_free()
 func _ketika_mengatur_mode_layar_penuh(nilai):
 	if not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled:
 		Konfigurasi.mode_layar_penuh = nilai
