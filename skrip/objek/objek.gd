@@ -17,10 +17,8 @@ var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara se
 #const abaikan_occlusion_culling = true		# hanya tambahkan jika objek tidak ingin dikalkulasi pada occlusion culling
 
 @export var wilayah_render : AABB :
-	# FIXME : gak work kalo objek terputar
 	set(aabb):
 		if is_inside_tree():
-			# TODO : reset otomatis ketika rotasi diubah
 			var tmp_aabb : Array = []
 			for titik in 8:
 				# terapkan posisi titik AABB ke array

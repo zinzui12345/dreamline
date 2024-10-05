@@ -138,8 +138,7 @@ func _process(_delta : float) -> void:
 					# pastikan cek titik yang valid
 					if m_objek.cek_titik < m_objek.titik_sudut.size():
 						# 23/06/24 :: kalkulasi posisi titik berdasarkan posisi global dunia
-						raycast_occlusion_culling.global_position = m_objek.global_position
-						raycast_occlusion_culling.global_position += m_objek.titik_sudut[m_objek.cek_titik]
+						raycast_occlusion_culling.global_position = m_objek.position + m_objek.transform.basis * m_objek.titik_sudut[m_objek.cek_titik]
 						# arahkan rayacast ke pengamat
 						raycast_occlusion_culling.look_at(pengamat.global_position)
 						# exclude raycast dengan m_objek jika m_objek adalah CollisionObject3D
