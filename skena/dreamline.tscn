@@ -6227,13 +6227,17 @@ offset_right = 0.127991
 offset_bottom = -0.108002
 grow_horizontal = 2
 grow_vertical = 2
-columns = 2
+columns = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="placeholder_entitas" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
 texture_normal = ExtResource("39_jspvy")
 metadata/jalur_objek = "res://skena/entitas/bola_pantai.scn"
+
+[node name="placeholder_entitas2" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
+layout_mode = 2
+metadata/jalur_objek = "res://skena/entitas/granat.scn"
 
 [node name="placeholder_objek" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
