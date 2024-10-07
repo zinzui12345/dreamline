@@ -494,15 +494,9 @@ func fungsikan_objek(nama_objek : StringName, nama_fungsi : StringName, paramete
 		rpc_id(1, "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
 func hapus_objek(jalur_objek : String) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
-		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
-		if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
-		if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
-		# cek_visibilitas_pool_objek[id_pemain][nama_objek_dihapus]
-		# cek_visibilitas_pool_entitas[id_pemain][nama_entitas]
-		Panku.notify("menghapus objek : "+str(nama_objek_dihapus))
 		_hapus_objek(jalur_objek)
-		rpc("_hapus_objek", jalur_objek)
+	else:
+		rpc_id(1, "_hapus_objek", jalur_objek)
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client
@@ -1022,6 +1016,27 @@ func _pemain_terputus(id_pemain):
 			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
 				if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(pemain[idx_pemain]["id_client"], nama_objek, properti_objek)
+@rpc("any_peer") func _hapus_objek(jalur_objek : String):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
+		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
+		if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
+		if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
+		for p in cek_visibilitas_pool_objek:
+			if cek_visibilitas_pool_objek[p].has(nama_objek_dihapus):
+				cek_visibilitas_pool_objek[p].erase(nama_objek_dihapus)
+		for p in cek_visibilitas_pool_entitas:
+			if cek_visibilitas_pool_entitas[p].has(nama_objek_dihapus):
+				cek_visibilitas_pool_entitas[p].erase(nama_objek_dihapus)
+		#Panku.notify("menghapus objek : "+str(nama_objek_dihapus))
+		# Timeline : hapus objek
+		var frame_sekarang = timeline["data"]["frame"]
+		if not timeline.has(frame_sekarang): timeline[frame_sekarang] = {}
+		timeline[frame_sekarang][nama_objek_dihapus] = {
+			"tipe": "hapus"
+		}
+		_hilangkan_objek(jalur_objek)
+		rpc("_hilangkan_objek", jalur_objek)
 @rpc("authority") func _spawn_visibilitas_pemain(id : int, data : Dictionary):
 	if permainan != null and permainan.dunia != null:
 		var instance_pemain : Karakter
@@ -1143,12 +1158,15 @@ func _pemain_terputus(id_pemain):
 				permainan.dunia.get_node("objek").get_node(nama_objek).hapus()
 			else:
 				permainan.dunia.get_node("objek").get_node(nama_objek).queue_free()
-@rpc("authority") func _hapus_objek(jalur_objek : NodePath):
+@rpc("authority") func _hilangkan_objek(jalur_objek : NodePath):
 	var objek_dihapus = get_node_or_null(jalur_objek)
 	if objek_dihapus != null:
-		objek_dihapus.queue_free()
+		if objek_dihapus.has_method("hilangkan"):
+			objek_dihapus.hilangkan()
+		else:
+			objek_dihapus.queue_free()
 	#else: Panku.notify("error")
-@rpc("authority") func _terima_dorongan_dari_pemain(id_pemain : int, arah_dorongan : Vector3):
+@rpc("authority") func _terima_dorongan_dari_pemain(_id_pemain : int, arah_dorongan : Vector3):
 	permainan.karakter.get_node("pose").set("active", false)
 	permainan.karakter.velocity += arah_dorongan
 	await get_tree().create_timer(0.4).timeout
