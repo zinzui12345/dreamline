@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 05/10/24 Early Access"
+const versi = "Dreamline v0.4.4 07/10/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -668,11 +668,12 @@ func _muat_map(file_map : StringName) -> void:
 										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
 										skenario.length = waktu
-							elif data_frame.tipe == "hapus" and server.timeline.has(entitas_):
+							elif data_frame.tipe == "hapus" and server.timeline.entitas.has(entitas_):
 								# hapus entitas
 								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
 								# jika entitas adalah pemain, matikan visibilitas dari daftar pemain
 								if server.timeline.entitas[entitas_] == "pemain": skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, false)
+							else: Panku.notify("["+entitas_+"] : "+str(server.timeline.has(entitas_)))
 			var pustaka_animasi := AnimationLibrary.new()
 			pustaka_animasi.add_animation("skenario", skenario)
 			alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
@@ -837,7 +838,9 @@ func _kirim_pesan() -> void:
 	$hud/pesan/layout_input_pesan/input_pesan.grab_focus()
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
-	edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
+	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
+	if edit_objek is objek: edit_objek.set_process(true)
+	else: edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
 	if karakter.get_node("pengamat").mode_kontrol != 3:
@@ -937,7 +940,9 @@ func _berhenti_mengedit_objek() -> void:
 	$kontrol_sentuh/jongkok.visible = true
 	$kontrol_sentuh/kontrol_gerakan.visible = true
 	$kontrol_sentuh/kontrol_pandangan.visible = true
-	edit_objek.process_mode = Node.PROCESS_MODE_INHERIT
+	# 06/10/24 :: nonaktifkan proses sinkronisasi objek pada client
+	if edit_objek is objek: edit_objek.set_process(false)
+	else: edit_objek.process_mode = Node.PROCESS_MODE_INHERIT
 	edit_objek = null
 	$pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
 	$pengamat.set_process(false)

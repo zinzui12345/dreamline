@@ -769,11 +769,12 @@ func _ketika_ditabrak(node : CollisionObject3D) -> void:
 		hantaman = percepatan.length() * alignment  # Persentase ketepatan arah node ke area
 	hantaman = abs(hantaman)
 	
-	if node.get("radius_tabrak") != null:
-		hantaman = hantaman * node.radius_tabrak
-		if hantaman >= 10:
-			_percepatan_ragdoll = percepatan / 2
-			_ragdoll = true
+	# TODO : fungsikan kembali setelah physics godot diperbaiki
+	#if node.get("radius_tabrak") != null:
+		#hantaman = hantaman * node.radius_tabrak
+		#if hantaman >= 10:
+			#_percepatan_ragdoll = percepatan / 2
+			#_ragdoll = true
 	 
 	#Panku.notify(node.name+" menabrak "+name+" : "+str(hantaman))
 func _ketika_bangkit() -> void: # bangkit kembali setelah menjadi ragdoll
