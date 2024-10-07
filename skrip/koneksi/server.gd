@@ -1161,8 +1161,8 @@ func _pemain_terputus(id_pemain):
 @rpc("authority") func _hilangkan_objek(jalur_objek : NodePath):
 	var objek_dihapus = get_node_or_null(jalur_objek)
 	if objek_dihapus != null:
-		if objek_dihapus.has_method("hilangkan"):
-			objek_dihapus.hilangkan()
+		if objek_dihapus.has_method("hapus"):
+			objek_dihapus.hapus()
 		else:
 			objek_dihapus.queue_free()
 	#else: Panku.notify("error")

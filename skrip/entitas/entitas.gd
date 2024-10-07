@@ -37,18 +37,8 @@ func proses(_waktu_delta : float) -> void:
 # fungsi yang akan dipanggil ketika id_proses diubah
 func atur_pemroses(_id_pemroses : int) -> void:
 	pass
-# fungsi untuk menghapus entitas, menghilangkan dari dunia dan server
-func hilangkan() -> void:
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		# hapus dari dictionary pool_entitas pada server
-		server.pool_entitas.erase(name)
-		# Timeline : hapus entitas
-		var frame_sekarang = server.timeline["data"]["frame"]
-		if not server.timeline.has(frame_sekarang): server.timeline[frame_sekarang] = {}
-		server.timeline[frame_sekarang][name] = {
-			"tipe": "hapus"
-		}
-	# hapus instance
+# fungsi untuk menghapus entitas, menghilangkan dari dunia
+func hapus() -> void:
 	queue_free()
 
 func _process(delta : float) -> void:
