@@ -56,8 +56,8 @@ func proses(_waktu_delta : float) -> void:
 				var tmp_id_pengangkat = id_pengangkat # 18/07/24 :: id_pengangkat harus dijadiin konstan, kalau nggak pada akhir eksekusi nilainya bisa -1
 				
 				# attach posisi ke pemain
-				global_transform.origin = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).position + server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).transform.basis * $posisi_angkat.position
-				rotation = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).rotation
+				global_position = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").global_position
+				global_rotation = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").global_rotation
 				
 				# input kendali
 				if server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).kontrol:
