@@ -412,7 +412,7 @@ func _input(event : InputEvent) -> void:
 		
 		# aksi
 		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
-			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_pressed("aksi1_sentuh"): Panku.notify("input diblokir") # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
 			elif menarget:
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:

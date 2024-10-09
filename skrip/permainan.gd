@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 07/10/24 Early Access"
+const versi = "Dreamline v0.4.4 09/10/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2101,11 +2101,13 @@ func _ketika_mengatur_mode_vr(nilai):
 			dunia.add_child(pengamat_vr)
 			pengamat_vr._aktifkan()
 			pengamat_vr.karakter = karakter
+			$kontrol_sentuh.visible = false
 			_lanjutkan()
 		elif dunia.get_node_or_null("pengamat_vr") != null:
 			karakter.get_node("pengamat").set_process(true)
 			dunia.get_node("pengamat_vr")._nonaktifkan()
 			dunia.get_node("pengamat_vr").queue_free()
+			$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 func _ketika_mengatur_mode_layar_penuh(nilai):
 	if not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled:
 		Konfigurasi.mode_layar_penuh = nilai
