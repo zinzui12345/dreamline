@@ -198,7 +198,6 @@ input_3/break_loop_at_end = false
 input_3/reset = true
 
 [resource]
-graph_offset = Vector2(-359.482, 525.998)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_f2bv3")
 nodes/Animation/position = Vector2(-371.429, 542.857)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_cmy7d")
