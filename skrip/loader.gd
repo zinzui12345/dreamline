@@ -6,11 +6,13 @@ signal terapkan_profil
 signal login_pemain
 
 func _ready() -> void:
-	# 1. non-aktifkan proses precache karakter
+	# 1. non-aktifkan proses precache aset
 	$"precache karakter/reno".set_process(false)
 	$"precache karakter/reno".set_physics_process(false)
 	$"precache karakter/lulu".set_process(false)
 	$"precache karakter/lulu".set_physics_process(false)
+	for ent in $"precache entitas".get_children():
+		if ent is RigidBody3D: ent.set("freeze", true)
 	# 2. muat / input konfigurasi
 	if !FileAccess.file_exists(Konfigurasi.data_konfigurasi):
 		$"panel konfigurasi/pilih bahasa".visible = true
