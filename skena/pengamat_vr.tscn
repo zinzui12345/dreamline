@@ -1,13 +1,127 @@
-[gd_scene load_steps=2 format=3 uid="uid://vmu30s8uhlbt"]
+[gd_scene load_steps=9 format=3 uid="uid://vmu30s8uhlbt"]
 
 [ext_resource type="Script" path="res://skrip/entitas/pengamat_vr.gd" id="1_am60v"]
+[ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="2_4qxan"]
+[ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="3_fjqtm"]
+[ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="4_jher3"]
+[ext_resource type="Texture2D" uid="uid://dwe5xfduipbj7" path="res://ui/tombol/mic_on.svg" id="5_b7a8m"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_aqmei"]
+viewport_path = NodePath("antarmuka")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sjphd"]
+resource_local_to_scene = true
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_aqmei")
+
+[sub_resource type="QuadMesh" id="QuadMesh_htv0v"]
+material = SubResource("StandardMaterial3D_sjphd")
 
 [node name="pengamat_vr" type="XROrigin3D"]
 process_mode = 3
 script = ExtResource("1_am60v")
+
+[node name="antarmuka" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1024, 1024)
 
 [node name="XRCamera3D" type="XRCamera3D" parent="."]
 cull_mask = 5
 
 [node name="arah_pemain" type="Node3D" parent="XRCamera3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="tampilan_antarmuka" type="MeshInstance3D" parent="XRCamera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_htv0v")
+
+[node name="antarmuka_vr" type="Control" parent="."]
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 3
+anchor_right = 0.586
+anchor_bottom = 1.0
+offset_right = -0.0640259
+
+[node name="debug" type="Panel" parent="antarmuka_vr"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bantuan_input" type="VBoxContainer" parent="antarmuka_vr"]
+custom_minimum_size = Vector2(230, 64)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5935
+anchor_top = 0.016
+anchor_right = 0.9845
+anchor_bottom = 0.273
+offset_left = 0.127991
+offset_top = -0.192
+offset_right = -0.0640259
+offset_bottom = 0.223999
+metadata/_edit_use_anchors_ = true
+
+[node name="aksi1" type="TextureRect" parent="antarmuka_vr/bantuan_input"]
+layout_mode = 2
+texture = ExtResource("2_4qxan")
+stretch_mode = 4
+script = ExtResource("3_fjqtm")
+action_name = &"aksi1"
+event_index = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="teks" type="Label" parent="antarmuka_vr/bantuan_input/aksi1"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -24.0
+offset_right = 240.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 21
+text = "dorong"
+vertical_alignment = 1
+
+[node name="aksi2" type="TextureRect" parent="antarmuka_vr/bantuan_input"]
+layout_mode = 2
+texture = ExtResource("2_4qxan")
+stretch_mode = 4
+script = ExtResource("3_fjqtm")
+action_name = &"aksi2"
+event_index = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="teks" type="Label" parent="antarmuka_vr/bantuan_input/aksi2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -24.0
+offset_right = 240.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 21
+text = "dorong"
+vertical_alignment = 1
+
+[node name="indikator_mikrofon" type="TextureButton" parent="antarmuka_vr"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0078125
+anchor_top = 0.306667
+anchor_right = 0.086
+anchor_bottom = 0.44
+offset_right = -0.064003
+offset_bottom = -3.05176e-05
+toggle_mode = true
+texture_normal = ExtResource("4_jher3")
+texture_pressed = ExtResource("5_b7a8m")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
