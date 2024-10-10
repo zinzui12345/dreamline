@@ -36,7 +36,7 @@ class_name Permainan
 # 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
 # 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
 
-const versi = "Dreamline v0.4.4 09/10/24 Early Access"
+const versi = "Dreamline v0.4.4 10/10/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -69,6 +69,8 @@ var batas_bawah : int = -4000	# batas area untuk re-spawn
 var edit_objek : Node3D			# ref objek yang sedang di-edit
 var memasang_objek : bool = false
 var pasang_objek : Vector3		# posisi objek yang akan dipasang
+var mode_vr : bool = false
+var pengamat_vr : XROrigin3D
 var thread := Thread.new()
 var koneksi := MODE_KONEKSI.CLIENT
 var gunakan_frustum_culling : bool = true
@@ -98,6 +100,8 @@ var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 			"lempar_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%lempar"
 			"tendang_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%tendang"
 			"klakson_kendaraan":	$hud/bantuan_input/aksi1/teks.text = "%klakson"
+		if mode_vr and pengamat_vr != null:
+			pengamat_vr.teks_bantuan_aksi_1 = $hud/bantuan_input/aksi1/teks.text
 var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_2:
@@ -110,11 +114,29 @@ var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 			"jatuhkan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
 			"tanyakan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%bantuan"
 			"kemudikan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%kemudikan"
+		if mode_vr and pengamat_vr != null:
+			pengamat_vr.teks_bantuan_aksi_2 = $hud/bantuan_input/aksi2/teks.text
 var tombol_aksi_3 : StringName = "berlari" :
 	set(ikon):
 		if ikon != tombol_aksi_3:
 			get_node("kontrol_sentuh/lari").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_3 = ikon
+var bantuan_aksi_1 : bool = false :
+	set(visibilitas):
+		$hud/bantuan_input/aksi1.visible = visibilitas
+		if mode_vr and pengamat_vr != null:
+			pengamat_vr.bantuan_aksi_1 = visibilitas
+		bantuan_aksi_1 = visibilitas
+	get():
+		return $hud/bantuan_input/aksi1.visible
+var bantuan_aksi_2 : bool = false :
+	set(visibilitas):
+		$hud/bantuan_input/aksi2.visible = visibilitas
+		if mode_vr and pengamat_vr != null:
+			pengamat_vr.bantuan_aksi_2 = visibilitas
+		bantuan_aksi_2 = visibilitas
+	get():
+		return $hud/bantuan_input/aksi2.visible
 var _konfigurasi_awal : Dictionary = {
 	"bahasa": 0,
 	"mode_layar_penuh": false
@@ -2094,20 +2116,22 @@ func _keluar():
 # konfigurasi
 func _ketika_mengatur_mode_vr(nilai):
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
-		if nilai:
-			var pengamat_vr = load("res://skena/pengamat_vr.tscn").instantiate()
+		if nilai and !mode_vr:
+			pengamat_vr = load("res://skena/pengamat_vr.tscn").instantiate()
 			karakter.get_node("pengamat").atur_mode(1)
 			karakter.get_node("pengamat").set_process(false)
 			dunia.add_child(pengamat_vr)
 			pengamat_vr._aktifkan()
 			pengamat_vr.karakter = karakter
 			$kontrol_sentuh.visible = false
+			mode_vr = true
 			_lanjutkan()
 		elif dunia.get_node_or_null("pengamat_vr") != null:
 			karakter.get_node("pengamat").set_process(true)
 			dunia.get_node("pengamat_vr")._nonaktifkan()
 			dunia.get_node("pengamat_vr").queue_free()
 			$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
+			mode_vr = false
 func _ketika_mengatur_mode_layar_penuh(nilai):
 	if not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled:
 		Konfigurasi.mode_layar_penuh = nilai

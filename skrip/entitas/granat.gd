@@ -1,5 +1,7 @@
 extends entitas
 
+# TODO : lod
+
 const sinkron_kondisi = []
 const jalur_instance = "res://skena/entitas/granat.scn"
 const radius_ledakan : int = 10
@@ -26,7 +28,7 @@ var timer_ledakan : Timer
 
 func _ready(): call_deferred("_setup")
 func _setup():
-	if !is_instance_valid(server.permainan): return
+	if !is_instance_valid(server.permainan) or !is_instance_valid(server.permainan.dunia): return
 	if get_parent().get_path() != server.permainan.dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
 			server._tambahkan_entitas(
@@ -70,10 +72,8 @@ func proses(_waktu_delta : float) -> void:
 					server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 				if !server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 					server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-				if !server.permainan.get_node("hud/bantuan_input/aksi1").visible:
-					server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
-				if !server.permainan.get_node("hud/bantuan_input/aksi2").visible:
-					server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+				if !server.permainan.bantuan_aksi_1: server.permainan.bantuan_aksi_1 = true
+				if !server.permainan.bantuan_aksi_2: server.permainan.bantuan_aksi_2 = true
 				
 				# jatuhkan jika pengangkatnya menjadi ragdoll
 				if server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat))._ragdoll:
@@ -116,10 +116,10 @@ func _angkat(id):
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_1", "lempar_sesuatu")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-		server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		server.permainan.bantuan_aksi_1 = true
 		server.permainan.set("tombol_aksi_2", "jatuhkan_sesuatu")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-		server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+		server.permainan.bantuan_aksi_2 = true
 		
 		# ubah pemroses pada server
 		var tmp_kondisi = [["id_proses", id], ["id_pengangkat", id]]
@@ -140,9 +140,9 @@ func _lepas(id):
 		call("remove_collision_exception_with", server.permainan.dunia.get_node("pemain/"+str(id)))
 		server.permainan.dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
-		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+		server.permainan.bantuan_aksi_1 = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-		server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+		server.permainan.bantuan_aksi_2 = false
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]
@@ -174,9 +174,9 @@ func _lempar(_pelempar):
 		server.permainan.dunia.get_node("pemain/"+str(_pelempar))._atur_penarget(true)
 		server.permainan.dunia.get_node("pemain/"+str(_pelempar)).objek_target = self
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
-		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+		server.permainan.bantuan_aksi_1 = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-		server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+		server.permainan.bantuan_aksi_2 = false
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1], ["id_pelempar", _pelempar]]

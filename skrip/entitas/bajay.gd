@@ -48,7 +48,7 @@ var id_pengemudi = -1:
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
 				
-				# nonaktifkan audio
+				# nonaktifkan audio # FIXME : putar suara matikan mesin
 				#$AudioMesin.stream.set_clip_auto_advance(1, AudioStreamInteractive.AUTO_ADVANCE_ENABLED)
 				$AudioMesin.stop()
 				$AudioAkselerasiMesin.volume_db = -30
@@ -190,10 +190,10 @@ func _kemudikan(id):
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_1", "klakson_kendaraan")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-		server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+		server.permainan.bantuan_aksi_1 = true
 		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-		server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+		server.permainan.bantuan_aksi_2 = true
 		
 		# ubah pemroses pada server
 		var tmp_kondisi = [["id_proses", id], ["id_pengemudi", id]]
@@ -213,8 +213,8 @@ func _lepas(id):
 		server.permainan.dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-		server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
-		server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+		server.permainan.bantuan_aksi_1 = false
+		server.permainan.bantuan_aksi_2 = false
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengemudi", -1]]

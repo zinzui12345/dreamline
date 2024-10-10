@@ -578,22 +578,22 @@ func _physics_process(delta : float) -> void:
 			server.permainan.set("tombol_aksi_1", "pasang_objek")
 			server.permainan.get_node("hud/info_posisi").text = "(%s, %s, %s)" % [ posisi_target.x, posisi_target.y, posisi_target.z ]
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+			server.permainan.bantuan_aksi_1 = true
 		elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_a.get_collider():
 			server.permainan.set("tombol_aksi_1", "dorong_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+			server.permainan.bantuan_aksi_1 = true
 		elif penarget_serangan_b.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_b.get_collider() and objek_target.is_in_group("dapat_ditendang"):
 			server.permainan.set("tombol_aksi_1", "tendang_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+			server.permainan.bantuan_aksi_1 = true
 		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
 			server.permainan.set("tombol_aksi_1", "gunakan_objek")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = true
+			server.permainan.bantuan_aksi_1 = true
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+			server.permainan.bantuan_aksi_1 = false
 		if peran == Permainan.PERAN_KARAKTER.Arsitek and objek_target.is_in_group("dapat_diedit"):
 			server.permainan.set("tombol_aksi_2", "edit_objek")
 			if objek_target.has_node("kode_ubahan"):
@@ -601,7 +601,7 @@ func _physics_process(delta : float) -> void:
 			else:
 				server.permainan.get_node("hud/info_posisi").text = objek_target.name
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+			server.permainan.bantuan_aksi_2 = true
 		elif objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
 			if peran == Permainan.PERAN_KARAKTER.Arsitek:
 				server.permainan.set("tombol_aksi_2", "edit_objek")
@@ -609,7 +609,7 @@ func _physics_process(delta : float) -> void:
 				if objek_target.has_method("fokus"): objek_target.fokus()
 				if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = true
+			server.permainan.bantuan_aksi_2 = true
 		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
 			if !server.permainan.dunia.get_node("bar_nyawa").visible:
 				server.permainan.dunia.get_node("bar_nyawa").visible = true
@@ -622,16 +622,16 @@ func _physics_process(delta : float) -> void:
 			server.permainan.dunia.get_node("bar_nyawa").value = objek_target.nyawa
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+			server.permainan.bantuan_aksi_2 = false
 	elif is_instance_valid(objek_target):
 		objek_target = null
 		server.permainan.get_node("hud/info_posisi").text = ""
 		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi1").visible = false
+			server.permainan.bantuan_aksi_1 = false
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
-			server.permainan.get_node("hud/bantuan_input/aksi2").visible = false
+			server.permainan.bantuan_aksi_2 = false
 		if server.permainan.dunia.get_node("kursor_objek").visible:
 			server.permainan.dunia.get_node("kursor_objek").visible = false
 		if server.permainan.dunia.get_node("bar_nyawa").visible:
