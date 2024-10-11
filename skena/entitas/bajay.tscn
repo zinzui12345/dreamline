@@ -1619,6 +1619,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.255, -0.645)
 stream = ExtResource("23")
 unit_size = 2.5
 
+[node name="AudioHentikanMesin" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.355, -0.65)
+stream = ExtResource("5_xie4g")
+unit_size = 4.4
+max_db = 6.0
+
 [node name="AudioPeringatan" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.335, -0.545)
 stream = ExtResource("21")
@@ -1639,3 +1645,4 @@ unit_size = 4.0
 
 [connection signal="body_entered" from="." to="." method="_ketika_menabrak_sesuatu"]
 [connection signal="finished" from="AudioMesin" to="." method="_on_AudioMesin_finished"]
+[connection signal="finished" from="AudioHentikanMesin" to="." method="_on_AudioMesin_finished"]
