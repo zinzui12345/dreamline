@@ -68,7 +68,8 @@ func _nonaktifkan() -> void:
 func _process(delta: float) -> void:
 	if karakter != null:
 		global_position = karakter.position + karakter.transform.basis.z * _translasi_posisi_z
-		karakter.rotation_degrees.y = $XRCamera3D.rotation_degrees.y + $XRCamera3D/arah_pemain.rotation_degrees.y
+		if karakter.get_node("pengamat").mode_kontrol == 1:
+			karakter.rotation_degrees.y = $XRCamera3D.rotation_degrees.y + $XRCamera3D/arah_pemain.rotation_degrees.y
 		karakter.get_node("%target").rotation_degrees.x = -$XRCamera3D.rotation_degrees.x
 		if interface != null:
 			interface.eye_height = karakter.get_node("%mata_kiri").position.y

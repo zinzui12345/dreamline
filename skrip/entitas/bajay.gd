@@ -48,8 +48,9 @@ var id_pengemudi = -1:
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
 				server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
 				
-				# nonaktifkan audio # FIXME : putar suara matikan mesin
-				#$AudioMesin.stream.set_clip_auto_advance(1, AudioStreamInteractive.AUTO_ADVANCE_ENABLED)
+				# nonaktifkan audio
+				#$AudioMesin.stream.set_clip_auto_advance(1, AudioStreamInteractive.AUTO_ADVANCE_ENABLED) # ini belum bisa, jadi pake $AudioHentikanMesin
+				$AudioHentikanMesin.play()
 				$AudioMesin.stop()
 				$AudioAkselerasiMesin.volume_db = -30
 				$AudioAkselerasiMesin.stop()
@@ -129,6 +130,9 @@ func proses(waktu_delta : float) -> void:
 	if id_pengemudi != -1 and server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).global_position = global_position
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).rotation = rotation
+		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
+			# TODO : putar arah XROrigin menyesuaikan arah kendaraan
+			pass
 	
 	if id_pengemudi == multiplayer.get_unique_id():
 		if arah_kemudi.y > 0:	set("engine_force", kekuatan_mesin * arah_kemudi.y)

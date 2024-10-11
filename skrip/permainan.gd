@@ -2118,11 +2118,14 @@ func _ketika_mengatur_mode_vr(nilai):
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if nilai and !mode_vr:
 			pengamat_vr = load("res://skena/pengamat_vr.tscn").instantiate()
-			karakter.get_node("pengamat").atur_mode(1)
+			if karakter.get_node("pengamat").mode_kontrol != 2:
+				karakter.get_node("pengamat").atur_mode(1)
 			karakter.get_node("pengamat").set_process(false)
 			dunia.add_child(pengamat_vr)
 			pengamat_vr._aktifkan()
 			pengamat_vr.karakter = karakter
+			pengamat_vr.teks_bantuan_aksi_1 = $hud/bantuan_input/aksi1/teks.text
+			pengamat_vr.teks_bantuan_aksi_2 = $hud/bantuan_input/aksi2/teks.text
 			$kontrol_sentuh.visible = false
 			mode_vr = true
 			_lanjutkan()
