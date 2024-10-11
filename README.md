@@ -6,7 +6,7 @@ Cross-Platform Multiplayer Game using Godot 4
 - [x] Cross-Play P2P
 - [x] Character Customization
 - [x] Voice Chat
-- [ ] Mobile VR
+- [x] Mobile VR
 
 **System Requirements**:
 * Desktop
