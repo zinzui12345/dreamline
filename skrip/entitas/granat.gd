@@ -1,10 +1,10 @@
 extends entitas
 
-# TODO : lod
-
 const sinkron_kondisi = []
 const jalur_instance = "res://skena/entitas/granat.scn"
 const radius_ledakan : int = 10
+const jarak_lod1 : int = 3
+const jarak_lod2 : int = 15
 
 var id_pengangkat : int = -1:
 	set(id):
@@ -48,6 +48,17 @@ func _setup():
 		timer_ledakan.one_shot = true
 		timer_ledakan.wait_time = 3
 		timer_ledakan.connect("timeout", _ketika_meledak)
+		for ch in $model.get_children():
+			if ch is MeshInstance3D:
+				if ch.name.ends_with("_detail"):
+					ch.visibility_range_end = jarak_lod1
+				elif ch.name.ends_with("_lod1"):
+					ch.visibility_range_begin = jarak_lod1
+					ch.visibility_range_end = jarak_lod2
+				elif ch.name.ends_with("_lod2"):
+					ch.visibility_range_begin = jarak_lod2
+				else:
+					ch.visibility_range_end = jarak_lod2
 
 func proses(_waktu_delta : float) -> void:
 	if !is_instance_valid(server.permainan): set_process(false); return
