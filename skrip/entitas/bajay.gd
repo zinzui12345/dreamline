@@ -1,6 +1,8 @@
 # 11/07/21
 extends entitas
 
+# FIXME : jangan de-spawn ketika digunakan
+
 const radius_tabrak : int = 10
 const sinkron_kondisi = [
 	["warna_1", Color("FFF")],
@@ -130,9 +132,11 @@ func proses(waktu_delta : float) -> void:
 	if id_pengemudi != -1 and server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).global_position = global_position
 		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).rotation = rotation
+		# sesuaikan arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
-			# TODO : putar arah XROrigin menyesuaikan arah kendaraan
-			pass
+			# 12/10/24 :: putar arah XROrigin menyesuaikan arah kendaraan
+			server.permainan.pengamat_vr.global_rotation = global_rotation
+			#server.permainan.pengamat_vr.rotation_degrees.y = server.permainan.pengamat_vr.arah_putar
 	
 	if id_pengemudi == multiplayer.get_unique_id():
 		if arah_kemudi.y > 0:	set("engine_force", kekuatan_mesin * arah_kemudi.y)
@@ -199,6 +203,10 @@ func _kemudikan(id):
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		server.permainan.bantuan_aksi_2 = true
 		
+		# atur arah pemain pada mode VR
+		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
+			server.permainan.pengamat_vr.arah_putar = server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y
+		
 		# ubah pemroses pada server
 		var tmp_kondisi = [["id_proses", id], ["id_pengemudi", id]]
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
@@ -219,6 +227,10 @@ func _lepas(id):
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.bantuan_aksi_1 = false
 		server.permainan.bantuan_aksi_2 = false
+		
+		# atur ulang arah pemain pada mode VR
+		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
+			server.permainan.pengamat_vr.rotation = Vector3.ZERO
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengemudi", -1]]
