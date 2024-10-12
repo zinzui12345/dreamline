@@ -52,11 +52,14 @@ func _setup():
 			if ch is MeshInstance3D:
 				if ch.name.ends_with("_detail"):
 					ch.visibility_range_end = jarak_lod1
+					ch.visible = true
 				elif ch.name.ends_with("_lod1"):
 					ch.visibility_range_begin = jarak_lod1
 					ch.visibility_range_end = jarak_lod2
+					ch.visible = true
 				elif ch.name.ends_with("_lod2"):
 					ch.visibility_range_begin = jarak_lod2
+					ch.visible = true
 				else:
 					ch.visibility_range_end = jarak_lod2
 
@@ -67,10 +70,12 @@ func proses(_waktu_delta : float) -> void:
 		if id_pengangkat == client.id_koneksi:
 			if id_pelempar == -1 and server.permainan.dunia.get_node_or_null("pemain/"+str(id_pengangkat)) != null:
 				var tmp_id_pengangkat = id_pengangkat # 18/07/24 :: id_pengangkat harus dijadiin konstan, kalau nggak pada akhir eksekusi nilainya bisa -1
+				var tmp_pos_angkat = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").position + $posisi_angkat.position.rotated(Vector3(1, 0, 0), server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").rotation.x)
 				
 				# attach posisi ke pemain
-				global_position = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").global_position
-				global_rotation = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").global_rotation
+				# 12/10/24 :: jangan pake transformasi global, karena posisi gak sesuai di mode pandangan first person
+				global_position = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).global_position + server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).transform.basis * tmp_pos_angkat
+				global_rotation = server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).global_rotation + $posisi_angkat.transform.basis * server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").rotation
 				
 				# input kendali
 				if server.permainan.dunia.get_node("pemain/"+str(tmp_id_pengangkat)).kontrol:
@@ -112,6 +117,7 @@ func _ketika_menabrak(node: Node):
 			node.call("_diserang", server.permainan.dunia.get_node("pemain/"+str(id_pelempar)), damage)
 func _ketika_meledak():
 	set("freeze", true)
+	$model.visible = false
 	$fisik_ledakan/AnimationPlayer.play("meledak")
 	#Panku.notify("explosion!!")
 	await $fisik_ledakan/AnimationPlayer.animation_finished
@@ -141,6 +147,7 @@ func _angkat(id):
 	id_pelempar = -1
 	id_proses = id
 func _lepas(id):
+	$model.visible = true
 	# terapkan percepatan
 	server.terapkan_percepatan_objek(
 		get_path(),
