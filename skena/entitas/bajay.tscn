@@ -1400,7 +1400,7 @@ Vector2i(2, 0): {
 
 [node name="bajay" type="VehicleBody3D" groups=["dapat_diedit", "dapat_digunakan"]]
 collision_layer = 50
-collision_mask = 517
+collision_mask = 533
 mass = 60.0
 contact_monitor = true
 script = ExtResource("1_thjsr")
