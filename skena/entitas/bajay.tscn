@@ -1643,6 +1643,14 @@ unit_size = 4.0
 
 [node name="penghalang" type="NavigationObstacle3D" parent="."]
 
+[node name="arah_pengamat_vr" type="Marker3D" parent="."]
+visible = false
+
+[node name="arah_putar" type="Node3D" parent="arah_pengamat_vr"]
+
+[node name="arah_pandangan" type="Node3D" parent="arah_pengamat_vr/arah_putar"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
 [connection signal="body_entered" from="." to="." method="_ketika_menabrak_sesuatu"]
 [connection signal="finished" from="AudioMesin" to="." method="_on_AudioMesin_finished"]
 [connection signal="finished" from="AudioHentikanMesin" to="." method="_on_AudioMesin_finished"]

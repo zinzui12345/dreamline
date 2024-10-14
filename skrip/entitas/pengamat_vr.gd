@@ -5,7 +5,6 @@ var aktif = false :
 		set_process(akt)
 		aktif = akt
 var interface : MobileVRInterface
-var arah_putar : float
 var karakter : Karakter
 
 var bantuan_aksi_1 : bool = false :

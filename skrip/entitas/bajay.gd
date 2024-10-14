@@ -135,8 +135,7 @@ func proses(waktu_delta : float) -> void:
 		# sesuaikan arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
 			# 12/10/24 :: putar arah XROrigin menyesuaikan arah kendaraan
-			server.permainan.pengamat_vr.global_rotation = global_rotation
-			#server.permainan.pengamat_vr.rotation_degrees.y = server.permainan.pengamat_vr.arah_putar
+			server.permainan.pengamat_vr.global_rotation = $arah_pengamat_vr/arah_putar/arah_pandangan.global_rotation
 	
 	if id_pengemudi == multiplayer.get_unique_id():
 		if arah_kemudi.y > 0:	set("engine_force", kekuatan_mesin * arah_kemudi.y)
@@ -205,7 +204,19 @@ func _kemudikan(id):
 		
 		# atur arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
-			server.permainan.pengamat_vr.arah_putar = server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y
+			$arah_pengamat_vr.global_rotation = server.permainan.pengamat_vr.global_rotation
+			if server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y > 0:
+				var arah_putar = $arah_pengamat_vr.rotation_degrees.y + absf(server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y)
+				if $arah_pengamat_vr.rotation_degrees.y < 0:
+					$arah_pengamat_vr/arah_putar.rotation_degrees.y = global_rotation.y - arah_putar
+				else:
+					$arah_pengamat_vr/arah_putar.rotation_degrees.y = -arah_putar
+			else:
+				var arah_putar = $arah_pengamat_vr.rotation_degrees.y - absf(server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y)
+				if $arah_pengamat_vr.rotation_degrees.y > 0:
+					$arah_pengamat_vr/arah_putar.rotation_degrees.y = global_rotation.y - arah_putar
+				else:
+					$arah_pengamat_vr/arah_putar.rotation_degrees.y = -arah_putar
 		
 		# ubah pemroses pada server
 		var tmp_kondisi = [["id_proses", id], ["id_pengemudi", id]]
@@ -231,6 +242,7 @@ func _lepas(id):
 		# atur ulang arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
 			server.permainan.pengamat_vr.rotation = Vector3.ZERO
+			$arah_pengamat_vr/arah_putar.rotation_degrees.y = 0
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengemudi", -1]]
@@ -243,15 +255,15 @@ func _atur_audio_mesin(delta : float):
 	if self.engine_force > 0:
 		if !$AudioAkselerasiMesin.playing:
 			$AudioAkselerasiMesin.playing = true
-		elif $AudioAkselerasiMesin.volume_db < 0:
-			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 0.0, 1.25 * delta)
+		elif $AudioAkselerasiMesin.volume_db < 1:
+			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 1.0, 1.25 * delta)
 		if $AudioPeringatan.playing: $AudioPeringatan.playing = false
 		$AudioAkselerasiMesin.pitch_scale = clamp(kecepatan_laju / 7, 0.7, 2.7)
 	elif self.engine_force < 0:
 		if !$AudioAkselerasiMesin.playing:
 			$AudioAkselerasiMesin.playing = true
-		elif $AudioAkselerasiMesin.volume_db < 0:
-			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 0.0, 1.5 * delta)
+		elif $AudioAkselerasiMesin.volume_db < 0.5:
+			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 0.5, 1.5 * delta)
 		$AudioAkselerasiMesin.pitch_scale = clamp(-kecepatan_laju / 5, 0.7, 1.8)
 		if !$AudioPeringatan.playing and kecepatan_laju < -1: $AudioPeringatan.playing = true
 	else:
