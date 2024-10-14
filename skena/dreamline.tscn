@@ -6243,6 +6243,10 @@ metadata/jalur_objek = "res://skena/entitas/granat.scn"
 layout_mode = 2
 metadata/jalur_objek = "res://skena/objek/placeholder_objek.tscn"
 
+[node name="placeholder_entitas3" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
+layout_mode = 2
+metadata/jalur_objek = "res://skena/entitas/bajay.tscn"
+
 [node name="tutup" type="Button" parent="daftar_objek/Panel"]
 layout_mode = 1
 anchors_preset = -1

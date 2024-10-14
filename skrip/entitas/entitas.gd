@@ -9,10 +9,11 @@ var id_proses : int = -1:			# id peer/pemain yang memproses entitas ini
 var cek_kondisi : Dictionary = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 #const sinkron_kondisi = []			# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
 #const jalur_instance = ""			# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
+#const abaikan_occlusion_culling = true		# hanya tambahkan jika tidak ingin entitas menghalangi objek pada occlusion culling
 
 func _ready() -> void: call_deferred("_setup")
 func _setup() -> void:
-	if !is_instance_valid(server.permainan): return
+	if !is_instance_valid(server.permainan) or !is_instance_valid(server.permainan.dunia): return
 	if get_parent().get_path() != server.permainan.dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
 			server._tambahkan_entitas(
@@ -23,6 +24,8 @@ func _setup() -> void:
 			)
 		queue_free()
 	else:
+		if get("abaikan_occlusion_culling") != null and get("abaikan_occlusion_culling") == true:
+			server.permainan.dunia.raycast_occlusion_culling.add_exception(self)
 		mulai()
 
 @onready var posisi_awal : Vector3 = global_transform.origin

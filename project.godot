@@ -15,7 +15,6 @@ run/main_scene="res://skena/dreamline.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.3", "Mobile")
 run/delta_smoothing=false
-boot_splash/bg_color=Color(1, 1, 1, 1)
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
 config/default_signal_callback_to_self_name="_ketika_{signal_name}"
