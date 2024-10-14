@@ -3,7 +3,7 @@ class_name PankuModuleScreenNotifier extends PankuModule
 var notifier_layer := preload("./resident_logs.tscn").instantiate()
 
 func notify(bbcode:String):
-	print("Notifikasi: " + bbcode)
+	print(TranslationServer.translate("notifikasi")+": " + bbcode)
 	notifier_layer.add_log(bbcode)
 
 func init_module():

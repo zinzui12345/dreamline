@@ -32,13 +32,13 @@ func _set_hint_idx(v):
 			_hints.selected = v
 			_input_area.input.text = k + ("()" if is_method else "")
 			_input_area.input.caret_column = k.length() + (1 if is_method else 0)
-			_helpbar_label.text = "[Help] %s" %  _module.core.gd_exprenv.get_help_info(k)
+			_helpbar_label.text = "["+TranslationServer.translate("%bantuanperintah")+"] %s" %  _module.core.gd_exprenv.get_help_info(k)
 
 func execute(exp:String):
 	exp = exp.lstrip(" ").rstrip(" ")
 	if exp.is_empty():
 		return
-	var echo:String = "[b][You][/b] " + exp
+	var echo:String = "[b]["+TranslationServer.translate("%inputperintahpemain")+"][/b] " + exp
 	output.emit(echo)
 	output_echo.emit(echo)
 	var result = _module.core.gd_exprenv.execute(exp)
@@ -62,7 +62,7 @@ func _update_hints(exp:String):
 	_hints.disable_buttons = false
 	_hints.set_hints(_current_hints["hints_bbcode"])
 	_hint_idx = -1
-	_helpbar_label.text = "[Hint] Use TAB or up/down to autocomplete!"
+	_helpbar_label.text = "["+TranslationServer.translate("petunjuk")+"]"+TranslationServer.translate("%bantuaninputotomatis")
 
 func _ready():
 	_input_area.visibility_changed.connect(
@@ -93,7 +93,7 @@ func _ready():
 			else:
 				_hints.visible = false
 			_helpbar.visible = _hints.visible
-			_helpbar_label.text = "[Hint] Use up/down to navigate through submit histories!"
+			_helpbar_label.text = "["+TranslationServer.translate("petunjuk")+"]"+TranslationServer.translate("%bantuanriwayatinput")
 
 	)
 	_hints.hint_button_clicked.connect(

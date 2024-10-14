@@ -104,12 +104,17 @@ DRAW,Penggambaran,Draw Calls
 OBJEK,Objek,Objects
 ENTITAS,Entitas,Entities
 ARAH,Arah,Direction
+%bantuanperintah, Bantuan, Help
+%bantuaninputotomatis, Gunakan TAB atau atas/bawah untuk pengetikan otomatis!, Use TAB or up/down to autocomplete!
+%bantuanriwayatinput, Gunakan atas/bawah untuk menavigasi riwayat perintah, Use up/down to navigate through submit histories
+
 ,,
 # input,,
 INPUTSPASI,spasi,space
 INPUTHAPUS,hapus,delete
 %inputnama%,ketik namamu disini...,type your name here...
 %inputperintah%,Masukkan perintah disini...,Input expression here...
+%inputperintahpemain,Kamu, You
 ,,
 # aksi,,
 %aksi,Aksi,Action
@@ -131,6 +136,8 @@ INPUTHAPUS,hapus,delete
 login_akun,Masuk,Login
 profil_pemain,Profil Pemain,Player Profile
 atau,atau,or
+petunjuk,Petunjuk,Hint
+notifikasi,Notifikasi,Notification
 t5d0f95face,Selamat datang di dreamline!,Welcome to dreamline!
 tc6ded773c4,Ini adalah [i]game[/i] Sandbox [b]Multiplayer Cross-Platform[/b] dimana kamu bisa bermain bersama siapapun dengan perangkat apapun,This is a Sandbox [b]Multiplayer Cross-Platform[/b] game where you can play with anyone with any platform
 tccc576dbcf,Tujuan utama dari [i]game[/i] ini adalah [b]menyusun blok kode[/b] untuk memfungsikan suatu objek,The main goal of this game is to [b]arrange code blocks[/b] for operate an object
