@@ -1,4 +1,4 @@
-[gd_scene load_steps=328 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=331 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -70,6 +70,9 @@
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
+[ext_resource type="Texture2D" uid="uid://dyxhyga1gys7k" path="res://ui/ikon/ikon_entitas_granat.png" id="41_nvbjq"]
+[ext_resource type="Texture2D" uid="uid://bijvrpbe1ymf7" path="res://ui/ikon/ikon_objek_placeholder.png" id="42_eq5kd"]
+[ext_resource type="Texture2D" uid="uid://xluyqwb0nns0" path="res://ui/ikon/ikon_entitas_bajay.png" id="42_krisr"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english_kecil.svg" id="63_r5flb"]
@@ -6230,21 +6233,24 @@ grow_vertical = 2
 columns = 5
 metadata/_edit_use_anchors_ = true
 
-[node name="placeholder_entitas" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
+[node name="bola_pantai" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
 texture_normal = ExtResource("39_jspvy")
 metadata/jalur_objek = "res://skena/entitas/bola_pantai.scn"
 
-[node name="placeholder_entitas2" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
+[node name="granat" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
+texture_normal = ExtResource("41_nvbjq")
 metadata/jalur_objek = "res://skena/entitas/granat.scn"
 
 [node name="placeholder_objek" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
+texture_normal = ExtResource("42_eq5kd")
 metadata/jalur_objek = "res://skena/objek/placeholder_objek.tscn"
 
-[node name="placeholder_entitas3" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
+[node name="bajay" parent="daftar_objek/Panel/GridContainer" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
+texture_normal = ExtResource("42_krisr")
 metadata/jalur_objek = "res://skena/entitas/bajay.tscn"
 
 [node name="tutup" type="Button" parent="daftar_objek/Panel"]
