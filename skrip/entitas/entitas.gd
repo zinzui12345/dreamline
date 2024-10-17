@@ -6,6 +6,8 @@ var id_proses : int = -1:			# id peer/pemain yang memproses entitas ini
 	set(id):
 		atur_pemroses(id)
 		id_proses = id
+var posisi_awal : Vector3
+var rotasi_awal : Vector3
 var cek_kondisi : Dictionary = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 #const sinkron_kondisi = []			# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
 #const jalur_instance = ""			# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
@@ -26,10 +28,9 @@ func _setup() -> void:
 	else:
 		if get("abaikan_occlusion_culling") != null and get("abaikan_occlusion_culling") == true:
 			server.permainan.dunia.raycast_occlusion_culling.add_exception(self)
+		posisi_awal = global_position
+		rotasi_awal = global_rotation
 		mulai()
-
-@onready var posisi_awal : Vector3 = global_transform.origin
-@onready var rotasi_awal : Vector3 = rotation
 
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
 func mulai() -> void:
@@ -50,11 +51,6 @@ func _process(delta : float) -> void:
 	
 	# sinkronkan perubahan kondisi
 	if id_proses == client.id_koneksi:
-		# reset posisi jika entitas jatuh ke void
-		if global_position.y < server.permainan.batas_bawah:
-			global_transform.origin = posisi_awal
-			rotation		 		= rotasi_awal
-		
 		# buat variabel pembanding
 		var perubahan_kondisi = []
 		var sinkron_kondisi : Array = get("sinkron_kondisi")
@@ -64,8 +60,15 @@ func _process(delta : float) -> void:
 		if cek_kondisi.get("rotasi") == null:	cek_kondisi["rotasi"] = rotation
 		
 		# cek apakah kondisi berubah
-		if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
-		if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
+		if global_position.y < server.permainan.batas_bawah:
+			# reset kondisi jika entitas jatuh ke void
+			perubahan_kondisi.append(["position", posisi_awal])
+			perubahan_kondisi.append(["rotation", rotasi_awal])
+			global_transform.origin = posisi_awal
+			rotation		 		= rotasi_awal
+		else:
+			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
+			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		
 		# cek kondisi properti kustom
 		for p in sinkron_kondisi.size():
