@@ -1,8 +1,6 @@
 # 11/07/21
 extends entitas
 
-# FIXME : jangan de-spawn ketika digunakan
-
 const radius_tabrak : int = 10
 const sinkron_kondisi = [
 	["warna_1", Color("FFF")],
@@ -186,10 +184,14 @@ func gunakan(id_pemain):
 	elif id_pengemudi == -1: 						server.gunakan_entitas(name, "_kemudikan")
 func hapus(): # ketika tampilan dihapus
 	if id_pengemudi != -1 and server.permainan.dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
-		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").set_target_node("")
-		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
-		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
-		server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
+		if id_pengemudi == multiplayer.get_unique_id():
+			server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).global_position = posisi_awal
+			server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)).rotation = rotasi_awal
+		else:
+			server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").set_target_node("")
+			server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
+			server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
+			server.permainan.dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
 	queue_free()
 
 func _kemudikan(id):

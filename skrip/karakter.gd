@@ -639,9 +639,11 @@ func _physics_process(delta : float) -> void:
 	
 	# atur ulang posisi kalau terjatuh dari dunia
 	if global_position.y < server.permainan.batas_bawah:
-		global_transform.origin = posisi_awal
-		rotation		 		= rotasi_awal
-		Panku.notify("re-spawn")
+		# 18/10/24 :: jangan respawn kalo menaiki objek
+		if gestur != "duduk":
+			global_transform.origin = posisi_awal
+			rotation		 		= rotasi_awal
+			Panku.notify("re-spawn")
 	
 	# kalkulasi arah gerakan
 	arah_gerakan = get_real_velocity() * transform.basis
