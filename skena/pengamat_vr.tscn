@@ -1,23 +1,235 @@
-[gd_scene load_steps=9 format=3 uid="uid://vmu30s8uhlbt"]
+[gd_scene load_steps=44 format=4 uid="uid://vmu30s8uhlbt"]
 
 [ext_resource type="Script" path="res://skrip/entitas/pengamat_vr.gd" id="1_am60v"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="2_4qxan"]
 [ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="3_fjqtm"]
 [ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="4_jher3"]
 [ext_resource type="Texture2D" uid="uid://dwe5xfduipbj7" path="res://ui/tombol/mic_on.svg" id="5_b7a8m"]
+[ext_resource type="Texture2D" uid="uid://b8mrr8lt7uci" path="res://ui/ikon/ikon_tombol_play.svg" id="6_ah8lu"]
+[ext_resource type="Texture2D" uid="uid://l5pycvwcl5qn" path="res://ui/ikon/ikon_tombol_statistik.svg" id="7_wlio3"]
+[ext_resource type="Texture2D" uid="uid://dbltu38krgfjg" path="res://ui/ikon/ikon_tombol_setelan.svg" id="8_ldew2"]
+[ext_resource type="Texture2D" uid="uid://qv0gcb22v67d" path="res://ui/slider_grabber.svg" id="9_a7urp"]
+[ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="9_qde2g"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_aqmei"]
+[sub_resource type="GDScript" id="GDScript_n1prw"]
+script/source = "extends SubViewport
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		if get_node_or_null(\"antarmuka_menu_horizontal/kursor\") != null:
+			if $antarmuka_menu_horizontal.visible:
+				$antarmuka_menu_horizontal/kursor.position = self.get_mouse_position()
+"
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_cwttl"]
 viewport_path = NodePath("antarmuka")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sjphd"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5i1g8"]
 resource_local_to_scene = true
 transparency = 1
 no_depth_test = true
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_aqmei")
+specular_mode = 2
+disable_ambient_light = true
+albedo_texture = SubResource("ViewportTexture_cwttl")
+disable_receive_shadows = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_erj42"]
+material = SubResource("StandardMaterial3D_5i1g8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bjupq"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ct6yb"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"format": 34896613377,
+"index_count": 30,
+"index_data": PackedByteArray("AAADAAIAAAABAAMAAgAHAAYAAgADAAcABgAFAAQABgAHAAUAAgAEAAAAAgAGAAQABwABAAUABwADAAEA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAP//AAAAAP////8AAAAAAAAAAAAAAAD//wAAAAD//wAA//8AAP///////wAA//8AAAAAAAD/////AAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_lyh6e"]
+resource_name = "latar_vr_Kubus"
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("/x//P/9f////3/8//5////9f/7//H/9//1//v/+f/7//3/9//5//v/9f/z//X/8//5//P/+f/z//X/9//1//f/9f/3//n/9//5//f/+f/38="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AQAJAAYAAQADAAkABAARAA4ABAAHABEAEAANAAsAEAATAA0ABQAKAAAABQAPAAoAEgACAAwAEgAIAAIA"),
+"material": SubResource("StandardMaterial3D_bjupq"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("AAAAAP///z8AAAAA//+qKgAA/////wAAAAD/////qioAAAAAAAD/PwAAAAAAAP8/AAAAAAAAqioAAP//AAD/PwAA//8AAAAAAAD//wAAqir//wAA////P///AAD//6oq////////AAD///////+qKv//AAAAAP8///8AAAAA/z///wAAAACqKv////8AAP8//////wAAAAD/////AACqKv///3+qKqoq/3//P6oqqir/////////f6oqqir//////3//P6oqqir///9/VNVU1f9//z9U1VTV/////////39U1VTV//////9//z9U1VTV")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_ct6yb")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fd8ie"]
+transparency = 1
+depth_draw_mode = 2
+no_depth_test = true
+shading_mode = 0
+diffuse_mode = 3
+specular_mode = 2
+disable_ambient_light = true
+albedo_color = Color(0, 0, 0, 0)
+disable_receive_shadows = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_swnur"]
+viewport_path = NodePath("antarmuka_menu")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yk6wh"]
+resource_local_to_scene = true
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+specular_mode = 2
+albedo_texture = SubResource("ViewportTexture_swnur")
+disable_receive_shadows = true
 
 [sub_resource type="QuadMesh" id="QuadMesh_htv0v"]
-material = SubResource("StandardMaterial3D_sjphd")
+material = SubResource("StandardMaterial3D_yk6wh")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uf4ud"]
+size = Vector3(1, 1, 0.0253906)
+
+[sub_resource type="Animation" id="Animation_qq00f"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../XRCamera3D/latar:surface_material_override/0:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_xnrq7"]
+resource_name = "tampilkan_antarmuka"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../XRCamera3D/latar:surface_material_override/0:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Color(0, 0, 0, 0), Color(0, 0, 0, 0.4)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ioxll"]
+_data = {
+"RESET": SubResource("Animation_qq00f"),
+"tampilkan_antarmuka": SubResource("Animation_xnrq7")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1vn1s"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 20
+border_width_right = 20
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6n73w"]
+border_width_left = 15
+border_width_right = 15
+border_color = Color(0.6, 0.6, 0.6, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tua1b"]
+bg_color = Color(1, 1, 0.984314, 0.796078)
+border_width_left = 20
+border_width_right = 20
+border_color = Color(1, 1, 0.984314, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vojc3"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 15
+border_width_right = 15
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccoxw"]
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.6, 0.6, 0.6, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ncaok"]
+bg_color = Color(1, 1, 0.984314, 0.796078)
+border_width_left = 15
+border_width_right = 15
+border_color = Color(1, 1, 0.984314, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l1cys"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 19
+border_width_right = 19
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2bx55"]
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.6, 0.6, 0.6, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1n45"]
+bg_color = Color(1, 1, 0.984314, 0.796078)
+border_width_left = 19
+border_width_right = 19
+border_color = Color(1, 1, 0.984314, 0.796078)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rakdj"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wk2wr"]
+size = Vector2(1, 30)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_prxa8"]
+color = Color(0.545098, 0.545098, 0.545098, 1)
+thickness = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8vvc0"]
+bg_color = Color(0.458824, 0.458824, 0.458824, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2mf88"]
+bg_color = Color(0.219608, 0.219608, 0.219608, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wydds"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ks08q"]
+bg_color = Color(0.286275, 0.313726, 0.341176, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.286275, 0.313726, 0.341176, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1u6j"]
+bg_color = Color(0.203922, 0.227451, 0.25098, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.203922, 0.227451, 0.25098, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n1dt5"]
+bg_color = Color(0.423529, 0.458824, 0.490196, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.423529, 0.458824, 0.490196, 1)
 
 [node name="pengamat_vr" type="XROrigin3D"]
 process_mode = 3
@@ -26,6 +238,11 @@ script = ExtResource("1_am60v")
 [node name="antarmuka" type="SubViewport" parent="."]
 transparent_bg = true
 size = Vector2i(1024, 1024)
+
+[node name="antarmuka_menu" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1024, 1024)
+script = SubResource("GDScript_n1prw")
 
 [node name="XRCamera3D" type="XRCamera3D" parent="."]
 cull_mask = 5
@@ -36,7 +253,46 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 [node name="tampilan_antarmuka" type="MeshInstance3D" parent="XRCamera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
 cast_shadow = 0
+mesh = SubResource("QuadMesh_erj42")
+
+[node name="target_kursor" type="RayCast3D" parent="XRCamera3D"]
+enabled = false
+target_position = Vector3(0, 0, -1)
+collision_mask = 1024
+
+[node name="latar" type="MeshInstance3D" parent="XRCamera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+cast_shadow = 0
+ignore_occlusion_culling = true
+mesh = SubResource("ArrayMesh_lyh6e")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_fd8ie")
+
+[node name="menu" type="Node3D" parent="."]
+
+[node name="tampilan_antarmuka" type="MeshInstance3D" parent="menu"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.55)
+cast_shadow = 0
 mesh = SubResource("QuadMesh_htv0v")
+skeleton = NodePath("../../XRCamera3D")
+
+[node name="ref_pos_kursor" type="Node3D" parent="menu/tampilan_antarmuka"]
+transform = Transform3D(1, 0, 0, 0, -1, 0, 0, 0, 1, -0.5, 0.5, 0)
+
+[node name="posisi_kursor" type="Marker3D" parent="menu/tampilan_antarmuka/ref_pos_kursor"]
+
+[node name="target_kursor" type="StaticBody3D" parent="menu/tampilan_antarmuka"]
+collision_layer = 1024
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="menu/tampilan_antarmuka/target_kursor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0107422)
+shape = SubResource("BoxShape3D_uf4ud")
+
+[node name="animasi" type="AnimationPlayer" parent="menu"]
+libraries = {
+"": SubResource("AnimationLibrary_ioxll")
+}
 
 [node name="antarmuka_vr" type="Control" parent="."]
 custom_minimum_size = Vector2(512, 512)
@@ -125,3 +381,370 @@ texture_normal = ExtResource("4_jher3")
 texture_pressed = ExtResource("5_b7a8m")
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
+
+[node name="antarmuka_menu_horizontal" type="Control" parent="."]
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 3
+anchor_right = 0.586
+anchor_bottom = 1.0
+offset_right = -0.0640259
+mouse_default_cursor_shape = 3
+
+[node name="menu_jeda" type="Panel" parent="antarmuka_menu_horizontal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.106667
+anchor_top = 0.306667
+anchor_right = 0.893333
+anchor_bottom = 0.733333
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="lanjutkan" type="Button" parent="antarmuka_menu_horizontal/menu_jeda"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013
+anchor_top = 0.031
+anchor_right = 0.987
+anchor_bottom = 0.313
+offset_left = 0.2
+offset_top = 0.0639997
+offset_right = -0.200012
+offset_bottom = -0.128006
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxFlat_1vn1s")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_6n73w")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tua1b")
+button_mask = 7
+text = "%lanjutkan"
+icon = ExtResource("6_ah8lu")
+alignment = 0
+text_overrun_behavior = 2
+
+[node name="statistik" type="Button" parent="antarmuka_menu_horizontal/menu_jeda"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013
+anchor_top = 0.344
+anchor_right = 0.987
+anchor_bottom = 0.656
+offset_left = 0.2
+offset_top = -0.064003
+offset_right = -0.200012
+offset_bottom = 0.0639954
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxFlat_vojc3")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ccoxw")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ncaok")
+button_mask = 7
+text = "%statistik"
+icon = ExtResource("7_wlio3")
+alignment = 0
+text_overrun_behavior = 2
+
+[node name="setelan" type="Button" parent="antarmuka_menu_horizontal/menu_jeda"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0133333
+anchor_top = 0.687
+anchor_right = 0.987
+anchor_bottom = 0.969
+offset_top = 0.127991
+offset_right = -0.200012
+offset_bottom = -0.0640106
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxFlat_l1cys")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_2bx55")
+theme_override_styles/normal = SubResource("StyleBoxFlat_x1n45")
+button_mask = 7
+text = "%setelan"
+icon = ExtResource("8_ldew2")
+alignment = 0
+text_overrun_behavior = 2
+
+[node name="setelan" type="Panel" parent="antarmuka_menu_horizontal"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.093
+anchor_top = 0.267
+anchor_right = 0.907
+anchor_bottom = 0.8
+offset_left = 0.199997
+offset_top = -0.200012
+offset_right = -0.200012
+offset_bottom = 3.05176e-05
+theme_override_styles/panel = SubResource("StyleBoxFlat_rakdj")
+metadata/_edit_use_anchors_ = true
+
+[node name="label_jarak_lensa" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.15
+anchor_right = 0.262
+anchor_bottom = 0.244
+offset_left = -0.104
+offset_right = 0.14399
+offset_bottom = -0.0800056
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "%jrk_lensa"
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="jarak_lensa" type="HSlider" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.279
+anchor_top = 0.15
+anchor_right = 0.865
+anchor_bottom = 0.244
+offset_left = -0.152008
+offset_right = -0.120026
+offset_bottom = -0.0800056
+focus_neighbor_left = NodePath(".")
+theme_override_constants/center_grabber = 0
+theme_override_constants/grabber_offset = 0
+theme_override_icons/grabber = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_icons/grabber_highlight = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_styles/slider = SubResource("StyleBoxLine_prxa8")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_8vvc0")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_2mf88")
+min_value = 1.0
+max_value = 10.0
+value = 4.0
+metadata/_edit_use_anchors_ = true
+
+[node name="nilai_jarak_lensa" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.889
+anchor_top = 0.15
+anchor_right = 0.971
+anchor_bottom = 0.244
+offset_left = 0.167969
+offset_right = 0.151978
+offset_bottom = -0.0800056
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "4cm"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="label_lebar_tampilan" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.3
+anchor_right = 0.279
+anchor_bottom = 0.394
+offset_left = -0.104
+offset_right = -0.152008
+offset_bottom = -0.0800095
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "%lbr_tampilan"
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="lebar_tampilan" type="HSlider" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.279
+anchor_top = 0.3
+anchor_right = 0.865
+anchor_bottom = 0.394
+offset_left = -0.152008
+offset_right = -0.120026
+offset_bottom = -0.0800095
+focus_neighbor_left = NodePath(".")
+theme_override_constants/center_grabber = 0
+theme_override_constants/grabber_offset = 0
+theme_override_icons/grabber = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_icons/grabber_highlight = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_styles/slider = SubResource("StyleBoxLine_prxa8")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_8vvc0")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_2mf88")
+min_value = 1.0
+max_value = 41.5
+step = 0.1
+value = 14.5
+metadata/_edit_use_anchors_ = true
+
+[node name="nilai_lebar_tampilan" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.889
+anchor_top = 0.3
+anchor_right = 0.971
+anchor_bottom = 0.394
+offset_left = 0.167969
+offset_right = 0.151978
+offset_bottom = -0.0800095
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "14.5"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="label_jarak_mata" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.029
+anchor_top = 0.45
+anchor_right = 0.262
+anchor_bottom = 0.544
+offset_left = -0.152
+offset_top = -1.52588e-05
+offset_right = 0.14399
+offset_bottom = -0.0800323
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "%jrk_mata"
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="jarak_mata" type="HSlider" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.279
+anchor_top = 0.45
+anchor_right = 0.865
+anchor_bottom = 0.544
+offset_left = -0.152008
+offset_top = -1.52588e-05
+offset_right = -0.120026
+offset_bottom = -0.0800323
+focus_neighbor_left = NodePath(".")
+theme_override_constants/center_grabber = 0
+theme_override_constants/grabber_offset = 0
+theme_override_icons/grabber = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_icons/grabber_highlight = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_styles/slider = SubResource("StyleBoxLine_prxa8")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_8vvc0")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_2mf88")
+min_value = 1.0
+max_value = 16.0
+step = 0.1
+value = 6.0
+metadata/_edit_use_anchors_ = true
+
+[node name="nilai_jarak_mata" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.889
+anchor_top = 0.45
+anchor_right = 0.971
+anchor_bottom = 0.544
+offset_left = 0.167969
+offset_top = -1.52588e-05
+offset_right = 0.151978
+offset_bottom = -0.0800323
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "6"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="label_bidang_pandang" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.6
+anchor_right = 0.258
+anchor_bottom = 0.694
+offset_left = -0.104
+offset_top = -1.52588e-05
+offset_right = 0.095993
+offset_bottom = -0.0800323
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "%fov"
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="bidang_pandang" type="HSlider" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.279
+anchor_top = 0.6
+anchor_right = 0.865
+anchor_bottom = 0.694
+offset_left = -0.152008
+offset_top = -1.52588e-05
+offset_right = -0.120026
+offset_bottom = -0.0800323
+focus_neighbor_left = NodePath(".")
+theme_override_constants/center_grabber = 0
+theme_override_constants/grabber_offset = 0
+theme_override_icons/grabber = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_icons/grabber_highlight = SubResource("PlaceholderTexture2D_wk2wr")
+theme_override_styles/slider = SubResource("StyleBoxLine_prxa8")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_8vvc0")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_2mf88")
+min_value = 23.0
+max_value = 180.0
+value = 75.0
+metadata/_edit_use_anchors_ = true
+
+[node name="nilai_bidang_pandang" type="Label" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.889
+anchor_top = 0.6
+anchor_right = 0.971
+anchor_bottom = 0.7
+offset_left = 0.167969
+offset_top = -1.52588e-05
+offset_right = 0.151978
+offset_bottom = -2.00003
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "75
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="atur_ulang" type="Button" parent="antarmuka_menu_horizontal/setelan"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.328
+anchor_top = 0.825
+anchor_right = 0.754
+anchor_bottom = 0.95
+offset_left = -0.0640106
+offset_top = -3.05176e-05
+offset_right = 0.0480042
+offset_bottom = -3.05176e-05
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_qde2g")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxFlat_wydds")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ks08q")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_p1u6j")
+theme_override_styles/normal = SubResource("StyleBoxFlat_n1dt5")
+text = "%atur_ulang"
+icon = ExtResource("8_ldew2")
+alignment = 0
+
+[node name="kursor" type="Sprite2D" parent="antarmuka_menu_horizontal"]
+texture = ExtResource("9_a7urp")
+
+[connection signal="pressed" from="antarmuka_menu_horizontal/menu_jeda/lanjutkan" to="." method="_lanjutkan_permainan"]
+[connection signal="pressed" from="antarmuka_menu_horizontal/menu_jeda/setelan" to="." method="_tampilkan_setelan"]
+[connection signal="value_changed" from="antarmuka_menu_horizontal/setelan/jarak_lensa" to="." method="_atur_jarak_lensa"]
+[connection signal="value_changed" from="antarmuka_menu_horizontal/setelan/lebar_tampilan" to="." method="_atur_lebar_tampilan"]
+[connection signal="value_changed" from="antarmuka_menu_horizontal/setelan/jarak_mata" to="." method="_atur_jarak_mata"]
+[connection signal="value_changed" from="antarmuka_menu_horizontal/setelan/bidang_pandang" to="." method="_atur_bidang_pandang"]
+[connection signal="pressed" from="antarmuka_menu_horizontal/setelan/atur_ulang" to="." method="_atur_ulang_setelan"]
