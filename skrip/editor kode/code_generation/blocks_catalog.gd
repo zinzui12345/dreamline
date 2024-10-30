@@ -135,13 +135,13 @@ static func _add_property_definitions(_class_name: String, property_list: Array[
 				. new(
 					&"%s_change_%s" % [_class_name, property.name],
 					_class_name,
-					"Change the %s property" % property.name,
+					str(TranslationServer.translate("%deskripsi_ubah_properti%")) % property.name,
 					block_settings.category,
 					Types.BlockType.STATEMENT,
 					TYPE_NIL,
-					"Change %s by {value: %s}" % [property.name.capitalize(), type_string],
-					"%s += {value}" % property.name,
-					{"value": block_settings.get("default_change", _FALLBACK_CHANGE_FOR_TYPE[property.type])},
+					str(TranslationServer.translate("%ubah_properti")) % [property.name.capitalize(), type_string],
+					"%s += {nilai}" % property.name,
+					{"nilai": block_settings.get("default_change", _FALLBACK_CHANGE_FOR_TYPE[property.type])},
 				)
 			)
 		_catalog[block_definition.name] = block_definition
@@ -153,7 +153,7 @@ static func _add_property_definitions(_class_name: String, property_list: Array[
 			. new(
 				&"%s_get_%s" % [_class_name, property.name],
 				_class_name,
-				"The %s property" % property.name,
+				str(TranslationServer.translate("%deskripsi_dapatkan_properti%")) % property.name,
 				block_settings.category,
 				Types.BlockType.VALUE,
 				property.type,

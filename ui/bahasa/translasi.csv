@@ -163,7 +163,10 @@ t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemu
 %buat_variabel,Buat Variabel Baru,Create New Variable
 %atur_variabel,Atur %s menjadi {nilai: %s},Set %s to {nilai: %s}
 %atur_properti,Atur %s menjadi {nilai: %s},Set %s to {nilai: %s}
+%ubah_properti,Ubah properti %s sebanyak {nilai: %s},Change %s by {nilai: %s}
 %deskripsi_atur_properti%,Mengatur properti %s,Set the %s property
+%deskripsi_ubah_properti%,Menambah nilai properti %s,Change the %s property
+%deskripsi_dapatkan_properti%,Properti %s,The %s property
 %membuat_variabel_baru%, Membuat variabel baru dengan nama %s, Will create new variable with name %s
 %kesalahan_variabel_simbol%, Nama variabel tidak boleh memiliki karakter simbol, Variable name cannot contain special characters
 %kesalahan_variabel_duplikat%, Variabel sudah ada, Variable already exists

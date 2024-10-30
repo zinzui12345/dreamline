@@ -149,10 +149,10 @@ func get_custom_class() -> String:
 	return "objek"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("Objek")]
-#static func setup_custom_blocks():
-	#var _class_name = "objek"
-	#var block_list: Array[BlockDefinition] = []
-#
+static func setup_custom_blocks():
+	var _class_name = "objek"
+	var block_list: Array[BlockDefinition] = []
+
 	#var block_definition: BlockDefinition = BlockDefinition.new()
 	#block_definition.name = &"fungsi_mulai"
 	#block_definition.target_node_class = _class_name
@@ -162,31 +162,31 @@ static func get_custom_categories() -> Array[BlockCategory]:
 	#block_definition.description = "Fungsi yang dipanggil pada saat objek ditambahkan ke dunia."
 	#block_definition.code_template = "func mulai():"
 	#block_list.append(block_definition)
-#
+
 	#BlocksCatalog.add_custom_blocks(_class_name, block_list)
-#
-	#var property_list: Array[Dictionary] = [
-		#{
-			#"name": "jalur_instance",
-			#"type": TYPE_STRING,
-		#},
-		#{
-			#"name": "properti",
-			#"type": TYPE_ARRAY,
-		#}
-	#]
-	#
-	#var property_settings = {
-		#"jalur_instance":
-		#{
-			#"category": "Variables",
-			#"default_set": "",
-		#},
-		#"properti":
-		#{
-			#"category": "Variables",
-			#"default_set": [],
-		#}
-	#}
-#
-	#BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
+
+	var property_list: Array[Dictionary] = [
+		{
+			"name": "radius_keterlihatan",
+			"type": TYPE_INT,
+		},
+		{
+			"name": "jarak_render",
+			"type": TYPE_INT,
+		}
+	]
+	
+	var property_settings = {
+		"radius_keterlihatan":
+		{
+			"category": "%variabel%",
+			"default_set": 50,
+		},
+		"jarak_render":
+		{
+			"category": "%variabel%",
+			"default_set": 10,
+		}
+	}
+
+	BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
