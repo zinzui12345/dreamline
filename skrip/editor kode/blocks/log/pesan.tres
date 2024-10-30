@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dpyh8pg35oyq4"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_gsjkn"]
+
+[resource]
+script = ExtResource("1_gsjkn")
+name = &"message"
+target_node_class = ""
+description = "%deskripsi_tampilkan_pesan%"
+category = "%keluaran%"
+type = 2
+variant_type = 0
+display_template = "%pesan {teks: STRING}"
+code_template = "server.permainan._tampilkan_popup_informasi_({teks})"
+defaults = {}
+signal_name = ""
+scope = ""

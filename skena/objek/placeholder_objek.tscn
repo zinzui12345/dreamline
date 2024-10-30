@@ -1,36 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://df2034e3s77u4"]
+[gd_scene load_steps=25 format=3 uid="uid://df2034e3s77u4"]
 
+[ext_resource type="Script" path="res://skrip/objek/objek.gd" id="1_f515e"]
 [ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_mb6uj"]
-[ext_resource type="PackedScene" uid="uid://s864l67ghqjj" path="res://skena/kode_ubahan.tscn" id="2_56r60"]
-
-[sub_resource type="GDScript" id="GDScript_5ucs2"]
-script/source = "extends objek
-
-const properti = [
-	[\"skala\", Vector3(1, 1, 1)],
-	[\"kode\", \"func gunakan():\\n\\tPanku.notify(\\\"ini adalah contoh blok kode\\\")\"]
-]
-const jalur_instance = \"res://skena/objek/placeholder_objek.tscn\"
-
-@export var mesh : Mesh
-@export var mat : Material
-
-func mulai():
-	mesh = $bentuk.mesh.duplicate()
-	mat = $bentuk.get_surface_override_material(0).duplicate()
-	mat.uv1_offset = skala / 2
-	$bentuk.mesh = mesh
-	$bentuk.set_surface_override_material(0, mat)
-
-@export var skala : Vector3 = Vector3(1, 1, 1) :
-	set(ubah_skala):
-		$bentuk.mesh.size = ubah_skala
-		$fisik.shape.size = ubah_skala
-		wilayah_render = $bentuk.get_aabb()
-		if mat != null: mat.uv1_offset = ubah_skala / 2
-		jarak_render = max(ubah_skala.x, ubah_skala.y, ubah_skala.z) * 10
-		skala = ubah_skala
-"
+[ext_resource type="Script" path="res://skrip/editor kode/block_code_node/block_code.gd" id="2_pflcm"]
+[ext_resource type="Script" path="res://skrip/editor kode/serialization/block_serialization.gd" id="3_u80rt"]
+[ext_resource type="Script" path="res://skrip/editor kode/serialization/block_serialized_properties.gd" id="4_0ksvp"]
+[ext_resource type="Script" path="res://skrip/editor kode/serialization/block_script_serialization.gd" id="5_f6gj8"]
+[ext_resource type="Script" path="res://skrip/editor kode/block canvas/variable_resource.gd" id="6_wwvnq"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_kqjb5"]
 
@@ -41,9 +17,114 @@ uv1_triplanar = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xjedm"]
 
+[sub_resource type="Resource" id="Resource_b0aen"]
+script = ExtResource("4_0ksvp")
+block_class = &"EntryBlock"
+serialized_props = [["color", Color(0.92549, 0.231373, 0.34902, 1)], ["scope", ""], ["param_input_strings", {}]]
+
+[sub_resource type="Resource" id="Resource_rh52f"]
+script = ExtResource("4_0ksvp")
+block_class = &"StatementBlock"
+serialized_props = [["block_name", &"set_var_jalur_instance"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Set jalur_instance to {value: STRING}"], ["statement", "jalur_instance = {value}"], ["defaults", {}], ["param_input_strings", {
+"value": "res://skena/objek/placeholder_objek.tscn"
+}]]
+
+[sub_resource type="Resource" id="Resource_453nr"]
+script = ExtResource("4_0ksvp")
+block_class = &"StatementBlock"
+serialized_props = [["block_name", &"set_var_properti"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Set properti to {value: ARRAY}"], ["statement", "properti = {value}"], ["defaults", {}], ["param_input_strings", {
+"value": "[[\"skala\", Vector3(1, 1, 1)]]"
+}]]
+
+[sub_resource type="Resource" id="Resource_kt2p4"]
+script = ExtResource("4_0ksvp")
+block_class = &"StatementBlock"
+serialized_props = [["block_name", &"set_var_skala"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Set skala to {value: VECTOR3}"], ["statement", "skala = {value}"], ["defaults", {}], ["param_input_strings", {
+"value": Vector3(1, 1, 1)
+}]]
+
+[sub_resource type="Resource" id="Resource_w2kub"]
+script = ExtResource("4_0ksvp")
+block_class = &"StatementBlock"
+serialized_props = [["scope", ""], ["param_input_strings", {
+"nama_metode": "_setup"
+}]]
+
+[sub_resource type="Resource" id="Resource_m54wo"]
+script = ExtResource("3_u80rt")
+name = &"call_method_self"
+position = Vector2(0, 0)
+path_child_pairs = []
+block_serialized_properties = SubResource("Resource_w2kub")
+
+[sub_resource type="Resource" id="Resource_rlgrv"]
+script = ExtResource("3_u80rt")
+name = &"set_var_skala"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_m54wo")]]
+block_serialized_properties = SubResource("Resource_kt2p4")
+
+[sub_resource type="Resource" id="Resource_ijkib"]
+script = ExtResource("3_u80rt")
+name = &"set_var_properti"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_rlgrv")]]
+block_serialized_properties = SubResource("Resource_453nr")
+
+[sub_resource type="Resource" id="Resource_fc5wf"]
+script = ExtResource("3_u80rt")
+name = &"set_var_jalur_instance"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_ijkib")]]
+block_serialized_properties = SubResource("Resource_rh52f")
+
+[sub_resource type="Resource" id="Resource_1h6wi"]
+script = ExtResource("3_u80rt")
+name = &"ready"
+position = Vector2(54, 47)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_fc5wf")]]
+block_serialized_properties = SubResource("Resource_b0aen")
+
+[sub_resource type="Resource" id="Resource_456ah"]
+script = ExtResource("6_wwvnq")
+var_name = "skala"
+var_type = 9
+
+[sub_resource type="Resource" id="Resource_8b4vo"]
+script = ExtResource("6_wwvnq")
+var_name = "jalur_instance"
+var_type = 4
+
+[sub_resource type="Resource" id="Resource_yueo0"]
+script = ExtResource("6_wwvnq")
+var_name = "properti"
+var_type = 28
+
+[sub_resource type="Resource" id="Resource_6myjp"]
+script = ExtResource("5_f6gj8")
+script_inherits = "objek"
+block_trees = Array[ExtResource("3_u80rt")]([SubResource("Resource_1h6wi")])
+variables = Array[ExtResource("6_wwvnq")]([SubResource("Resource_456ah"), SubResource("Resource_8b4vo"), SubResource("Resource_yueo0")])
+generated_script = "extends objek
+
+var skala: Vector3
+
+var jalur_instance: String
+
+var properti: Array
+
+
+func _ready():
+	jalur_instance = 'res://skena/objek/placeholder_objek.tscn'
+	properti = [[\"skala\", Vector3(1, 1, 1)]]
+	skala = Vector3(1, 1, 1)
+	call('_setup')
+
+"
+version = 0
+
 [node name="placeholder_objek" type="StaticBody3D" groups=["dapat_diedit"]]
-script = SubResource("GDScript_5ucs2")
-wilayah_render = AABB(-0.5, -0.5, -0.5, 1, 1, 1)
+script = ExtResource("1_f515e")
 
 [node name="bentuk" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_kqjb5")
@@ -52,4 +133,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_pjrsv")
 [node name="fisik" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_xjedm")
 
-[node name="kode_ubahan" parent="." instance=ExtResource("2_56r60")]
+[node name="kode_ubahan" type="Node" parent="."]
+script = ExtResource("2_pflcm")
+block_script = SubResource("Resource_6myjp")

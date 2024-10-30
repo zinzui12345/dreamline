@@ -420,8 +420,9 @@ func _input(event : InputEvent) -> void:
 						server.permainan._tampilkan_daftar_objek()
 					_:
 						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
-							if objek_target.id_pengubah < 1:
-								objek_target.get_node("kode_ubahan").panggil_fungsi_kode("gunakan", multiplayer.get_unique_id())
+							if objek_target.id_pengubah < 1 and objek_target.has_method("fungsikan"):
+								#objek_target.call("fungsikan", multiplayer.get_unique_id())
+								objek_target.call("fungsikan")
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
 							var arah_dorongan := Vector3(0, 0, 5)
@@ -587,7 +588,7 @@ func _physics_process(delta : float) -> void:
 			server.permainan.set("tombol_aksi_1", "tendang_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.bantuan_aksi_1 = true
-		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
+		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_method("fungsikan"):
 			server.permainan.set("tombol_aksi_1", "gunakan_objek")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.bantuan_aksi_1 = true

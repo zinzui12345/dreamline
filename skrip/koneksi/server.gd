@@ -13,7 +13,7 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = "pulau"
+var map : StringName = "empty"
 var nama : StringName = "bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -276,19 +276,6 @@ func buat_koneksi():
 	broadcast.serverInfo["jml_pemain"] = pemain_terhubung
 	broadcast.serverInfo["max_pemain"] = jumlah_pemain
 	permainan.add_child(broadcast)
-	# setup timeline
-	timeline = {
-		"data": {
-			"id":	 permainan.hasilkanKarakterAcak(5),
-			"map":	 map,
-			"mulai": Time.get_ticks_msec(),
-			"frame": 0,
-			"urutan":1
-		}
-	}
-	# setup pool
-	pool_entitas.clear()
-	pool_objek.clear()
 	set_process(true)
 	if publik: # koneksi publik
 		upnp = UPNP.new()
@@ -748,10 +735,10 @@ func _pemain_terputus(id_pemain):
 				"properti"	: properti
 			}
 			# Timeline : spawn objek
-			if not server.mode_replay:
-				if not server.timeline.has(server.timeline["data"]["frame"]):
-					server.timeline[server.timeline["data"]["frame"]] = {}
-				server.timeline[server.timeline["data"]["frame"]][nama_objek] = {
+			if not mode_replay:
+				if not timeline.has(timeline["data"]["frame"]):
+					timeline[timeline["data"]["frame"]] = {}
+				timeline[timeline["data"]["frame"]][nama_objek] = {
 					"tipe": 		"spawn",
 					"tipe_objek":	"objek",
 					"sumber": 		jalur_skena,

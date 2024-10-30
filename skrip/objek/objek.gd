@@ -34,7 +34,8 @@ var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara se
 @export var kode : String :					# jika menggunakan kode ubahan
 	set(kode_baru):
 		if get_node_or_null("kode_ubahan") != null:
-			if $kode_ubahan.kode != kode_baru: $kode_ubahan.atur_kode(kode_baru)
+			if $kode_ubahan.block_script.generated_script != kode_baru:
+				$kode_ubahan.block_script.generated_script = kode_baru
 			kode = kode_baru
 
 func _ready() -> void: call_deferred("_setup")
@@ -43,13 +44,22 @@ func _setup() -> void:
 	if get_parent().get_path() != server.permainan.dunia.get_node("objek").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada objek | ini digunakan untuk menambahkan objek ke server
-			for properti_kustom : Array in get("properti"):
-				_sp_properti.append([
-					properti_kustom[0],
-					get(properti_kustom[0])
-				])
+			if get("properti") != null:
+				for properti_kustom : Array in get("properti"):
+					_sp_properti.append([
+						properti_kustom[0],
+						get(properti_kustom[0])
+					])
+			else:
+				print("[Galat] objek %s tidak memiliki properti!" % name)
+			var _jalur_instance : String
+			if get("jalur_instance") != null:
+				_jalur_instance = get("jalur_instance")
+			else:
+				print("[Galat] objek %s tidak memiliki jalur skena!" % name)
+			
 			server._tambahkan_objek(
-				get("jalur_instance"),
+				_jalur_instance,
 				global_transform.origin,
 				rotation,
 				jarak_render,
@@ -128,3 +138,66 @@ func _process(_delta : float) -> void:
 		# simpan perubahan kondisi properti kustom untuk di-cek lagi
 		for p in sinkron_kondisi.size():
 			cek_properti[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
+
+# 26/10/24 :: Fungsi sintaks blok kode
+const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")
+const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_catalog.gd")
+const BlockDefinition = preload("res://skrip/editor kode/code_generation/block_definition.gd")
+const Types = preload("res://skrip/editor kode/types/types.gd")
+
+func get_custom_class() -> String:
+	return "objek"
+static func get_custom_categories() -> Array[BlockCategory]:
+	return [BlockCategory.new("Objek")]
+static func setup_custom_blocks():
+	var _class_name = "objek"
+	var block_list: Array[BlockDefinition] = []
+
+	var block_definition: BlockDefinition = BlockDefinition.new()
+	block_definition.name = &"fungsi_mulai"
+	block_definition.target_node_class = _class_name
+	block_definition.category = "%siklus%"
+	block_definition.type = Types.BlockType.ENTRY
+	block_definition.display_template = "mulai"
+	block_definition.description = "Fungsi yang dipanggil pada saat objek ditambahkan ke dunia."
+	block_definition.code_template = "func mulai():"
+	block_list.append(block_definition)
+	
+	block_definition = BlockDefinition.new()
+	block_definition.name = &"fungsi_gunakan_objek"
+	block_definition.target_node_class = _class_name
+	block_definition.category = "%siklus%"
+	block_definition.type = Types.BlockType.ENTRY
+	block_definition.display_template = "fungsikan"
+	block_definition.description = "Fungsi ini dipanggil ketika objek digunakan atau di-interaksi."
+	block_definition.code_template = "func fungsikan():"
+	block_list.append(block_definition)
+
+	BlocksCatalog.add_custom_blocks(_class_name, block_list)
+
+	#var property_list: Array[Dictionary] = [
+		#{
+			#"name": "jalur_instance",
+			#"type": TYPE_STRING,
+		#},
+		#{
+			#"name": "properti",
+			#"type": TYPE_ARRAY,
+		#}
+	#]
+	#
+	#var property_settings = {
+		#"jalur_instance":
+		#{
+			#"category": "Variables",
+			#"default_set": "",
+		#},
+		#"properti":
+		#{
+			#"category": "Variables",
+			#"default_set": [],
+		#}
+	#}
+
+	#BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
+	BlocksCatalog.add_custom_blocks(_class_name, block_list)

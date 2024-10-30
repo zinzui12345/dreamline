@@ -85,6 +85,7 @@
 [ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 [ext_resource type="Texture2D" uid="uid://cjrflqocbkufn" path="res://ui/ikon/ikon_vr.svg" id="74_jekg6"]
+[ext_resource type="PackedScene" uid="uid://bq37yla8ya707" path="res://ui/editor kode/main_panel.tscn" id="81_d4drg"]
 
 [sub_resource type="Animation" id="Animation_6qw4d"]
 resource_name = "sembunyikan"
@@ -4116,183 +4117,44 @@ _data = {
 "tampilkan": SubResource("Animation_xwgds")
 }
 
-[sub_resource type="CodeHighlighter" id="CodeHighlighter_0hte2"]
-number_color = Color(0.6, 0.619608, 1, 1)
-symbol_color = Color(0.796078, 0.631373, 0, 1)
-function_color = Color(1, 0.52549, 0.313726, 1)
-member_variable_color = Color(0.890196, 0.47451, 0, 1)
-keyword_colors = {
-"Pemain": Color(0.6, 1, 0.996078, 1),
-"fungsi": Color(0.203922, 0.921569, 0.137255, 1),
-"if": Color(1, 0.278431, 0.278431, 1),
-"jika": Color(1, 0.278431, 0.278431, 1),
-"nilai": Color(0, 0.941176, 0.890196, 1),
-"var": Color(0, 0.941176, 0.890196, 1)
+[sub_resource type="Animation" id="Animation_s42y5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:anchor_top")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
 }
-
-[sub_resource type="GDScript" id="GDScript_rtonl"]
-script/source = "extends CodeEdit
-
-var sintaks_akar = [
-	# tipe						# tampilan																# format																													# warna
-	[ CodeEdit.KIND_CLASS,		\"fungsi nama_fungsi(nilai = null):\",									\"fungsi nama_fungsi():\\n\\tpass /* ganti bagian ini dengan perintah */\",														Color(\"#34eb23\") ],
-	[ CodeEdit.KIND_CLASS,		\"Permainan\",															\"Permainan\" ],
-	[ CodeEdit.KIND_CLASS,		\"Pemain\",																\"Pemain\",																													Color.AQUAMARINE ],
-	[ CodeEdit.KIND_FUNCTION,	\"notifikasi(pesan : String)\",											\"notifikasi(\\\"\\\")\" ]
-]
-
-func _ready():
-	fold_all_lines()
-	add_string_delimiter(\"\\\"\", \"\\\"\")
-	add_comment_delimiter(\"/*\", \"*/\")
-	create_code_region()
-	syntax_highlighter.add_color_region(\"/*\", \"*/\", Color.BLUE_VIOLET)
-	syntax_highlighter.add_color_region(\"\\\"\", \"\\\"\", Color.GREEN_YELLOW)
-
-func _process(_delta):
-	pass
-
-func _jalankan():
-	for baris in get_line_count():
-		if is_in_comment(baris) < 0:
-			set_line_as_executing(baris, true)
-	var array_eksekusi = get_executing_lines()
-	var kode : String = \"extends Node\" # TODO : sesuaikan dengan class parentnya!
-	
-	for baris_eksekusi in array_eksekusi.size():
-		var baris = get_line(array_eksekusi[baris_eksekusi])
-		var baris_hasil : String = \"\"
-		
-		if baris.contains(':'):
-			var pecah_bagian = baris.split(':', false, 2)
-			if pecah_bagian.size() == 1 or is_in_string(get_executing_lines()[baris_eksekusi], pecah_bagian[0].length()) > -1:
-				baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
-			else:
-				var bagian_1 = kompilasi_kode(pecah_bagian[0], baris_eksekusi)
-				var bagian_2 = \"\"
-				if pecah_bagian[0].length() + (pecah_bagian.size() - 1) > bagian_1.length(): # jika ==> if
-					var posisi_kolom = (pecah_bagian[0].length() + (pecah_bagian.size() - 1)) - (pecah_bagian[0].length() - bagian_1.length())
-					if pecah_bagian[1].substr(0, 1) == \"\\t\" and pecah_bagian[1].substr(1, 2) != \"\\t\": posisi_kolom += \"\\t\".length()
-					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi, posisi_kolom + (pecah_bagian.size() - 1))
-				elif pecah_bagian[0].length() + (pecah_bagian.size() - 1) < bagian_1.length(): # notifikasi( ==> Panku.notify(
-					var posisi_kolom = (pecah_bagian[1].length() + (pecah_bagian.size() - 1)) + (bagian_1.length() - pecah_bagian[0].length())
-					if pecah_bagian[1].substr(0, 1) == \"\\t\" and pecah_bagian[1].substr(1, 2) != \"\\t\": posisi_kolom += \"\\t\".length()
-					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi, posisi_kolom + (pecah_bagian.size() - 1))
-				else:
-					bagian_2 = kompilasi_kode(pecah_bagian[1], baris_eksekusi)
-				baris_hasil = baris_hasil + bagian_1 + ':' + bagian_2
-				#print_debug(\"bagian 1 = %s : %s\" % [pecah_bagian[0], pecah_bagian[0].length() + (pecah_bagian.size() - 1)])
-				#print_debug(\"bagian 2 = %s : %s\" % [pecah_bagian[1], pecah_bagian[1].length()])
-				#print_debug(\"hasil bagian 1 = %s : %s\" % [bagian_1, bagian_1.length() + (pecah_bagian.size() - 1)])
-				#print_debug(\"hasil bagian 2 = %s : %s\" % [bagian_2, bagian_2.length()])
-				#print_debug(\"total bagian = %s : %s\" % [2, (pecah_bagian[0].length() + (pecah_bagian.size() - 1)) + pecah_bagian[1].length()])
-		else:
-			baris_hasil = baris_hasil + kompilasi_kode(baris, baris_eksekusi)
-		
-		#print_debug(\"kode sumber: \"+baris+\" [\"+str(baris.length())+\"]\")
-		#print_debug(\"hasil compile: \"+baris_hasil+\" [\"+str(baris_hasil.length())+\"]\")
-		
-		kode = kode + \"\\n\" + baris_hasil
-	
-	var eksekusi := GDScript.new()
-	eksekusi.source_code = kode
-	var galat := eksekusi.reload()
-	
-	print_debug(\"hasil compile: \\n\"+kode)
-	print_debug(galat)
-	
-	if galat == OK:
-		var jalankan : Object = eksekusi.new()
-		get_tree().get_root().add_child(jalankan)
-		jalankan.queue_free()
-	else:
-		Panku.notify(\"kode tidak valid!\")
-
-func _on_code_completion_requested():
-	for sr : Array in sintaks_akar:
-		if sr.size() == 4:
-			add_code_completion_option(sr[0], sr[1], sr[2], sr[3])
-		else:
-			add_code_completion_option(sr[0], sr[1], sr[2])
-	update_code_completion_options(true)
-
-func _terjemahkan_deklarasi(nama : String):
-	match nama:
-		\"_mulai():\":	return \"_ready():\"
-		\"fungsi\":		return \"func\"
-		\"nilai\":		return \"var\"
-		_:				return nama
-func _terjemahkan_fungsi(nama : String):
-	match nama:
-		\"notifikasi(\":	return \"Panku.notify(\"
-		\"_proses(\":		return \"_process(\"
-		\"jika\":			return \"if\"
-		\"dan\":			return \"and\"
-		\"atau\":			return \"or\"
-		_:				return nama
-
-func kompilasi_kode(kode, baris_eksekusi, kolom_mulai : int = 0):
-	var baris_hasil : String = \"\"
-	if kode.substr(0, 1) == \" \":
-		kode = \"\\t\" + kode.substr(1, kode.length())
-		kolom_mulai += 1
-	if kode.substr(0, 1) == \"\\t\":
-		# contoh kode : \\tnotifikasi(\"aaaaeea!\")
-		var pecah_indentasi = kode.split(\"\\t\") # [\"\",\"notifikasi(\"aaaaeea!\")\"]
-		var posisi_kolom = kolom_mulai
-		for i in pecah_indentasi:
-			if i == \"\": baris_hasil = baris_hasil + \"\\t\"; posisi_kolom += 1
-			elif i.contains('\"'):
-				# cek, kalo ada karakter \" split dengan karakter tersebut kemudian lakukan loop lagi
-				# \"notifikasi(\"aaaaeea!\")\"
-				var pecah_kalimat = i.split(\"\\\"\") # [\"notifikasi(\", \"aaaaeea!\", \")\"]
-				for k in pecah_kalimat:
-					# \"notifikasi(\"
-					if is_in_string(get_executing_lines()[baris_eksekusi], posisi_kolom + 1) > -1:
-						# kalau berada dalam string #
-						baris_hasil = baris_hasil + \"\\\"\" + k
-						#print_debug(\"a:: string : true\")
-					else:
-						if _terjemahkan_fungsi(k) != k:
-							baris_hasil = baris_hasil + _terjemahkan_fungsi(k)
-						elif k.contains(\" \"):
-							var pecah_sub_kalimat = k.split(\" \") # [\"nilai\", \"c\"]
-							for l in pecah_sub_kalimat:
-								if _terjemahkan_fungsi(l) != l:
-									baris_hasil = baris_hasil + _terjemahkan_fungsi(l) + \" \"
-								else:
-									baris_hasil = baris_hasil + _terjemahkan_deklarasi(l) + \" \"
-							if baris_hasil.substr(baris_hasil.length() - 1, baris_hasil.length()) == \" \":
-								baris_hasil = baris_hasil.substr(0, baris_hasil.length() - 1)
-						else:
-							baris_hasil = baris_hasil + k
-						#print_debug(\"a:: string : false\")
-					posisi_kolom += k.length()
-					#print_debug(
-					#	\"b:: sumber : [\"+get_line(get_executing_lines()[baris_eksekusi])+\"] <= [\"+k+\"]\\n\"+
-					#	\"c:: hasil : [\"+baris_hasil+\"]\\tposisi kolom : \"+str(posisi_kolom + 1)
-					#)
-			# TODO : cek pemanggilan fungsi mis. notifikasi(b), jeda(0.5)
-			
-			else:
-				var pecah_kalimat = i.split(\" \") # [\"jika\", \"Pemain\"]
-				for k in pecah_kalimat:
-					if _terjemahkan_fungsi(k) != k:
-						baris_hasil = baris_hasil + _terjemahkan_fungsi(k) + \" \"; posisi_kolom += k.length()
-					else:
-						baris_hasil = baris_hasil + _terjemahkan_deklarasi(k) + \" \"; posisi_kolom += k.length()
-				if baris_hasil.substr(baris_hasil.length() - 1, baris_hasil.length()) == \" \":
-					baris_hasil = baris_hasil.substr(0, baris_hasil.length() - 1)
-	else:
-		# terjemahkan deklarasi variabel dan fungsi
-		# hanya kalimat pertama yang diterjemahkan
-		# contoh baris : \"fungsi mulai():\"
-		var pecah_kalimat = kode.split(\" \") # [\"fungsi\", \"mulai():\"]
-		for k in pecah_kalimat:
-			baris_hasil = baris_hasil + _terjemahkan_deklarasi(k) + ' '
-	if baris_hasil.substr(baris_hasil.length()-1, 1) == ' ': baris_hasil = baris_hasil.substr(0, baris_hasil.length()-1)
-	return baris_hasil
-"
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:anchor_bottom")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_jtrf2"]
 resource_name = "sembunyikan"
@@ -4305,7 +4167,7 @@ tracks/0/path = NodePath(".:mouse_filter")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(-0.01, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [0, 2]
@@ -4313,55 +4175,44 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CodeEdit:anchor_top")
+tracks/1/path = NodePath(".:anchor_top")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(-0.01, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.0, -0.533]
+"values": [0.0, 1.0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("CodeEdit:anchor_bottom")
+tracks/2/path = NodePath(".:anchor_bottom")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(-0.01, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.533, 0.0]
+"values": [1.0, 2.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("CodeEdit:grow_vertical")
+tracks/3/path = NodePath(".:visible")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [1, 1]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("CodeEdit:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.49, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, true, false]
 }
 
-[sub_resource type="Animation" id="Animation_0g66h"]
+[sub_resource type="Animation" id="Animation_ixlj8"]
 resource_name = "tampilkan"
-length = 0.6
+length = 0.36
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -4369,7 +4220,7 @@ tracks/0/path = NodePath(".:mouse_filter")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.36),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [2, 0]
@@ -4377,47 +4228,35 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("CodeEdit:anchor_top")
+tracks/1/path = NodePath(".:anchor_top")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.36),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [-0.533, 0.0]
+"values": [1.0, 0.0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("CodeEdit:anchor_bottom")
+tracks/2/path = NodePath(".:anchor_bottom")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.6),
+"times": PackedFloat32Array(0, 0.36),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0.0, 0.533]
+"values": [2.0, 1.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("CodeEdit:grow_vertical")
+tracks/3/path = NodePath(".:visible")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.6),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [1, 1]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("CodeEdit:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.01, 0.6),
+"times": PackedFloat32Array(0, 0.01, 0.36),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, true]
@@ -4425,8 +4264,9 @@ tracks/4/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_nq78w"]
 _data = {
+"RESET": SubResource("Animation_s42y5"),
 "sembunyikan": SubResource("Animation_jtrf2"),
-"tampilkan": SubResource("Animation_0g66h")
+"tampilkan": SubResource("Animation_ixlj8")
 }
 
 [sub_resource type="Animation" id="Animation_mfb3i"]
@@ -5943,6 +5783,7 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="kontrol_sentuh" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -8483,63 +8324,17 @@ shape = SubResource("CircleShape2D_2jlpn")
 action = "ui_cancel"
 
 [node name="editor_kode" type="Control" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 40.0
-offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_lock_ = true
 
-[node name="CodeEdit" type="CodeEdit" parent="editor_kode"]
-visible = false
+[node name="blok_kode" parent="editor_kode" instance=ExtResource("81_d4drg")]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.125
-anchor_top = -0.533
-anchor_right = 0.875
-offset_right = -6.10352e-05
-offset_bottom = 0.199982
-theme_override_colors/current_line_color = Color(0, 0, 0, 1)
-theme_override_colors/background_color = Color(0, 0, 0, 0.823529)
-theme_override_colors/selection_color = Color(0, 0, 0, 0.784314)
-theme_override_colors/line_number_color = Color(0.815686, 0.764706, 0.494118, 1)
-text = "/* deklarasikan nilai disini */
-nilai a = 5
-nilai b = \"israel adalah monyet anjing babi dari kalangan yahooodie\"
-
-/* fungsi ini akan dipanggil pada saat node di-spawn */
-fungsi _mulai():
-	nilai c = b + \"\\n\" + b
-	notifikasi(\"halo dunia!\")
-	print_debug(a + 5)
-	notifikasi(\"selamat datang di dreamline ^u^\")
-	
-	jika a > 1:	notifikasi(\"a lebih dari satu!\")
-	jika a > 0 dan a < 6: notifikasi(\"a diantara 0 dan 6\")
-	
-	jika c.length() > 0:
-		notifikasi(c)"
-scroll_smooth = true
-minimap_draw = true
-minimap_width = 100
-caret_blink = true
-syntax_highlighter = SubResource("CodeHighlighter_0hte2")
-highlight_all_occurrences = true
-highlight_current_line = true
-draw_control_chars = true
-draw_tabs = true
-draw_spaces = true
-line_folding = true
-gutters_draw_line_numbers = true
-gutters_draw_fold_gutter = true
-code_completion_enabled = true
-auto_brace_completion_enabled = true
-auto_brace_completion_highlight_matching = true
-script = SubResource("GDScript_rtonl")
 
 [node name="animasi" type="AnimationPlayer" parent="editor_kode"]
 libraries = {
@@ -9271,6 +9066,7 @@ libraries = {
 }
 
 [node name="performa" type="Label" parent="."]
+visible = false
 top_level = true
 layout_mode = 1
 anchors_preset = 3
@@ -9291,6 +9087,7 @@ text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB | culling : true"
 horizontal_alignment = 2
 
 [node name="versi" type="Label" parent="."]
+visible = false
 top_level = true
 layout_mode = 1
 anchors_preset = 3
@@ -9415,7 +9212,6 @@ bus = &"Suara Pemain"
 [connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_debug/informasi_performa" to="." method="_ketika_mengatur_informasi_performa"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_log" to="." method="_buka_log"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_konsol" to="." method="_tampilkan_konsol"]
-[connection signal="code_completion_requested" from="editor_kode/CodeEdit" to="editor_kode/CodeEdit" method="_on_code_completion_requested"]
 [connection signal="tutup_panel" from="blok_kode/panel_kode" to="." method="tutup_editor_kode"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]

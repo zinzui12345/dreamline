@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://blpo01pjjheqb"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_e2566"]
+
+[resource]
+script = ExtResource("1_e2566")
+name = &"tan"
+target_node_class = ""
+description = "%deskripsi_fungsi_tan%"
+category = "%matematika%"
+type = 3
+variant_type = 3
+display_template = "tan {sudut: FLOAT}"
+code_template = "tan(deg_to_rad({sudut}))"
+defaults = {
+"sudut": 0.0
+}
+signal_name = ""
+scope = ""

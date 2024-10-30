@@ -12,31 +12,32 @@ class_name Permainan
 # 06 Sep 2023 | 0.1.7 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
 # 18 Sep 2023 | 0.1.8 - Implementasi shader karakter menggunakan MToon
 # 21 Sep 2023 | 0.1.9 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 0.2.1 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 0.2.2 - Penambahan Text Chat
-# 09 Okt 2023 | 0.2.3 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
-# 10 Okt 2023 | 0.2.4 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 0.2.5 - Tombol Sentuh Fleksibel
-# 14 Okt 2023 | 0.2.6 - Penambahan Mode Edit Objek
-# 21 Okt 2023 | 0.2.7 - Mode Edit Objek telah berhasil di-implementasikan
-# 31 Okt 2023 | 0.2.8 - Perbaikan kesalahan kontrol sentuh
-# 08 Nov 2023 | 0.2.9 - Implementasi Koneksi Publik menggunakan UPnP
-# 17 Nov 2023 | 0.3.1 - Implementasi Proyektil
-# 27 Nov 2023 | 0.3.2 - Penambahan kemampuan penghindaran npc terhadap musuhnya
-# 10 Des 2023 | 0.3.3 - Perbaikan ragdoll karakter
-# 19 Des 2023 | 0.3.4 - Tampilan bar nyawa npc_ai
-# 04 Jan 2024 | 0.3.5 - Implementasi GPU Instancing pada Vegetasi Terrain
-# 14 Jan 2024 | 0.3.6 - Penambahan Editor Kode
-# 04 Feb 2024 | 0.3.7 - Penerapan pemutar ulang Timeline
-# 14 Apr 2024 | 0.3.8 - Implementasi Object Pooling pada entitas
-# 18 Apr 2024 | 0.3.9 - Penambahan Dialog Informasi
-# 04 Mei 2024 | 0.4.1 - Implementasi Object Pooling pada objek
-# 04 Jun 2024 | 0.4.2 - Penambahan Editor Blok Kode
-# 04 Jul 2024 | 0.4.3 - Demo Uji Performa
-# 25 Jul 2024 | 0.4.4 - Penambahan Objek Pintu
-# 04 Agu 2024 | 0.4.4 - Penambahan Efek cahaya pandangan
+# 23 Sep 2023 | 0.2.0 - Penambahan entity posisi spawn pemain
+# 25 Sep 2023 | 0.2.1 - Penambahan Text Chat
+# 09 Okt 2023 | 0.2.2 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 10 Okt 2023 | 0.2.3 - Penambahan senjata Bola salju raksasa
+# 12 Okt 2023 | 0.2.4 - Tombol Sentuh Fleksibel
+# 14 Okt 2023 | 0.2.5 - Penambahan Mode Edit Objek
+# 21 Okt 2023 | 0.2.6 - Mode Edit Objek telah berhasil di-implementasikan
+# 31 Okt 2023 | 0.2.7 - Perbaikan kesalahan kontrol sentuh
+# 08 Nov 2023 | 0.2.8 - Implementasi Koneksi Publik menggunakan UPnP
+# 17 Nov 2023 | 0.2.9 - Implementasi Proyektil
+# 27 Nov 2023 | 0.3.0 - Penambahan kemampuan penghindaran npc terhadap musuhnya
+# 10 Des 2023 | 0.3.1 - Perbaikan ragdoll karakter
+# 19 Des 2023 | 0.3.2 - Tampilan bar nyawa npc_ai
+# 04 Jan 2024 | 0.3.3 - Implementasi GPU Instancing pada Vegetasi Terrain
+# 14 Jan 2024 | 0.3.4 - Penambahan Editor Kode
+# 04 Feb 2024 | 0.3.5 - Penerapan pemutar ulang Timeline
+# 14 Apr 2024 | 0.3.7 - Implementasi Object Pooling pada entitas
+# 18 Apr 2024 | 0.3.8 - Penambahan Dialog Informasi
+# 04 Mei 2024 | 0.3.9 - Implementasi Object Pooling pada objek
+# 04 Jun 2024 | 0.4.0 - Penambahan Editor Blok Kode
+# 04 Jul 2024 | 0.4.1 - Demo Uji Performa
+# 25 Jul 2024 | 0.4.2 - Penambahan Objek Pintu
+# 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
+# 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 14/10/24 Early Access"
+const versi = "Dreamline v0.4.4 27/10/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -455,6 +456,20 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 	await get_tree().create_timer(0.25).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	data["posisi"] = posisi
 	data["rotasi"] = rotasi
+	# setup pool
+	server.pool_objek.clear()
+	server.pool_entitas.clear()
+	# setup timeline
+	if koneksi == MODE_KONEKSI.SERVER:
+		server.timeline = {
+			"data": {
+				"id":	 hasilkanKarakterAcak(5),
+				"map":	 map,
+				"mulai": Time.get_ticks_msec(),
+				"frame": 0,
+				"urutan":1
+			}
+		}
 	var tmp_perintah := Callable(self, "_muat_map")
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 func _muat_map(file_map : StringName) -> void:
@@ -936,7 +951,7 @@ func _edit_objek(jalur : String) -> void:
 	if edit_objek.get("skala") != null:
 		$hud/daftar_properti_objek/panel/pilih_tab_skala.disabled = false
 	# 06/06/24 :: cek apakah objek memiliki node skrip, kemudian aktifkan visibilitas tombol edit skrip
-	if edit_objek.get_node_or_null("kode_ubahan") != null and edit_objek.get_node("kode_ubahan") is kode_ubahan:
+	if edit_objek.get_node_or_null("kode_ubahan") != null and edit_objek.get_node("kode_ubahan") is BlockCode:
 		$hud/daftar_properti_objek/panel/edit_skrip.visible = true
 	# 29/06/24 :: alihkan pengamat
 	await get_tree().create_timer(0.1).timeout
@@ -951,7 +966,7 @@ func _berhenti_mengedit_objek() -> void:
 	$hud/daftar_properti_objek/panel/pilih_tab_skala.release_focus()
 	$hud/daftar_properti_objek/panel/edit_skrip.visible = false
 	# kalau mengedit kode, sembunyikan editor
-	if $blok_kode.visible: tutup_editor_kode()
+	if $editor_kode.visible: tutup_editor_kode()
 	tombol_aksi_2 = "edit_objek"
 	$mode_bermain.visible = true
 	$kontrol_sentuh/chat.visible = true
@@ -1659,43 +1674,47 @@ func _ketika_translasi_z_objek_diubah(nilai : float) -> void:
 				edit_objek.set_indexed("skala:z", nilai)
 func _ketika_mengubah_kode_objek() -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
-		# 31/07/24 :: jangan lanjutkan jika kode kosong
-		if edit_objek.get_node("kode_ubahan").dapatkan_kode() == "":
-			_tampilkan_popup_informasi_("NULL")
-			return
-		# 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
-		var sintaks_aksi : Dictionary = {
-			"Permainan" : [
-				["notifikasi(teks)", "Panku.notify(\"teks\")", "notifikasi"],
-				["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "popup"]
-			]
-		}
-		if edit_objek is objek and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
-			sintaks_aksi.merge({
-				"Objek" : [
-					["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "pindahkan_objek"]
-				]
-			})
-			$blok_kode/panel_kode.tipe_kode = "objek"
-		if edit_objek is pintu:
-			sintaks_aksi.merge({
-				"Pintu" : [
-					["buka()", "get_node(\"../../\").buka()", "pintu_buka"],
-					["tutup()", "get_node(\"../../\").tutup()", "pintu"]
-				]
-			})
-			$blok_kode/panel_kode.tipe_kode = "pintu"
-		elif edit_objek is patung:
-			sintaks_aksi.merge({
-				"🗿" : [
-					["???", "get_node(\"../../\").berbunyi(true)", "bunyi"]
-				]
-			})
-		$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
-		# 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
-		$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
-		# 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
-		$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
+		## 31/07/24 :: jangan lanjutkan jika kode kosong
+		#if edit_objek.get_node("kode_ubahan").dapatkan_kode() == "":
+			#_tampilkan_popup_informasi_("NULL")
+			#return
+		## 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
+		#var sintaks_aksi : Dictionary = {
+			#"Permainan" : [
+				#["notifikasi(teks)", "Panku.notify(\"teks\")", "notifikasi"],
+				#["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "popup"]
+			#]
+		#}
+		#if edit_objek is objek and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
+			#sintaks_aksi.merge({
+				#"Objek" : [
+					#["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "pindahkan_objek"]
+				#]
+			#})
+			#$blok_kode/panel_kode.tipe_kode = "objek"
+		#if edit_objek is pintu:
+			#sintaks_aksi.merge({
+				#"Pintu" : [
+					#["buka()", "get_node(\"../../\").buka()", "pintu_buka"],
+					#["tutup()", "get_node(\"../../\").tutup()", "pintu"]
+				#]
+			#})
+			#$blok_kode/panel_kode.tipe_kode = "pintu"
+		#elif edit_objek is patung:
+			#sintaks_aksi.merge({
+				#"🗿" : [
+					#["???", "get_node(\"../../\").berbunyi(true)", "bunyi"]
+				#]
+			#})
+		#$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
+		## 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
+		#$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
+		## 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
+		#$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
+		$editor_kode/blok_kode._save_node_button.visible = false
+		$editor_kode/blok_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
+		$editor_kode/blok_kode.save_script()
+		$editor_kode/blok_kode._block_canvas.rebuild_block_trees()
 		tampilkan_editor_kode()
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
@@ -1928,25 +1947,42 @@ func tampilkan_editor_kode() -> void:
 		if $karakter.visible:
 			$karakter/animasi.play("animasi_panel/tutup")
 		$menu_utama/animasi.play("lipat")
-	if OS.get_distribution_name() == "Android":
-		$blok_kode/panel_kode._ketika_mengatur_skala(1.5)
-		$blok_kode/panel_kode/kontrol_skala/pengatur_skala.value = 1.5
-	$blok_kode/animasi.play("tampilkan")
+	#if OS.get_distribution_name() == "Android":
+		#$blok_kode/panel_kode._ketika_mengatur_skala(1.5)
+		#$blok_kode/panel_kode/kontrol_skala/pengatur_skala.value = 1.5
+	#$blok_kode/animasi.play("tampilkan")
+	$editor_kode/animasi.play("tampilkan")
+func buat_kode(nama_kelas : String = "objek"):
+	if $editor_kode.visible:
+		for kelas in ProjectSettings.get_global_class_list():
+			if kelas.class == nama_kelas:
+				var node = ClassDB.instantiate(kelas.base)
+				var skrip = load(kelas.path)
+				var kode = BlockCode.new()
+				node.name = "template_objek"
+				node.set_script(skrip)
+				server.permainan.dunia.get_node("objek").add_child(node)
+				kode.name = "KodeUbahan"
+				node.add_child(kode)
+				$editor_kode/blok_kode._save_node_button.visible = true
+				$editor_kode/blok_kode.switch_block_code_node(kode)
 func tutup_editor_kode() -> void:
-	# 26/07/24 :: terapkan perubahan kode
-	$blok_kode/panel_kode.kompilasi_blok_kode()
-	# 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
-	$blok_kode/panel_kode.hapus_blok_kode()
-	# 14/06/24 :: hapus palet sintaks untuk mengurangi penggunaan memori
-	$blok_kode/panel_kode.hapus_palet_sintaks()
-	# 11/06/24 :: putuskan signal jalankan_kode dari editor ke objek
-	if is_instance_valid(edit_objek) and $blok_kode/panel_kode.is_connected("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode):
-		edit_objek.kode = edit_objek.get_node("kode_ubahan").kode
-		$blok_kode/panel_kode.disconnect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
+	## 26/07/24 :: terapkan perubahan kode
+	#$blok_kode/panel_kode.kompilasi_blok_kode()
+	## 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
+	#$blok_kode/panel_kode.hapus_blok_kode()
+	## 14/06/24 :: hapus palet sintaks untuk mengurangi penggunaan memori
+	#$blok_kode/panel_kode.hapus_palet_sintaks()
+	## 11/06/24 :: putuskan signal jalankan_kode dari editor ke objek
+	#if is_instance_valid(edit_objek) and $blok_kode/panel_kode.is_connected("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode):
+		#edit_objek.kode = edit_objek.get_node("kode_ubahan").kode
+		#$blok_kode/panel_kode.disconnect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
 	# kalau bukan dalam permainan, tampilkan kembali menu utama
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
-	$blok_kode/animasi.play("sembunyikan")
+	#$blok_kode/animasi.play("sembunyikan")
+	$editor_kode/animasi.play("sembunyikan")
+	$editor_kode/blok_kode._save_node_button.visible = false
 func tampilkan_dialog(file_dialog : DialogueResource, id_dialog) -> void:
 	var penampil_dialog : Node = load("res://ui/dialog.tscn").instantiate()
 	$dialog.add_child(penampil_dialog)
@@ -2094,7 +2130,7 @@ func _kembali():
 	elif $proses_koneksi.visible:
 		client.putuskan_server()
 		$proses_koneksi/animasi.play("sembunyikan")
-	elif $blok_kode.visible:
+	elif $editor_kode.visible:
 		tutup_editor_kode()
 	elif $setelan.visible:
 		_sembunyikan_setelan_permainan()

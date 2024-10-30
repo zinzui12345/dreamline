@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c6g6ljp46lfrj"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_lxbvo"]
+
+[resource]
+script = ExtResource("1_lxbvo")
+name = &"cos"
+target_node_class = ""
+description = "%deskripsi_fungsi_cos%"
+category = "%matematika%"
+type = 3
+variant_type = 3
+display_template = "cos {sudut: FLOAT}"
+code_template = "cos(deg_to_rad({sudut}))"
+defaults = {
+"sudut": 0.0
+}
+signal_name = ""
+scope = ""
