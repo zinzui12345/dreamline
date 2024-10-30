@@ -149,32 +149,22 @@ func get_custom_class() -> String:
 	return "objek"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("Objek")]
-static func setup_custom_blocks():
-	var _class_name = "objek"
-	var block_list: Array[BlockDefinition] = []
-
-	var block_definition: BlockDefinition = BlockDefinition.new()
-	block_definition.name = &"fungsi_mulai"
-	block_definition.target_node_class = _class_name
-	block_definition.category = "%siklus%"
-	block_definition.type = Types.BlockType.ENTRY
-	block_definition.display_template = "mulai"
-	block_definition.description = "Fungsi yang dipanggil pada saat objek ditambahkan ke dunia."
-	block_definition.code_template = "func mulai():"
-	block_list.append(block_definition)
-	
-	block_definition = BlockDefinition.new()
-	block_definition.name = &"fungsi_gunakan_objek"
-	block_definition.target_node_class = _class_name
-	block_definition.category = "%siklus%"
-	block_definition.type = Types.BlockType.ENTRY
-	block_definition.display_template = "fungsikan"
-	block_definition.description = "Fungsi ini dipanggil ketika objek digunakan atau di-interaksi."
-	block_definition.code_template = "func fungsikan():"
-	block_list.append(block_definition)
-
-	BlocksCatalog.add_custom_blocks(_class_name, block_list)
-
+#static func setup_custom_blocks():
+	#var _class_name = "objek"
+	#var block_list: Array[BlockDefinition] = []
+#
+	#var block_definition: BlockDefinition = BlockDefinition.new()
+	#block_definition.name = &"fungsi_mulai"
+	#block_definition.target_node_class = _class_name
+	#block_definition.category = "%siklus%"
+	#block_definition.type = Types.BlockType.ENTRY
+	#block_definition.display_template = "mulai"
+	#block_definition.description = "Fungsi yang dipanggil pada saat objek ditambahkan ke dunia."
+	#block_definition.code_template = "func mulai():"
+	#block_list.append(block_definition)
+#
+	#BlocksCatalog.add_custom_blocks(_class_name, block_list)
+#
 	#var property_list: Array[Dictionary] = [
 		#{
 			#"name": "jalur_instance",
@@ -198,6 +188,5 @@ static func setup_custom_blocks():
 			#"default_set": [],
 		#}
 	#}
-
+#
 	#BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
-	BlocksCatalog.add_custom_blocks(_class_name, block_list)

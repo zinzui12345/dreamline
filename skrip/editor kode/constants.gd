@@ -16,15 +16,20 @@ const FOCUS_BORDER_COLOR = Color(225, 242, 0)
 ## category and then are separated by 10 to allow custom categories to
 ## be easily placed between builtin categories.
 const BUILTIN_CATEGORIES_PROPS: Dictionary = {
-	"Lifecycle":
+	"%siklus_server%":
 	{
 		"color": Color("ec3b59"),
 		"order": 10,
 	},
-	"Transform | Position":
+	"%siklus_client%":
 	{
 		"color": Color("4b6584"),
 		"order": 20,
+	},
+	"Transform | Position":
+	{
+		"color": Color("4b6584"),
+		"order": 25,
 	},
 	"Transform | Rotation":
 	{

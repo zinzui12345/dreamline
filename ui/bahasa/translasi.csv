@@ -149,7 +149,8 @@ tcf6af195fc,Ubah atau tambahkan blok kode pada objek tertentu untuk menyelesaika
 t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemudian edit objek,to add or modify an object code block` use edit mode and then edit the object
 ,,
 # editor kode,,
-%siklus%,Siklus,Lifecycle
+%siklus_server%,Siklus | Server,Lifecycle | Server
+%siklus_client%,Siklus | Client,Lifecycle | Client
 %metode%,Metode,Methods
 %variabel%,Variabel,Variable
 %perulangan%,Perulangan,Loops
@@ -186,6 +187,14 @@ kondisi,kondisi,condition
 %not ,bukan ,not 
 jumlah,jumlah,count
 nilai,nilai,value
+%ketika_mulai,Ketika Mulai,On Ready
+%deskripsi_ketika_mulai%,Blok yang terpasang akan dieksekusi pada saat node "dimulai",Attached blocks will be executed once when the node is "ready"
+%hapus_objek,Hapus Objek,Remove Object
+%deskripsi_hapus_objek%,Menghapus objek dari server,Remove the object from server.
+%gunakan_objek,Fungsikan,Use
+%deskripsi_gunakan_objek%,Metode ini akan dipanggil ketika objek digunakan atau di-interaksi.,This method will be call when object is used or interact.
+%hapus_entitas,Hapus Entitas,Remove Entity
+%deskripsi_hapus_entitas%,Menghapus entitas dari server,Remove the entity from server.
 %definisikan_metode ,Definisikan metode ,Define method 
 %deskripsi_definisikan_metode%,Mendefinisikan sebuah metode/fungsi beserta pernyataannya,Define a method/function with following statements
 %panggil_metode ,Panggil metode ,Call method 

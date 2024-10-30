@@ -49,7 +49,7 @@ static func get_general_blocks() -> Array[Block]:
 	var block_list: Array[Block] = []
 
 	# Lifecycle
-	for block_name in [&"ready", &"process", &"physics_process", &"queue_free"]:
+	for block_name in [&"ready", &"node_ready"]: # &"process", &"physics_process", 
 		block = Util.instantiate_block_by_name(block_name)
 		block_list.append(block)
 
