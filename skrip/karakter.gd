@@ -525,19 +525,19 @@ func _physics_process(delta : float) -> void:
 			if !melompat and !_ragdoll:
 				if Input.is_action_pressed("berlari") and arah.z > 1.0:
 					if is_on_floor():
-						arah.y = 180 * delta
+						arah.y = 90 * delta
 					elif (Input.is_action_pressed("kiri") and _input_arah_pandangan.x > 0) \
 					 or (Input.is_action_pressed("kanan") and _input_arah_pandangan.x < 0):
-						arah.y = clampf(arah.y * 1.4, 180 * delta, 250 * delta)
+						arah.y = clampf(arah.y * 1.4, 90 * delta, 125 * delta)
 						if Input.is_action_pressed("mundur"):
-							arah.z = -clampf(arah.z * 1.05, 0.0, 250 * delta)
+							arah.z = -clampf(arah.z * 1.05, 0.0, 125 * delta)
 						elif jongkok:
-							arah.z = clampf(arah.z * 1.025, 0.0, 450 * delta)
-						else:
 							arah.z = clampf(arah.z * 1.025, 0.0, 250 * delta)
+						else:
+							arah.z = clampf(arah.z * 1.025, 0.0, 125 * delta)
 				elif is_on_floor():
 					melompat = true
-					arah.y = 150 * delta
+					arah.y = 75 * delta
 			if is_on_floor() and _ragdoll:
 				if _coba_reset_ragdoll > 40:
 					_timer_ragdoll.stop()
@@ -723,7 +723,7 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["arah_terserang"] = _percepatan_ragdoll
 	
 	# terapkan arah gerakan
-	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.1
+	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
 	elif is_on_floor() and arah.y < 0: arah.y = 0
 	# jangan fungsikan kendali kalo animasi gak aktif
 	if $pose.active: velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
