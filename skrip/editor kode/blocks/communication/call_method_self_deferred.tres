@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://1ur41w33q10u"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_vfxcu"]
+
+[resource]
+script = ExtResource("1_vfxcu")
+name = &"call_method_self_deferred"
+target_node_class = ""
+description = "%deskripsi_panggil_metode_ditangguhkan%"
+category = "%metode%"
+type = 2
+variant_type = 0
+display_template = "%panggil_metode_ditangguhkan {nama_metode: STRING}"
+code_template = "call_deferred({nama_metode})"
+defaults = {}
+signal_name = ""
+scope = ""

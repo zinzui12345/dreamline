@@ -54,7 +54,7 @@ static func get_general_blocks() -> Array[Block]:
 		block_list.append(block)
 
 	# Loops
-	for block_name in [&"for", &"while", &"break", &"continue"]: # &"await_scene_ready"
+	for block_name in [&"for", &"while", &"break", &"continue"]: # &"await_node_ready"
 		block = Util.instantiate_block_by_name(block_name)
 		block_list.append(block)
 
@@ -64,7 +64,7 @@ static func get_general_blocks() -> Array[Block]:
 		block_list.append(block)
 
 	# Communication
-	for block_name in [&"define_method", &"call_method_self"]: # &"call_method_group", &"call_method_node"
+	for block_name in [&"define_method", &"call_method_self", &"call_method_self_deferred"]: # &"call_method_group", &"call_method_node"
 		block = Util.instantiate_block_by_name(block_name)
 		block_list.append(block)
 

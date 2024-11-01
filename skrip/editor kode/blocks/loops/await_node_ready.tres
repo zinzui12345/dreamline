@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bkdmiqavhqrph"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_gcch3"]
+
+[resource]
+script = ExtResource("1_gcch3")
+name = &"await_node_ready"
+target_node_class = ""
+description = ""
+category = "%perulangan%"
+type = 2
+variant_type = 0
+display_template = "%tunggu_node_siap"
+code_template = "if not is_node_ready():
+	await ready"
+defaults = {}
+signal_name = ""
+scope = ""

@@ -22,117 +22,117 @@ script = ExtResource("4_0ksvp")
 block_class = &"EntryBlock"
 serialized_props = [["color", Color(0.92549, 0.231373, 0.34902, 1)], ["scope", ""], ["param_input_strings", {}]]
 
-[sub_resource type="Resource" id="Resource_yks0a"]
-script = ExtResource("4_0ksvp")
-block_class = &"StatementBlock"
-serialized_props = [["block_name", &"set_var_properti"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Atur properti menjadi {nilai: ARRAY}"], ["statement", "properti = {nilai}"], ["defaults", {}], ["param_input_strings", {
-"nilai": "[[\"skala\", Vector3(1, 1, 1)]]"
-}]]
-
-[sub_resource type="Resource" id="Resource_vhgcf"]
+[sub_resource type="Resource" id="Resource_xdeeo"]
 script = ExtResource("4_0ksvp")
 block_class = &"StatementBlock"
 serialized_props = [["block_name", &"set_var_jalur_instance"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Atur jalur_instance menjadi {nilai: STRING}"], ["statement", "jalur_instance = {nilai}"], ["defaults", {}], ["param_input_strings", {
 "nilai": "res://skena/objek/placeholder_objek.tscn"
 }]]
 
-[sub_resource type="Resource" id="Resource_yu8ts"]
+[sub_resource type="Resource" id="Resource_bww7g"]
 script = ExtResource("4_0ksvp")
 block_class = &"StatementBlock"
 serialized_props = [["block_name", &"set_var_skala"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Atur skala menjadi {nilai: VECTOR3}"], ["statement", "skala = {nilai}"], ["defaults", {}], ["param_input_strings", {
 "nilai": Vector3(1, 1, 1)
 }]]
 
-[sub_resource type="Resource" id="Resource_pq57v"]
-script = ExtResource("4_0ksvp")
-block_class = &"StatementBlock"
-serialized_props = [["scope", ""], ["param_input_strings", {
-"nilai": 20
-}]]
-
-[sub_resource type="Resource" id="Resource_7ccv0"]
+[sub_resource type="Resource" id="Resource_kswsq"]
 script = ExtResource("4_0ksvp")
 block_class = &"StatementBlock"
 serialized_props = [["scope", ""], ["param_input_strings", {
 "nilai": 10
 }]]
 
-[sub_resource type="Resource" id="Resource_727y6"]
+[sub_resource type="Resource" id="Resource_qxsdr"]
+script = ExtResource("4_0ksvp")
+block_class = &"StatementBlock"
+serialized_props = [["scope", ""], ["param_input_strings", {
+"nilai": 20
+}]]
+
+[sub_resource type="Resource" id="Resource_8dg8s"]
+script = ExtResource("4_0ksvp")
+block_class = &"StatementBlock"
+serialized_props = [["block_name", &"set_var_properti"], ["label", "StatementBlock"], ["color", Color(1, 0.560784, 0.0313726, 1)], ["block_type", 2], ["position", Vector2(0, 0)], ["scope", ""], ["block_format", "Atur properti menjadi {nilai: ARRAY}"], ["statement", "properti = {nilai}"], ["defaults", {}], ["param_input_strings", {
+"nilai": "[[\"skala\", Vector3(1, 1, 1)]]"
+}]]
+
+[sub_resource type="Resource" id="Resource_abuon"]
 script = ExtResource("4_0ksvp")
 block_class = &"StatementBlock"
 serialized_props = [["scope", ""], ["param_input_strings", {
 "nama_metode": "_setup"
 }]]
 
-[sub_resource type="Resource" id="Resource_eq254"]
+[sub_resource type="Resource" id="Resource_eg2of"]
 script = ExtResource("3_u80rt")
-name = &"call_method_self"
+name = &"call_method_self_deferred"
 position = Vector2(0, 0)
 path_child_pairs = []
-block_serialized_properties = SubResource("Resource_727y6")
+block_serialized_properties = SubResource("Resource_abuon")
 
-[sub_resource type="Resource" id="Resource_pm64l"]
-script = ExtResource("3_u80rt")
-name = &"objek_set_jarak_render"
-position = Vector2(0, 0)
-path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_eq254")]]
-block_serialized_properties = SubResource("Resource_7ccv0")
-
-[sub_resource type="Resource" id="Resource_4qocf"]
-script = ExtResource("3_u80rt")
-name = &"objek_set_radius_keterlihatan"
-position = Vector2(0, 0)
-path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_pm64l")]]
-block_serialized_properties = SubResource("Resource_pq57v")
-
-[sub_resource type="Resource" id="Resource_g2qai"]
-script = ExtResource("3_u80rt")
-name = &"set_var_skala"
-position = Vector2(0, 0)
-path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_4qocf")]]
-block_serialized_properties = SubResource("Resource_yu8ts")
-
-[sub_resource type="Resource" id="Resource_f5kss"]
-script = ExtResource("3_u80rt")
-name = &"set_var_jalur_instance"
-position = Vector2(0, 0)
-path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_g2qai")]]
-block_serialized_properties = SubResource("Resource_vhgcf")
-
-[sub_resource type="Resource" id="Resource_o250d"]
+[sub_resource type="Resource" id="Resource_r41d4"]
 script = ExtResource("3_u80rt")
 name = &"set_var_properti"
 position = Vector2(0, 0)
-path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_f5kss")]]
-block_serialized_properties = SubResource("Resource_yks0a")
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_eg2of")]]
+block_serialized_properties = SubResource("Resource_8dg8s")
+
+[sub_resource type="Resource" id="Resource_vfw7l"]
+script = ExtResource("3_u80rt")
+name = &"objek_set_radius_keterlihatan"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_r41d4")]]
+block_serialized_properties = SubResource("Resource_qxsdr")
+
+[sub_resource type="Resource" id="Resource_c81tb"]
+script = ExtResource("3_u80rt")
+name = &"objek_set_jarak_render"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_vfw7l")]]
+block_serialized_properties = SubResource("Resource_kswsq")
+
+[sub_resource type="Resource" id="Resource_ujnbw"]
+script = ExtResource("3_u80rt")
+name = &"set_var_skala"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_c81tb")]]
+block_serialized_properties = SubResource("Resource_bww7g")
+
+[sub_resource type="Resource" id="Resource_1pqy5"]
+script = ExtResource("3_u80rt")
+name = &"set_var_jalur_instance"
+position = Vector2(0, 0)
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_ujnbw")]]
+block_serialized_properties = SubResource("Resource_xdeeo")
 
 [sub_resource type="Resource" id="Resource_1h6wi"]
 script = ExtResource("3_u80rt")
 name = &"ready"
 position = Vector2(54, 47)
-path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_o250d")]]
+path_child_pairs = [[NodePath("VBoxContainer/SnapPoint"), SubResource("Resource_1pqy5")]]
 block_serialized_properties = SubResource("Resource_b0aen")
 
-[sub_resource type="Resource" id="Resource_o5nev"]
+[sub_resource type="Resource" id="Resource_ik2mt"]
 script = ExtResource("6_wwvnq")
 var_name = "jalur_instance"
 var_type = 4
 
-[sub_resource type="Resource" id="Resource_045vl"]
-script = ExtResource("6_wwvnq")
-var_name = "properti"
-var_type = 28
-
-[sub_resource type="Resource" id="Resource_dpdjg"]
+[sub_resource type="Resource" id="Resource_xp3le"]
 script = ExtResource("6_wwvnq")
 var_name = "skala"
 var_type = 9
 
-[sub_resource type="Resource" id="Resource_6nbgo"]
+[sub_resource type="Resource" id="Resource_k75i1"]
+script = ExtResource("6_wwvnq")
+var_name = "properti"
+var_type = 28
+
+[sub_resource type="Resource" id="Resource_20ysb"]
 script = ExtResource("5_f6gj8")
 script_inherits = "objek"
 block_trees = Array[ExtResource("3_u80rt")]([SubResource("Resource_1h6wi")])
-variables = Array[ExtResource("6_wwvnq")]([SubResource("Resource_o5nev"), SubResource("Resource_045vl"), SubResource("Resource_dpdjg")])
+variables = Array[ExtResource("6_wwvnq")]([SubResource("Resource_ik2mt"), SubResource("Resource_xp3le"), SubResource("Resource_k75i1")])
 generated_script = "extends objek
 
 var jalur_instance: String
@@ -143,12 +143,12 @@ var properti: Array
 
 
 func _ready():
-	properti = [[\"skala\", Vector3(1, 1, 1)]]
 	jalur_instance = 'res://skena/objek/placeholder_objek.tscn'
 	skala = Vector3(1, 1, 1)
-	radius_keterlihatan = 20
 	jarak_render = 10
-	call('_setup')
+	radius_keterlihatan = 20
+	properti = [[\"skala\", Vector3(1, 1, 1)]]
+	call_deferred('_setup')
 
 "
 version = 0
@@ -165,4 +165,4 @@ shape = SubResource("BoxShape3D_xjedm")
 
 [node name="kode_ubahan" type="Node" parent="."]
 script = ExtResource("2_pflcm")
-block_script = SubResource("Resource_6nbgo")
+block_script = SubResource("Resource_20ysb")

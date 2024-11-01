@@ -202,6 +202,8 @@ nilai,nilai,value
 %deskripsi_definisikan_metode%,Mendefinisikan sebuah metode/fungsi beserta pernyataannya,Define a method/function with following statements
 %panggil_metode ,Panggil metode ,Call method 
 %deskripsi_panggil_metode%,Memanggil metode/fungsi pada objek,Calls the method/function on object
+%panggil_metode_ditangguhkan ,Panggil metode (ditangguhkan) ,Call method (deferred) 
+%deskripsi_panggil_metode_ditangguhkan%,Memanggil metode/fungsi pada objek di akhir frame,Calls the method/function on object at idle time
 nama_metode,nama metode,method name
 %ulangi ,Ulangi ,Repeat 
 %deskripsi_perulangan_for%, Jalankan blok yang terhubung sebanyak [i]jumlah[/i] tertentu,Run the connected blocks [i]number[/i] times
@@ -211,6 +213,7 @@ nama_metode,nama metode,method name
 %deskripsi_hentikan_perulangan%,Hentikan proses iterasi perulangan untuk melanjutkan eksekusi secara langsung.,Break loop execution directly.
 %lanjutkan_perulangan,Lewati,Continue
 %deskripsi_lanjutkan_perulangan%,Lanjutkan proses perulangan ke iterasi berikutnya dengan melewati sisa iterasi.,Continue loop process to the next iteration by skipping the rest of iterations.
+%tunggu_node_siap,Tunggu hingga node dimulai,Await node ready
 %angka_desimal_acak ,Bilangan desimal acak di antara ,Random floating point number between 
 %deskripsi_angka_desimal_acak%,Menghasilkan bilangan desimal acak di antara kedua nilai yang ditentukan,Generate a random floating point number between [i]from[/i] and [i]to[/i] inclusively
 %angka_bulat_acak ,Bilangan bulat acak di antara ,Random integer number between 

@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 27/10/24 Early Access"
+const versi = "Dreamline v0.4.4 31/10/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -395,6 +395,8 @@ func _notification(what : int) -> void:
 	elif what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST: _keluar()
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
+	elif what == NOTIFICATION_FOCUS_EXIT: get_tree().paused = true
+	elif what == NOTIFICATION_FOCUS_ENTER: get_tree().paused = false
 
 # core
 func uji_performa() -> void:
@@ -1674,10 +1676,10 @@ func _ketika_translasi_z_objek_diubah(nilai : float) -> void:
 				edit_objek.set_indexed("skala:z", nilai)
 func _ketika_mengubah_kode_objek() -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
-		## 31/07/24 :: jangan lanjutkan jika kode kosong
-		#if edit_objek.get_node("kode_ubahan").dapatkan_kode() == "":
-			#_tampilkan_popup_informasi_("NULL")
-			#return
+		# 31/07/24 :: jangan lanjutkan jika kode kosong
+		if edit_objek.get_node("kode_ubahan").block_script == null:
+			_tampilkan_popup_informasi_("NULL")
+			return
 		## 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
 		#var sintaks_aksi : Dictionary = {
 			#"Permainan" : [
@@ -1947,10 +1949,6 @@ func tampilkan_editor_kode() -> void:
 		if $karakter.visible:
 			$karakter/animasi.play("animasi_panel/tutup")
 		$menu_utama/animasi.play("lipat")
-	#if OS.get_distribution_name() == "Android":
-		#$blok_kode/panel_kode._ketika_mengatur_skala(1.5)
-		#$blok_kode/panel_kode/kontrol_skala/pengatur_skala.value = 1.5
-	#$blok_kode/animasi.play("tampilkan")
 	$editor_kode/animasi.play("tampilkan")
 func buat_kode(nama_kelas : String = "objek"):
 	if $editor_kode.visible:
