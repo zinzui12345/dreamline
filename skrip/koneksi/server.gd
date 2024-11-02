@@ -1122,7 +1122,11 @@ func _pemain_terputus(id_pemain):
 	if permainan != null and permainan.dunia != null:
 		if permainan.dunia.get_node("objek").get_node_or_null(nama_objek) != null:
 			for p in kondisi_objek.size():
-				if permainan.dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
+				if kondisi_objek[p][0] == "kode":
+					var terima_resource : Dictionary = JSON.parse_string(kondisi_objek[p][1])
+					Panku.notify("chu>.<")
+					Panku.notify("seno")
+				elif permainan.dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
 					permainan.dunia.get_node("objek").get_node(nama_objek).set(kondisi_objek[p][0], kondisi_objek[p][1])
 @rpc("authority") func _hapus_visibilitas_pemain(id_pemain : int):
 	if permainan != null and permainan.dunia != null:

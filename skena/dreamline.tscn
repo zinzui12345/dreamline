@@ -9066,7 +9066,6 @@ libraries = {
 }
 
 [node name="performa" type="Label" parent="."]
-visible = false
 top_level = true
 layout_mode = 1
 anchors_preset = 3
@@ -9087,7 +9086,6 @@ text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB | culling : true"
 horizontal_alignment = 2
 
 [node name="versi" type="Label" parent="."]
-visible = false
 top_level = true
 layout_mode = 1
 anchors_preset = 3

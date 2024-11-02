@@ -31,11 +31,14 @@ var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara se
 @export var cek_titik : int = 0				# simpan titik terakhir occlusion culling
 @export var tak_terlihat : bool = false		# simpan kondisi frustum culling
 @export var terhalang : bool = false		# simpan kondisi occlusion culling
-@export var kode : String :					# jika menggunakan kode ubahan
+@export var kode : BlockScriptSerialization :# jika menggunakan kode ubahan
 	set(kode_baru):
-		if get_node_or_null("kode_ubahan") != null:
-			if $kode_ubahan.block_script.generated_script != kode_baru:
-				$kode_ubahan.block_script.generated_script = kode_baru
+		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+			if $kode_ubahan.block_script != kode_baru:
+				$kode_ubahan.block_script = kode_baru
+				$kode_ubahan._update_parent_script()
+				Panku.notify("1")
+			Panku.notify("2")
 			kode = kode_baru
 
 func _ready() -> void: call_deferred("_setup")
@@ -49,6 +52,11 @@ func _setup() -> void:
 					_sp_properti.append([
 						properti_kustom[0],
 						get(properti_kustom[0])
+					])
+				if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+					_sp_properti.append([
+						"kode",
+						$kode_ubahan.block_script
 					])
 			else:
 				print("[Galat] objek %s tidak memiliki properti!" % name)
@@ -115,6 +123,28 @@ func _process(_delta : float) -> void:
 		if cek_properti["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		if cek_properti["jarak_render"] != jarak_render:	perubahan_kondisi.append(["jarak_render", jarak_render])
 		
+		# cek apakah kode berubah (jika ada)
+		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+			# cek apakah kode sebelumnya telah tersimpan
+			if cek_properti.get("kode") == null: cek_properti["kode"] = $kode_ubahan.block_script.generated_script
+			
+			# cek apakah kode berubah
+			if cek_properti["kode"] != $kode_ubahan.block_script.generated_script:
+				var parse_cabang_blok : Dictionary
+				for cabang_blok in $kode_ubahan.block_script.block_trees.size():
+					parse_cabang_blok[str(cabang_blok)+"|BlockSerialization"] = {
+						"name|StringName"										: $kode_ubahan.block_script.block_trees[cabang_blok].name,
+						"position|Vector2"										: $kode_ubahan.block_script.block_trees[cabang_blok].position,
+						"path_child_pairs|Array"								: _parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
+						"block_serialized_properties|BlockSerializedProperties"	: _parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
+					}
+				var kirim_resource : Dictionary = {
+					"block_trees":		parse_cabang_blok,
+					"variables":		$kode_ubahan.block_script.variables,
+					"generated_script":	$kode_ubahan.block_script.generated_script
+				}
+				perubahan_kondisi.append(["kode", JSON.stringify(kirim_resource)])
+		
 		# cek kondisi properti kustom
 		for p in sinkron_kondisi.size():
 			# cek apakah kondisi sebelumnya telah tersimpan
@@ -134,6 +164,10 @@ func _process(_delta : float) -> void:
 		cek_properti["posisi"] = position
 		cek_properti["rotasi"] = rotation
 		cek_properti["jarak_render"] = jarak_render
+		
+		# simpan perubahan kode untuk di-cek lagi
+		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+			cek_properti["kode"] = $kode_ubahan.block_script.generated_script
 		
 		# simpan perubahan kondisi properti kustom untuk di-cek lagi
 		for p in sinkron_kondisi.size():
@@ -190,3 +224,30 @@ static func setup_custom_blocks():
 	}
 
 	BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
+func _parse_sub_blok_kode(data : Array) -> Dictionary:
+	var hasil_data : Dictionary = {}
+	for sub_data in data.size():
+		if data[sub_data] is Array and data[sub_data].size() == 2:
+			hasil_data[str(sub_data)+"|Array"] = {
+				"0|NodePath"			: data[sub_data][0],
+				"1|BlockSerialization"	: {
+					"name|StringName"										: data[sub_data][1].name,
+					"position|Vector2"										: data[sub_data][1].position,
+					"path_child_pairs|Array"								: _parse_sub_blok_kode(data[sub_data][1].path_child_pairs),
+					"block_serialized_properties|BlockSerializedProperties"	: _parse_sub_properti_blok_kode(data[sub_data][1].block_serialized_properties)
+				}
+			}
+	return hasil_data
+func _parse_sub_properti_blok_kode(data : BlockSerializedProperties) -> Dictionary:
+	var hasil_data : Dictionary = {}
+	if data != null:
+		hasil_data["block_class|StringName"] = data["block_class"]
+		hasil_data["serialized_props|Array"] = {}
+		for sub_sub_properti in data["serialized_props"].size():
+			var hasil_sub_data : Array
+			if data["serialized_props"][sub_sub_properti] is Array and data["serialized_props"][sub_sub_properti].size() == 2:
+				hasil_data["serialized_props|Array"][str(sub_sub_properti)+"|Array"] = {
+					"0|String"																: data["serialized_props"][sub_sub_properti][0],
+					"1|"+type_string(typeof(data["serialized_props"][sub_sub_properti][1]))	: data["serialized_props"][sub_sub_properti][1]
+				}
+	return hasil_data

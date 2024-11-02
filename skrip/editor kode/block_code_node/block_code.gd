@@ -9,7 +9,7 @@ extends Node
 func _ready():
 	if Engine.is_editor_hint():
 		return
-
+	
 	_update_parent_script()
 
 
@@ -40,6 +40,10 @@ func _update_parent_script():
 	var script := GDScript.new()
 	script.set_source_code(block_script.generated_script)
 	script.reload()
+	
+	Panku.notify(block_script)
+	# 01/11/24 set parent property
+	if parent is objek and parent.kode != block_script: parent.kode = block_script
 	
 	# Persist export script variables (like SimpleCharacter exported texture)
 	var persist_properties = {}
