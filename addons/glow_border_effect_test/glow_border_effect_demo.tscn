@@ -1,7 +1,8 @@
-[gd_scene load_steps=21 format=3 uid="uid://ddnxlo4hjr054"]
+[gd_scene load_steps=22 format=3 uid="uid://ddnxlo4hjr054"]
 
 [ext_resource type="PackedScene" uid="uid://mjc1ujficlc2" path="res://addons/glow_border_effect/glow_border_effect_renderer.tscn" id="1_nu2gu"]
 [ext_resource type="Script" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="2_53moe"]
+[ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="3_aee8e"]
 [ext_resource type="Script" path="res://addons/glow_border_effect_test/glow_border_effect_demo_camera.gd" id="3_lwun3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_f68tu"]
@@ -240,8 +241,12 @@ glow_border_effect = true
 
 [node name="GlowingCube" type="MeshInstance3D" parent="World/GlowingObject"]
 transform = Transform3D(2.13299, 0, 0, 0, 2.13299, 0, 0, 0, 2.13299, 0, 0, 0)
+visible = false
 mesh = SubResource("1")
 skeleton = NodePath("../../..")
+
+[node name="bajay" parent="World/GlowingObject" instance=ExtResource("3_aee8e")]
+process_mode = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="World"]
 root_node = NodePath("../..")
