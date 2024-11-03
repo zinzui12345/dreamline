@@ -1124,8 +1124,39 @@ func _pemain_terputus(id_pemain):
 			for p in kondisi_objek.size():
 				if kondisi_objek[p][0] == "kode":
 					var terima_resource : Dictionary = JSON.parse_string(kondisi_objek[p][1])
-					Panku.notify("chu>.<")
-					Panku.notify("seno")
+					var parse_resource_blok : Array[BlockSerialization]
+					var parse_resource_variabel : Array[VariableResource]
+					var hasil_resource : BlockScriptSerialization
+					for blok_kode in terima_resource.block_trees:
+						var nama_blok : StringName = &"" + terima_resource.block_trees[blok_kode].name
+						var tmp_pos_blok = terima_resource.block_trees[blok_kode].position # (54, 47)
+						var p_tmp_pos_blok = tmp_pos_blok.substr(1, tmp_pos_blok.length()-2)
+						var c_tmp_pos_blok = p_tmp_pos_blok.split(", ", false)
+						var posisi_blok : Vector2 = Vector2(c_tmp_pos_blok[0].to_float(), c_tmp_pos_blok[1].to_float())
+						var sub_blok : Array = permainan.dunia.get_node("objek").get_node(nama_objek)._compile_sub_blok_kode(terima_resource.block_trees[blok_kode].path_child_pairs)
+						var properti : BlockSerializedProperties = permainan.dunia.get_node("objek").get_node(nama_objek)._compile_sub_properti_blok_kode(terima_resource.block_trees[blok_kode].block_serialized_properties)
+						parse_resource_blok.append(
+							BlockSerialization.new(
+								nama_blok,
+								posisi_blok,
+								properti,
+								sub_blok
+							)
+						)
+					for variabel in terima_resource.variables:
+						parse_resource_variabel.append(
+							VariableResource.new(
+								terima_resource.variables[variabel].var_name,
+								terima_resource.variables[variabel].var_type
+							)
+						)
+					hasil_resource = BlockScriptSerialization.new(
+						"objek",
+						parse_resource_blok,
+						parse_resource_variabel,
+						terima_resource.generated_script
+					)
+					permainan.dunia.get_node("objek").get_node(nama_objek).kode = hasil_resource
 				elif permainan.dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
 					permainan.dunia.get_node("objek").get_node(nama_objek).set(kondisi_objek[p][0], kondisi_objek[p][1])
 @rpc("authority") func _hapus_visibilitas_pemain(id_pemain : int):

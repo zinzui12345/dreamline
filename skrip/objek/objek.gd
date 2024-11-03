@@ -131,16 +131,22 @@ func _process(_delta : float) -> void:
 			# cek apakah kode berubah
 			if cek_properti["kode"] != $kode_ubahan.block_script.generated_script:
 				var parse_cabang_blok : Dictionary
+				var parse_variabel_blok : Dictionary
 				for cabang_blok in $kode_ubahan.block_script.block_trees.size():
 					parse_cabang_blok[str(cabang_blok)+"|BlockSerialization"] = {
-						"name|StringName"										: $kode_ubahan.block_script.block_trees[cabang_blok].name,
-						"position|Vector2"										: $kode_ubahan.block_script.block_trees[cabang_blok].position,
-						"path_child_pairs|Array"								: _parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
-						"block_serialized_properties|BlockSerializedProperties"	: _parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
+						"name"							: $kode_ubahan.block_script.block_trees[cabang_blok].name,
+						"position"						: $kode_ubahan.block_script.block_trees[cabang_blok].position,
+						"path_child_pairs"				: _parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
+						"block_serialized_properties"	: _parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
+					}
+				for indeks_data_variabel in $kode_ubahan.block_script.variables.size():
+					parse_variabel_blok[str(indeks_data_variabel)+"|VariableResource"] = {
+						"var_name":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_name,
+						"var_type":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_type
 					}
 				var kirim_resource : Dictionary = {
 					"block_trees":		parse_cabang_blok,
-					"variables":		$kode_ubahan.block_script.variables,
+					"variables":		parse_variabel_blok,
 					"generated_script":	$kode_ubahan.block_script.generated_script
 				}
 				perubahan_kondisi.append(["kode", JSON.stringify(kirim_resource)])
@@ -229,25 +235,137 @@ func _parse_sub_blok_kode(data : Array) -> Dictionary:
 	for sub_data in data.size():
 		if data[sub_data] is Array and data[sub_data].size() == 2:
 			hasil_data[str(sub_data)+"|Array"] = {
-				"0|NodePath"			: data[sub_data][0],
-				"1|BlockSerialization"	: {
-					"name|StringName"										: data[sub_data][1].name,
-					"position|Vector2"										: data[sub_data][1].position,
-					"path_child_pairs|Array"								: _parse_sub_blok_kode(data[sub_data][1].path_child_pairs),
-					"block_serialized_properties|BlockSerializedProperties"	: _parse_sub_properti_blok_kode(data[sub_data][1].block_serialized_properties)
+				"NodePath"				: data[sub_data][0],
+				"BlockSerialization"	: {
+					"name"							: data[sub_data][1].name,
+					"position"						: data[sub_data][1].position,
+					"path_child_pairs"				: _parse_sub_blok_kode(data[sub_data][1].path_child_pairs),
+					"block_serialized_properties"	: _parse_sub_properti_blok_kode(data[sub_data][1].block_serialized_properties)
 				}
 			}
+	return hasil_data
+func _compile_sub_blok_kode(data : Dictionary) -> Array:
+	var hasil_data : Array
+	for sub_data in data:
+		if data[sub_data] is Dictionary and data[sub_data].size() == 2:
+			var nama_blok : StringName = &"" + data[sub_data]["BlockSerialization"].name
+			var tmp_pos_blok = data[sub_data]["BlockSerialization"].position
+			var p_tmp_pos_blok = tmp_pos_blok.substr(1, tmp_pos_blok.length()-2)
+			var c_tmp_pos_blok = p_tmp_pos_blok.split(", ", false)
+			var posisi_blok : Vector2 = Vector2(c_tmp_pos_blok[0].to_float(), c_tmp_pos_blok[1].to_float())
+			var sub_blok : Array = _compile_sub_blok_kode(data[sub_data]["BlockSerialization"].path_child_pairs)
+			var properti : BlockSerializedProperties = _compile_sub_properti_blok_kode(data[sub_data]["BlockSerialization"].block_serialized_properties)
+			hasil_data.append([
+				NodePath(data[sub_data]["NodePath"]),
+				BlockSerialization.new(
+					nama_blok,
+					posisi_blok,
+					properti,
+					sub_blok
+				)
+			])
 	return hasil_data
 func _parse_sub_properti_blok_kode(data : BlockSerializedProperties) -> Dictionary:
 	var hasil_data : Dictionary = {}
 	if data != null:
-		hasil_data["block_class|StringName"] = data["block_class"]
-		hasil_data["serialized_props|Array"] = {}
+		hasil_data["block_class"] = data["block_class"]
+		hasil_data["serialized_props"] = {}
 		for sub_sub_properti in data["serialized_props"].size():
 			var hasil_sub_data : Array
-			if data["serialized_props"][sub_sub_properti] is Array and data["serialized_props"][sub_sub_properti].size() == 2:
-				hasil_data["serialized_props|Array"][str(sub_sub_properti)+"|Array"] = {
-					"0|String"																: data["serialized_props"][sub_sub_properti][0],
-					"1|"+type_string(typeof(data["serialized_props"][sub_sub_properti][1]))	: data["serialized_props"][sub_sub_properti][1]
-				}
+			if data["serialized_props"][sub_sub_properti] is Array:
+				hasil_data["serialized_props"][str(sub_sub_properti) + "|" + type_string(typeof(data["serialized_props"][sub_sub_properti]))] = _parse_sub_sub_properti_blok_kode(data["serialized_props"][sub_sub_properti])
+			elif data["serialized_props"][sub_sub_properti] is Dictionary:
+				hasil_data["serialized_props"][data["serialized_props"].keys()[sub_sub_properti] + "|" + type_string(typeof(data["serialized_props"][sub_sub_properti]))] = _parse_sub_sub_properti_blok_kode(data["serialized_props"][sub_sub_properti])
+	return hasil_data
+func _parse_sub_sub_properti_blok_kode(data) -> Dictionary:
+	var hasil_data : Dictionary
+	if data is Dictionary:
+		for indeks_sub_sub_properti in data:
+			var tipe_data = type_string(typeof(data[indeks_sub_sub_properti]))
+			if tipe_data == "Dictionary":
+				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = _parse_sub_sub_properti_blok_kode(data[indeks_sub_sub_properti])
+			else:
+				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = data[indeks_sub_sub_properti]
+	elif data is Array:
+		for indeks_sub_sub_properti in data.size():
+			var tipe_data = type_string(typeof(data[indeks_sub_sub_properti]))
+			if tipe_data == "Dictionary":
+				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = _parse_sub_sub_properti_blok_kode(data[indeks_sub_sub_properti])
+			else:
+				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = data[indeks_sub_sub_properti]
+	return hasil_data
+func _konversi_sub_properti_blok_kode(data, tipe_target : String):
+	var hasil_data
+	var pecah_data : PackedStringArray
+	if data is String:
+		pecah_data = data.split(", ")
+	if tipe_target == "Color":
+		hasil_data = Color(
+			pecah_data[0].to_float(),
+			pecah_data[1].to_float(),
+			pecah_data[2].to_float(),
+			pecah_data[3].to_float()
+		)
+	elif tipe_target == "Vector2":
+		hasil_data = Vector2(
+			pecah_data[0].to_float(),
+			pecah_data[1].to_float()
+		)
+	elif tipe_target == "Vector3":
+		hasil_data = Vector3(
+			pecah_data[0].to_float(),
+			pecah_data[1].to_float(),
+			pecah_data[2].to_float()
+		)
+	elif tipe_target == "StringName":
+		hasil_data = &"" + data
+	elif tipe_target == "Array" or tipe_target == "Dictionary":
+		hasil_data = _konversi_sub_sub_properti_blok_kode(data, tipe_target)
+	else :
+		hasil_data = data
+	return hasil_data
+func _konversi_sub_sub_properti_blok_kode(data : Dictionary, tipe_target : String):
+	if tipe_target == "Array":
+		var hasil_data : Array = []
+		for indeks_sub_sub_properti in data:
+			var p_tipe_properti : PackedStringArray = indeks_sub_sub_properti.split('|')
+			hasil_data.append(
+				_konversi_sub_properti_blok_kode(
+					data[indeks_sub_sub_properti],
+					p_tipe_properti[1]
+				)
+			)
+		return hasil_data
+	else:
+		var hasil_data : Dictionary = {}
+		for indeks_sub_sub_properti in data:
+			var p_tipe_properti : PackedStringArray = indeks_sub_sub_properti.split('|')
+			var src = data[indeks_sub_sub_properti]
+			hasil_data[p_tipe_properti[0]] = _konversi_sub_properti_blok_kode(
+				data[indeks_sub_sub_properti],
+				p_tipe_properti[1]
+			)
+		return hasil_data
+func _compile_sub_properti_blok_kode(data : Dictionary) -> BlockSerializedProperties:
+	var hasil_data : BlockSerializedProperties
+	var kelas_blok : StringName = &""+data["block_class"]
+	var daftar_properti : Array = []
+	for indeks_sub_properti in data["serialized_props"]:
+		var hasil_sub_data : Array = []
+		if data["serialized_props"][indeks_sub_properti] is Dictionary and data["serialized_props"][indeks_sub_properti].size() == 2:
+			for indeks_sub_sub_properti in data["serialized_props"][indeks_sub_properti]:
+				var p_tipe_properti : PackedStringArray = indeks_sub_sub_properti.split('|')
+				hasil_sub_data.append(
+					_konversi_sub_properti_blok_kode(
+						data["serialized_props"][indeks_sub_properti][indeks_sub_sub_properti],
+						p_tipe_properti[1]
+					)
+				)
+			print_debug(hasil_sub_data)
+		if hasil_sub_data.size() > 0:
+			daftar_properti.append(hasil_sub_data)
+	hasil_data = BlockSerializedProperties.new(
+		kelas_blok,
+		daftar_properti
+	)
 	return hasil_data
