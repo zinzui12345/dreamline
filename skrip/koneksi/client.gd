@@ -58,7 +58,6 @@ func _ketika_gagal_menghubungkan_server() -> void:
 	permainan._sembunyikan_proses_koneksi()
 	permainan._tampilkan_popup_informasi("%koneksigagal", permainan.get_node("daftar_server/panel/panel_input/sambungkan"))
 func _ketika_terputus_dari_server() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	permainan.putuskan_server()
 	if permainan.get_node("proses_koneksi").visible:
 		if permainan.get_node("daftar_server").visible:

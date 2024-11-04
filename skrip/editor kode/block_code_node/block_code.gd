@@ -41,7 +41,6 @@ func _update_parent_script():
 	script.set_source_code(block_script.generated_script)
 	script.reload()
 	
-	Panku.notify(block_script)
 	# 01/11/24 set parent property
 	if parent is objek and parent.kode != block_script: parent.kode = block_script
 	

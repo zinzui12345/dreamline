@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 31/10/24 Early Access"
+const versi = "Dreamline v0.4.4 04/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -395,8 +395,8 @@ func _notification(what : int) -> void:
 	elif what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST: _keluar()
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
-	elif what == NOTIFICATION_FOCUS_EXIT: get_tree().paused = true
-	elif what == NOTIFICATION_FOCUS_ENTER: get_tree().paused = false
+	#elif what == NOTIFICATION_FOCUS_EXIT: get_tree().paused = true # FIXME : fungsikan ketika rilis!
+	#elif what == NOTIFICATION_FOCUS_ENTER: get_tree().paused = false
 
 # core
 func uji_performa() -> void:
@@ -1063,6 +1063,7 @@ func putuskan_server(paksa : bool = false) -> void:
 			client.putuskan_server()
 			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
 		_sembunyikan_antarmuka_permainan()
 		# INFO : (9) tampilkan kembali menu utama
@@ -1680,39 +1681,7 @@ func _ketika_mengubah_kode_objek() -> void:
 		if edit_objek.get_node("kode_ubahan").block_script == null:
 			_tampilkan_popup_informasi_("NULL")
 			return
-		## 14/06/24 :: # buat palet sintaks berdasarkan kelas objek
-		#var sintaks_aksi : Dictionary = {
-			#"Permainan" : [
-				#["notifikasi(teks)", "Panku.notify(\"teks\")", "notifikasi"],
-				#["pesan(teks)", "server.permainan._tampilkan_popup_informasi_(\"teks\")", "popup"]
-			#]
-		#}
-		#if edit_objek is objek and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
-			#sintaks_aksi.merge({
-				#"Objek" : [
-					#["pindahkan(arah)", "get_node(\"../../\").pindahkan(Vector3(0,0,0))", "pindahkan_objek"]
-				#]
-			#})
-			#$blok_kode/panel_kode.tipe_kode = "objek"
-		#if edit_objek is pintu:
-			#sintaks_aksi.merge({
-				#"Pintu" : [
-					#["buka()", "get_node(\"../../\").buka()", "pintu_buka"],
-					#["tutup()", "get_node(\"../../\").tutup()", "pintu"]
-				#]
-			#})
-			#$blok_kode/panel_kode.tipe_kode = "pintu"
-		#elif edit_objek is patung:
-			#sintaks_aksi.merge({
-				#"🗿" : [
-					#["???", "get_node(\"../../\").berbunyi(true)", "bunyi"]
-				#]
-			#})
-		#$blok_kode/panel_kode.buat_palet_sintaks("%aksi", sintaks_aksi)
-		## 06/06/24 :: dapatkan kode objek, terapkan kode ke editor, kemudian tampilkan editor
-		#$blok_kode/panel_kode.buat_blok_kode(edit_objek.get_node("kode_ubahan").dapatkan_kode())
-		## 11/06/24 :: sambungkan signal jalankan_kode dari editor ke objek
-		#$blok_kode/panel_kode.connect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
+		# 31/10/24 :: # buat palet sintaks berdasarkan kelas objek
 		$editor_kode/blok_kode._save_node_button.visible = false
 		$editor_kode/blok_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
 		$editor_kode/blok_kode.save_script()

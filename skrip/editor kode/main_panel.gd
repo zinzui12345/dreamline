@@ -95,7 +95,6 @@ func _on_save_node_button_pressed():
 
 func _on_close_script_button_pressed():
 	save_script()
-	_block_canvas.rebuild_block_trees()
 	_current_block_code_node._update_parent_script()
 	server.permainan.tutup_editor_kode()
 	_block_canvas.clear_canvas()
@@ -188,7 +187,7 @@ func save_script():
 		#undo_redo.add_do_property(_current_block_code_node, "block_script", block_script)
 		_block_canvas.block_script_selected(block_script, _current_block_code_node)
 
-	#_block_canvas.rebuild_block_trees(undo_redo)
+	_block_canvas.rebuild_block_trees()
 	var generated_script = _block_canvas.generate_script_from_current_window(block_script)
 	if generated_script != block_script.generated_script:
 		#undo_redo.add_undo_property(block_script, "generated_script", block_script.generated_script)

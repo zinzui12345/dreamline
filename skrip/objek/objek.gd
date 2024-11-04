@@ -37,8 +37,6 @@ var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara se
 			if $kode_ubahan.block_script != kode_baru:
 				$kode_ubahan.block_script = kode_baru
 				$kode_ubahan._update_parent_script()
-				Panku.notify("1")
-			Panku.notify("2")
 			kode = kode_baru
 
 func _ready() -> void: call_deferred("_setup")
@@ -139,6 +137,8 @@ func _process(_delta : float) -> void:
 						"path_child_pairs"				: _parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
 						"block_serialized_properties"	: _parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
 					}
+				Panku.notify("jumlah blok kode diproses : "+str($kode_ubahan.block_script.block_trees.size()))
+				Panku.notify("jumlah blok kode dikirim : "+str(parse_cabang_blok.size()))
 				for indeks_data_variabel in $kode_ubahan.block_script.variables.size():
 					parse_variabel_blok[str(indeks_data_variabel)+"|VariableResource"] = {
 						"var_name":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_name,
@@ -247,7 +247,7 @@ func _parse_sub_blok_kode(data : Array) -> Dictionary:
 func _compile_sub_blok_kode(data : Dictionary) -> Array:
 	var hasil_data : Array
 	for sub_data in data:
-		if data[sub_data] is Dictionary and data[sub_data].size() == 2:
+		if data[sub_data] is Dictionary:
 			var nama_blok : StringName = &"" + data[sub_data]["BlockSerialization"].name
 			var tmp_pos_blok = data[sub_data]["BlockSerialization"].position
 			var p_tmp_pos_blok = tmp_pos_blok.substr(1, tmp_pos_blok.length()-2)
@@ -361,7 +361,6 @@ func _compile_sub_properti_blok_kode(data : Dictionary) -> BlockSerializedProper
 						p_tipe_properti[1]
 					)
 				)
-			print_debug(hasil_sub_data)
 		if hasil_sub_data.size() > 0:
 			daftar_properti.append(hasil_sub_data)
 	hasil_data = BlockSerializedProperties.new(

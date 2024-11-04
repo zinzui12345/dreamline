@@ -98,7 +98,7 @@ func _place_block():
 
 	var position = _block.global_position - canvas_rect.position
 
-	remove_child(_block)
+	remove_child(_block)	
 
 	if target_snap_point:
 		# Snap the block to the point

@@ -1143,6 +1143,7 @@ func _pemain_terputus(id_pemain):
 								sub_blok
 							)
 						)
+					Panku.notify("jumlah blok kode diterima : "+str(parse_resource_blok.size()))
 					for variabel in terima_resource.variables:
 						parse_resource_variabel.append(
 							VariableResource.new(

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bmxco03vqyq2t"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/tooltip/tooltip.gd" id="1_4ko6a"]
+[ext_resource type="Script" path="res://skrip/editor kode/tooltip/tooltip.gd" id="1_t6erf"]
 
 [node name="Tooltip" type="RichTextLabel"]
 custom_minimum_size = Vector2(360, 48)
@@ -11,4 +11,4 @@ grow_horizontal = 2
 grow_vertical = 2
 bbcode_enabled = true
 fit_content = true
-script = ExtResource("1_4ko6a")
+script = ExtResource("1_t6erf")
