@@ -718,8 +718,8 @@ func _pemain_terputus(id_pemain):
 					"rotasi":		rotasi,
 					"properti":		properti,
 				}
-		else: print("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
-	else: print("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
+		else: push_error("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
+	else: push_error("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _tambahkan_objek(jalur_skena : String, posisi : Vector3, rotasi : Vector3, jarak_render : int, properti : Array) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
@@ -746,8 +746,8 @@ func _pemain_terputus(id_pemain):
 					"rotasi":		rotasi,
 					"properti":		properti,
 				}
-		else: print("[Galat] objek %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
-	else: print("[Galat] fungsi [tambahkan_objek] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
+		else: push_error("[Galat] objek %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
+	else: push_error("[Galat] fungsi [tambahkan_objek] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = permainan.dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null and t_entitas.has_method(fungsi):
@@ -1079,7 +1079,7 @@ func _pemain_terputus(id_pemain):
 			tmp_entitas.id_proses = id_pemroses_entitas
 			for p in kondisi_entitas.size():
 				if tmp_entitas.get(kondisi_entitas[p][0]) != null: tmp_entitas.set(kondisi_entitas[p][0], kondisi_entitas[p][1])
-				else: print("[Galat] "+tmp_nama+" tidak memiliki properti ["+kondisi_entitas[p][0]+"]")
+				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+kondisi_entitas[p][0]+"]")
 			permainan.dunia.get_node("entitas").add_child(tmp_entitas, true)
 			tmp_entitas.global_transform.origin = posisi_entitas
 			tmp_entitas.rotation = rotasi_entitas
@@ -1092,7 +1092,7 @@ func _pemain_terputus(id_pemain):
 			permainan.dunia.get_node("objek").add_child(tmp_objek, true)
 			for p in properti_objek.size():
 				if tmp_objek.get(properti_objek[p][0]) != null: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
-				else: print("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
+				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
 			tmp_objek.id_pengubah = id_pengubah
 			tmp_objek.global_transform.origin = posisi_objek
 			tmp_objek.rotation = rotasi_objek
@@ -1143,7 +1143,6 @@ func _pemain_terputus(id_pemain):
 								sub_blok
 							)
 						)
-					Panku.notify("jumlah blok kode diterima : "+str(parse_resource_blok.size()))
 					for variabel in terima_resource.variables:
 						parse_resource_variabel.append(
 							VariableResource.new(

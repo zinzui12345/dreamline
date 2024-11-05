@@ -42,8 +42,8 @@ func _ready():
 	_picker.block_picked.connect(_drag_manager.copy_picked_block_and_drag)
 	_picker.variable_created.connect(_create_variable)
 	_block_canvas.reconnect_block.connect(_drag_manager.connect_block_canvas_signals)
-	_drag_manager.block_dropped.connect(save_script)
-	_drag_manager.block_modified.connect(save_script)
+	#_drag_manager.block_dropped.connect(save_script)
+	#_drag_manager.block_modified.connect(save_script)
 	
 	_save_node_button.visible = false
 

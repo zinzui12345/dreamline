@@ -121,15 +121,17 @@ func update_resources(undo_redo: EditorUndoRedoManager):
 		resource = BlockSerialization.new(block_name, position, block_serialized_properties)
 		return
 
-	#if resource.position != position:
+	if resource.position != position:
 		#undo_redo.add_undo_property(resource, "position", resource.position)
 		#undo_redo.add_do_property(resource, "position", position)
-#
-	#var serialized_props = get_serialized_props()
-#
-	#if serialized_props != resource.block_serialized_properties.serialized_props:
+		resource.position = position
+
+	var serialized_props = get_serialized_props()
+
+	if serialized_props != resource.block_serialized_properties.serialized_props:
 		#undo_redo.add_undo_property(resource.block_serialized_properties, "serialized_props", resource.block_serialized_properties.serialized_props)
 		#undo_redo.add_do_property(resource.block_serialized_properties, "serialized_props", serialized_props)
+		resource.block_serialized_properties.serialized_props = serialized_props
 
 
 # Override this method to add more serialized properties

@@ -35,6 +35,7 @@ var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara se
 	set(kode_baru):
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
 			if $kode_ubahan.block_script != kode_baru:
+				cek_properti["kode"] = kode_baru.generated_script
 				$kode_ubahan.block_script = kode_baru
 				$kode_ubahan._update_parent_script()
 			kode = kode_baru
@@ -137,8 +138,6 @@ func _process(_delta : float) -> void:
 						"path_child_pairs"				: _parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
 						"block_serialized_properties"	: _parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
 					}
-				Panku.notify("jumlah blok kode diproses : "+str($kode_ubahan.block_script.block_trees.size()))
-				Panku.notify("jumlah blok kode dikirim : "+str(parse_cabang_blok.size()))
 				for indeks_data_variabel in $kode_ubahan.block_script.variables.size():
 					parse_variabel_blok[str(indeks_data_variabel)+"|VariableResource"] = {
 						"var_name":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_name,
@@ -298,7 +297,10 @@ func _konversi_sub_properti_blok_kode(data, tipe_target : String):
 	var hasil_data
 	var pecah_data : PackedStringArray
 	if data is String:
-		pecah_data = data.split(", ")
+		if data.substr(0,1) == '(' and data.substr(data.length() - 1) == ')':
+			pecah_data = data.substr(1, data.length()-2).split(", ")
+		else:
+			pecah_data = data.split(", ")
 	if tipe_target == "Color":
 		hasil_data = Color(
 			pecah_data[0].to_float(),

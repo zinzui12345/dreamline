@@ -395,8 +395,8 @@ func _notification(what : int) -> void:
 	elif what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST: _keluar()
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
-	#elif what == NOTIFICATION_FOCUS_EXIT: get_tree().paused = true # FIXME : fungsikan ketika rilis!
-	#elif what == NOTIFICATION_FOCUS_ENTER: get_tree().paused = false
+	elif what == NOTIFICATION_FOCUS_EXIT: get_tree().paused = true
+	elif what == NOTIFICATION_FOCUS_ENTER: get_tree().paused = false
 
 # core
 func uji_performa() -> void:
@@ -1685,7 +1685,6 @@ func _ketika_mengubah_kode_objek() -> void:
 		$editor_kode/blok_kode._save_node_button.visible = false
 		$editor_kode/blok_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
 		$editor_kode/blok_kode.save_script()
-		$editor_kode/blok_kode._block_canvas.rebuild_block_trees()
 		tampilkan_editor_kode()
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
@@ -1934,16 +1933,7 @@ func buat_kode(nama_kelas : String = "objek"):
 				$editor_kode/blok_kode._save_node_button.visible = true
 				$editor_kode/blok_kode.switch_block_code_node(kode)
 func tutup_editor_kode() -> void:
-	## 26/07/24 :: terapkan perubahan kode
-	#$blok_kode/panel_kode.kompilasi_blok_kode()
-	## 07/06/24 :: hapus node blok kode untuk mengurangi penggunaan memori
-	#$blok_kode/panel_kode.hapus_blok_kode()
-	## 14/06/24 :: hapus palet sintaks untuk mengurangi penggunaan memori
-	#$blok_kode/panel_kode.hapus_palet_sintaks()
-	## 11/06/24 :: putuskan signal jalankan_kode dari editor ke objek
-	#if is_instance_valid(edit_objek) and $blok_kode/panel_kode.is_connected("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode):
-		#edit_objek.kode = edit_objek.get_node("kode_ubahan").kode
-		#$blok_kode/panel_kode.disconnect("jalankan_kode", edit_objek.get_node("kode_ubahan").atur_kode)
+	$editor_kode/blok_kode.switch_block_code_node(null)
 	# kalau bukan dalam permainan, tampilkan kembali menu utama
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
