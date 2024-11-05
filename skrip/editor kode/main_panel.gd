@@ -64,6 +64,7 @@ func _on_undo_redo_version_changed():
 
 
 func _on_show_script_button_pressed():
+	if _current_block_code_node == null: return
 	var block_script: BlockScriptSerialization = _current_block_code_node.block_script
 	var script: String = _block_canvas.generate_script_from_current_window(block_script)
 	script_window_requested.emit(script)
@@ -94,6 +95,9 @@ func _on_save_node_button_pressed():
 	ResourceSaver.save(pck, "res://blok_kode.scn")
 
 func _on_close_script_button_pressed():
+	if _current_block_code_node == null:
+		server.permainan.tutup_editor_kode()
+		return
 	save_script()
 	_current_block_code_node._update_parent_script()
 	server.permainan.tutup_editor_kode()
@@ -155,6 +159,7 @@ func switch_block_code_node(block_code_node: BlockCode):
 	if _current_block_code_node != null:
 		_try_migration()
 	_picker.block_script_selected(block_script)
+	_title_bar.block_code_selected(block_code_node)
 	_title_bar.block_script_selected(block_script)
 	_block_canvas.block_script_selected(block_script, block_code_node)
 

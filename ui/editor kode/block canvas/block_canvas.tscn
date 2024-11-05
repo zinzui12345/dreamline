@@ -76,10 +76,16 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="EmptyBox"]
+[node name="Label" type="RichTextLabel" parent="EmptyBox"]
 layout_mode = 2
-text = "Select a node to create and edit block code."
-horizontal_alignment = 1
+bbcode_enabled = true
+text = "[center]Godot Block Coding by [b]endlessm[/b][/center]
+[center][color=\"#8fd3fe\"][url=\"https://github.com/endlessm/godot-block-coding\"]https://github.com/endlessm/godot-block-coding[/url][/color][/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+drag_and_drop_selection_enabled = false
 
 [node name="SelectedNodeBox" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
