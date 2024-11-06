@@ -1,0 +1,50 @@
+kelas kustom bisa dibuat sendiri dengan properti dan fungsi bawaan yaitu:
+const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")
+const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_catalog.gd")
+const BlockDefinition = preload("res://skrip/editor kode/code_generation/block_definition.gd")
+const Types = preload("res://skrip/editor kode/types/types.gd")
+
+static func get_custom_class() -> String:
+	return "entitas"
+static func get_custom_categories() -> Array[BlockCategory]:
+	return [BlockCategory.new("Entitas")]
+
+blok dan kategori dapat dibuat secara manual resourcenya pada /skrip/editor kode/blocks/ atau dengan menambahkan fungsi berikut:
+static func setup_custom_blocks():
+	var _class_name = "entitas"
+	var block_list: Array[BlockDefinition] = []
+
+	var block_definition: BlockDefinition = BlockDefinition.new()
+	block_definition.name = &"uji_coba_fungsi"
+	block_definition.target_node_class = _class_name
+	block_definition.category = "Entitas"
+	block_definition.type = Types.BlockType.STATEMENT
+	block_definition.display_template = "Menampilkan output {nilai: STRING}"
+	block_definition.code_template = "test({nilai})"
+	block_list.append(block_definition)
+
+	BlocksCatalog.add_custom_blocks(_class_name, block_list)
+
+atau dengan properti:
+	var property_list: Array[Dictionary] = [
+		{
+			"name": "teks",
+			"type": TYPE_STRING,
+		},
+	]
+	
+	var property_settings = {
+		"teks":
+		{
+			"category": "Variables",
+			"default_set": "",
+		},
+	}
+
+	BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
+
+selain itu blok dan properti berdasarkan kelas dapat diatur di _SETTINGS_FOR_CLASS_PROPERTY pada blocks_catalog.gd
+
+tipe data dapat ditambahkan pada /skrip/editor kode/types/types.gd dan /ui/editor kode/blocks/utilities/parameter_input/parameter_input.tscn
+
+daftar blok berdasarkan nama blok dan kategori diatur di fungsi get_general_blocks() pada /skrip/editor kode/picker/categories/category_factory.gd

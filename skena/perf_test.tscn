@@ -1,0 +1,1348 @@
+[gd_scene load_steps=40 format=3 uid="uid://dodo3q7h6ujaa"]
+
+[ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
+[ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
+[ext_resource type="Texture2D" uid="uid://dsjkya7g111eu" path="res://ui/ikon/ikon_mode_bermain.svg" id="2_wn08a"]
+[ext_resource type="Texture2D" uid="uid://c23oxwal8i07d" path="res://ui/ikon/ikon_mode_render.svg" id="3_pxv10"]
+[ext_resource type="FontFile" uid="uid://c32o2cnow484n" path="res://ui/fonta/noto_sans_italic.ttf" id="5_80doc"]
+[ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="6_ada2g"]
+[ext_resource type="Texture2D" uid="uid://b82t6pt13avfu" path="res://ui/spinner_memuat.svg" id="7_oflen"]
+
+[sub_resource type="GDScript" id="GDScript_5cxiv"]
+script/source = "# 28/12/23
+extends Control
+
+# 27/07/24 :: hasil benchmark pre rendering
+# * dapatkan jumlah fps ketika memulai pre rendering
+# * dapatkan jumlah vertex ketika memulai pre rendering
+# * kalkulasi total jumlah objek yang dirender
+# * kalkulasi total waktu (milidetik) proses rendering satu objek
+# * kalkulasi total waktu (milidetik) proses rendering satu vertex
+# * hasilkan grafik jumlah vertex tiap objek yang di-render
+# misal 60 fps, maka satu frame adalah 16.666666666666 milidetik atau 1000/60
+# jika jumlah objek adalah 213 maka total waktu rendering per objek adalah 0.0782472613458 milidetik atau 16.666666666666/213
+# jika jumlah vertex adalah 104840 maka total waktu rendering per vertex adalah 0.000161055951746779 milidetik atau 16.666666666666/104840
+
+var shader_tampilan_bentuk_objek : StandardMaterial3D = load(\"res://material/dev/tampilan_bentuk_objek.material\")
+var shader_tampilan_bentuk_objek_lod : StandardMaterial3D = load(\"res://material/dev/tampilan_bentuk_objek_lod.material\")
+var _proses_pre_render : bool = false :
+	set(proses):
+		if proses:	$mode_render/realtime.disabled = true
+		else: 		$mode_render/realtime.disabled = false
+		_proses_pre_render = proses
+var _pencahayaan_pre : Environment
+var waktu_tunda_frame_pre : float = 0
+var waktu_tunda_frame_pre_u : float = 0.05
+var waktu_tunda_frame_pre_o : float = 0.1
+
+func _ready():
+	server.permainan.karakter = $viewport_utama/viewport/dummy_karakter
+	server.permainan.dunia.pengamat = $viewport_utama/viewport/pengamat
+	if server.permainan.permukaan != null: server.permainan.permukaan.pengamat = $viewport_utama/viewport/pengamat
+	_pencahayaan_pre = $viewport_utama/viewport/pengamat_pre.environment
+	server.pemain[\"pengamat\"] = {
+		\"id_client\": 1,
+		\"nama\": 	\"\",
+		\"posisi\":	$viewport_utama/viewport/pengamat.position,
+		\"rotasi\":	$viewport_utama/viewport/pengamat.rotation,
+		\"model\": { },
+		\"kondisi\": { }
+	}
+
+func atur_posisi(posisi_x : float, posisi_y : float, posisi_z : float):
+	$viewport_utama/viewport/pengamat.global_position.x = posisi_x
+	$viewport_utama/viewport/pengamat.global_position.y = posisi_y
+	$viewport_utama/viewport/pengamat.global_position.z = posisi_z
+
+# ketika mengatur culling
+func _atur_frustum_culling(nilai):
+	_mode_render_realtime()
+	server.permainan.gunakan_frustum_culling = nilai
+func _atur_object_culling(nilai):
+	_mode_render_realtime()
+	server.permainan.gunakan_occlusion_culling = nilai
+func _atur_level_of_detail(nilai):
+	_mode_render_realtime()
+	#$viewport_utama/viewport/lingkungan/permukaan.gunakan_level_of_detail = nilai
+
+# ketika memilih mode rendering
+func _mode_render_realtime():
+	if not _proses_pre_render:
+		# sembunyikan hasil performa rendering
+		$panel_hasil_render.visible = false
+		# set keadaan tombol
+		$mode_render/realtime.button_pressed = true
+		$mode_render/pre.button_pressed = false
+		# tukar pengamat
+		$viewport_utama/viewport/pengamat.current = true
+		# sembunyikan proses rendering
+		$panel_bawah/animasi.stop()
+		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
+		$panel_bawah.visible = false
+		# tampilkan informasi performa
+		$informasi_performa.visible = true
+		#region reset fase rendering
+		# 1. jalankan proses culling
+		server.set_process(true)
+		server.permainan.dunia.set_process(true)
+		# 2. tampilkan kembali lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
+		#endregion
+func _mode_render_pre():
+	if not _proses_pre_render:
+		_proses_pre_render = true
+		# set keadaan tombol
+		$mode_render/realtime.button_pressed = false
+		$mode_render/pre.button_pressed = true
+		# set timing mode optimasi
+		if $panel_opsi/opsi_fc.button_pressed:
+			waktu_tunda_frame_pre = waktu_tunda_frame_pre_o
+		else:
+			waktu_tunda_frame_pre = waktu_tunda_frame_pre_u
+		# tukar pengamat
+		$viewport_utama/viewport/pengamat_pre.current = true
+		$viewport_utama/viewport/pengamat_pre.fov = $viewport_utama/viewport/pengamat.fov
+		$viewport_utama/viewport/pengamat_pre.position = $viewport_utama/viewport/pengamat.position
+		$viewport_utama/viewport/pengamat_pre.rotation = $viewport_utama/viewport/pengamat.rotation
+		# sembunyikan informasi performa
+		$informasi_performa.visible = false
+		$panel_hasil_render.visible = false
+		# tampilkan proses rendering
+		$panel_bawah/Panel/PersenMemuat.text = \"0%\"
+		$panel_bawah/Panel/ProsesMemuat.value = 0
+		$panel_bawah/animasi.play(\"tampilkan\")
+		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.play(\"kuru_kuru\")
+		# dapatkan performa rendering
+		var jumlah_penggambaran = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
+		var kecepatan_frame = Engine.get_frames_per_second()
+		var total_objek = server.permainan.dunia.get_node(\"objek\").get_child_count()
+		var total_sudut = $viewport_utama/viewport.get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_PRIMITIVES_IN_FRAME)
+		var total_memori = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED)
+		#region tampilan fase rendering
+		# 1. hentikan proses culling
+		server.set_process(false)
+		server.permainan.dunia.set_process(false)
+		# 2. sembuyikan lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", false)
+		# 3. sembunyikan pencahayaan
+		var aktifkan_pencahayaan = false
+		if server.permainan.dunia.get_node(\"matahari\").shadow_enabled:
+			server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", false)
+			aktifkan_pencahayaan = true
+		$viewport_utama/viewport/pengamat_pre.environment = _pencahayaan_pre
+		# 4. dapatkan objek yang nampak kemudian tambahkan ke array
+		var daftar_objek : Dictionary
+		for objek_ in server.permainan.dunia.get_node(\"objek\").get_children():
+			if objek_.visible:
+				var jarak_objek = objek_.global_position.distance_to($viewport_utama/viewport/pengamat_pre.global_position)
+				daftar_objek[jarak_objek] = objek_
+		# 5. sembunyikan semua objek yang nampak
+		for _objek in daftar_objek: daftar_objek[_objek].set(\"visible\", false)
+		# 6. set max_value dari $panel_bawah/Panel/ProsesMemuat dengan jumlah objek yang nampak
+		$panel_bawah/Panel/ProsesMemuat.max_value = daftar_objek.size()
+		# 7. dapatkan indeks daftar objek
+		var indeks_daftar_objek = daftar_objek.keys()
+		# 8. buat urutan objek
+		var urutan_objek : Array = []
+		for _objek in daftar_objek: urutan_objek.append(_objek)
+		# 9. sesuaikan indeks urutan objek
+		urutan_objek.sort()
+		# 10. balik urutan objek
+		urutan_objek.reverse()
+		await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+		# 11. loop urutan objek
+		for _objek_ in urutan_objek:
+			if $viewport_utama/viewport/pengamat_pre.current:
+				# dapatkan objek
+				var objek_ = daftar_objek[_objek_]
+				# tampilkan objek
+				objek_.set(\"visible\", true)
+				# tampilkan shader penanda bentuk objek
+				for isi_objek in objek_.get_children():
+					if isi_objek is MeshInstance3D:
+						isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek)
+					elif isi_objek is Node3D:
+						match isi_objek.name:
+							\"model\", \"detail\", \"lod_1\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek)
+							\"lod_2\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", shader_tampilan_bentuk_objek_lod)
+				await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+				# sesuaikan persentase proses rendering
+				$panel_bawah/Panel/ProsesMemuat.value += 1
+				$panel_bawah/Panel/PersenMemuat.text = str(($panel_bawah/Panel/ProsesMemuat.value / urutan_objek.size()) * 100)+\"%\"
+				# hapus shader penanda bentuk objek
+				for isi_objek in objek_.get_children():
+					if isi_objek is MeshInstance3D:
+						isi_objek.set(\"material_overlay\", null)
+					elif isi_objek is Node3D:
+						match isi_objek.name:
+							\"model\", \"detail\", \"lod_1\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", null)
+							\"lod_2\":
+								for isi_isi_objek in isi_objek.get_children():
+									if isi_isi_objek is MeshInstance3D:
+										isi_isi_objek.set(\"material_overlay\", null)
+			else: return
+		# 12. tunggu selama waktu_tunda_frame_pre detik
+		await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+		# 13. tampilkan kembali pencahayaan
+		$viewport_utama/viewport/pengamat_pre.environment = null
+		if aktifkan_pencahayaan:
+			server.permainan.dunia.get_node(\"matahari\").set(\"shadow_enabled\", true)
+		await get_tree().create_timer(waktu_tunda_frame_pre).timeout
+		# 14. tampilkan kembali lingkungan
+		server.permainan.dunia.get_node(\"lingkungan\").set(\"visible\", true)
+		#endregion
+		# sembunyikan proses rendering
+		$panel_bawah/animasi.play_backwards(\"tampilkan\")
+		$panel_bawah/Panel/SpinnerMemuat/AnimationPlayer.stop()
+		# kalkulasi hasil performa rendering
+		var hasil_performa = \"\"
+		var waktu_frame : float = 1000 / kecepatan_frame
+		hasil_performa += \"Penggambaran			: \"+str(jumlah_penggambaran)+\" / \"+str(snappedf(waktu_frame / jumlah_penggambaran, 0.00001))+\" milidetik\\n\"
+		hasil_performa += \"Kecepatan Frame		: \"+str(kecepatan_frame)+\" per detik / \"+str(snappedf(waktu_frame, 0.00001))+\" milidetik\\n\"
+		hasil_performa += \"Total Objek				: \"+str(total_objek)+\" per frame / \"+str(snappedf(waktu_frame / total_objek, 0.0001))+\" milidetik\\n\"
+		hasil_performa += \"Total Sudut				: \"+str(total_sudut)+\" per frame / \"+str(snappedf(waktu_frame / total_sudut, 0.0001))+\" milidetik\\n\"
+		hasil_performa += \"Total Memori				: \"+String.humanize_size(total_memori)
+		# tampilkan hasil performa rendering
+		$panel_hasil_render/statistik.text = hasil_performa
+		$panel_hasil_render.visible = true
+		_proses_pre_render = false
+
+# ketika memilih tampilan viewport culling
+func _pilih_tidak_ada():
+	$panel_opsi/pilih_fc.button_pressed = false
+	$panel_opsi/pilih_oc.button_pressed = false
+	$panel_opsi/pilih_lod.button_pressed = false
+	$panel_opsi/pilih_mipmap.button_pressed = false
+func _pilih_frustum_culling():
+	_pilih_tidak_ada()
+	$panel_opsi/pilih_fc.button_pressed = true
+func _pilih_occlusion_culling():
+	_pilih_tidak_ada()
+	$panel_opsi/pilih_oc.button_pressed = true
+func _pilih_lod():
+	_pilih_tidak_ada()
+	$panel_opsi/pilih_lod.button_pressed = true
+func _pilih_mipmap():
+	_pilih_tidak_ada()
+	$panel_opsi/pilih_mipmap.button_pressed = true
+
+# ketika mengatur opsi render
+func _atur_fov(nilai):
+	if nilai > 179: $panel_opsi_2/atur_fov.release_focus(); return
+	$viewport_utama/viewport/pengamat.fov = nilai
+	$viewport_utama/viewport/pengamat.global_position.y += 0.01
+	$viewport_culling/SubViewport/pengamat/tampilan_fov_kiri.rotation_degrees.y = nilai / 2
+	$viewport_culling/SubViewport/pengamat/tampilan_fov_kanan.rotation_degrees.y = -(nilai / 2)
+func _atur_overdraw(aktif):
+	if aktif:
+		$viewport_utama/viewport.debug_draw = Viewport.DEBUG_DRAW_OVERDRAW
+	else:
+		$viewport_utama/viewport.debug_draw = Viewport.DEBUG_DRAW_DISABLED
+func _atur_fov_minimap(nilai):
+	$viewport_culling/SubViewport/pengamat/Camera3D.size = nilai
+"
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1q1y0"]
+
+[sub_resource type="Sky" id="Sky_mgbuu"]
+sky_material = SubResource("ProceduralSkyMaterial_1q1y0")
+
+[sub_resource type="Environment" id="Environment_738xd"]
+background_mode = 1
+sky = SubResource("Sky_mgbuu")
+ambient_light_source = 2
+ambient_light_color = Color(0.302566, 0.302566, 0.302566, 1)
+reflected_light_source = 2
+
+[sub_resource type="GDScript" id="GDScript_ov0gi"]
+resource_name = "dummy_karakter"
+script/source = "extends CharacterBody3D
+
+var arah : Vector3
+var arah_gerakan : Vector3
+var _transisi_reset_arah : Tween
+var _input_arah_pandangan : Vector2
+var arah_pandangan : Vector2 
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t10m1"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 1
+corner_radius_bottom_left = 1
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1x4vu"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6o23"]
+bg_color = Color(0.2, 0.2, 0.196078, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onoxo"]
+bg_color = Color(0.769432, 0.769432, 0.769432, 1)
+corner_radius_top_left = 1
+corner_radius_bottom_left = 1
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_haqqv"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_heqqv"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wimlv"]
+bg_color = Color(0.2, 0.2, 0.196078, 1)
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1fao"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki0n8"]
+bg_color = Color(0, 0, 0, 0.25098)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42ksx"]
+bg_color = Color(0.721569, 0.721569, 0.721569, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gujaf"]
+bg_color = Color(0.933333, 0.933333, 0.933333, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="GDScript" id="GDScript_sr4j5"]
+script/source = "extends Node3D
+
+func _input(event):
+	if Input.is_action_just_pressed(\"debug\"):
+		$\"../../..\"._mode_render_realtime()
+	elif Input.is_action_just_pressed(\"debug2\"):
+		$\"../../..\"._mode_render_pre()
+func _process(_delta):
+	global_position.x = get_node(\"../../../viewport_utama/viewport/pengamat\").global_position.x
+	global_rotation.y = get_node(\"../../../viewport_utama/viewport/pengamat\").global_rotation.y
+	global_position.z = get_node(\"../../../viewport_utama/viewport/pengamat\").global_position.z
+	
+	# 02/07/24 :: sinkronkan $\"../../../viewport_utama/viewport/pengamat\" sebagai pemain
+	server.pemain[\"pengamat\"][\"posisi\"] = get_node(\"../../../viewport_utama/viewport/pengamat\").position
+	server.pemain[\"pengamat\"][\"rotasi\"] = get_node(\"../../../viewport_utama/viewport/pengamat\").rotation
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_psps8"]
+shading_mode = 0
+albedo_color = Color(0, 1, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_jqsgi"]
+material = SubResource("StandardMaterial3D_psps8")
+size = Vector2(0.25, 200)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jn6nk"]
+bg_color = Color(0.34902, 0.34902, 0.34902, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t85cc"]
+bg_color = Color(0, 0, 0, 0.568627)
+border_width_top = 1
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_05i8e"]
+font = ExtResource("5_80doc")
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_cv6tl"]
+font = ExtResource("6_ada2g")
+font_size = 28
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v1rwy"]
+bg_color = Color(0.709804, 0.709804, 0.709804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nr56w"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Animation" id="Animation_lpjt7"]
+resource_name = "proses"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 90.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qr4hl"]
+_data = {
+"proses": SubResource("Animation_lpjt7")
+}
+
+[sub_resource type="Animation" id="Animation_3kg2n"]
+resource_name = "kuru_kuru"
+length = 8.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.9, 1, 1.9, 2, 2.9, 3, 3.9, 4, 4.9, 5, 5.9, 6, 6.9, 7, 7.9, 8),
+"transitions": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"update": 0,
+"values": [0.0, 0.0, 0.785398, 0.785398, 1.5708, 1.5708, 2.35619, 2.35619, 3.14159, 3.14159, 3.92699, 3.92699, 4.71239, 4.71239, 5.49779, 5.49779, 6.28319]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_d7reu"]
+_data = {
+"kuru_kuru": SubResource("Animation_3kg2n")
+}
+
+[sub_resource type="Animation" id="Animation_gh1a4"]
+resource_name = "tampilkan"
+length = 0.8
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Panel:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -96)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fy5nv"]
+_data = {
+"tampilkan": SubResource("Animation_gh1a4")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djxsm"]
+bg_color = Color(0, 0, 0, 0.686275)
+
+[node name="perf_test" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_5cxiv")
+
+[node name="viewport_utama" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.75
+anchor_bottom = 1.0
+offset_right = -6.10352e-05
+stretch = true
+metadata/_edit_lock_ = true
+
+[node name="viewport" type="SubViewport" parent="viewport_utama"]
+handle_input_locally = false
+size = Vector2i(767, 600)
+render_target_update_mode = 4
+
+[node name="pengamat" type="Camera3D" parent="viewport_utama/viewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 22.17, 80.425)
+cull_mask = 3
+current = true
+script = ExtResource("1_n5sj6")
+
+[node name="pengamat_pre" type="Camera3D" parent="viewport_utama/viewport"]
+cull_mask = 3
+environment = SubResource("Environment_738xd")
+
+[node name="dummy_karakter" type="CharacterBody3D" parent="viewport_utama/viewport"]
+script = SubResource("GDScript_ov0gi")
+
+[node name="mode_render" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 144.0
+offset_bottom = 72.0
+theme_override_constants/separation = 0
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="realtime" type="Button" parent="mode_render"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_disabled_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_t10m1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1x4vu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_q6o23")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_onoxo")
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("2_wn08a")
+icon_alignment = 1
+
+[node name="pre" type="Button" parent="mode_render"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_haqqv")
+theme_override_styles/hover = SubResource("StyleBoxFlat_heqqv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wimlv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_m1fao")
+toggle_mode = true
+icon = ExtResource("3_pxv10")
+icon_alignment = 1
+
+[node name="informasi_performa" type="Control" parent="." node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 2
+anchors_preset = 0
+anchor_left = 0.75
+anchor_right = 0.75
+anchor_bottom = 0.216667
+offset_left = -416.0
+offset_top = 8.0
+offset_right = -16.0
+offset_bottom = 414.0
+grow_horizontal = 0
+size_flags_horizontal = 8
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("1_cgt1u")
+fps = NodePath("VBoxContainer/FPS")
+frame_time = NodePath("VBoxContainer/FrameTime")
+frame_number = NodePath("VBoxContainer/FrameNumber")
+frame_history_total_avg = NodePath("VBoxContainer/FrameTimeHistory/TotalAvg")
+frame_history_total_min = NodePath("VBoxContainer/FrameTimeHistory/TotalMin")
+frame_history_total_max = NodePath("VBoxContainer/FrameTimeHistory/TotalMax")
+frame_history_total_last = NodePath("VBoxContainer/FrameTimeHistory/TotalLast")
+frame_history_cpu_avg = NodePath("VBoxContainer/FrameTimeHistory/CPUAvg")
+frame_history_cpu_min = NodePath("VBoxContainer/FrameTimeHistory/CPUMin")
+frame_history_cpu_max = NodePath("VBoxContainer/FrameTimeHistory/CPUMax")
+frame_history_cpu_last = NodePath("VBoxContainer/FrameTimeHistory/CPULast")
+frame_history_gpu_avg = NodePath("VBoxContainer/FrameTimeHistory/GPUAvg")
+frame_history_gpu_min = NodePath("VBoxContainer/FrameTimeHistory/GPUMin")
+frame_history_gpu_max = NodePath("VBoxContainer/FrameTimeHistory/GPUMax")
+frame_history_gpu_last = NodePath("VBoxContainer/FrameTimeHistory/GPULast")
+fps_graph = NodePath("VBoxContainer/FPSGraph/Graph")
+total_graph = NodePath("VBoxContainer/TotalGraph/Graph")
+cpu_graph = NodePath("VBoxContainer/CPUGraph/Graph")
+gpu_graph = NodePath("VBoxContainer/GPUGraph/Graph")
+information = NodePath("VBoxContainer/Information")
+settings = NodePath("VBoxContainer/Settings")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="informasi_performa"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -300.0
+offset_bottom = 374.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="FPS" type="Label" parent="informasi_performa/VBoxContainer"]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_constants/line_spacing = 0
+theme_override_font_sizes/font_size = 18
+text = "60 FPS"
+horizontal_alignment = 2
+
+[node name="FrameTime" type="Label" parent="informasi_performa/VBoxContainer"]
+modulate = Color(0, 1, 0, 1)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "16.67 mspf (cap: 123 FPS + Adaptive V-Sync)"
+horizontal_alignment = 2
+
+[node name="FrameNumber" type="Label" parent="informasi_performa/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Frame: 1234"
+horizontal_alignment = 2
+
+[node name="FrameTimeHistory" type="GridContainer" parent="informasi_performa/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_filter = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 5
+
+[node name="Spacer" type="Control" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AvgHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Rata-rata"
+horizontal_alignment = 2
+
+[node name="MinHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "    Terbaik"
+horizontal_alignment = 2
+
+[node name="MaxHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "    Lambat"
+horizontal_alignment = 2
+
+[node name="LastHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "   Terakhir"
+horizontal_alignment = 2
+
+[node name="TotalHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Total:"
+horizontal_alignment = 2
+
+[node name="TotalAvg" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="TotalMin" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="TotalMax" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="TotalLast" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="CPUHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "CPU:"
+horizontal_alignment = 2
+
+[node name="CPUAvg" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="CPUMin" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "12.34"
+horizontal_alignment = 2
+
+[node name="CPUMax" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="CPULast" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="GPUHeader" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "GPU:"
+horizontal_alignment = 2
+
+[node name="GPUAvg" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="GPUMin" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "1.23"
+horizontal_alignment = 2
+
+[node name="GPUMax" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="GPULast" type="Label" parent="informasi_performa/VBoxContainer/FrameTimeHistory"]
+modulate = Color(0, 1, 0, 1)
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "123.45"
+horizontal_alignment = 2
+
+[node name="FPSGraph" type="HBoxContainer" parent="informasi_performa/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="Title" type="Label" parent="informasi_performa/VBoxContainer/FPSGraph"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "FPS: ↑"
+vertical_alignment = 1
+
+[node name="Graph" type="Panel" parent="informasi_performa/VBoxContainer/FPSGraph"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki0n8")
+
+[node name="TotalGraph" type="HBoxContainer" parent="informasi_performa/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="Title" type="Label" parent="informasi_performa/VBoxContainer/TotalGraph"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Total: ↓"
+vertical_alignment = 1
+
+[node name="Graph" type="Panel" parent="informasi_performa/VBoxContainer/TotalGraph"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki0n8")
+
+[node name="CPUGraph" type="HBoxContainer" parent="informasi_performa/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="Title" type="Label" parent="informasi_performa/VBoxContainer/CPUGraph"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "CPU: ↓"
+vertical_alignment = 1
+
+[node name="Graph" type="Panel" parent="informasi_performa/VBoxContainer/CPUGraph"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki0n8")
+
+[node name="GPUGraph" type="HBoxContainer" parent="informasi_performa/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="Title" type="Label" parent="informasi_performa/VBoxContainer/GPUGraph"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "GPU: ↓"
+vertical_alignment = 1
+
+[node name="Graph" type="Panel" parent="informasi_performa/VBoxContainer/GPUGraph"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki0n8")
+
+[node name="Information" type="Label" parent="informasi_performa/VBoxContainer"]
+modulate = Color(1, 1, 1, 0.752941)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "12th Gen Intel(R) Core(TM) i0-1234K
+Windows 12 64-bit (double precision), Vulkan 1.2.34
+NVIDIA GeForce RTX 1234, 123.45.67"
+horizontal_alignment = 2
+
+[node name="Settings" type="Label" parent="informasi_performa/VBoxContainer"]
+modulate = Color(0.8, 0.84, 1, 0.752941)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "Project Version: 1.2.3
+Rendering Method: Forward+
+Window: 1234×567, Viewport: 1234×567
+3D Scale (FSR 1.0): 100% = 1234×567
+3D Antialiasing: TAA + 2× MSAA + FXAA
+SSR: 123 Steps
+SSAO: On
+SSIL: On
+SDFGI: 1 Cascades
+Glow: On
+Volumetric Fog: On
+2D Antialiasing: 2× MSAA"
+horizontal_alignment = 2
+
+[node name="panel_opsi" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_right = 1.0
+anchor_bottom = 0.333
+offset_left = -6.10352e-05
+offset_bottom = 0.199997
+theme_override_styles/panel = SubResource("StyleBoxFlat_42ksx")
+metadata/_edit_lock_ = true
+
+[node name="opsi_fc" type="CheckButton" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.078
+anchor_top = 0.12
+anchor_right = 0.25
+anchor_bottom = 0.26
+offset_left = 0.0319996
+grow_horizontal = 0
+button_pressed = true
+
+[node name="pilih_fc" type="Button" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.281
+anchor_top = 0.12
+anchor_right = 0.906
+anchor_bottom = 0.26
+offset_left = 0.0639954
+offset_right = 0.0639954
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/pressed = SubResource("StyleBoxFlat_gujaf")
+toggle_mode = true
+button_pressed = true
+text = "Frustum Culling"
+
+[node name="opsi_oc" type="CheckButton" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.078
+anchor_top = 0.32
+anchor_right = 0.25
+anchor_bottom = 0.46
+offset_left = 0.0319996
+button_pressed = true
+
+[node name="pilih_oc" type="Button" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.281
+anchor_top = 0.32
+anchor_right = 0.906
+anchor_bottom = 0.46
+offset_left = 0.0639954
+offset_right = 0.0639954
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/pressed = SubResource("StyleBoxFlat_gujaf")
+toggle_mode = true
+text = "Occlusion Culling"
+
+[node name="opsi_lod" type="CheckButton" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.078
+anchor_top = 0.52
+anchor_right = 0.25
+anchor_bottom = 0.66
+offset_left = 0.0319996
+disabled = true
+button_pressed = true
+
+[node name="pilih_lod" type="Button" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.281
+anchor_top = 0.52
+anchor_right = 0.906
+anchor_bottom = 0.66
+offset_left = 0.0639954
+offset_right = 0.0639954
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/pressed = SubResource("StyleBoxFlat_gujaf")
+toggle_mode = true
+text = "Level Of Detail"
+
+[node name="opsi_mipmap" type="CheckButton" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.078
+anchor_top = 0.72
+anchor_right = 0.25
+anchor_bottom = 0.86
+offset_left = 0.0319996
+disabled = true
+button_pressed = true
+
+[node name="pilih_mipmap" type="Button" parent="panel_opsi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.281
+anchor_top = 0.72
+anchor_right = 0.906
+anchor_bottom = 0.86
+offset_left = 0.0639954
+offset_right = 0.0639954
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/pressed = SubResource("StyleBoxFlat_gujaf")
+toggle_mode = true
+text = "Texture Mipmap"
+
+[node name="viewport_culling" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.333
+anchor_right = 1.0
+anchor_bottom = 0.76
+offset_left = -6.10352e-05
+offset_top = 0.199997
+offset_bottom = -3.05176e-05
+stretch = true
+metadata/_edit_lock_ = true
+
+[node name="SubViewport" type="SubViewport" parent="viewport_culling"]
+handle_input_locally = false
+size = Vector2i(256, 255)
+render_target_update_mode = 4
+
+[node name="pengamat" type="Node3D" parent="viewport_culling/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 22.17, 80.425)
+script = SubResource("GDScript_sr4j5")
+
+[node name="Camera3D" type="Camera3D" parent="viewport_culling/SubViewport/pengamat"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+cull_mask = 32775
+projection = 1
+current = true
+size = 40.0
+
+[node name="tampilan_fov_kiri" type="Node3D" parent="viewport_culling/SubViewport/pengamat"]
+transform = Transform3D(0.798636, 0, 0.601815, 0, 1, 0, -0.601815, 0, 0.798636, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="viewport_culling/SubViewport/pengamat/tampilan_fov_kiri"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -100)
+layers = 4
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_jqsgi")
+skeleton = NodePath("../..")
+
+[node name="tampilan_fov_kanan" type="Node3D" parent="viewport_culling/SubViewport/pengamat"]
+transform = Transform3D(0.798636, 0, -0.601815, 0, 1, 0, 0.601815, 0, 0.798636, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="viewport_culling/SubViewport/pengamat/tampilan_fov_kanan"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -100)
+layers = 4
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_jqsgi")
+skeleton = NodePath("../..")
+
+[node name="info_chunk" type="Node3D" parent="viewport_culling/SubViewport"]
+
+[node name="Label3D" type="Label3D" parent="viewport_culling/SubViewport/info_chunk"]
+transform = Transform3D(20, 0, 0, 0, -8.74228e-07, 20, 0, -20, -8.74228e-07, 0, 20, 0)
+visible = false
+layers = 2
+no_depth_test = true
+text = "detail"
+font_size = 256
+outline_size = 25
+
+[node name="panel_opsi_2" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75
+anchor_top = 0.76
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.10352e-05
+offset_top = -3.05176e-05
+theme_override_styles/panel = SubResource("StyleBoxFlat_jn6nk")
+metadata/_edit_lock_ = true
+
+[node name="label_fov" type="Label" parent="panel_opsi_2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.062
+anchor_top = 0.111
+anchor_right = 0.219
+anchor_bottom = 0.333
+offset_left = 0.127999
+offset_top = 0.0159988
+offset_right = -0.064003
+offset_bottom = 0.0480003
+text = "FOV"
+vertical_alignment = 1
+
+[node name="atur_fov" type="SpinBox" parent="panel_opsi_2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.219
+anchor_top = 0.111
+anchor_right = 0.543
+anchor_bottom = 0.326
+offset_left = -0.064003
+offset_top = 0.0159988
+offset_right = 0.0544891
+offset_bottom = 0.0559998
+tooltip_text = "Atur luas sudut pandangan"
+min_value = 10.0
+max_value = 180.0
+value = 75.0
+
+[node name="atur_overdraw" type="CheckBox" parent="panel_opsi_2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.562
+anchor_top = 0.111
+anchor_right = 0.937
+anchor_bottom = 0.326
+offset_left = 0.127991
+offset_top = 0.0159988
+offset_right = 0.127991
+offset_bottom = 0.0559998
+tooltip_text = "Tampilkan objek yang terhalang secara tembus"
+text = "Overdraw"
+text_overrun_behavior = 3
+clip_text = true
+
+[node name="label_fov_2" type="Label" parent="panel_opsi_2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.063
+anchor_top = 0.444
+anchor_right = 0.219
+anchor_bottom = 0.667
+offset_left = -0.127943
+offset_top = 0.0640106
+offset_right = -0.0639496
+offset_bottom = -0.0479889
+text = "FOV"
+vertical_alignment = 1
+
+[node name="atur_fov_2" type="HSlider" parent="panel_opsi_2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.219
+anchor_top = 0.5
+anchor_right = 0.937
+anchor_bottom = 0.611
+offset_left = -0.0640182
+offset_top = -1.52588e-05
+offset_right = 0.12793
+offset_bottom = 0.0159836
+min_value = 10.0
+max_value = 800.0
+value = 40.0
+
+[node name="panel_bawah" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 0.75
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="panel_bawah"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 96.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_t85cc")
+
+[node name="LabelMemuat" type="Label" parent="panel_bawah/Panel"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -48.0
+offset_right = 832.0
+offset_bottom = 16.0
+grow_vertical = 2
+text = "merender"
+label_settings = SubResource("LabelSettings_05i8e")
+vertical_alignment = 1
+
+[node name="PersenMemuat" type="Label" parent="panel_bawah/Panel"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -192.0
+offset_top = -48.0
+offset_right = -16.0
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "47%"
+label_settings = SubResource("LabelSettings_cv6tl")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ProsesMemuat" type="ProgressBar" parent="panel_bawah/Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_v1rwy")
+theme_override_styles/fill = SubResource("StyleBoxFlat_nr56w")
+show_percentage = false
+metadata/_edit_lock_ = true
+
+[node name="animasi" type="AnimationPlayer" parent="panel_bawah/Panel/ProsesMemuat"]
+libraries = {
+"": SubResource("AnimationLibrary_qr4hl")
+}
+
+[node name="SpinnerMemuat" type="Sprite2D" parent="panel_bawah/Panel"]
+position = Vector2(32, 32)
+texture = ExtResource("7_oflen")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="panel_bawah/Panel/SpinnerMemuat"]
+libraries = {
+"": SubResource("AnimationLibrary_d7reu")
+}
+
+[node name="animasi" type="AnimationPlayer" parent="panel_bawah"]
+libraries = {
+"": SubResource("AnimationLibrary_fy5nv")
+}
+
+[node name="panel_hasil_render" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -164.0
+offset_right = 256.0
+offset_bottom = 164.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_djxsm")
+
+[node name="statistik" type="RichTextLabel" parent="panel_hasil_render"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("6_ada2g")
+theme_override_fonts/italics_font = ExtResource("5_80doc")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/italics_font_size = 16
+text = "Penggambaran			: 121 / 0.13774 milidetik
+Kecepatan Frame		: 60 per detik / 16.65384 milidetik
+Total Objek				: 213 per frame / 0.07825 milidetik
+Total Sudut				: 104840 per frame / 0.00016 milidetik
+Total Memori				: 182.2 MiB"
+
+[node name="grafik" type="Panel" parent="panel_hasil_render"]
+custom_minimum_size = Vector2(150, 25)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 184.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ki0n8")
+
+[connection signal="pressed" from="mode_render/realtime" to="." method="_mode_render_realtime"]
+[connection signal="pressed" from="mode_render/pre" to="." method="_mode_render_pre"]
+[connection signal="visibility_changed" from="informasi_performa" to="informasi_performa" method="_on_visibility_changed"]
+[connection signal="toggled" from="panel_opsi/opsi_fc" to="." method="_atur_frustum_culling"]
+[connection signal="pressed" from="panel_opsi/pilih_fc" to="." method="_pilih_frustum_culling"]
+[connection signal="toggled" from="panel_opsi/opsi_oc" to="." method="_atur_object_culling"]
+[connection signal="pressed" from="panel_opsi/pilih_oc" to="." method="_pilih_occlusion_culling"]
+[connection signal="toggled" from="panel_opsi/opsi_lod" to="." method="_atur_level_of_detail"]
+[connection signal="pressed" from="panel_opsi/pilih_lod" to="." method="_pilih_lod"]
+[connection signal="pressed" from="panel_opsi/pilih_mipmap" to="." method="_pilih_mipmap"]
+[connection signal="value_changed" from="panel_opsi_2/atur_fov" to="." method="_atur_fov"]
+[connection signal="toggled" from="panel_opsi_2/atur_overdraw" to="." method="_atur_overdraw"]
+[connection signal="value_changed" from="panel_opsi_2/atur_fov_2" to="." method="_atur_fov_minimap"]

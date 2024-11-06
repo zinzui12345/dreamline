@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6w1ecsxnrmni"]
+
+[sub_resource type="GDScript" id="GDScript_3x2ga"]
+script/source = "extends HSplitContainer
+
+func _ready():
+	$Label.text = \"  \"+name
+	$ColorPickerButton.connect(\"color_changed\", _ubah_nilai)
+
+func atur_nilai(warna):
+	$ColorPickerButton.color = warna
+func _ubah_nilai(warna):
+	if visible: server.permainan.edit_objek.set(name, warna)
+"
+
+[node name="warna" type="HSplitContainer"]
+custom_minimum_size = Vector2(0, 40)
+script = SubResource("GDScript_3x2ga")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "  warna"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+layout_mode = 2

@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://cok36wfitg4po"]
+
+[ext_resource type="PackedScene" uid="uid://qm0b0o4vfuvs" path="res://skena/kursor_objek.scn" id="1_jin47"]
+
+[sub_resource type="GDScript" id="GDScript_hcnrk"]
+script/source = "extends Node3D
+
+var fungsi_zoom = false
+
+func _ready():
+	get_node(\"%pandangan\").far = Konfigurasi.jarak_render
+	get_parent().visible = false
+
+func _process(delta):
+	if get_node(\"%pandangan\").current and get_parent().visible:
+		if is_instance_valid(server.permainan.edit_objek):
+			if server.permainan.edit_objek.get_node_or_null(\"titik_fokus\") != null:
+				get_parent().global_transform.origin = server.permainan.edit_objek.get_node(\"titik_fokus\").global_transform.origin
+			else:
+				get_parent().global_transform.origin = server.permainan.edit_objek.global_transform.origin
+			if fungsi_zoom:
+				if Input.is_action_just_pressed(\"perdekat_pandangan\"): 	get_node(\"%pandangan\").position.z += 1 * delta; get_node(\"../../hud/daftar_properti_objek/panel_2/perdekat_objek\").set(\"value\", get_node(\"%pandangan\").position.z)
+				if Input.is_action_just_pressed(\"perjauh_pandangan\"):	get_node(\"%pandangan\").position.z -= 1 * delta; get_node(\"../../hud/daftar_properti_objek/panel_2/perdekat_objek\").set(\"value\", get_node(\"%pandangan\").position.z)
+			# TODO : coba nanti kalo mode skala rotasinya ngikut sama rotasi objek
+			$\"../kamera/rotasi_vertikal/pandangan/kursor_objek\".global_rotation = Vector3.ZERO
+			get_node(\"%pandangan\").position.z = clamp(get_node(\"%pandangan\").position.z, -Konfigurasi.jarak_render, -0.5)
+			# TODO : sesuaikan posisi x kamera
+			# mis. posisi pandangan z == -0.5 maka posisi x kamera = -0.25
+			if Input.is_action_just_pressed(\"aksi2\") and not server.permainan.get_node(\"blok_kode/panel_kode/panel_edit\").visible:
+				var jalur_node = server.permainan.edit_objek.name
+				server.edit_objek(jalur_node, false)
+"
+
+[node name="pengamat" type="Node3D"]
+editor_description = "node ini ditambah secara otomatis ke dalam permainan, jangan instansi node ini dimanapun!"
+
+[node name="posisi_mata" type="Node3D" parent="."]
+script = SubResource("GDScript_hcnrk")
+
+[node name="nama" type="Node3D" parent="posisi_mata"]
+
+[node name="kamera" type="Node3D" parent="."]
+
+[node name="rotasi_vertikal" type="Node3D" parent="kamera"]
+
+[node name="pandangan" type="Camera3D" parent="kamera/rotasi_vertikal"]
+unique_name_in_owner = true
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.5, 0, -2)
+cull_mask = 1048573
+far = 400.0
+
+[node name="kursor_objek" parent="kamera/rotasi_vertikal/pandangan" instance=ExtResource("1_jin47")]
+transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -2.1, -1, -2)
+
+[node name="target" type="RayCast3D" parent="kamera/rotasi_vertikal"]
+unique_name_in_owner = true
+enabled = false
+target_position = Vector3(0, 0, 2)
+collision_mask = 7

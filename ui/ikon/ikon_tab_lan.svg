@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="30.823225"
+   height="30.822922"
+   viewBox="0 0 8.1553119 8.1552314"
+   version="1.1"
+   id="svg5"
+   xml:space="preserve"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="antarmuka.svg"
+   inkscape:export-filename="../../godot4_perf_test/tmp/antarmuka2.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#111111"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="cm"
+     showgrid="false"
+     inkscape:zoom="0.64979967"
+     inkscape:cx="506.30989"
+     inkscape:cy="321.63759"
+     inkscape:window-width="1366"
+     inkscape:window-height="717"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3"
+     showguides="true" /><defs
+     id="defs2" /><g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="gabung_server"
+     style="display:inline"
+     sodipodi:insensitive="true"
+     transform="translate(-33.62082,-34.001633)"><g
+       id="g6215"
+       inkscape:label="tab_lan"
+       sodipodi:insensitive="true"><path
+         style="fill:#fffffe;fill-opacity:1;stroke-width:1"
+         d="m 33.6209,41.070885 v -1.085978 h 0.407762 0.407762 v -1.090138 -1.090138 h 1.493738 1.493739 v -0.815523 -0.815523 h -0.407762 -0.407761 v -1.085977 -1.085977 h 1.090138 1.090138 v 1.085977 1.085977 H 38.380892 37.97313 v 0.815523 0.815523 h 1.493739 1.493738 v 1.090138 1.090138 h 0.407762 0.407762 v 1.085978 1.085976 H 40.690154 39.604177 V 41.070885 39.984907 H 40.011938 40.4197 V 39.169384 38.353861 H 39.196415 37.97313 v 0.815523 0.815523 h 0.407762 0.407762 v 1.085978 1.085976 h -1.090138 -1.090138 v -1.085976 -1.085978 h 0.407761 0.407762 V 39.169384 38.353861 H 36.200575 34.97725 l 0.0021,0.813443 0.0021,0.813442 0.405681,0.0021 0.405681,0.0021 v 1.085898 1.085899 H 34.706797 33.62082 Z m 1.631046,0 v -0.54507 h -0.545069 -0.545069 v 0.539522 c 0,0.296736 0.0025,0.542018 0.0055,0.545068 0.003,0.003 0.248333,0.0055 0.545069,0.0055 h 0.539521 z m 2.987478,0 v -0.54507 h -0.540908 -0.540909 v 0.54507 0.545069 h 0.540909 0.540908 z m 2.995798,0 v -0.54507 h -0.545068 -0.545069 v 0.54507 0.545069 h 0.545069 0.545068 z m -2.995798,-5.983277 v -0.545069 h -0.540908 -0.540909 v 0.545069 0.545069 h 0.540909 0.540908 z"
+         id="path559"
+         inkscape:export-filename="../../godot4_perf_test/ui/ikon/ikon_tab_lan.svg"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" /></g></g></svg>

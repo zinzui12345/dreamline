@@ -1,0 +1,68 @@
+[gd_scene load_steps=4 format=3 uid="uid://dshoprkgyv6ov"]
+
+[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_xr2t4"]
+[ext_resource type="Texture2D" uid="uid://pyg83iwgglw8" path="res://ui/tombol/pilih_objek.png" id="2_c5a26"]
+
+[sub_resource type="GDScript" id="GDScript_y5c11"]
+resource_name = "pilih_objek"
+script/source = "extends TextureButton
+
+func _ready(): connect(\"pressed\", pilih)
+
+func pilih():
+	var jalur_objek = get_meta(\"jalur_objek\")
+	if jalur_objek != \"\" and ResourceLoader.exists(jalur_objek):
+		var cek_tipe_objek = load(jalur_objek).instantiate()
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			if cek_tipe_objek is entitas:
+				server._tambahkan_entitas(
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					[]
+				)
+			elif cek_tipe_objek is objek:
+				server._tambahkan_objek(
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					cek_tipe_objek.jarak_render,
+					cek_tipe_objek.properti.duplicate(true)
+				)
+		else:
+			if cek_tipe_objek is entitas:
+				server.rpc_id(
+					1,
+					\"_tambahkan_entitas\",
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					[]
+				)
+			elif cek_tipe_objek is objek:
+				server.rpc_id(
+					1,
+					\"_tambahkan_objek\",
+					jalur_objek,
+					server.permainan.pasang_objek,
+					Vector3.ZERO,
+					cek_tipe_objek.jarak_render,
+					cek_tipe_objek.properti.duplicate(true)
+				)
+		server.permainan._tutup_daftar_objek()
+		release_focus()
+	else:
+		server.permainan._tampilkan_popup_informasi(\"tidak ada objek!\", self)
+"
+
+[node name="pilih_objek" type="TextureButton"]
+anchors_preset = -1
+anchor_right = 0.125
+anchor_bottom = 0.213
+offset_right = -128.0
+offset_bottom = -127.8
+toggle_mode = true
+texture_normal = ExtResource("1_xr2t4")
+texture_focused = ExtResource("2_c5a26")
+script = SubResource("GDScript_y5c11")
+metadata/jalur_objek = "res://skena/entitas/placeholder_entitas.tscn"

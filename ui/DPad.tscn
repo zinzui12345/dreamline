@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://bl6ex1ayqq3gy"]
+
+[ext_resource type="Texture2D" uid="uid://bbvlf6at2feor" path="res://ui/tombol/tombol_d-pad.png" id="1_mbgry"]
+[ext_resource type="Texture2D" uid="uid://b5euyf83cjju7" path="res://ui/tombol/tombol_d-pad-tekan.png" id="2_0tj6m"]
+
+[node name="d-pad" type="Node2D"]
+
+[node name="kiri" type="TouchScreenButton" parent="."]
+position = Vector2(-80, -31)
+texture_normal = ExtResource("1_mbgry")
+texture_pressed = ExtResource("2_0tj6m")
+action = "kiri"
+visibility_mode = 1
+
+[node name="atas" type="TouchScreenButton" parent="."]
+position = Vector2(31, -80)
+rotation = 1.5708
+texture_normal = ExtResource("1_mbgry")
+texture_pressed = ExtResource("2_0tj6m")
+action = "maju"
+visibility_mode = 1
+
+[node name="bawah" type="TouchScreenButton" parent="."]
+position = Vector2(-30, 80)
+rotation = 4.71239
+texture_normal = ExtResource("1_mbgry")
+texture_pressed = ExtResource("2_0tj6m")
+action = "mundur"
+visibility_mode = 1
+
+[node name="kanan" type="TouchScreenButton" parent="."]
+position = Vector2(80, 31)
+rotation = 3.14159
+texture_normal = ExtResource("1_mbgry")
+texture_pressed = ExtResource("2_0tj6m")
+action = "kanan"
+visibility_mode = 1
