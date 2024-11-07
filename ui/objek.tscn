@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dshoprkgyv6ov"]
 
-[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_xr2t4"]
+[ext_resource type="Texture2D" uid="uid://jdyvxqb361pk" path="res://icon.svg" id="1_xr2t4"]
 [ext_resource type="Texture2D" uid="uid://pyg83iwgglw8" path="res://ui/tombol/pilih_objek.png" id="2_c5a26"]
 
 [sub_resource type="GDScript" id="GDScript_y5c11"]
@@ -22,13 +22,23 @@ func pilih():
 					[]
 				)
 			elif cek_tipe_objek is objek:
-				server._tambahkan_objek(
-					jalur_objek,
-					server.permainan.pasang_objek,
-					Vector3.ZERO,
-					cek_tipe_objek.jarak_render,
-					cek_tipe_objek.properti.duplicate(true)
-				)
+				if cek_tipe_objek.get(\"properti\") == null:
+					push_error(\"[Galat] objek %s tidak memiliki variabel properti!\" % cek_tipe_objek.name)
+					server._tambahkan_objek(
+						jalur_objek,
+						server.permainan.pasang_objek,
+						Vector3.ZERO,
+						cek_tipe_objek.jarak_render,
+						[]
+					)
+				else:
+					server._tambahkan_objek(
+						jalur_objek,
+						server.permainan.pasang_objek,
+						Vector3.ZERO,
+						cek_tipe_objek.jarak_render,
+						cek_tipe_objek.properti.duplicate(true)
+					)
 		else:
 			if cek_tipe_objek is entitas:
 				server.rpc_id(
@@ -40,15 +50,27 @@ func pilih():
 					[]
 				)
 			elif cek_tipe_objek is objek:
-				server.rpc_id(
-					1,
-					\"_tambahkan_objek\",
-					jalur_objek,
-					server.permainan.pasang_objek,
-					Vector3.ZERO,
-					cek_tipe_objek.jarak_render,
-					cek_tipe_objek.properti.duplicate(true)
-				)
+				if cek_tipe_objek.get(\"properti\") == null:
+					push_error(\"[Galat] objek %s tidak memiliki variabel properti!\" % cek_tipe_objek.name)
+					server.rpc_id(
+						1,
+						\"_tambahkan_objek\",
+						jalur_objek,
+						server.permainan.pasang_objek,
+						Vector3.ZERO,
+						cek_tipe_objek.jarak_render,
+						[]
+					)
+				else:
+					server.rpc_id(
+						1,
+						\"_tambahkan_objek\",
+						jalur_objek,
+						server.permainan.pasang_objek,
+						Vector3.ZERO,
+						cek_tipe_objek.jarak_render,
+						cek_tipe_objek.properti.duplicate(true)
+					)
 		server.permainan._tutup_daftar_objek()
 		release_focus()
 	else:
