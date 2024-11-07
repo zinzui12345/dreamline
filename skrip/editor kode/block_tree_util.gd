@@ -5,27 +5,44 @@ const InstructionTree = preload("res://skrip/editor kode/instruction_tree/instru
 
 static func generate_script_from_nodes(nodes: Array[Node], block_script: BlockScriptSerialization) -> String:
 	var entry_blocks_by_entry_statement: Dictionary = {}
+	var entry_variable_set_statement: Dictionary = {}
 
 	for block in nodes:
 		if !(block is Block):
 			continue
 
 		if block is EntryBlock:
-			var entry_statement = block.get_entry_statement()
-			if not entry_blocks_by_entry_statement.has(entry_statement):
-				entry_blocks_by_entry_statement[entry_statement] = []
-			entry_blocks_by_entry_statement[entry_statement].append(block)
+			var regex = RegEx.new()
+			regex.compile("onset_var_*")
+			if regex.search(block.block_name):
+				entry_variable_set_statement[block.block_name] = block
+			else:
+				var entry_statement = block.get_entry_statement()
+				if not entry_blocks_by_entry_statement.has(entry_statement):
+					entry_blocks_by_entry_statement[entry_statement] = []
+				entry_blocks_by_entry_statement[entry_statement].append(block)
 
 	var script: String = ""
 
 	script += "extends %s\n\n" % block_script.script_inherits
 
+	var init_func = InstructionTree.TreeNode.new("func _init():")
+
 	for variable in block_script.variables:
-		script += "var %s: %s\n\n" % [variable.var_name, type_string(variable.var_type)]
+		script += "var %s: %s" % [variable.var_name, type_string(variable.var_type)]
+		if entry_variable_set_statement.has("onset_var_" + variable.var_name):
+			var setter_block : EntryBlock = entry_variable_set_statement["onset_var_" + variable.var_name]
+			var setter_script : String = _generate_script_from_entry_blocks(setter_block.get_entry_statement(), [setter_block], init_func)
+			var indent_script : String
+			var split_line = setter_script.split("\n")
+			for line in split_line:
+				if line == "\tpass" or line == "": pass
+				else: indent_script += "\t" + line + "\n"
+			script += ":\n%s\t\t%s = nilai_%s\n" % [indent_script, variable.var_name, variable.var_name]
+		else:
+			script += "\n"
 
 	script += "\n"
-
-	var init_func = InstructionTree.TreeNode.new("func _init():")
 
 	for entry_statement in entry_blocks_by_entry_statement:
 		var entry_blocks: Array[EntryBlock]
@@ -62,7 +79,7 @@ static func _generate_script_from_entry_blocks(entry_statement: String, entry_bl
 		init_func.add_child(signal_node)
 
 	if is_empty:
-		script += "\tpass\n\n"
+		script += "\tpass\n"
 
 	return script
 

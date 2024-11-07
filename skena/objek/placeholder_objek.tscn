@@ -1,7 +1,7 @@
 [gd_scene load_steps=29 format=3 uid="uid://df2034e3s77u4"]
 
 [ext_resource type="Script" path="res://skrip/objek/objek.gd" id="1_f515e"]
-[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_mb6uj"]
+[ext_resource type="Texture2D" uid="uid://jdyvxqb361pk" path="res://icon.svg" id="1_mb6uj"]
 [ext_resource type="Script" path="res://skrip/editor kode/block_code_node/block_code.gd" id="2_pflcm"]
 [ext_resource type="Script" path="res://skrip/editor kode/serialization/block_serialization.gd" id="3_u80rt"]
 [ext_resource type="Script" path="res://skrip/editor kode/serialization/block_serialized_properties.gd" id="4_0ksvp"]

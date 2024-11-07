@@ -111,6 +111,13 @@ static func get_variable_block_definitions(variables: Array[VariableResource]) -
 		b.display_template = str(TranslationServer.translate("%atur_variabel")) % [variable.var_name, type_string]
 		b.code_template = "%s = {nilai}" % [variable.var_name]
 		block_definitions.append(b)
+		
+		b = BlockDefinition.new()
+		b.name = "onset_var_%s" % variable.var_name
+		b.type = Types.BlockType.ENTRY
+		b.display_template = str(TranslationServer.translate("%ketika_mengatur_variabel")) % variable.var_name
+		b.code_template = "set(nilai_%s):" % [variable.var_name]
+		block_definitions.append(b)
 
 	return block_definitions
 

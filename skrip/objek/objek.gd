@@ -58,12 +58,12 @@ func _setup() -> void:
 						$kode_ubahan.block_script
 					])
 			else:
-				print("[Galat] objek %s tidak memiliki properti!" % name)
+				push_error("[Galat] objek %s tidak memiliki properti!" % name)
 			var _jalur_instance : String
 			if get("jalur_instance") != null:
 				_jalur_instance = get("jalur_instance")
 			else:
-				print("[Galat] objek %s tidak memiliki jalur skena!" % name)
+				push_error("[Galat] objek %s tidak memiliki jalur skena!" % name)
 			
 			server._tambahkan_objek(
 				_jalur_instance,
