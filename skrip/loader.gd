@@ -17,13 +17,27 @@ func _ready() -> void:
 		if ent is RigidBody3D: ent.set("freeze", true)
 	# 2. muat aset
 	# - kalau direktori aset belum ada, buat
-	if !DirAccess.dir_exists_absolute("user://aset"):
-		DirAccess.make_dir_absolute("user://aset")
-	if !DirAccess.dir_exists_absolute("user://aset/objek"):
-		DirAccess.make_dir_absolute("user://aset/objek")
-	#var definition_files = Util.get_files_in_dir_recursive(_BLOCKS_PATH, "*.tres")
-	#for file in definition_files:
-		#var block_definition: BlockDefinition = load(file)
+	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_aset):
+		DirAccess.make_dir_absolute(Konfigurasi.direktori_aset)
+	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_aset + "/objek"):
+		DirAccess.make_dir_absolute(Konfigurasi.direktori_aset + "/objek")
+	if !FileAccess.file_exists(Konfigurasi.data_aset):
+		var file : FileAccess = FileAccess.open(Konfigurasi.data_aset, FileAccess.WRITE)
+		var data : Dictionary = {}
+		var daftar_file = Util.get_files_in_dir_recursive(Konfigurasi.direktori_aset + "/objek", "*.scn")
+		for file_ in daftar_file:
+			var isi_file: Node3D = load(file_).instantiate()
+			var id		= isi_file.get_meta("id_aset")
+			var author	= isi_file.get_meta("author")
+			var versi	= isi_file.get_meta("versi")
+			data[id] = {
+				"author"	: author,
+				"sumber"	: file_,
+				"versi"		: versi
+			}
+			#Panku.notify("ummai~!")
+		file.store_var(data)
+		file.close()
 	# 3. muat / input konfigurasi
 	if !FileAccess.file_exists(Konfigurasi.data_konfigurasi):
 		$"panel konfigurasi/pilih bahasa".visible = true

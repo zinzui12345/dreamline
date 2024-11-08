@@ -2,6 +2,8 @@ extends Node
 
 var data_konfigurasi : String = "user://konfigurasi.dreamline"
 var data_pemain : String = "user://data.dreamline"
+var direktori_aset : String = "user://aset"
+var data_aset : String = direktori_aset + "/daftar_aset.dreamline"
 var bahasa : int = 0 :
 	set(pilih):
 		TranslationServer.set_locale(kode_bahasa[pilih])
