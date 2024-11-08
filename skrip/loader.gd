@@ -21,6 +21,8 @@ func _ready() -> void:
 		DirAccess.make_dir_absolute(Konfigurasi.direktori_aset)
 	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_aset + "/objek"):
 		DirAccess.make_dir_absolute(Konfigurasi.direktori_aset + "/objek")
+	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_aset + "/kode"):
+		DirAccess.make_dir_absolute(Konfigurasi.direktori_aset + "/kode")
 	if !FileAccess.file_exists(Konfigurasi.data_aset):
 		var file : FileAccess = FileAccess.open(Konfigurasi.data_aset, FileAccess.WRITE)
 		var data : Dictionary = {}
@@ -31,13 +33,28 @@ func _ready() -> void:
 			var author	= isi_file.get_meta("author")
 			var versi	= isi_file.get_meta("versi")
 			data[id] = {
+				"tipe"		: "objek",
 				"author"	: author,
 				"sumber"	: file_,
 				"versi"		: versi
 			}
-			#Panku.notify("ummai~!")
+			isi_file.queue_free()
+		daftar_file = Util.get_files_in_dir_recursive(Konfigurasi.direktori_aset + "/kode", "*.scn")
+		for file_ in daftar_file:
+			var isi_file: BlockCode = load(file_).instantiate()
+			var id		= isi_file.get_meta("id_aset")
+			var author	= isi_file.get_meta("author")
+			var versi	= isi_file.get_meta("versi")
+			data[id] = {
+				"tipe"		: "kode",
+				"author"	: author,
+				"sumber"	: file_,
+				"versi"		: versi
+			}
+			isi_file.queue_free()
 		file.store_var(data)
 		file.close()
+		#Panku.notify("ummai~!")
 	# 3. muat / input konfigurasi
 	if !FileAccess.file_exists(Konfigurasi.data_konfigurasi):
 		$"panel konfigurasi/pilih bahasa".visible = true

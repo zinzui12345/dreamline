@@ -65,6 +65,7 @@ var data : Dictionary = {
 var karakter : CharacterBody3D
 var dunia : Node3D = null
 var map : Node3D = null
+var daftar_aset : Dictionary
 var permukaan					# Permukaan (Terrain)
 var batas_bawah : int = -4000	# batas area untuk re-spawn
 var edit_objek : Node3D			# ref objek yang sedang di-edit
@@ -230,6 +231,12 @@ func _setup() -> void:
 	match data["gender"]: # di dunia ini cuman ada 2 gender!
 		'P': $karakter/panel/tab/tab_personalitas/pilih_gender.select(0); _ketika_mengubah_gender_karakter(0)
 		'L': $karakter/panel/tab/tab_personalitas/pilih_gender.select(1); _ketika_mengubah_gender_karakter(1)
+	
+	# muat daftar aset
+	var file_daftar_aset : FileAccess = FileAccess.open(Konfigurasi.data_aset, FileAccess.READ)
+	var data_daftar_aset = file_daftar_aset.get_var()
+	if data_daftar_aset != null and data_daftar_aset is Dictionary:
+		daftar_aset = data_daftar_aset
 	
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
