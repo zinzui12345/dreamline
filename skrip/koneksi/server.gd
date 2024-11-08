@@ -13,8 +13,8 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = "empty"
-var nama : StringName = "bebas"
+var map : StringName = &"empty"
+var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
 var mode_replay : bool = false

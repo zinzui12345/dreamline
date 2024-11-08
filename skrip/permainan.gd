@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 04/11/24 Early Access"
+const versi = "Dreamline v0.4.4 08/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -416,7 +416,7 @@ func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();				return "memulai uji performa"
 	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
-func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName = "showcase", posisi := Vector3.ZERO, rotasi := Vector3.ZERO) -> void:
+func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName = &"showcase", posisi := Vector3.ZERO, rotasi := Vector3.ZERO) -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 	if $setelan.visible:
@@ -466,7 +466,7 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 		server.timeline = {
 			"data": {
 				"id":	 hasilkanKarakterAcak(5),
-				"map":	 map,
+				"map":	 nama_map,
 				"mulai": Time.get_ticks_msec(),
 				"frame": 0,
 				"urutan":1
@@ -995,7 +995,7 @@ func mulai_server(headless : bool = false, nama : StringName = "") -> void:
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
 	tampilkan_info_koneksi()
-	var nama_server : StringName = "localhost"
+	var nama_server : StringName = &"localhost"
 	if nama != "":
 		nama_server = nama
 	elif $buat_server/panel/panel_input/nama_server.text != "":

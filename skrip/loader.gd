@@ -5,6 +5,8 @@ signal terapkan_bahasa
 signal terapkan_profil
 signal login_pemain
 
+const Util = preload("res://skrip/editor kode/code_generation/util.gd")
+
 func _ready() -> void:
 	# 1. non-aktifkan proses precache aset
 	$"precache karakter/reno".set_process(false)
@@ -13,7 +15,16 @@ func _ready() -> void:
 	$"precache karakter/lulu".set_physics_process(false)
 	for ent in $"precache entitas".get_children():
 		if ent is RigidBody3D: ent.set("freeze", true)
-	# 2. muat / input konfigurasi
+	# 2. muat aset
+	# - kalau direktori aset belum ada, buat
+	if !DirAccess.dir_exists_absolute("user://aset"):
+		DirAccess.make_dir_absolute("user://aset")
+	if !DirAccess.dir_exists_absolute("user://aset/objek"):
+		DirAccess.make_dir_absolute("user://aset/objek")
+	#var definition_files = Util.get_files_in_dir_recursive(_BLOCKS_PATH, "*.tres")
+	#for file in definition_files:
+		#var block_definition: BlockDefinition = load(file)
+	# 3. muat / input konfigurasi
 	if !FileAccess.file_exists(Konfigurasi.data_konfigurasi):
 		$"panel konfigurasi/pilih bahasa".visible = true
 		match Konfigurasi.kode_bahasa[Konfigurasi.bahasa]:
@@ -21,19 +32,19 @@ func _ready() -> void:
 			_:				$"panel konfigurasi/pilih bahasa/pilih_bahasa 1".button_pressed = true
 		await terapkan_bahasa
 	Konfigurasi.muat()
-	# 3. muat / login / buat data pemain
-	# 3.a. muat data pemain
+	# 4. muat / login / buat data pemain
+	# 4.a. muat data pemain
 	if FileAccess.file_exists(Konfigurasi.data_pemain):
 		var file : FileAccess = FileAccess.open(Konfigurasi.data_pemain, FileAccess.READ)
 		server.permainan.data = file.get_var()
 		file.close()
-	# 3.b. tampilkan prompt login
+	# 4.b. tampilkan prompt login
 	else:
 		$"panel konfigurasi/login".visible = true
 		await login_pemain
-	# 4. render precache karakter selama 1 detik
+	# 5. render precache karakter selama 1 detik
 	await get_tree().create_timer(1).timeout
-	# 5. tampilkan permainan
+	# 6. tampilkan permainan
 	server.permainan.call("_setup")
 	queue_free()
 
