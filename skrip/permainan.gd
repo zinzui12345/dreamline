@@ -1227,6 +1227,17 @@ func _atur_teks_memuat(nilai : String) -> void:
 func _tampilkan_permainan() -> void:
 	if OS.get_distribution_name() == "Android":
 		$setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr.visible = true
+	for aset_ in daftar_aset:
+		var objekk : Dictionary = daftar_aset[aset_]
+		if objekk.tipe == "objek":
+			var data_objek : Node3D = load(objekk.sumber).instantiate()
+			var pilih_objek : TextureButton = load("res://ui/objek.tscn").instantiate()
+			var ikon_objek : Texture2D = data_objek.get_meta("setelan").ikon
+			pilih_objek.name = data_objek.name
+			pilih_objek.texture_normal = ikon_objek
+			pilih_objek.set_meta("jalur_objek", objekk.sumber)
+			%DaftarObjek.add_child(pilih_objek)
+			data_objek.queue_free()
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
 	_hentikan_musik_latar()

@@ -30,13 +30,11 @@ func _ready() -> void:
 		for file_ in daftar_file:
 			var isi_file: Node3D = load(file_).instantiate()
 			var id		= isi_file.get_meta("id_aset")
-			var author	= isi_file.get_meta("author")
-			var versi	= isi_file.get_meta("versi")
 			data[id] = {
 				"tipe"		: "objek",
-				"author"	: author,
+				"author"	: isi_file.get_meta("author"),
 				"sumber"	: file_,
-				"versi"		: versi
+				"versi"		: isi_file.get_meta("versi")
 			}
 			isi_file.queue_free()
 		daftar_file = Util.get_files_in_dir_recursive(Konfigurasi.direktori_aset + "/kode", "*.scn")
