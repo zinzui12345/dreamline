@@ -3,6 +3,7 @@ extends Node
 var data_konfigurasi : String = "user://konfigurasi.dreamline"
 var data_pemain : String = "user://data.dreamline"
 var direktori_aset : String = "user://aset"
+var direktori_map : String = "user://map"
 var data_aset : String = direktori_aset + "/daftar_aset.dreamline"
 var bahasa : int = 0 :
 	set(pilih):

@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 08/11/24 Early Access"
+const versi = "Dreamline v0.4.4 10/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -237,6 +237,7 @@ func _setup() -> void:
 	var data_daftar_aset = file_daftar_aset.get_var()
 	if data_daftar_aset != null and data_daftar_aset is Dictionary:
 		daftar_aset = data_daftar_aset
+	file_daftar_aset.close()
 	
 	# setup timer berbicara
 	add_child(_timer_kirim_suara)
@@ -414,15 +415,48 @@ func uji_performa() -> void:
 func uji_vr() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://skena/vr_test.tscn")
-func uji_kode() -> void:
-	$editor_kode/CodeEdit._jalankan()
 func uji_viewport() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
 func atur_map(nama_map : StringName = "empty") -> String:
-	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();				return "memulai uji performa"
-	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;return "mengatur map menjadi : "+nama_map
-	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);				return "map ["+nama_map+"] tidak ditemukan"
+	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();									return "memulai uji performa"
+	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = nama_map;return "mengatur map menjadi : @"+nama_map
+	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;					return "mengatur map menjadi : "+nama_map
+	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);									return "map ["+nama_map+"] tidak ditemukan"
+func simpan_map():
+	# simpan map ke user://map/nama_map.map
+	if koneksi == MODE_KONEKSI.SERVER and is_instance_valid(karakter):
+		var ekspor_map : PackedScene = PackedScene.new()
+		var node_map : Node3D = load("res://map/templat_map.tscn").instantiate()
+		var nama_map : String = str(server.map)
+		var depedensi_map : Array[String]
+		var objek_map : Dictionary
+		
+		for node_objek : Node3D in dunia.get_node("objek").get_children():
+			if node_objek.has_meta("id_aset"):
+				if !depedensi_map.has(node_objek.get_meta("id_aset")):
+					depedensi_map.append(node_objek.get_meta("id_aset"))
+				objek_map[node_objek.name] = {
+					"tipe": 	"objek",
+					"id_aset":	node_objek.get_meta("id_aset"),
+					"posisi":	node_objek.position,
+					"rotasi":	node_objek.rotation,
+					"kondisi":	server.pool_objek[node_objek.name]["properti"]
+				}
+		
+		node_map.name = nama_map
+		node_map.depedensi = depedensi_map
+		node_map.objek_ = objek_map
+		
+		for node_node in dunia.get_node("lingkungan").get_children(true):
+			var node_ = node_node.duplicate(true)
+			node_map.add_child(node_)
+			aturPemilikNode(node_, node_map)
+		
+		var hasil_simpan = ekspor_map.pack(node_map)
+		if hasil_simpan == OK:
+			var error = ResourceSaver.save(ekspor_map, "%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map], ResourceSaver.FLAG_BUNDLE_RESOURCES)
+			if error != OK: push_error("[Galat] Terjadi kesalahan ketika menyimpan map.")
 func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName = &"showcase", posisi := Vector3.ZERO, rotasi := Vector3.ZERO) -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
@@ -483,7 +517,10 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 func _muat_map(file_map : StringName) -> void:
 	# INFO : (4) muat map
-	map = await load("res://map/%s.tscn" % [file_map]).instantiate()
+	if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map]):
+		map = await load("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map]).instantiate()
+	else:
+		map = await load("res://map/%s.tscn" % [file_map]).instantiate()
 	map.name = "lingkungan"
 	if map.get_node_or_null("posisi_spawn") != null:
 		data["posisi"] = map.get_node("posisi_spawn").position
@@ -537,6 +574,18 @@ func _muat_map(file_map : StringName) -> void:
 			client.id_sesi = "admin"
 		else:
 			call_deferred("_mulai_server_cli")
+		# 10/11/24 :: tambahkan objek
+		if map.get("objek_") != null:
+			for muat_objek in map.objek_:
+				if daftar_aset[map.objek_[muat_objek].id_aset].tipe == "objek":
+					server._tambahkan_objek(
+						daftar_aset[map.objek_[muat_objek].id_aset].sumber,
+						map.objek_[muat_objek].posisi,
+						map.objek_[muat_objek].rotasi,
+						daftar_aset[map.objek_[muat_objek].id_aset].setelan.jarak_render,
+						map.objek_[muat_objek].kondisi
+					)
+				# Panku.notify(map.objek_[muat_objek])
 	elif koneksi == MODE_KONEKSI.CLIENT:
 		if server.mode_replay:
 			# 13/09/24 :: buat koneksi virtual untuk mencegah kesalahan proses entitas
@@ -2198,6 +2247,10 @@ func hasilkanKarakterAcak(jumlah: int) -> String:
 		var indeks_acak = randi_range(0, length - 1)
 		karakter_acak += set_karakter[indeks_acak]
 	return karakter_acak
+func aturPemilikNode(node : Node, node_pemilik : Node):
+	node.owner = node_pemilik
+	for node_internal in node.get_children():
+		aturPemilikNode(node_internal, node_pemilik)
 func tampilkan_info_koneksi():
 	# Dapatkan IP
 	var addr : Array

@@ -17,6 +17,8 @@ func _ready() -> void:
 		if ent is RigidBody3D: ent.set("freeze", true)
 	# 2. muat aset
 	# - kalau direktori aset belum ada, buat
+	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_map):
+		DirAccess.make_dir_absolute(Konfigurasi.direktori_map)
 	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_aset):
 		DirAccess.make_dir_absolute(Konfigurasi.direktori_aset)
 	if !DirAccess.dir_exists_absolute(Konfigurasi.direktori_aset + "/objek"):
@@ -34,7 +36,8 @@ func _ready() -> void:
 				"tipe"		: "objek",
 				"author"	: isi_file.get_meta("author"),
 				"sumber"	: file_,
-				"versi"		: isi_file.get_meta("versi")
+				"versi"		: isi_file.get_meta("versi"),
+				"setelan"	: isi_file.get_meta("setelan")
 			}
 			isi_file.queue_free()
 		daftar_file = Util.get_files_in_dir_recursive(Konfigurasi.direktori_aset + "/kode", "*.scn")
