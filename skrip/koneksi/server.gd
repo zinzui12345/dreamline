@@ -484,6 +484,17 @@ func hapus_objek(jalur_objek : String) -> void:
 		_hapus_objek(jalur_objek)
 	else:
 		rpc_id(1, "_hapus_objek", jalur_objek)
+func kirim_aset(id_penerima : int, jalur_aset : String, nama_aset : String):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and jalur_aset.length() > 5:
+		# 11/11/24 :: kirim aset ke client
+		var balik_jalur = jalur_aset.reverse()
+		var pecah_format_jalur = balik_jalur.split(".", false, 1)
+		var pecah_jalur = balik_jalur.split("/", false, 2)
+		var tipe_aset = pecah_jalur[1].reverse()
+		var format_aset = pecah_format_jalur[0].reverse()
+		var baca_file_aset = FileAccess.open(jalur_aset, FileAccess.READ)
+		client.rpc_id(id_penerima, "terima_aset", FileAccess.get_file_as_bytes(jalur_aset), tipe_aset, nama_aset, format_aset)
+		baca_file_aset.close()
 
 func _pemain_bergabung(id_pemain):
 	# disini tentuin posisi dan rotasi spawn client terus kirim rpc data map ke client
@@ -1003,6 +1014,9 @@ func _pemain_terputus(id_pemain):
 			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
 				if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(pemain[idx_pemain]["id_client"], nama_objek, properti_objek)
+@rpc("any_peer") func _kirim_map(id_pemain : int):
+	if map.substr(0,1) == "@" and ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)]):
+		kirim_aset(id_pemain, "%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)], map.substr(1))
 @rpc("any_peer") func _hapus_objek(jalur_objek : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)

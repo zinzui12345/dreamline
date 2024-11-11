@@ -33,6 +33,7 @@ func _ready() -> void:
 			var isi_file: Node3D = load(file_).instantiate()
 			var id		= isi_file.get_meta("id_aset")
 			data[id] = {
+				"nama"		: isi_file.name,
 				"tipe"		: "objek",
 				"author"	: isi_file.get_meta("author"),
 				"sumber"	: file_,

@@ -419,10 +419,10 @@ func uji_viewport() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
 func atur_map(nama_map : StringName = "empty") -> String:
-	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();									return "memulai uji performa"
-	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = nama_map;return "mengatur map menjadi : @"+nama_map
-	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;					return "mengatur map menjadi : "+nama_map
-	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);									return "map ["+nama_map+"] tidak ditemukan"
+	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();											return "memulai uji performa"
+	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
+	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;							return "mengatur map menjadi : "+nama_map
+	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);											return "map ["+nama_map+"] tidak ditemukan"
 func simpan_map():
 	# simpan map ke user://map/nama_map.map
 	if koneksi == MODE_KONEKSI.SERVER and is_instance_valid(karakter):
@@ -431,6 +431,8 @@ func simpan_map():
 		var nama_map : String = str(server.map)
 		var depedensi_map : Array[String]
 		var objek_map : Dictionary
+		
+		if nama_map.substr(0,1) == "@": nama_map = nama_map.substr(1)
 		
 		for node_objek : Node3D in dunia.get_node("objek").get_children():
 			if node_objek.has_meta("id_aset"):
@@ -502,8 +504,8 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 	# setup pool
 	server.pool_objek.clear()
 	server.pool_entitas.clear()
-	# setup timeline
 	if koneksi == MODE_KONEKSI.SERVER:
+		# setup timeline
 		server.timeline = {
 			"data": {
 				"id":	 hasilkanKarakterAcak(5),
@@ -513,12 +515,17 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 				"urutan":1
 			}
 		}
+	else:
+		# unduh map eksternal
+		if nama_map.substr(0,1) == "@":
+			server.rpc_id(1, "_kirim_map", client.id_koneksi)
 	var tmp_perintah := Callable(self, "_muat_map")
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 func _muat_map(file_map : StringName) -> void:
 	# INFO : (4) muat map
-	if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map]):
-		map = await load("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map]).instantiate()
+	if file_map.substr(0,1) == "@":
+		if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]):
+			map = await load("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]).instantiate()
 	else:
 		map = await load("res://map/%s.tscn" % [file_map]).instantiate()
 	map.name = "lingkungan"

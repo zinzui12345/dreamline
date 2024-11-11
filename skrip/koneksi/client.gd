@@ -91,3 +91,14 @@ func _ketika_terputus_dari_server() -> void:
 	permainan._tambahkan_pemain(id_pemain, data_pemain)
 @rpc("authority") func hapus_pemain(id_pemain : int) -> void:
 	permainan._hapus_daftar_pemain(id_pemain)
+
+@rpc("authority", "reliable") func terima_aset(data : PackedByteArray, tipe_aset : String, nama_aset : String, format_aset : String = "scn"):
+	var file_aset = FileAccess.open(Konfigurasi.direktori_aset + "/%s/%s.%s" % [tipe_aset, nama_aset, format_aset], FileAccess.WRITE)
+	if tipe_aset == "map":
+		file_aset = FileAccess.open(Konfigurasi.direktori_map + "/%s.%s" % [nama_aset, format_aset], FileAccess.WRITE)
+		Panku.notify("Menerima map [%s]" % nama_aset)
+	else:
+		file_aset = FileAccess.open(Konfigurasi.direktori_aset + "/%s/%s.%s" % [tipe_aset, nama_aset, format_aset], FileAccess.WRITE)
+		Panku.notify("Menerima aset [%s/%s/%s]" % [Konfigurasi.direktori_aset, tipe_aset, nama_aset])
+	file_aset.store_buffer(data)
+	file_aset.close()
