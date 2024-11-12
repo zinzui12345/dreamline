@@ -803,6 +803,7 @@ func _muat_map(file_map : StringName) -> void:
 			call_deferred("add_child", pengamat_objek)
 			# cek depedensi map
 			if map.get("depedensi") != null:
+				call_deferred("_atur_teks_memuat", "%mengunduh_aset%")
 				for cek_id_aset in map.depedensi:
 					if daftar_aset.has(cek_id_aset): pass
 					else: server.rpc_id(1,"_kirim_aset", cek_id_aset, client.id_koneksi)

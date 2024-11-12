@@ -547,12 +547,13 @@ func _pemain_terputus(id_pemain):
 		var id_pemain_target = pemain[idx_pemain]["id_client"]
 		
 		# pastikan pemain valid
-		if id_pemain_target != 0 and cek_visibilitas_pemain.has(id_pemain_target):
+		if id_pemain_target != 0:
 			# jika pemain adalah target, reset idnya
 			if id_pemain_target == id_pemain: pemain[idx_pemain]["id_client"] = 0
 			# hapus visibilitas pemain pada pemain target
 			elif cek_visibilitas_pemain[id_pemain_target].has(id_pemain):
-				cek_visibilitas_pemain[id_pemain_target].erase(id_pemain)
+				if cek_visibilitas_pemain.has(id_pemain_target):
+					cek_visibilitas_pemain[id_pemain_target].erase(id_pemain)
 				hapus_pool_pemain(id_pemain_target, id_pemain)
 	
 	# jika pool pemain spawn, hapus pemain dari dunia

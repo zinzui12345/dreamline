@@ -117,4 +117,7 @@ func _ketika_terputus_dari_server() -> void:
 			"versi"		: file_aset.get_meta("versi"),
 			"setelan"	: file_aset.get_meta("setelan")
 		}
+		var perbarui_file_daftar_aset : FileAccess = FileAccess.open(Konfigurasi.data_aset, FileAccess.WRITE)
+		perbarui_file_daftar_aset.store_var(permainan.daftar_aset)
+		perbarui_file_daftar_aset.close()
 	file_aset.close()
