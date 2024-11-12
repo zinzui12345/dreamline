@@ -69,6 +69,7 @@ func _ketika_terputus_dari_server() -> void:
 
 @rpc("authority") func gabung_ke_server(nama_server : String, nama_map : StringName, posisi : Vector3, rotasi : Vector3) -> void:
 	print("telah terhubung ke server")
+	server.map = nama_map
 	id_koneksi = interface.get_unique_id()
 	id_sesi = OS.get_unique_id()
 	permainan._mulai_permainan(nama_server, nama_map, posisi, rotasi)
@@ -97,6 +98,10 @@ func _ketika_terputus_dari_server() -> void:
 	if tipe_aset == "map":
 		file_aset = FileAccess.open(Konfigurasi.direktori_map + "/%s.%s" % [nama_aset, format_aset], FileAccess.WRITE)
 		Panku.notify("Menerima map [%s]" % nama_aset)
+		var nama_map = "@" + nama_aset
+		if nama_map == server.map:
+			var tmp_perintah := Callable(server.permainan, "_muat_map")
+			server.permainan.thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 	else:
 		file_aset = FileAccess.open(Konfigurasi.direktori_aset + "/%s/%s.%s" % [tipe_aset, nama_aset, format_aset], FileAccess.WRITE)
 		Panku.notify("Menerima aset [%s/%s/%s]" % [Konfigurasi.direktori_aset, tipe_aset, nama_aset])

@@ -73,6 +73,7 @@ SKALARESOLUSI,Skala Resolusi,Resolution Scale
 kompilasi_shader,Memuat Shader...,Compiling Shader...
 kompilasi_karakter,Membuat Karakter Pemain,Creating Player Character
 %memuat_map%,Memuat Map...,Loading Map...
+%mengunduh_map%,Mengunduh Map,Downloading Map
 %memuat_pemain%,Menambahkan Pemain ke dunia,Adding Player to world
 ,,
 # menu jeda,,

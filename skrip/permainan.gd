@@ -518,7 +518,9 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 	else:
 		# unduh map eksternal
 		if nama_map.substr(0,1) == "@":
+			_atur_teks_memuat("%mengunduh_map%")
 			server.rpc_id(1, "_kirim_map", client.id_koneksi)
+			return
 	var tmp_perintah := Callable(self, "_muat_map")
 	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 func _muat_map(file_map : StringName) -> void:
@@ -526,6 +528,9 @@ func _muat_map(file_map : StringName) -> void:
 	if file_map.substr(0,1) == "@":
 		if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]):
 			map = await load("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]).instantiate()
+		else:
+			# server belum mengirim map atau proses unduhan map belum selesai
+			push_error("map tidak valid!")
 	else:
 		map = await load("res://map/%s.tscn" % [file_map]).instantiate()
 	map.name = "lingkungan"

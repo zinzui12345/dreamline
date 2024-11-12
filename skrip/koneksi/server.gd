@@ -547,7 +547,7 @@ func _pemain_terputus(id_pemain):
 		var id_pemain_target = pemain[idx_pemain]["id_client"]
 		
 		# pastikan pemain valid
-		if id_pemain_target != 0:
+		if id_pemain_target != 0 and cek_visibilitas_pemain.has(id_pemain_target):
 			# jika pemain adalah target, reset idnya
 			if id_pemain_target == id_pemain: pemain[idx_pemain]["id_client"] = 0
 			# hapus visibilitas pemain pada pemain target
