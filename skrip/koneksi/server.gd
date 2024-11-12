@@ -1014,9 +1014,12 @@ func _pemain_terputus(id_pemain):
 			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
 				if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(pemain[idx_pemain]["id_client"], nama_objek, properti_objek)
-@rpc("any_peer") func _kirim_map(id_pemain : int):
+@rpc("any_peer") func _kirim_map(id_pemain : int):						# 11/11/24 :: kirim map ke pemain tertentu
 	if map.substr(0,1) == "@" and ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)]):
 		kirim_aset(id_pemain, "%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)], map.substr(1))
+@rpc("any_peer") func _kirim_aset(id_aset : String, id_pemain : int):	# 12/11/24 :: kirim aset tertentu ke pemain tertentu
+	if permainan.daftar_aset.has(id_aset) and ResourceLoader.exists(permainan.daftar_aset[id_aset].sumber):
+		kirim_aset(id_pemain, permainan.daftar_aset[id_aset].sumber, permainan.daftar_aset[id_aset].nama)
 @rpc("any_peer") func _hapus_objek(jalur_objek : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)

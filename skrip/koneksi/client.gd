@@ -97,13 +97,24 @@ func _ketika_terputus_dari_server() -> void:
 	var file_aset = FileAccess.open(Konfigurasi.direktori_aset + "/%s/%s.%s" % [tipe_aset, nama_aset, format_aset], FileAccess.WRITE)
 	if tipe_aset == "map":
 		file_aset = FileAccess.open(Konfigurasi.direktori_map + "/%s.%s" % [nama_aset, format_aset], FileAccess.WRITE)
+		file_aset.store_buffer(data)
 		Panku.notify("Menerima map [%s]" % nama_aset)
 		var nama_map = "@" + nama_aset
 		if nama_map == server.map:
-			var tmp_perintah := Callable(server.permainan, "_muat_map")
-			server.permainan.thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
+			var tmp_perintah := Callable(permainan, "_muat_map")
+			permainan.thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
 	else:
-		file_aset = FileAccess.open(Konfigurasi.direktori_aset + "/%s/%s.%s" % [tipe_aset, nama_aset, format_aset], FileAccess.WRITE)
+		var jalur_aset : String = Konfigurasi.direktori_aset + "/%s/%s.%s" % [tipe_aset, nama_aset, format_aset]
+		file_aset = FileAccess.open(jalur_aset, FileAccess.WRITE)
+		file_aset.store_buffer(data)
 		Panku.notify("Menerima aset [%s/%s/%s]" % [Konfigurasi.direktori_aset, tipe_aset, nama_aset])
-	file_aset.store_buffer(data)
+		file_aset = FileAccess.open(jalur_aset, FileAccess.READ)
+		permainan.daftar_aset[file_aset.get_meta("id_aset")] = {
+			"nama"		: nama_aset,
+			"tipe"		: tipe_aset,
+			"author"	: file_aset.get_meta("author"),
+			"sumber"	: jalur_aset,
+			"versi"		: file_aset.get_meta("versi"),
+			"setelan"	: file_aset.get_meta("setelan")
+		}
 	file_aset.close()

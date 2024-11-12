@@ -799,9 +799,15 @@ func _muat_map(file_map : StringName) -> void:
 		else:
 			# tambah pengamat objek
 			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
+			call_deferred("_atur_persentase_memuat", 50)
+			call_deferred("add_child", pengamat_objek)
+			# cek depedensi map
+			if map.get("depedensi") != null:
+				for cek_id_aset in map.depedensi:
+					if daftar_aset.has(cek_id_aset): pass
+					else: server.rpc_id(1,"_kirim_aset", cek_id_aset, client.id_koneksi)
 			call_deferred("_atur_persentase_memuat", 70)
 			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
-			call_deferred("add_child", pengamat_objek)
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
 	thread.call_deferred("wait_to_finish")
