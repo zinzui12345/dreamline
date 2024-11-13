@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://ihafed1x1w4f"]
 
+[ext_resource type="Script" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
-[ext_resource type="PackedScene" uid="uid://df2034e3s77u4" path="res://skena/objek/placeholder_objek.tscn" id="4_irs5o"]
 [ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="34_jyf56"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_kxi72"]
@@ -29,6 +29,7 @@ size = Vector3(100, 1, 100)
 [sub_resource type="BoxMesh" id="BoxMesh_fkvxr"]
 
 [node name="lingkungan" type="Node3D"]
+script = ExtResource("1_h3x2o")
 
 [node name="area_navigasi" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_kxi72")
@@ -58,9 +59,6 @@ transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107
 
 [node name="batas_bawah" type="Marker3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7, 0)
-
-[node name="placeholder_objek" parent="." instance=ExtResource("4_irs5o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.10546, -0.000658154, -4.67946)
 
 [node name="bajay" parent="." instance=ExtResource("34_jyf56")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.94356, 2.61685, -6.01353)

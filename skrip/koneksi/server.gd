@@ -1109,7 +1109,11 @@ func _pemain_terputus(id_pemain):
 			tmp_objek.name = nama_objek
 			permainan.dunia.get_node("objek").add_child(tmp_objek, true)
 			for p in properti_objek.size():
-				if tmp_objek.get(properti_objek[p][0]) != null: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
+				if tmp_objek.get(properti_objek[p][0]) != null:
+					if properti_objek[p][0] == "kode":
+						var compile_kode = permainan._compile_blok_kode(properti_objek[p][1])
+						if compile_kode != null: tmp_objek.kode = compile_kode
+					else: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
 				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
 			tmp_objek.id_pengubah = id_pengubah
 			tmp_objek.global_transform.origin = posisi_objek
@@ -1141,40 +1145,7 @@ func _pemain_terputus(id_pemain):
 		if permainan.dunia.get_node("objek").get_node_or_null(nama_objek) != null:
 			for p in kondisi_objek.size():
 				if kondisi_objek[p][0] == "kode":
-					var terima_resource : Dictionary = JSON.parse_string(kondisi_objek[p][1])
-					var parse_resource_blok : Array[BlockSerialization]
-					var parse_resource_variabel : Array[VariableResource]
-					var hasil_resource : BlockScriptSerialization
-					for blok_kode in terima_resource.block_trees:
-						var nama_blok : StringName = &"" + terima_resource.block_trees[blok_kode].name
-						var tmp_pos_blok = terima_resource.block_trees[blok_kode].position # (54, 47)
-						var p_tmp_pos_blok = tmp_pos_blok.substr(1, tmp_pos_blok.length()-2)
-						var c_tmp_pos_blok = p_tmp_pos_blok.split(", ", false)
-						var posisi_blok : Vector2 = Vector2(c_tmp_pos_blok[0].to_float(), c_tmp_pos_blok[1].to_float())
-						var sub_blok : Array = permainan.dunia.get_node("objek").get_node(nama_objek)._compile_sub_blok_kode(terima_resource.block_trees[blok_kode].path_child_pairs)
-						var properti : BlockSerializedProperties = permainan.dunia.get_node("objek").get_node(nama_objek)._compile_sub_properti_blok_kode(terima_resource.block_trees[blok_kode].block_serialized_properties)
-						parse_resource_blok.append(
-							BlockSerialization.new(
-								nama_blok,
-								posisi_blok,
-								properti,
-								sub_blok
-							)
-						)
-					for variabel in terima_resource.variables:
-						parse_resource_variabel.append(
-							VariableResource.new(
-								terima_resource.variables[variabel].var_name,
-								terima_resource.variables[variabel].var_type
-							)
-						)
-					hasil_resource = BlockScriptSerialization.new(
-						"objek",
-						parse_resource_blok,
-						parse_resource_variabel,
-						terima_resource.generated_script
-					)
-					permainan.dunia.get_node("objek").get_node(nama_objek).kode = hasil_resource
+					permainan.dunia.get_node("objek").get_node(nama_objek).kode = permainan._compile_blok_kode(kondisi_objek[p][1])
 				elif permainan.dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
 					permainan.dunia.get_node("objek").get_node(nama_objek).set(kondisi_objek[p][0], kondisi_objek[p][1])
 @rpc("authority") func _hapus_visibilitas_pemain(id_pemain : int):

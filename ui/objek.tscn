@@ -22,7 +22,23 @@ func pilih():
 					[]
 				)
 			elif cek_tipe_objek is objek:
-				if cek_tipe_objek.get(\"properti\") == null:
+				if cek_tipe_objek.has_meta(\"setelan\"):
+					var dictionary_setelan : Dictionary = cek_tipe_objek.get_meta(\"setelan\")
+					var hasil_array : Array = []
+					for setelan in dictionary_setelan:
+						if setelan == \"ikon\": continue
+						hasil_array.append([
+							setelan,
+							dictionary_setelan[setelan]
+						])
+					server._tambahkan_objek(
+						jalur_objek,
+						server.permainan.pasang_objek,
+						Vector3.ZERO,
+						cek_tipe_objek.jarak_render,
+						hasil_array
+					)
+				elif cek_tipe_objek.get(\"properti\") == null:
 					push_error(\"[Galat] objek %s tidak memiliki variabel properti!\" % cek_tipe_objek.name)
 					server._tambahkan_objek(
 						jalur_objek,
