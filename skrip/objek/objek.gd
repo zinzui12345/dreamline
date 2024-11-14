@@ -144,6 +144,7 @@ func _process(_delta : float) -> void:
 						"var_type":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_type
 					}
 				var kirim_resource : Dictionary = {
+					"script_inherits":	$kode_ubahan.block_script.script_inherits,
 					"block_trees":		parse_cabang_blok,
 					"variables":		parse_variabel_blok,
 					"generated_script":	$kode_ubahan.block_script.generated_script

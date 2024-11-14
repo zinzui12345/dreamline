@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 10/11/24 Early Access"
+const versi = "Dreamline v0.4.4 14/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2414,7 +2414,7 @@ func _compile_blok_kode(data : String) -> BlockScriptSerialization:
 			)
 		)
 	hasil_resource = BlockScriptSerialization.new(
-		"objek",
+		konversi_resource.script_inherits,
 		parse_resource_blok,
 		parse_resource_variabel,
 		konversi_resource.generated_script
