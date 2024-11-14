@@ -23,10 +23,10 @@ const BUILTIN_CATEGORIES_PROPS: Dictionary = {
 	},
 	"%siklus_client%":
 	{
-		"color": Color("4b6584"),
+		"color": Color("cf6a87"),
 		"order": 20,
 	},
-	"Transform | Position":
+	"%transformasi_posisi%":
 	{
 		"color": Color("4b6584"),
 		"order": 25,

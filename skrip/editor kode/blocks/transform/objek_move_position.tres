@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://ses5486g56q"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_12hfp"]
+
+[resource]
+script = ExtResource("1_12hfp")
+name = &"objek_move_position"
+target_node_class = "objek"
+description = "%deskripsi_pindahkan_objek%"
+category = "%transformasi_posisi%"
+type = 2
+variant_type = 0
+display_template = "%pindahkan_objek {arah: VECTOR3}"
+code_template = "pindahkan({arah})"
+defaults = {}
+signal_name = ""
+scope = ""

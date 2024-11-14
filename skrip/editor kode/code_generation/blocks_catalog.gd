@@ -29,27 +29,20 @@ const _FALLBACK_CHANGE_FOR_TYPE = {
 }
 
 const _SETTINGS_FOR_CLASS_PROPERTY = {
-	"Node2D":
-	{
-		"position":
-		{
-			"category": "Transform | Position",
-			"default_set": Vector2(100, 100),
-			"default_change": Vector2(1, 1),
-		},
-		"rotation_degrees":
-		{
-			"category": "Transform | Rotation",
-			"default_set": 45,
-			"default_change": 1,
-		},
-		"scale":
-		{
-			"category": "Transform | Scale",
-			"default_set": Vector2(2, 2),
-			"default_change": Vector2(0.1, 0.1),
-		},
-	},
+	#"Node3D":
+	#{
+		#"rotation_degrees":
+		#{
+			#"category": "Transform | Rotation",
+			#"default_set": Vector3(0, 45, 0)
+		#},
+		#"scale":
+		#{
+			#"category": "Transform | Scale",
+			#"default_set": Vector3(1, 1, 1),
+			#"default_change": Vector3(0.1, 0.1, 0.1),
+		#},
+	#},
 	"CanvasItem":
 	{
 		"modulate":

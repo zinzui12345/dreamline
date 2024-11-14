@@ -110,7 +110,7 @@ func _process(_delta : float) -> void:
 	if id_pengubah == client.id_koneksi:
 		# buat variabel pembanding
 		var perubahan_kondisi : Array = []
-		var sinkron_kondisi : Array = get("properti")
+		var sinkron_kondisi : Array = get("properti") if (get("properti") != null) else []
 		
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_properti.get("posisi") == null:	cek_properti["posisi"] = Vector3.ZERO
@@ -189,10 +189,10 @@ func get_custom_class() -> String:
 	return "objek"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("Objek")]
-static func setup_custom_blocks():
-	var _class_name = "objek"
-	var block_list: Array[BlockDefinition] = []
-
+#static func setup_custom_blocks():
+	#var _class_name = "objek"
+	#var block_list: Array[BlockDefinition] = []
+	#
 	#var block_definition: BlockDefinition = BlockDefinition.new()
 	#block_definition.name = &"fungsi_mulai"
 	#block_definition.target_node_class = _class_name
@@ -202,31 +202,31 @@ static func setup_custom_blocks():
 	#block_definition.description = "Fungsi yang dipanggil pada saat objek ditambahkan ke dunia."
 	#block_definition.code_template = "func mulai():"
 	#block_list.append(block_definition)
-
+	#
 	#BlocksCatalog.add_custom_blocks(_class_name, block_list)
-
-	var property_list: Array[Dictionary] = [
-		{
-			"name": "radius_keterlihatan",
-			"type": TYPE_INT,
-		},
-		{
-			"name": "jarak_render",
-			"type": TYPE_INT,
-		}
-	]
-	
-	var property_settings = {
-		"radius_keterlihatan":
-		{
-			"category": "%variabel%",
-			"default_set": 50,
-		},
-		"jarak_render":
-		{
-			"category": "%variabel%",
-			"default_set": 10,
-		}
-	}
-
-	BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
+	#
+	#var property_list: Array[Dictionary] = [
+		#{
+			#"name": "radius_keterlihatan",
+			#"type": TYPE_INT,
+		#},
+		#{
+			#"name": "jarak_render",
+			#"type": TYPE_INT,
+		#}
+	#]
+	#egahlihskawh
+	#var property_settings = {
+		#"radius_keterlihatan":
+		#{
+			#"category": "%variabel%",
+			#"default_set": 50,
+		#},
+		#"jarak_render":
+		#{
+			#"category": "%variabel%",
+			#"default_set": 10,
+		#}
+	#}
+#
+	#BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)

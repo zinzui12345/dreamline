@@ -155,6 +155,7 @@ t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemu
 %buat_kode_pengganti%,Buat Duplikat Kode,Add Code Override
 %siklus_server%,Siklus | Server,Lifecycle | Server
 %siklus_client%,Siklus | Client,Lifecycle | Client
+%transformasi_posisi%,Transformasi | Posisi,Transform | Position
 %metode%,Metode,Methods
 %variabel%,Variabel,Variable
 %perulangan%,Perulangan,Loops
@@ -195,6 +196,9 @@ kondisi,kondisi,condition
 %not ,bukan ,not 
 jumlah,jumlah,count
 nilai,nilai,value
+arah,arah,direction
+posisi,posisi,position
+sudut,sudut,angle
 %ketika_mulai,Ketika Mulai,On Ready
 %deskripsi_ketika_mulai%,Blok yang terpasang akan dieksekusi pada saat node "dimulai",Attached blocks will be executed once when the node is "ready"
 %hapus_objek,Hapus Objek,Remove Object
@@ -219,6 +223,10 @@ nama_metode,nama metode,method name
 %lanjutkan_perulangan,Lewati,Continue
 %deskripsi_lanjutkan_perulangan%,Lanjutkan proses perulangan ke iterasi berikutnya dengan melewati sisa iterasi.,Continue loop process to the next iteration by skipping the rest of iterations.
 %tunggu_node_siap,Tunggu hingga node dimulai,Await node ready
+%posisi_objek,Posisi Objek,Object Position
+%deskripsi_posisi_objek%,Posisi global objek pada dunia,Object global position in world space
+%pindahkan_objek ,Pindahkan Objek ,Move Object 
+%deskripsi_pindahkan_objek%,Memindahkan objek sejauh [i]arah[/i] tertentu,Move object by [i]direction[/i]
 %angka_desimal_acak ,Bilangan desimal acak di antara ,Random floating point number between 
 %deskripsi_angka_desimal_acak%,Menghasilkan bilangan desimal acak di antara kedua nilai yang ditentukan,Generate a random floating point number between [i]from[/i] and [i]to[/i] inclusively
 %angka_bulat_acak ,Bilangan bulat acak di antara ,Random integer number between 
@@ -226,7 +234,6 @@ nama_metode,nama metode,method name
 %deskripsi_fungsi_sin%,Menghitung nilai sinus dari [b]sudut[/b] yang ditentukan,Calculate the sine of [i]angle[/i]
 %deskripsi_fungsi_cos%,Menghitung nilai [i]cosinus[/i] dari [b]sudut[/b] yang ditentukan,Calculate the cosine of [i]angle[/i]
 %deskripsi_fungsi_tan%,Menghitung rasio sinus [i](tangen)[/i] dari [b]sudut[/b] yang ditentukan,Calculate the tangent of [i]angle[/i]
-sudut,sudut,angle
 %apakah_aksi ,Aksi ,Is action
 Pressed,Ditekan,Pressed
 Just Pressed,Ditekan sekali,Just Pressed
