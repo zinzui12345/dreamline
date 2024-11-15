@@ -1767,11 +1767,18 @@ func _ketika_mengubah_kode_objek() -> void:
 		if edit_objek.get_node("kode_ubahan").block_script == null:
 			_tampilkan_popup_informasi_("NULL")
 			return
+		# 15/11/24 :: animasi proses memuat kode
+		$proses_memuat/layar/animasi.play("tampilkan")
+		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
+		await get_tree().create_timer(1.1).timeout
 		# 31/10/24 :: # buat palet sintaks berdasarkan kelas objek
 		$editor_kode/blok_kode._save_node_button.visible = false
 		$editor_kode/blok_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
 		$editor_kode/blok_kode.save_script()
 		tampilkan_editor_kode()
+		# 15/11/24 :: animasi proses memuat kode
+		$proses_memuat/layar/animasi.play("sembunyikan")
+		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.stop()
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):

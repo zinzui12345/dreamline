@@ -1,4 +1,4 @@
-[gd_scene load_steps=330 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=335 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -4452,6 +4452,100 @@ _data = {
 "tampilkan": SubResource("Animation_2ldya")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22v7y"]
+bg_color = Color(0, 0, 0, 0.647059)
+
+[sub_resource type="Animation" id="Animation_4sabh"]
+resource_name = "tampilkan"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.01, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.233333, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_xwivh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ob5eb"]
+resource_name = "sembunyikan"
+length = 0.25
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.23, 0.25),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kip3h"]
+_data = {
+"RESET": SubResource("Animation_xwivh"),
+"sembunyikan": SubResource("Animation_ob5eb"),
+"tampilkan": SubResource("Animation_4sabh")
+}
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6os86"]
 bg_color = Color(0, 0, 0, 0.8)
 
@@ -8366,7 +8460,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_lock_ = true
 
 [node name="panel_bawah" type="Control" parent="proses_memuat"]
 layout_mode = 1
@@ -8453,6 +8546,56 @@ libraries = {
 [node name="animasi" type="AnimationPlayer" parent="proses_memuat/panel_bawah"]
 libraries = {
 "": SubResource("AnimationLibrary_r6rat")
+}
+
+[node name="layar" type="Panel" parent="proses_memuat"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_22v7y")
+
+[node name="pemisah_vertikal" type="VBoxContainer" parent="proses_memuat/layar"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -30.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+
+[node name="pemisah_horizontal" type="HBoxContainer" parent="proses_memuat/layar/pemisah_vertikal"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="spinner" type="Control" parent="proses_memuat/layar/pemisah_vertikal/pemisah_horizontal"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="SpinnerMemuat" type="Sprite2D" parent="proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner"]
+position = Vector2(32, 32)
+texture = ExtResource("2_v0ki3")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat"]
+libraries = {
+"": SubResource("AnimationLibrary_d7reu")
+}
+
+[node name="teks_memuat" type="Label" parent="proses_memuat/layar/pemisah_vertikal/pemisah_horizontal"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "%memuat_kode%"
+vertical_alignment = 1
+
+[node name="animasi" type="AnimationPlayer" parent="proses_memuat/layar"]
+libraries = {
+"": SubResource("AnimationLibrary_kip3h")
 }
 
 [node name="proses_koneksi" type="Control" parent="."]
