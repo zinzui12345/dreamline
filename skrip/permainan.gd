@@ -811,7 +811,7 @@ func _muat_map(file_map : StringName) -> void:
 			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
-	thread.call_deferred("wait_to_finish")
+	#thread.call_deferred("wait_to_finish")
 func _mulai_server_cli() -> void:
 	print(alamat_ip())
 	if permukaan != null: permukaan.gunakan_frustum_culling = false
@@ -827,7 +827,10 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 			karakter = pemain
 			dunia.pengamat = karakter.get_node("pengamat/%pandangan")
 			if permukaan != null: permukaan.pengamat = karakter.get_node("pengamat").get_node("%pandangan")
-		
+			
+			# 16/11/24 :: atur persentase memuat
+			_atur_persentase_memuat(100)
+			
 			# INFO : (6) terapkan data pemain ke model pemain
 			pemain.id_pemain = id
 			pemain.name = str(id)
@@ -848,6 +851,9 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 			
 			# INFO : (7) tambahkan pemain ke dunia
 			dunia.get_node("pemain").add_child(pemain, true)
+			
+			# 16/11/24 :: hentikan thread
+			thread.wait_to_finish()
 			
 			# terapkan kondisi
 			pemain.position = data_pemain["posisi"]
