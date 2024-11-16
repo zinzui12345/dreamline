@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 14/11/24 Early Access"
+const versi = "Dreamline v0.4.4 16/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -71,6 +71,7 @@ var batas_bawah : int = -4000	# batas area untuk re-spawn
 var edit_objek : Node3D			# ref objek yang sedang di-edit
 var memasang_objek : bool = false
 var pasang_objek : Vector3		# posisi objek yang akan dipasang
+var editor_kode
 var mode_vr : bool = false
 var pengamat_vr : XROrigin3D
 var thread := Thread.new()
@@ -170,6 +171,7 @@ func _ready() -> void:
 	$kontrol_sentuh/aksi_1.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
 	$hud/daftar_properti_objek/DragPad.visible = false
+	editor_kode = $editor_kode/blok_kode
 func _setup() -> void:
 	if dunia == null:
 		dunia = await load("res://skena/dunia.scn").instantiate()
@@ -812,6 +814,11 @@ func _muat_map(file_map : StringName) -> void:
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
 	#thread.call_deferred("wait_to_finish")
+func _muat_kode(node_kode_ubahan : BlockCode) -> void:
+	# 31/10/24 :: # buat palet sintaks berdasarkan kelas objek
+	editor_kode.call_deferred("switch_block_code_node", node_kode_ubahan)
+	editor_kode.call_deferred("save_script")
+	call_deferred("tampilkan_editor_kode")
 func _mulai_server_cli() -> void:
 	print(alamat_ip())
 	if permukaan != null: permukaan.gunakan_frustum_culling = false
@@ -1293,6 +1300,7 @@ func _arahkan_pengamat_ke_aktor_replay() -> void:
 
 # UI
 func _atur_persentase_memuat(nilai : int) -> void:
+	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.get_animation("proses").track_set_key_value(0, 0, $proses_memuat/panel_bawah/Panel/ProsesMemuat.value)
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.get_animation("proses").track_set_key_value(0, 1, nilai)
 	$proses_memuat/panel_bawah/Panel/ProsesMemuat/animasi.play("proses")
 	$proses_memuat/panel_bawah/Panel/PersenMemuat.text = str(nilai)+"%"
@@ -1773,18 +1781,15 @@ func _ketika_mengubah_kode_objek() -> void:
 		if edit_objek.get_node("kode_ubahan").block_script == null:
 			_tampilkan_popup_informasi_("NULL")
 			return
+		# 31/10/24 :: sembunyikan fungsi simpan node dalam permainan
+		editor_kode._save_node_button.visible = false
 		# 15/11/24 :: animasi proses memuat kode
 		$proses_memuat/layar/animasi.play("tampilkan")
 		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
-		await get_tree().create_timer(1.1).timeout
-		# 31/10/24 :: # buat palet sintaks berdasarkan kelas objek
-		$editor_kode/blok_kode._save_node_button.visible = false
-		$editor_kode/blok_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
-		$editor_kode/blok_kode.save_script()
-		tampilkan_editor_kode()
-		# 15/11/24 :: animasi proses memuat kode
-		$proses_memuat/layar/animasi.play("sembunyikan")
-		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.stop()
+		await get_tree().create_timer(0.25).timeout
+		# 16/11/24 :: proses blok kode di thread
+		var tmp_perintah := Callable(self, "_muat_kode")
+		thread.start(tmp_perintah.bind(edit_objek.get_node("kode_ubahan")), Thread.PRIORITY_NORMAL)
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
@@ -2017,6 +2022,12 @@ func tampilkan_editor_kode() -> void:
 			$karakter/animasi.play("animasi_panel/tutup")
 		$menu_utama/animasi.play("lipat")
 	$editor_kode/animasi.play("tampilkan")
+	# 15/11/24 :: animasi proses memuat kode
+	if $proses_memuat.visible:
+		$proses_memuat/layar/animasi.play("sembunyikan")
+		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.stop()
+	# 16/11/24 :: hentikan thread memuat kode
+	if thread.is_started(): thread.wait_to_finish()
 func buat_kode(nama_kelas : String = "objek"):
 	if $editor_kode.visible:
 		for kelas in ProjectSettings.get_global_class_list():
