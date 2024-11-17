@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 16/11/24 Early Access"
+const versi = "Dreamline v0.4.4 17/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2031,9 +2031,9 @@ func tampilkan_editor_kode() -> void:
 func buat_kode(nama_kelas : String = "objek"):
 	if $editor_kode.visible:
 		for kelas in ProjectSettings.get_global_class_list():
-			if kelas.class == nama_kelas:
-				var node = ClassDB.instantiate(kelas.base)
+			if kelas.class == nama_kelas and ClassDB.can_instantiate(nama_kelas):
 				var skrip = load(kelas.path)
+				var node = skrip.new()
 				var kode = BlockCode.new()
 				node.name = "template_objek"
 				node.set_script(skrip)

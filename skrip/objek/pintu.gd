@@ -5,7 +5,6 @@ const abaikan_occlusion_culling = true
 const properti = [
 	["warna_1", Color("00FF00")],
 	["kondisi", false],
-	["kode", "func gunakan():\n\tif get_node(\"../../\").kondisi:\n\t\tget_node(\"../../\").tutup()\n\telse:\n\t\tget_node(\"../../\").buka()"]
 ]
 
 @export var jalur_instance : String = ""
@@ -28,12 +27,6 @@ var _telah_spawn : bool
 func mulai() -> void:
 	set("wilayah_render", $area_render.get_aabb())
 	terapkan_warna(warna_1)
-	#if kode == "":
-		#$kode_ubahan.atur_kode(properti[2][1])
-		#kode = properti[2][1]
-	#else:
-		#$kode_ubahan.atur_kode(kode)
-		#kode = kode
 	if kondisi:	$animasi.play("terbuka")
 	else:		$animasi.play("tertutup")
 	_telah_spawn = true
@@ -68,3 +61,5 @@ func tutup() -> void:
 			[]
 		)
 		set("kondisi", false)
+
+func get_custom_class() -> String:	return "pintu"

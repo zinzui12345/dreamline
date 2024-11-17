@@ -185,8 +185,7 @@ const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_ca
 const BlockDefinition = preload("res://skrip/editor kode/code_generation/block_definition.gd")
 const Types = preload("res://skrip/editor kode/types/types.gd")
 
-func get_custom_class() -> String:
-	return "objek"
+func get_custom_class() -> String:	return "objek"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("Objek")]
 #static func setup_custom_blocks():

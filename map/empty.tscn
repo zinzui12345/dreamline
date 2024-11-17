@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://ihafed1x1w4f"]
+[gd_scene load_steps=12 format=3 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Script" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
+[ext_resource type="PackedScene" uid="uid://b3kf5nao5w8gx" path="res://skena/objek/pintu_1.scn" id="4_pmt7f"]
+[ext_resource type="PackedScene" uid="uid://b2vpadafsxpem" path="res://skena/objek/pintu_1_statis.scn" id="5_1c1i4"]
 [ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="34_jyf56"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_kxi72"]
@@ -62,3 +64,9 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7,
 
 [node name="bajay" parent="." instance=ExtResource("34_jyf56")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.94356, 2.61685, -6.01353)
+
+[node name="pintu_1" parent="." instance=ExtResource("4_pmt7f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.398161, -0.5, -1.64652)
+
+[node name="pintu_1_statis" parent="." instance=ExtResource("5_1c1i4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.36457, -0.5, -1.61468)

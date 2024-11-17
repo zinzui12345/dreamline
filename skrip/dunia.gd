@@ -60,7 +60,7 @@ func hapus_instance_pemain() -> void:
 	server.pemain.clear()
 
 # Optimasi rendering | Object Culling
-func _process(_delta : float) -> void:
+func _physics_process(_delta : float) -> void:
 	if server.mode_replay and not server.mode_uji_performa: pass # 06/07/24 :: jangan optimasi ketika memainkan replay
 	elif is_instance_valid(server.permainan.karakter) and $objek.get_child_count() > 0:
 		# atur collider raycast occlusion culling jika belum ada
