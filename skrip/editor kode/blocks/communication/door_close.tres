@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c7pq8nv5a8xfj"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_lsaap"]
+
+[resource]
+script = ExtResource("1_lsaap")
+name = &"door_close"
+target_node_class = "pintu"
+description = "%deskripsi_tutup_pintu%"
+category = "%metode_objek%"
+type = 2
+variant_type = 0
+display_template = "%aksi_tutup_pintu"
+code_template = "tutup()"
+defaults = {}
+signal_name = ""
+scope = ""

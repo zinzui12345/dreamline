@@ -158,6 +158,7 @@ t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemu
 %siklus_client%,Siklus | Client,Lifecycle | Client
 %transformasi_posisi%,Transformasi | Posisi,Transform | Position
 %metode%,Metode,Methods
+%metode_objek%,Metode | Objek,Methods | Object
 %variabel%,Variabel,Variable
 %perulangan%,Perulangan,Loops
 %logika_kondisi%,Logika | Kondisi,Logic | Conditionals
@@ -246,6 +247,15 @@ Just Released,Dilepas sekali,Just Released
 %pesan ,Pesan ,Message 
 %deskripsi_tampilkan_pesan%,Menampilkan sebuah [i]pop-up berisi[/i] [b]teks[/b] pesan,Display a pop-up containing message [b]text[/b]
 teks,teks,text
+,,
+# blok kode objek,,
+%pintu ,Pintu ,Door
+terbuka,Terbuka,Is open
+!terbuka,Tertutup,Is closed
+%aksi_buka_pintu,Buka Pintu,Open Door
+%deskripsi_buka_pintu%,Membuka pintu,Open the door
+%aksi_tutup_pintu,Tutup Pintu,Close Door
+%deskripsi_tutup_pintu%,Menutup pintu,Close the door
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?

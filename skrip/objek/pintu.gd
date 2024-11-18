@@ -2,18 +2,14 @@ extends objek
 class_name pintu
 
 const abaikan_occlusion_culling = true
-const properti = [
-	["warna_1", Color("00FF00")],
-	["kondisi", false],
-]
 
 @export var jalur_instance : String = ""
-@export var kondisi : bool = false :
-	set(terbuka):
+@export var terbuka : bool = false :
+	set(terbuka_):
 		if _telah_spawn:
 			if terbuka:	$animasi.play("buka")
 			else:		$animasi.play("tutup")
-		kondisi = terbuka
+		terbuka = terbuka_
 @export var warna_1 : Color = Color("#00ff00") :
 	set(warna_baru):
 		terapkan_warna(warna_baru)
@@ -27,7 +23,7 @@ var _telah_spawn : bool
 func mulai() -> void:
 	set("wilayah_render", $area_render.get_aabb())
 	terapkan_warna(warna_1)
-	if kondisi:	$animasi.play("terbuka")
+	if terbuka:	$animasi.play("terbuka")
 	else:		$animasi.play("tertutup")
 	_telah_spawn = true
 
@@ -44,22 +40,24 @@ func terapkan_warna(warnanya : Color) -> void:
 		material_pintu_lod.set("albedo_color", _warna_pintu)
 
 func buka() -> void:
-	if not kondisi:
+	if not terbuka and not $fisik.disabled:
 		$animasi.play("buka")
 		server.fungsikan_objek(
 			name,
 			"buka",
 			[]
 		)
-		set("kondisi", true)
+		_telah_spawn = false
+		set("terbuka", true)
 func tutup() -> void:
-	if kondisi:
+	if terbuka and not $fisik.disabled:
 		$animasi.play("tutup")
 		server.fungsikan_objek(
 			name,
 			"tutup",
 			[]
 		)
-		set("kondisi", false)
+		_telah_spawn = false
+		set("terbuka", false)
 
 func get_custom_class() -> String:	return "pintu"

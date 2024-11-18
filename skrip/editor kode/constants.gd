@@ -81,7 +81,7 @@ const BUILTIN_CATEGORIES_PROPS: Dictionary = {
 		"color": Color("4b7bec"),
 		"order": 100,
 	},
-	"Communication | Groups":
+	"%metode_objek%":
 	{
 		"color": Color("4b7bec"),
 		"order": 110,

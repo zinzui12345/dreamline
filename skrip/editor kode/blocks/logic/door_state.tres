@@ -1,0 +1,25 @@
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://cg31kvpw2ff1e"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/block canvas/option_data.gd" id="1_3sbwi"]
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="2_obap3"]
+
+[sub_resource type="Resource" id="Resource_ie4sg"]
+script = ExtResource("1_3sbwi")
+selected = 0
+items = ["!terbuka", "terbuka"]
+
+[resource]
+script = ExtResource("2_obap3")
+name = &"is_door_open"
+target_node_class = "pintu"
+description = ""
+category = "%logika_kondisi%"
+type = 3
+variant_type = 1
+display_template = "%pintu {op: OPTION}"
+code_template = "{op}"
+defaults = {
+"op": SubResource("Resource_ie4sg")
+}
+signal_name = ""
+scope = ""
