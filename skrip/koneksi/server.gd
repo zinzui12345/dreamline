@@ -361,6 +361,8 @@ func putuskan():
 	# setup pool
 	pool_entitas.clear()
 	pool_objek.clear()
+	jumlah_entitas = 0
+	jumlah_objek = 0
 	cek_visibilitas_pemain.clear()
 	cek_visibilitas_pool_entitas.clear()
 	cek_visibilitas_pool_objek.clear()
