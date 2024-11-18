@@ -2326,7 +2326,7 @@ func _parse_sub_sub_properti_blok_kode(data) -> Dictionary:
 	elif data is Array:
 		for indeks_sub_sub_properti in data.size():
 			var tipe_data = type_string(typeof(data[indeks_sub_sub_properti]))
-			if tipe_data == "Dictionary":
+			if tipe_data == "Array" or tipe_data == "Dictionary":
 				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = _parse_sub_sub_properti_blok_kode(data[indeks_sub_sub_properti])
 			else:
 				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = data[indeks_sub_sub_properti]

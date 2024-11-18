@@ -6,7 +6,7 @@
 [sub_resource type="Resource" id="Resource_ie4sg"]
 script = ExtResource("1_3sbwi")
 selected = 0
-items = ["!terbuka", "terbuka"]
+items = ["!terbuka", "tertutup"]
 
 [resource]
 script = ExtResource("2_obap3")
