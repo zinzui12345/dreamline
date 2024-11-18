@@ -11,6 +11,7 @@ var id_pengubah : int = -1:					# id peer/pemain yang mengubah objek ini
 		id_pengubah = id
 var cek_properti : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara sementara sebelum setup() objek
+var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 #const properti = []						# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ]) | properti harus di @export!
 #const jalur_instance = ""					# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
 #const abaikan_transformasi = true			# hanya tambahkan jika objek tidak ingin diubah transformasinya dengan mode edit
@@ -56,6 +57,14 @@ func _setup() -> void:
 					_sp_properti.append([
 						"kode",
 						$kode_ubahan.block_script
+					])
+			elif has_meta("setelan"):
+				var dictionary_setelan : Dictionary = get_meta("setelan")
+				for setelan in dictionary_setelan:
+					if setelan == "ikon": continue
+					_sp_properti.append([
+						setelan,
+						dictionary_setelan[setelan]
 					])
 			else:
 				push_error("[Galat] objek %s tidak memiliki properti!" % name)
@@ -110,7 +119,19 @@ func _process(_delta : float) -> void:
 	if id_pengubah == client.id_koneksi:
 		# buat variabel pembanding
 		var perubahan_kondisi : Array = []
-		var sinkron_kondisi : Array = get("properti") if (get("properti") != null) else []
+		
+		if sinkron_kondisi.size() < 1:
+			if (get("properti") != null): sinkron_kondisi = get("properti")
+			elif has_meta("setelan"):
+				var dictionary_setelan : Dictionary = get_meta("setelan")
+				for setelan in dictionary_setelan:
+					if setelan == "ikon": continue
+					elif setelan == "kode": continue
+					else:
+						sinkron_kondisi.append([
+							setelan,
+							dictionary_setelan[setelan]
+						])
 		
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_properti.get("posisi") == null:	cek_properti["posisi"] = Vector3.ZERO
