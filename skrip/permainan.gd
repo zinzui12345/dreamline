@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 17/11/24 Early Access"
+const versi = "Dreamline v0.4.4 19/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2321,6 +2321,16 @@ func _parse_sub_sub_properti_blok_kode(data) -> Dictionary:
 			var tipe_data = type_string(typeof(data[indeks_sub_sub_properti]))
 			if tipe_data == "Dictionary":
 				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = _parse_sub_sub_properti_blok_kode(data[indeks_sub_sub_properti])
+			elif tipe_data == "Object":
+				if data[indeks_sub_sub_properti] is OptionData:
+					# selected : int
+					# items : Array
+					hasil_data[str(indeks_sub_sub_properti) + "|OptionData"] = {
+						"selected":	data[indeks_sub_sub_properti].selected,
+						"items":	data[indeks_sub_sub_properti].items
+					}
+				else:
+					Panku.notify("FIXME!")
 			else:
 				hasil_data[str(indeks_sub_sub_properti) + "|" + tipe_data] = data[indeks_sub_sub_properti]
 	elif data is Array:
@@ -2361,6 +2371,8 @@ func _konversi_sub_properti_blok_kode(data, tipe_target : String):
 		hasil_data = &"" + data
 	elif tipe_target == "Array" or tipe_target == "Dictionary":
 		hasil_data = _konversi_sub_sub_properti_blok_kode(data, tipe_target)
+	elif tipe_target == "OptionData":
+		hasil_data = OptionData.new(data.items, data.selected)
 	else :
 		hasil_data = data
 	return hasil_data
