@@ -796,7 +796,7 @@ func _pemain_terputus(id_pemain):
 				pool_objek[nama_objek]["id_pengubah"],
 				nama_objek,
 				[
-					["kondisi", _tmp_kondisi]
+					["terbuka", _tmp_kondisi]
 				]
 			)
 			return

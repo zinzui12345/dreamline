@@ -47,7 +47,6 @@ func buka() -> void:
 			"buka",
 			[]
 		)
-		_telah_spawn = false
 		set("terbuka", true)
 func tutup() -> void:
 	if terbuka and not $fisik.disabled:
@@ -57,7 +56,6 @@ func tutup() -> void:
 			"tutup",
 			[]
 		)
-		_telah_spawn = false
 		set("terbuka", false)
 
 func get_custom_class() -> String:	return "pintu"
