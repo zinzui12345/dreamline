@@ -29,6 +29,11 @@ func mulai() -> void:
 
 func terapkan_warna(warnanya : Color) -> void:
 	if get_node_or_null("engsel/pintu/detail") != null:
+		# 20/11/24 :: terapkan ulang material jika kode diubah
+		if material_pintu_detail != null and material_pintu_detail.get_rid() != $engsel/pintu/detail.get_surface_override_material(0).get_rid():
+			material_pintu_detail = null
+			material_pintu_lod = null
+		
 		if material_pintu_detail == null:
 			material_pintu_detail = $engsel/pintu/detail.get_surface_override_material(0).duplicate()
 			material_pintu_lod = $engsel/pintu/lod.get_surface_override_material(0).duplicate()
