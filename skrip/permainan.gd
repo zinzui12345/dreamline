@@ -272,6 +272,9 @@ func _setup() -> void:
 	# sembunyikan mode vr
 	$setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr.visible = false
 	
+	# hapus placeholder pada daftar objek
+	for d_objek in %DaftarObjek.get_children(): d_objek.queue_free()
+	
 	# INFO : (3) tampilkan menu utama
 	$latar.tampilkan()
 	await get_tree().create_timer(0.15).timeout
@@ -1205,6 +1208,9 @@ func putuskan_server(paksa : bool = false) -> void:
 		# hapus daftar pemain
 		for d_pemain in $hud/daftar_pemain/panel/gulir/baris.get_children(): d_pemain.queue_free()
 		
+		# hapus daftar objek
+		for d_objek in %DaftarObjek.get_children(): d_objek.queue_free()
+		
 		# hapus pengamat objek
 		if get_node_or_null("pengamat") != null:
 			$pengamat.queue_free()
@@ -1320,6 +1326,31 @@ func _tampilkan_permainan() -> void:
 			pilih_objek.set_meta("jalur_objek", objekk.sumber)
 			%DaftarObjek.add_child(pilih_objek)
 			data_objek.queue_free()
+	# 21/11/24 :: tambah entitas internal
+	var daftar_entitas_internal : Array[Dictionary] = [
+		{
+			"nama_aset_": "bola_pantai",
+			"jalur_aset": "res://skena/entitas/bola_pantai.scn",
+			"jalur_ikon": "res://ui/ikon/ikon_entitas_bola_pantai.png"
+		},
+		{
+			"nama_aset_": "granat",
+			"jalur_aset": "res://skena/entitas/granat.scn",
+			"jalur_ikon": "res://ui/ikon/ikon_entitas_granat.png"
+		},
+		{
+			"nama_aset_": "bajay",
+			"jalur_aset": "res://skena/entitas/bajay.tscn",
+			"jalur_ikon": "res://ui/ikon/ikon_entitas_bajay.png"
+		}
+	]
+	for entitas_internal in daftar_entitas_internal:
+		var pilih_objek : TextureButton = load("res://ui/objek.tscn").instantiate()
+		var ikon_objek : Texture2D = load(entitas_internal.jalur_ikon)
+		pilih_objek.name = entitas_internal.nama_aset_
+		pilih_objek.texture_normal = ikon_objek
+		pilih_objek.set_meta("jalur_objek", entitas_internal.jalur_aset)
+		%DaftarObjek.add_child(pilih_objek)
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
 	_hentikan_musik_latar()
