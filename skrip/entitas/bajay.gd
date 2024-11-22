@@ -19,17 +19,19 @@ const batas_putaran_stir = 0.5
 var id_pengemudi = -1:
 	set(id):
 		if id != -1:
-			# sesuaikan pose pengemudi
-			server.permainan.dunia.get_node("pemain/"+str(id)).set("gestur", "duduk")
-			server.permainan.dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengemudi")
-			
-			# atur IK tangan pengemudi | otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
-			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null and is_inside_tree():
-				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($setir/rotasi_stir/pos_tangan_kanan.get_path())
-				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
-			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null and is_inside_tree():
-				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
-				server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
+			# atur kondisi pengemudi
+			if server.permainan.dunia.get_node_or_null("pemain/"+str(id)) != null:
+				# sesuaikan pose pengemudi
+				server.permainan.dunia.get_node("pemain/"+str(id)).set("gestur", "duduk")
+				server.permainan.dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengemudi")
+				
+				# atur IK tangan pengemudi | otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
+				if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null and is_inside_tree():
+					server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($setir/rotasi_stir/pos_tangan_kanan.get_path())
+					server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
+				if server.permainan.dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null and is_inside_tree():
+					server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
+					server.permainan.dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
 			
 			# aktifkan audio
 			$AudioMesin.play()
