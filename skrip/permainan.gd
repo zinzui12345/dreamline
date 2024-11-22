@@ -275,6 +275,9 @@ func _setup() -> void:
 	# hapus placeholder pada daftar objek
 	for d_objek in %DaftarObjek.get_children(): d_objek.queue_free()
 	
+	# jangan render daftar objek
+	%DaftarObjek.visible = false
+	
 	# INFO : (3) tampilkan menu utama
 	$latar.tampilkan()
 	await get_tree().create_timer(0.15).timeout
