@@ -321,10 +321,10 @@ grow_vertical = 2
 custom_minimum_size = Vector2(230, 64)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5935
-anchor_top = 0.016
-anchor_right = 0.9845
-anchor_bottom = 0.273
+anchor_left = 0.59312
+anchor_top = 0.106987
+anchor_right = 0.98412
+anchor_bottom = 0.363987
 offset_left = 0.127991
 offset_top = -0.192
 offset_right = -0.0640259
@@ -347,6 +347,7 @@ texture = ExtResource("2_4qxan")
 stretch_mode = 4
 script = ExtResource("3_fjqtm")
 action_name = &"aksi1"
+event_index = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="teks" type="Label" parent="antarmuka_vr/bantuan_input/aksi1"]
@@ -378,6 +379,7 @@ texture = ExtResource("4_2atv6")
 stretch_mode = 4
 script = ExtResource("3_fjqtm")
 action_name = &"aksi2"
+event_index = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="teks" type="Label" parent="antarmuka_vr/bantuan_input/aksi2"]
