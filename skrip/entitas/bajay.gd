@@ -214,7 +214,7 @@ func _kemudikan(id):
 		
 		# atur arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
-			$arah_pengamat_vr.global_rotation.y = server.permainan.pengamat_vr.global_rotation.y
+			$arah_pengamat_vr.global_rotation = server.permainan.pengamat_vr.global_rotation
 			if server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y > 0:
 				var arah_putar = $arah_pengamat_vr.rotation_degrees.y + absf(server.permainan.pengamat_vr.get_node("XRCamera3D").rotation_degrees.y)
 				if $arah_pengamat_vr.rotation_degrees.y < 0:
