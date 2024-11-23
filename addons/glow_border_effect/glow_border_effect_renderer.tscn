@@ -91,7 +91,7 @@ script = ExtResource("1")
 
 [node name="ViewportBlure" type="SubViewport" parent="."]
 handle_input_locally = false
-size = Vector2i(1152, 648)
+size = Vector2i(1024, 600)
 render_target_update_mode = 4
 
 [node name="ViewportContainerBlureX" type="SubViewportContainer" parent="ViewportBlure"]
@@ -105,7 +105,7 @@ stretch = true
 
 [node name="ViewportHalfBlure" type="SubViewport" parent="ViewportBlure/ViewportContainerBlureX"]
 handle_input_locally = false
-size = Vector2i(1152, 648)
+size = Vector2i(1024, 600)
 render_target_update_mode = 4
 
 [node name="ViewportContainerBlureY" type="SubViewportContainer" parent="ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure"]
@@ -119,7 +119,7 @@ stretch = true
 
 [node name="ViewportPrepass" type="SubViewport" parent="ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure/ViewportContainerBlureY"]
 handle_input_locally = false
-size = Vector2i(1152, 648)
+size = Vector2i(1024, 600)
 render_target_update_mode = 4
 
 [node name="Camera3DPrepass" type="Camera3D" parent="ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure/ViewportContainerBlureY/ViewportPrepass"]
@@ -131,7 +131,7 @@ environment = ExtResource("5")
 [node name="ViewportScene" type="SubViewport" parent="."]
 handle_input_locally = false
 canvas_cull_mask = 4294966271
-size = Vector2i(1152, 648)
+size = Vector2i(1024, 600)
 render_target_update_mode = 4
 
 [node name="Camera3DScene" type="Camera3D" parent="ViewportScene"]

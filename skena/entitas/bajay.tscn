@@ -1,8 +1,9 @@
-[gd_scene load_steps=67 format=4 uid="uid://duhikxgofcvdn"]
+[gd_scene load_steps=68 format=4 uid="uid://duhikxgofcvdn"]
 
 [ext_resource type="AudioStream" uid="uid://vj64jsvs1gy" path="res://audio/kendaraan/tabrak.wav" id="1"]
 [ext_resource type="Script" path="res://skrip/entitas/bajay.gd" id="1_thjsr"]
 [ext_resource type="AudioStream" uid="uid://4fhypqgci2nc" path="res://audio/kendaraan/rem.wav" id="2"]
+[ext_resource type="Script" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="3_68vc3"]
 [ext_resource type="AudioStream" uid="uid://m50p4o2xpt3y" path="res://audio/kendaraan/mesin1-mulai.ogg" id="3_ml7cc"]
 [ext_resource type="AudioStream" uid="uid://b4yw2u4ixu4sx" path="res://audio/kendaraan/mesin1-ulang.ogg" id="4_das3n"]
 [ext_resource type="AudioStream" uid="uid://b3q24yebpafud" path="res://audio/kendaraan/mesin1-berhenti.ogg" id="5_xie4g"]
@@ -1547,11 +1548,12 @@ pitch_scale = 0.7
 
 [node name="detail" type="Node3D" parent="model"]
 
-[node name="bodi" type="MeshInstance3D" parent="model/detail"]
+[node name="efek_interaksi" type="Node3D" parent="model/detail"]
+script = ExtResource("3_68vc3")
+
+[node name="bodi" type="MeshInstance3D" parent="model/detail/efek_interaksi"]
 transform = Transform3D(1, 0, 0, 0, -3.57628e-07, -1, 0, 1, -3.57628e-07, -0.00489819, 0.659113, 0.0962315)
-visibility_range_end = 10.0
-visibility_range_end_margin = 3.0
-visibility_range_fade_mode = 1
+visibility_range_end = 13.0
 mesh = SubResource("ArrayMesh_3nrr3")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_4xya2")

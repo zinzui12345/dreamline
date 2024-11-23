@@ -162,6 +162,7 @@ enum PERAN_KARAKTER {
 #region setup
 func _enter_tree() -> void:
 	get_tree().get_root().set("min_size", Vector2(980, 600))
+	PerenderEfekGarisCahaya.atur_proses_render(false)
 func _ready() -> void:
 	var loader = await load("res://skena/loader.scn").instantiate()
 	get_tree().get_root().call_deferred("add_child", loader)

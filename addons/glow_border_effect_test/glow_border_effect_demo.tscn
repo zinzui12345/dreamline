@@ -17,7 +17,7 @@ background_mode = 2
 sky = SubResource("Sky_l36gc")
 sky_custom_fov = 49.7
 
-[sub_resource type="Shader" id="14"]
+[sub_resource type="Shader" id="Shader_t2a2m"]
 code = "shader_type canvas_item;
 
 uniform sampler2D view_prepass;
@@ -35,22 +35,22 @@ void fragment() {
 	COLOR.xyz = col*glow_inv + glow;
 }"
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_56bd0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_6ux4n"]
 viewport_path = NodePath("ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_n78hn"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_jnq07"]
 viewport_path = NodePath("ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure/ViewportContainerBlureY/ViewportPrepass")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_nt2ct"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_kmav8"]
 viewport_path = NodePath("ViewportScene")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h14us"]
 resource_local_to_scene = true
-shader = SubResource("14")
+shader = SubResource("Shader_t2a2m")
 shader_parameter/intensity = 3.0
-shader_parameter/view_prepass = SubResource("ViewportTexture_n78hn")
-shader_parameter/view_blure = SubResource("ViewportTexture_56bd0")
-shader_parameter/view_scene = SubResource("ViewportTexture_nt2ct")
+shader_parameter/view_prepass = SubResource("ViewportTexture_jnq07")
+shader_parameter/view_blure = SubResource("ViewportTexture_6ux4n")
+shader_parameter/view_scene = SubResource("ViewportTexture_kmav8")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1rsw3"]
 albedo_color = Color(0.160784, 1, 0.231373, 1)

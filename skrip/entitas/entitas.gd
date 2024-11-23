@@ -2,15 +2,16 @@
 extends Node3D
 class_name entitas
 
-var id_proses : int = -1:			# id peer/pemain yang memproses entitas ini
+var id_proses : int = -1:					# id peer/pemain yang memproses entitas ini
 	set(id):
 		atur_pemroses(id)
 		id_proses = id
 var posisi_awal : Vector3
 var rotasi_awal : Vector3
-var cek_kondisi : Dictionary = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
-#const sinkron_kondisi = []			# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
-#const jalur_instance = ""			# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
+var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+#var efek_cahaya : GlowBorderEffectObject	# node efek garis cahaya ketika entitas di-fokus / highlight
+#const sinkron_kondisi = []					# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ])
+#const jalur_instance = ""					# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
 #const abaikan_occlusion_culling = true		# hanya tambahkan jika tidak ingin entitas menghalangi objek pada occlusion culling
 
 func _ready() -> void: call_deferred("_setup")

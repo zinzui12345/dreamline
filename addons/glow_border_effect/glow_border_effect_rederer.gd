@@ -75,6 +75,14 @@ func set_intensity(val):
 	intensity = val
 	material.set_shader_parameter("intensity", intensity)
 
+# Setter function to disable render process
+func atur_proses_render(nilai : bool) -> void:
+	$ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure/ViewportContainerBlureY.visible = nilai
+	$ViewportBlure/ViewportContainerBlureX.visible = nilai
+	get_tree().get_root().disable_3d = nilai
+	%Camera3DPrepass.current = nilai
+	%Camera3DScene.current = nilai
+	visible = nilai
 
 
 # Call this function to align the internal cameras in the

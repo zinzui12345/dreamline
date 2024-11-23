@@ -607,6 +607,14 @@ func _physics_process(delta : float) -> void:
 			if peran == Permainan.PERAN_KARAKTER.Arsitek:
 				server.permainan.set("tombol_aksi_2", "edit_objek")
 			else:
+				if objek_target.get("efek_cahaya") != null:
+					%pandangan.aktifkan_efek()
+					PerenderEfekGarisCahaya.atur_proses_render(true)
+					objek_target.efek_cahaya.glow_border_effect = true
+				elif objek_target.get_parent().get("efek_cahaya") != null:
+					%pandangan.aktifkan_efek()
+					PerenderEfekGarisCahaya.atur_proses_render(true)
+					objek_target.get_parent().efek_cahaya.glow_border_effect = true
 				if objek_target.has_method("fokus"): objek_target.fokus()
 				if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
@@ -625,6 +633,14 @@ func _physics_process(delta : float) -> void:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 			server.permainan.bantuan_aksi_2 = false
 	elif is_instance_valid(objek_target):
+		if objek_target.get("efek_cahaya") != null:
+			%pandangan.nonaktifkan_efek()
+			PerenderEfekGarisCahaya.atur_proses_render(false)
+			objek_target.efek_cahaya.glow_border_effect = false
+		elif objek_target.get_parent().get("efek_cahaya") != null:
+			%pandangan.nonaktifkan_efek()
+			PerenderEfekGarisCahaya.atur_proses_render(false)
+			objek_target.get_parent().efek_cahaya.glow_border_effect = false
 		objek_target = null
 		server.permainan.get_node("hud/info_posisi").text = ""
 		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
