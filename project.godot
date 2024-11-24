@@ -27,6 +27,7 @@ driver/enable_input=true
 
 [autoload]
 
+dunia="*res://skena/dunia.scn"
 Konfigurasi="*res://skrip/konfigurasi.gd"
 server="*res://skrip/koneksi/server.gd"
 client="*res://skrip/koneksi/client.gd"

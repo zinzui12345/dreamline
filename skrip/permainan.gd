@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 21/11/24 Early Access"
+const versi = "Dreamline v0.4.4 24/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -63,7 +63,6 @@ var data : Dictionary = {
 	"id_sys":		OS.get_unique_id()
 }
 var karakter : CharacterBody3D
-var dunia : Node3D = null
 var map : Node3D = null
 var daftar_aset : Dictionary
 var permukaan					# Permukaan (Terrain)
@@ -174,10 +173,7 @@ func _ready() -> void:
 	$hud/daftar_properti_objek/DragPad.visible = false
 	editor_kode = $editor_kode/blok_kode
 func _setup() -> void:
-	if dunia == null:
-		dunia = await load("res://skena/dunia.scn").instantiate()
-		get_tree().get_root().call_deferred("add_child", dunia)
-		dunia.set_process(false)
+	dunia.set_process(false)
 	# INFO : (1) muat data konfigurasi atau terapkan konfigurasi default
 	$setelan.visible = false
 	$setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled = true
@@ -1160,7 +1156,9 @@ func putuskan_server(paksa : bool = false) -> void:
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
+		PerenderEfekGarisCahaya.atur_proses_render(false)
 		_sembunyikan_antarmuka_permainan()
+		
 		# INFO : (9) tampilkan kembali menu utama
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_utama/animasi.play("tampilkan")

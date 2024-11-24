@@ -1,5 +1,5 @@
 # 14/04/24
-extends Node3D
+extends CollisionObject3D
 class_name entitas
 
 var id_proses : int = -1:					# id peer/pemain yang memproses entitas ini
@@ -16,8 +16,7 @@ var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame unt
 
 func _ready() -> void: call_deferred("_setup")
 func _setup() -> void:
-	if !is_instance_valid(server.permainan) or !is_instance_valid(server.permainan.dunia): return
-	if get_parent().get_path() != server.permainan.dunia.get_node("entitas").get_path():
+	if get_parent().get_path() != dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
 			server._tambahkan_entitas(
 				get("jalur_instance"),
@@ -28,7 +27,7 @@ func _setup() -> void:
 		queue_free()
 	else:
 		if get("abaikan_occlusion_culling") != null and get("abaikan_occlusion_culling") == true:
-			server.permainan.dunia.raycast_occlusion_culling.add_exception(self)
+			dunia.raycast_occlusion_culling.add_exception(self)
 		posisi_awal = global_position
 		rotasi_awal = global_rotation
 		mulai()

@@ -25,7 +25,7 @@ func block_code_selected(block_code : Node):
 	if block_code == null: 
 		_node_option_button.clear()
 		return
-	_node_option_button.add_item("{name} ({type})".format({"name": server.permainan.dunia.get_path_to(block_code).get_concatenated_names(), "type": block_code.block_script.script_inherits}))
+	_node_option_button.add_item("{name} ({type})".format({"name": dunia.get_path_to(block_code).get_concatenated_names(), "type": block_code.block_script.script_inherits}))
 	_node_option_button.set_item_metadata(0, block_code)
 
 func block_script_selected(block_script: BlockScriptSerialization):

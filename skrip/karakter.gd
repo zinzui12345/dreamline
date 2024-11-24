@@ -572,9 +572,9 @@ func _physics_process(delta : float) -> void:
 		objek_target = penarget.get_collider()
 		if peran == Permainan.PERAN_KARAKTER.Arsitek:
 			# atur posisi pointer
-			if !server.permainan.dunia.get_node("kursor_objek").visible:
-				server.permainan.dunia.get_node("kursor_objek").visible = true
-			server.permainan.dunia.get_node("kursor_objek").global_transform.origin = posisi_target
+			if !dunia.get_node("kursor_objek").visible:
+				dunia.get_node("kursor_objek").visible = true
+			dunia.get_node("kursor_objek").global_transform.origin = posisi_target
 			# tampilkan tombol buat objek
 			server.permainan.set("tombol_aksi_1", "pasang_objek")
 			server.permainan.get_node("hud/info_posisi").text = "(%s, %s, %s)" % [ posisi_target.x, posisi_target.y, posisi_target.z ]
@@ -620,15 +620,15 @@ func _physics_process(delta : float) -> void:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 			server.permainan.bantuan_aksi_2 = true
 		elif objek_target is npc_ai and objek_target.get("posisi_bar_nyawa") != null:
-			if !server.permainan.dunia.get_node("bar_nyawa").visible:
-				server.permainan.dunia.get_node("bar_nyawa").visible = true
-			server.permainan.dunia.get_node("bar_nyawa").global_position =  Vector3(
+			if !dunia.get_node("bar_nyawa").visible:
+				dunia.get_node("bar_nyawa").visible = true
+			dunia.get_node("bar_nyawa").global_position =  Vector3(
 				objek_target.global_position.x,
 				objek_target.global_position.y + objek_target.posisi_bar_nyawa,
 				objek_target.global_position.z
 			)
-			server.permainan.dunia.get_node("bar_nyawa").max_value = 150
-			server.permainan.dunia.get_node("bar_nyawa").value = objek_target.nyawa
+			dunia.get_node("bar_nyawa").max_value = 150
+			dunia.get_node("bar_nyawa").value = objek_target.nyawa
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 			server.permainan.bantuan_aksi_2 = false
@@ -649,10 +649,10 @@ func _physics_process(delta : float) -> void:
 		if server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 			server.permainan.bantuan_aksi_2 = false
-		if server.permainan.dunia.get_node("kursor_objek").visible:
-			server.permainan.dunia.get_node("kursor_objek").visible = false
-		if server.permainan.dunia.get_node("bar_nyawa").visible:
-			server.permainan.dunia.get_node("bar_nyawa").visible = false
+		if dunia.get_node("kursor_objek").visible:
+			dunia.get_node("kursor_objek").visible = false
+		if dunia.get_node("bar_nyawa").visible:
+			dunia.get_node("bar_nyawa").visible = false
 	
 	# atur ulang posisi kalau terjatuh dari dunia
 	if global_position.y < server.permainan.batas_bawah:
