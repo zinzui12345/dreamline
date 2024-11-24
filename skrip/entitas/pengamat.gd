@@ -16,6 +16,7 @@ func _ready() -> void:
 		_karakter = get_parent();
 		get_node("%pandangan").set("far", Konfigurasi.jarak_render);
 		posisiAwalVertikalPandangan = position.y
+		$kamera/transisi.modulate = Color(1, 1, 1, 0)
 	else: _karakter = $posisi_mata
 
 func _process(delta : float) -> void:
