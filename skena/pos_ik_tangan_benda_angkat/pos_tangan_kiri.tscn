@@ -4,9 +4,9 @@
 script/source = "extends Marker3D
 
 func _ready():
-	if get_parent().id_pengangkat != -1 and server.permainan.dunia.get_node_or_null(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\") != null:
-		server.permainan.dunia.get_node(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\").set_target_node(get_path())
-		server.permainan.dunia.get_node(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\").start()
+	if get_parent().id_pengangkat != -1 and dunia.get_node_or_null(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\") != null:
+		dunia.get_node(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\").set_target_node(get_path())
+		dunia.get_node(\"pemain/\"+str(get_parent().id_pengangkat)+\"/%tangan_kiri\").start()
 	set_process(false)
 "
 
