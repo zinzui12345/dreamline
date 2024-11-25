@@ -568,6 +568,17 @@ func _physics_process(delta : float) -> void:
 	# fungsi raycast
 	menarget = penarget.is_colliding()
 	if menarget and penarget.get_collider() != null:
+		# 25/11/24 :: kembalikan kondisi objek_target sebelumnya
+		if is_instance_valid(objek_target) and objek_target != penarget.get_collider():
+			if objek_target.get("efek_cahaya") != null:
+				%pandangan.nonaktifkan_efek()
+				PerenderEfekGarisCahaya.atur_proses_render(false)
+				objek_target.efek_cahaya.glow_border_effect = false
+			elif objek_target.get_parent().get("efek_cahaya") != null:
+				%pandangan.nonaktifkan_efek()
+				PerenderEfekGarisCahaya.atur_proses_render(false)
+				objek_target.get_parent().efek_cahaya.glow_border_effect = false
+		
 		posisi_target = penarget.get_collision_point()
 		objek_target = penarget.get_collider()
 		if peran == Permainan.PERAN_KARAKTER.Arsitek:
