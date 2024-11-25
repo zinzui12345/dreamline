@@ -15,11 +15,14 @@ func pilih():
 		var cek_tipe_objek = load(jalur_objek).instantiate()
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			if cek_tipe_objek is entitas:
+				var tmp_kondisi_entitas : Array
+				if cek_tipe_objek.get(\"sinkron_kondisi\") != null:
+					tmp_kondisi_entitas = cek_tipe_objek.sinkron_kondisi
 				server._tambahkan_entitas(
 					jalur_objek,
 					server.permainan.pasang_objek,
 					Vector3.ZERO,
-					[]
+					tmp_kondisi_entitas
 				)
 			elif cek_tipe_objek is objek:
 				if cek_tipe_objek.has_meta(\"setelan\"):
@@ -57,13 +60,16 @@ func pilih():
 					)
 		else:
 			if cek_tipe_objek is entitas:
+				var tmp_kondisi_entitas : Array
+				if cek_tipe_objek.get(\"sinkron_kondisi\") != null:
+					tmp_kondisi_entitas = cek_tipe_objek.sinkron_kondisi
 				server.rpc_id(
 					1,
 					\"_tambahkan_entitas\",
 					jalur_objek,
 					server.permainan.pasang_objek,
 					Vector3.ZERO,
-					[]
+					tmp_kondisi_entitas
 				)
 			elif cek_tipe_objek is objek:
 				if cek_tipe_objek.get(\"properti\") == null:
