@@ -75,7 +75,7 @@ func set_intensity(val):
 	intensity = val
 	material.set_shader_parameter("intensity", intensity)
 
-# Setter function to disable render process
+# Setter function to enable/disable render process
 func atur_proses_render(nilai : bool) -> void:
 	$ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure/ViewportContainerBlureY.visible = nilai
 	$ViewportBlure/ViewportContainerBlureX.visible = nilai
@@ -84,6 +84,9 @@ func atur_proses_render(nilai : bool) -> void:
 	%Camera3DScene.current = nilai
 	visible = nilai
 
+# Setter function to enable/disable virtual reality mode
+func atur_mode_vr(nilai : bool):
+	$ViewportScene.use_xr = nilai
 
 # Call this function to align the internal cameras in the
 # GlowBorderEffectRenderer with an external camera

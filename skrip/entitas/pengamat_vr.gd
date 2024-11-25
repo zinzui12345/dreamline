@@ -122,11 +122,13 @@ func _aktifkan() -> void:
 	interface = XRServer.find_interface("Native mobile")
 	if interface and interface.initialize():
 		get_viewport().use_xr = true # | root._ketika_mengatur_mode_vr(true) -> debug
+		PerenderEfekGarisCahaya.atur_mode_vr(true)
 		set("aktif", true)
 func _nonaktifkan() -> void:
 	if interface != null:
 		set("aktif", false)
 		get_viewport().use_xr = false
+		PerenderEfekGarisCahaya.atur_mode_vr(false)
 		interface.uninitialize()
 func _sesuaikan_arah_tampilan() -> void:
 	$menu.rotation_degrees.y = $XRCamera3D.rotation_degrees.y
