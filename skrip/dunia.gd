@@ -8,24 +8,8 @@ var arah_target_pengamat : Marker3D
 var posisi_relatif_pengamat : Node3D
 var raycast_occlusion_culling : RayCast3D
 
-# Mulai modus server
+# Atur node rendering
 func _ready() -> void:
-	var argumen : Array = OS.get_cmdline_args() # ["res://skena/dreamline.tscn", "--server", "empty"]
-	var jumlah_argumen : int = argumen.size()
-	for arg : int in jumlah_argumen:
-		if argumen[arg] == "--server":
-			server.publik = true
-			if arg < jumlah_argumen - 2 and argumen[arg+1] != "" and argumen[arg+2] != "":
-				server.permainan.atur_map(argumen[arg+1])
-				server.permainan.mulai_server(true, argumen[arg+2]);
-				return
-			elif arg < jumlah_argumen - 1 and argumen[arg+1] != "":
-				server.permainan.atur_map(argumen[arg+1])
-			server.permainan.mulai_server(true);
-			return
-		if argumen[arg] == "--no-shadow":
-			$matahari.shadow_enabled = false
-
 	posisi_relatif_pengamat = Node3D.new()
 	arah_target_pengamat	= Marker3D.new()
 	arah_target_pengamat.name = "arah target pengamat"

@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 24/11/24 Early Access"
+const versi = "Dreamline v0.4.4 25/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -163,6 +163,21 @@ func _enter_tree() -> void:
 	get_tree().get_root().set("min_size", Vector2(980, 600))
 	PerenderEfekGarisCahaya.atur_proses_render(false)
 func _ready() -> void:
+	var argumen : Array = OS.get_cmdline_args() # ["res://skena/dreamline.tscn", "--server", "empty"]
+	var jumlah_argumen : int = argumen.size()
+	for arg : int in jumlah_argumen:
+		if argumen[arg] == "--server":
+			server.publik = true
+			if arg < jumlah_argumen - 2 and argumen[arg+1] != "" and argumen[arg+2] != "":
+				atur_map(argumen[arg+1])
+				mulai_server(true, argumen[arg+2]);
+				return
+			elif arg < jumlah_argumen - 1 and argumen[arg+1] != "":
+				atur_map(argumen[arg+1])
+			mulai_server(true);
+			return
+		if argumen[arg] == "--no-shadow":
+			dunia.get_node("matahari").shadow_enabled = false
 	var loader = await load("res://skena/loader.scn").instantiate()
 	get_tree().get_root().call_deferred("add_child", loader)
 	$hud.visible = false
@@ -2070,7 +2085,7 @@ func buat_kode(nama_kelas : String = "objek"):
 				var kode = BlockCode.new()
 				node.name = "template_objek"
 				node.set_script(skrip)
-				server.permainan.dunia.get_node("objek").add_child(node)
+				dunia.get_node("objek").add_child(node)
 				kode.name = "KodeUbahan"
 				node.add_child(kode)
 				$editor_kode/blok_kode._save_node_button.visible = true
