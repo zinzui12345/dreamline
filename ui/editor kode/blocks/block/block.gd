@@ -74,7 +74,7 @@ func _gui_input(event):
 			else:
 				dialog.dialog_text = "Delete block?"
 			dialog.confirmed.connect(remove_from_tree)
-			EditorInterface.popup_dialog_centered(dialog)
+			#EditorInterface.popup_dialog_centered(dialog)
 
 
 func remove_from_tree():
@@ -115,7 +115,7 @@ func get_instruction_node() -> InstructionTree.TreeNode:
 	return node
 
 
-func update_resources(undo_redo: EditorUndoRedoManager):
+func update_resources(undo_redo):
 	if resource == null:
 		var block_serialized_properties = BlockSerializedProperties.new(get_block_class(), get_serialized_props())
 		resource = BlockSerialization.new(block_name, position, block_serialized_properties)
