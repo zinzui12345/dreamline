@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 25/11/24 Early Access"
+const versi = "Dreamline v0.4.4 26/11/24 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -200,6 +200,9 @@ func _setup() -> void:
 	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable = false
 	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.value = Konfigurasi.volume_musik_latar
 	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable = true
+	$setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.disabled = true
+	$setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.button_pressed = Konfigurasi.render_objek_interaktif
+	$setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.disabled = false
 	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable = false
 	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.value = Konfigurasi.jarak_render
 	$setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable = true
@@ -1948,12 +1951,13 @@ func _tampilkan_setelan_permainan() -> void:
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
 	_konfigurasi_awal = {
-		"bahasa": Konfigurasi.bahasa,
-		"mode_layar_penuh": Konfigurasi.mode_layar_penuh,
-		"volume_musik_latar": Konfigurasi.volume_musik_latar,
-		"jarak_render": Konfigurasi.jarak_render,
-		"mode_kontrol_gerak": Konfigurasi.mode_kontrol_gerak,
-		"sensitivitasPandangan": Konfigurasi.sensitivitasPandangan
+		"bahasa": 					Konfigurasi.bahasa,
+		"mode_layar_penuh": 		Konfigurasi.mode_layar_penuh,
+		"volume_musik_latar": 		Konfigurasi.volume_musik_latar,
+		"render_objek_interaktif":	Konfigurasi.render_objek_interaktif,
+		"jarak_render": 			Konfigurasi.jarak_render,
+		"mode_kontrol_gerak": 		Konfigurasi.mode_kontrol_gerak,
+		"sensitivitasPandangan": 	Konfigurasi.sensitivitasPandangan
 	}
 	$setelan/panel/gulir/tab_setelan/setelan_performa/info_jarak_render/nilai_jarak_render.text = str(Konfigurasi.jarak_render)+"m"
 	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(Konfigurasi.sensitivitasPandangan)
@@ -2295,8 +2299,11 @@ func _ketika_mengatur_bahasa(nilai):
 func _ketika_mengatur_volume_musik_latar(nilai):
 	if $setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable:
 		Konfigurasi.volume_musik_latar = nilai
+func _ketika_mengatur_mode_render_objek_interaktif(nilai):
+	if not $setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.disabled:
+		Konfigurasi.render_objek_interaktif = nilai
 func _ketika_mengatur_jarak_render(jarak):
-	if is_instance_valid(dunia) and dunia.get_node_or_null("lingkungan") != null:
+	if dunia.get_node_or_null("lingkungan") != null:
 		dunia.get_node("pemain/"+str(multiplayer.get_unique_id())+"/%pandangan").set("far", jarak)
 	if $setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable:
 		Konfigurasi.jarak_render = jarak

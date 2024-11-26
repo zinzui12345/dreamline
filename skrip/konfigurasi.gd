@@ -26,6 +26,7 @@ var volume_musik_latar : float = -3.2 :
 	set(volume):
 		AudioServer.set_bus_volume_db(1, volume)
 		volume_musik_latar = volume
+var render_objek_interaktif : bool = true
 var jarak_render : int = 400
 
 enum pilih_bahasa {
@@ -59,6 +60,7 @@ func muat() -> void:
 		if data.get("skala_kontrol_gerak") != null:			skala_kontrol_gerak = data["skala_kontrol_gerak"]
 		if data.get("sensitivitas_pandangan") != null:		sensitivitasPandangan = data["sensitivitas_pandangan"]
 		
+		if data.get("render_objek_interaktif") != null:		render_objek_interaktif = data["render_objek_interaktif"]
 		if data.get("jarak_render") != null:				jarak_render = data["jarak_render"]
 		if data.get("shader_karakter") != null:				shader_karakter = data["shader_karakter"]
 		
@@ -68,17 +70,18 @@ func muat() -> void:
 func simpan() -> void:
 	var file : FileAccess = FileAccess.open(data_konfigurasi, FileAccess.WRITE)
 	var data : Dictionary = {
-		"bahasa"				: bahasa,
-		"mode_layar_penuh"		: mode_layar_penuh,
+		"bahasa"					: bahasa,
+		"mode_layar_penuh"			: mode_layar_penuh,
 		
-		"mode_kontrol_gerak"	: mode_kontrol_gerak,
-		"skala_kontrol_gerak"	: skala_kontrol_gerak,
-		"sensitivitas_pandangan": sensitivitasPandangan,
+		"mode_kontrol_gerak"		: mode_kontrol_gerak,
+		"skala_kontrol_gerak"		: skala_kontrol_gerak,
+		"sensitivitas_pandangan"	: sensitivitasPandangan,
 		
-		"jarak_render"			: jarak_render,
-		"shader_karakter"		: shader_karakter,
+		"render_objek_interaktif"	: render_objek_interaktif,
+		"jarak_render"				: jarak_render,
+		"shader_karakter"			: shader_karakter,
 		
-		"volume_musik_latar"	: volume_musik_latar
+		"volume_musik_latar"		: volume_musik_latar
 	}
 	
 	file.store_var(data)

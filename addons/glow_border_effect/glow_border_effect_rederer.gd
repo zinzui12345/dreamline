@@ -77,16 +77,17 @@ func set_intensity(val):
 
 # Setter function to enable/disable render process
 func atur_proses_render(nilai : bool) -> void:
+	if nilai and (!Konfigurasi.render_objek_interaktif or server.permainan.mode_vr): return
 	$ViewportBlure/ViewportContainerBlureX/ViewportHalfBlure/ViewportContainerBlureY.visible = nilai
 	$ViewportBlure/ViewportContainerBlureX.visible = nilai
-	get_tree().get_root().disable_3d = nilai
+	get_viewport().disable_3d = nilai
 	%Camera3DPrepass.current = nilai
 	%Camera3DScene.current = nilai
 	visible = nilai
 
 # Setter function to enable/disable virtual reality mode
 func atur_mode_vr(nilai : bool):
-	$ViewportScene.use_xr = nilai
+	if nilai and visible: atur_proses_render(false)
 
 # Call this function to align the internal cameras in the
 # GlowBorderEffectRenderer with an external camera

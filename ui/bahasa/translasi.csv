@@ -54,6 +54,7 @@ kontrol_gerak,Kontrol Gerakan,Movement Control
 VOLUME,Volume Permainan,Game Volume
 musik_latar,Volume Musik,Music Volume
 %performa,Performa,Performance
+%render_objek_interaktif,Sorot Objek Interaktif,Highlight Interactive Object
 jarak_render,Jarak Render,Render Distance
 GRAFIK,Grafik,Graphics
 BALIKBAYANGAN,Balikkan render bayangan,Invert shadow
