@@ -169,7 +169,7 @@ func save_script():
 		print("No script loaded to save.")
 		return
 
-	var scene_node = server.permainan.dunia #EditorInterface.get_edited_scene_root()
+	var scene_node = dunia #EditorInterface.get_edited_scene_root()
 
 	#if not BlockCodePlugin.is_block_code_editable(_current_block_code_node):
 		#print("Block code for {node} is not editable.".format({"node": _current_block_code_node}))
