@@ -183,7 +183,7 @@ func rebuild_block_trees(undo_redo = null):
 	_current_block_script.block_trees = block_trees
 
 
-func build_tree(block: Block, undo_redo: EditorUndoRedoManager = null) -> BlockSerialization:
+func build_tree(block: Block, undo_redo = null) -> BlockSerialization:
 	var path_child_pairs = []
 	block.update_resources(undo_redo)
 
