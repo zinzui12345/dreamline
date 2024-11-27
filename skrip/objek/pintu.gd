@@ -63,4 +63,7 @@ func tutup() -> void:
 		)
 		set("terbuka", false)
 
-func get_custom_class() -> String:	return "pintu"
+#extends pintu\n\nfunc fungsikan():\n\tif !terbuka:\n\t\tbuka()\n\telse:\n\t\ttutup()\n\nfunc get_custom_class() -> String:\n\treturn "pintu"
+
+func get_custom_class() -> String:
+	return "pintu"
