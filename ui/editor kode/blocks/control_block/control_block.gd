@@ -90,7 +90,7 @@ static func get_block_class():
 
 
 static func get_scene_path():
-	return "res://addons/block_code/ui/blocks/control_block/control_block.tscn"
+	return "res://ui/editor kode/blocks/control_block/control_block.tscn"
 
 
 func format():

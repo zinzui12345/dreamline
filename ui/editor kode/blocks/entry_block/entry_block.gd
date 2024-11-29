@@ -16,7 +16,7 @@ static func get_block_class():
 
 
 static func get_scene_path():
-	return "res://addons/block_code/ui/blocks/entry_block/entry_block.tscn"
+	return "res://ui/editor kode/blocks/entry_block/entry_block.tscn"
 
 
 func get_entry_statement() -> String:
