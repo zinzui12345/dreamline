@@ -1,9 +1,11 @@
 extends Object
 
 
+# karena optimasi DirAccess cuman bisa akses resource di Editor. untuk mengatasinya cek disini : https://forum.godotengine.org/t/any-way-to-pick-a-file-from-a-folder-in-the-project-at-random/71086/3
+# HACK : pastiin nilai setelan editor/export/convert_text_resources_to_binary di set ke false
 static func get_files_in_dir_recursive(path: String, pattern: String) -> Array:
 	var files = []
-	var dir := DirAccess.open(path) # FIXME : karena optimasi DirAccess cuman bisa akses resource di Editor. untuk mengatasinya cek disini : https://forum.godotengine.org/t/any-way-to-pick-a-file-from-a-folder-in-the-project-at-random/71086/3
+	var dir := DirAccess.open(path)
 
 	if not dir:
 		return files
