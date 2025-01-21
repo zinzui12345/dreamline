@@ -3,7 +3,7 @@ extends Object
 
 static func get_files_in_dir_recursive(path: String, pattern: String) -> Array:
 	var files = []
-	var dir := DirAccess.open(path)
+	var dir := DirAccess.open(path) # FIXME : DirAccess cuman tersedia di Editor!
 
 	if not dir:
 		return files
