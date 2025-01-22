@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 26/11/24 Early Access"
+const versi = "Dreamline v0.4.4 22/01/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1416,6 +1416,7 @@ func _tampilkan_konfigurasi_server() -> void:
 			$karakter/animasi.play("tampilkan_buat_server")
 		else:
 			$buat_server/animasi.play("animasi_panel/tampilkan")
+		$menu_utama/bunyi_pilih.play()
 		$buat_server/panel/batal.grab_focus()
 func _tambah_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value += $buat_server/panel/panel_input/jumlah_pemain.step
 func _kurang_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
@@ -1428,6 +1429,7 @@ func _tampilkan_daftar_server() -> void:
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 		client.cari_server()
+		$menu_utama/bunyi_pilih.play()
 		if $buat_server.visible:
 			$buat_server/animasi.play("tampilkan_daftar_server")
 			await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
@@ -1477,6 +1479,7 @@ func _tampilkan_setelan_karakter() -> void:
 	if $karakter.visible: _sembunyikan_setelan_karakter()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
+		$menu_utama/bunyi_pilih.play()
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = false
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible == false:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = true
@@ -1850,7 +1853,7 @@ func _tampilkan_popup_informasi(teks_informasi : String, fokus_setelah : Control
 	if is_instance_valid(karakter) and !jeda: _jeda()
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi
-	$popup_informasi/animasi.play_backwards("tutup")
+	$popup_informasi/animasi.play("tampilkan")
 	$popup_informasi/panel/tutup.grab_focus()
 func _tampilkan_popup_informasi_(teks_informasi : String) -> void: _tampilkan_popup_informasi(teks_informasi, $menu_jeda/menu/kontrol/Panel/lanjutkan)
 func _tutup_popup_informasi() -> void:

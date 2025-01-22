@@ -1,4 +1,4 @@
-[gd_scene load_steps=338 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=342 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -71,6 +71,7 @@
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
+[ext_resource type="AudioStream" uid="uid://cv1e461msmahn" path="res://audio/antarmuka/buat objek.ogg" id="40_yw8vn"]
 [ext_resource type="Texture2D" uid="uid://dyxhyga1gys7k" path="res://ui/ikon/ikon_entitas_granat.png" id="41_nvbjq"]
 [ext_resource type="Texture2D" uid="uid://xluyqwb0nns0" path="res://ui/ikon/ikon_entitas_bajay.png" id="42_krisr"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
@@ -85,7 +86,10 @@
 [ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 [ext_resource type="Texture2D" uid="uid://cjrflqocbkufn" path="res://ui/ikon/ikon_vr.svg" id="74_jekg6"]
+[ext_resource type="AudioStream" uid="uid://g4nl77pajw1n" path="res://audio/antarmuka/pilih.ogg" id="76_m8wn8"]
 [ext_resource type="PackedScene" uid="uid://bq37yla8ya707" path="res://ui/editor kode/main_panel.tscn" id="81_d4drg"]
+[ext_resource type="AudioStream" uid="uid://b1dhl72vfxvq1" path="res://audio/antarmuka/panel informasi.ogg" id="87_0yo5j"]
+[ext_resource type="AudioStream" uid="uid://dnlgtcmstqcuj" path="res://audio/antarmuka/panel konfirmasi.wav" id="90_ur733"]
 
 [sub_resource type="Animation" id="Animation_6qw4d"]
 resource_name = "sembunyikan"
@@ -4774,6 +4778,18 @@ tracks/4/keys = {
 "update": 1,
 "values": [false, true, true]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("efek_bunyi:playing")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.27),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_8jjes"]
 resource_name = "tutup"
@@ -6217,6 +6233,9 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_32pwm")
 metadata/_edit_use_anchors_ = true
+
+[node name="efek_bunyi" type="AudioStreamPlayer" parent="daftar_objek/Panel"]
+stream = ExtResource("40_yw8vn")
 
 [node name="DaftarObjek" type="GridContainer" parent="daftar_objek/Panel"]
 unique_name_in_owner = true
@@ -7781,6 +7800,7 @@ metadata/_edit_lock_ = true
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = -1
+anchor_left = 0.773
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_right = 0.000549316
@@ -7954,6 +7974,9 @@ root_node = NodePath("../menu")
 libraries = {
 "": SubResource("AnimationLibrary_wcqo5")
 }
+
+[node name="bunyi_pilih" type="AudioStreamPlayer" parent="menu_utama"]
+stream = ExtResource("76_m8wn8")
 
 [node name="pemutar_musik" type="Panel" parent="."]
 visible = false
@@ -8220,10 +8243,10 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="render_objek_interaktif" type="CheckBox" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
 layout_mode = 2
-focus_neighbor_top = NodePath("../pilih_bahasa")
-focus_neighbor_bottom = NodePath("../laporkan_bug")
-focus_next = NodePath("../laporkan_bug")
-focus_previous = NodePath("../pilih_bahasa")
+focus_neighbor_top = NodePath("../../setelan_umum/sarankan_fitur")
+focus_neighbor_bottom = NodePath("../jarak_render")
+focus_next = NodePath("../jarak_render")
+focus_previous = NodePath("../../setelan_umum/sarankan_fitur")
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
@@ -8850,6 +8873,9 @@ libraries = {
 "": SubResource("AnimationLibrary_mmswf")
 }
 
+[node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_informasi"]
+stream = ExtResource("87_0yo5j")
+
 [node name="popup_konfirmasi" type="Control" parent="."]
 visible = false
 layout_mode = 1
@@ -8972,6 +8998,9 @@ alignment = 0
 libraries = {
 "": SubResource("AnimationLibrary_mmswf")
 }
+
+[node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi"]
+stream = ExtResource("90_ur733")
 
 [node name="informasi" type="Control" parent="."]
 visible = false
@@ -9153,6 +9182,9 @@ libraries = {
 "": SubResource("AnimationLibrary_mmswf")
 }
 
+[node name="efek_bunyi" type="AudioStreamPlayer" parent="informasi"]
+stream = ExtResource("87_0yo5j")
+
 [node name="popup_konfirmasi_peringatan" type="Control" parent="."]
 visible = false
 layout_mode = 1
@@ -9220,7 +9252,7 @@ offset_bottom = -0.0400085
 theme_override_styles/background = SubResource("StyleBoxFlat_ods8j")
 theme_override_styles/fill = SubResource("StyleBoxFlat_v5u37")
 step = 0.1
-value = 37.3
+value = 100.0
 show_percentage = false
 
 [node name="oke" type="Button" parent="popup_konfirmasi_peringatan/panel"]
@@ -9289,6 +9321,9 @@ metadata/_edit_use_anchors_ = true
 libraries = {
 "": SubResource("AnimationLibrary_n5ce4")
 }
+
+[node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi_peringatan"]
+stream = ExtResource("90_ur733")
 
 [node name="performa" type="Label" parent="."]
 top_level = true
