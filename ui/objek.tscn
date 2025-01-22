@@ -18,7 +18,9 @@ func pilih():
 			if cek_tipe_objek is entitas:
 				var tmp_kondisi_entitas : Array
 				if cek_tipe_objek.get(\"sinkron_kondisi\") != null:
-					tmp_kondisi_entitas = cek_tipe_objek.sinkron_kondisi
+					# 22/01/25 :: duplikat sinkron kondisi menjadi pointer baru. kenapa? | kadang properti sinkron kondisi di setel sebagai const, jadi setiap isi indeksnya juga read-only.
+					for p_kondisi in cek_tipe_objek.sinkron_kondisi:
+						tmp_kondisi_entitas.append(p_kondisi.duplicate())
 				server._tambahkan_entitas(
 					jalur_objek,
 					server.permainan.pasang_objek,
@@ -63,7 +65,9 @@ func pilih():
 			if cek_tipe_objek is entitas:
 				var tmp_kondisi_entitas : Array
 				if cek_tipe_objek.get(\"sinkron_kondisi\") != null:
-					tmp_kondisi_entitas = cek_tipe_objek.sinkron_kondisi
+					# 22/01/25 :: duplikat sinkron kondisi menjadi pointer baru. kenapa? | kadang properti sinkron kondisi di setel sebagai const, jadi setiap isi indeksnya juga read-only.
+					for p_kondisi in cek_tipe_objek.sinkron_kondisi:
+						tmp_kondisi_entitas.append(p_kondisi.duplicate())
 				server.rpc_id(
 					1,
 					\"_tambahkan_entitas\",
