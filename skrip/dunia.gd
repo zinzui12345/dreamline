@@ -36,6 +36,9 @@ func hapus_map() -> void:
 	if $objek.get_child_count() > 0:
 		for _objek in $objek.get_children():
 			_objek.queue_free()
+	if $karakter.get_child_count() > 0:
+		for _karakter in $karakter.get_children():
+			_karakter.queue_free()
 func hapus_instance_pemain() -> void:
 	var jumlah_pemain := $pemain.get_child_count()
 	for p : int in jumlah_pemain:

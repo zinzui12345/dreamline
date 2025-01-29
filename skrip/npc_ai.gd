@@ -3,7 +3,6 @@ extends CharacterBody3D
 
 class_name npc_ai
 
-# TODO : buat pool_karakter di server
 # TODO : hanya proses navigasi pada peer pemroses
 
 var navigasi : NavigationAgent3D
@@ -59,9 +58,9 @@ enum grup {
 
 ## setup ##
 func _ready() -> void:
-	if get_parent().get_path() != dunia.get_node("objek").get_path():
+	if get_parent().get_path() != dunia.get_node("karakter").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
-			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada objek | ini digunakan untuk menambahkan objek ke server
+			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada karakter | ini digunakan untuk menambahkan karakter ke server
 			if get("properti") != null:
 				for properti_kustom : Array in get("properti"):
 					_sp_properti.append([
@@ -89,11 +88,10 @@ func _ready() -> void:
 			else:
 				push_error("[Galat] npc %s tidak memiliki jalur skena!" % name)
 			
-			server._tambahkan_objek(
+			server._tambahkan_karakter(
 				jalur_skena,
 				global_transform.origin,
 				rotation,
-				jarak_render,
 				_sp_properti
 			)
 		queue_free()
@@ -123,7 +121,8 @@ func _diserang(_penyerang : Node3D, _damage_serangan : int) -> void:
 	pass
 
 # hapus / hilangkan
-func hapus() -> void: server.hapus_objek(self.get_path())
+func hapus() -> void:
+	queue_free()
 
 ## event ##
 # proses navigasi

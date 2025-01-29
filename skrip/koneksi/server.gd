@@ -22,6 +22,7 @@ var file_replay = "user://rekaman.dreamline_replay"
 var mode_uji_performa : bool = false
 var jumlah_entitas : int = 0
 var jumlah_objek : int = 0
+var jumlah_karakter : int = 0
 var pool_entitas : Dictionary = {}
 var pool_objek : Dictionary = {}
 var pool_karakter : Dictionary = {}
@@ -110,7 +111,6 @@ const jarak_render_entitas = 50
 # 	"karakter_1" : {
 #		"id_proses": -1,
 #		"id_pengubah": 0,
-#		"jarak_render": 0,
 # 		"posisi" : Vector3i(988, 4, 75),
 # 		"rotasi" : Vector3(25.7, 90, 6),
 #		"kondisi": {}
@@ -272,6 +272,37 @@ func _process(_delta : float) -> void:
 									spawn_pool_objek(id_pemain, nama_objek, pool_objek[nama_objek]["jalur_instance"], pool_objek[nama_objek]["id_pengubah"], pool_objek[nama_objek]["posisi"], pool_objek[nama_objek]["rotasi"], pool_objek[nama_objek]["properti"])
 									# ubah visibilitas pool agar jangan rpc lagi
 									cek_visibilitas_pool_objek[id_pemain][nama_objek] = "spawn"
+					
+					# loop array pool_karakter
+					if !pool_karakter.is_empty():
+						var indeks_pool_karakter = pool_karakter.keys()
+						for i_pool_karakter in indeks_pool_karakter.size(): 
+							var nama_karakter = indeks_pool_karakter[i_pool_karakter]
+							# cek jarak pemain dengan karakter
+							var jarak_pemain = pemain[i_pool_pemain]["posisi"].distance_to(pool_karakter[nama_karakter]["posisi"])
+							# pastikan keadaan visibilitas pool
+							if cek_visibilitas_pool_karakter.get(id_pemain) == null:
+								cek_visibilitas_pool_karakter[id_pemain] = {}
+							if cek_visibilitas_pool_karakter[id_pemain].get(nama_karakter) == null:
+								cek_visibilitas_pool_karakter[id_pemain][nama_karakter] = "hapus"
+							# jika frustum culling diaktifkan dan jarak pemain lebih dari jarak render karakter
+							if permainan.gunakan_frustum_culling and jarak_pemain > jarak_render_karakter:
+								# pastikan pemain saat ini tidak mengubah karakter
+								if pool_karakter[nama_karakter]["id_pengubah"] != id_pemain:
+									# hanya hapus jika pool telah di-spawn
+									if cek_visibilitas_pool_karakter[id_pemain][nama_karakter] == "spawn":
+										# rpc hapus pool_karakter
+										hapus_pool_karakter(id_pemain, nama_karakter)
+										# ubah visibilitas pool agar jangan rpc lagi
+										cek_visibilitas_pool_karakter[id_pemain][nama_karakter] = "hapus"
+							# jika jarak pemain kurang dari jarak render karakter
+							else:
+								# hanya spawn jika pool belum di-spawn
+								if cek_visibilitas_pool_karakter[id_pemain][nama_karakter] == "hapus":
+									# rpc spawn pool karakter
+									spawn_pool_karakter(id_pemain, nama_karakter, pool_karakter[nama_karakter]["jalur_instance"], pool_karakter[nama_karakter]["id_pengubah"], pool_karakter[nama_karakter]["posisi"], pool_karakter[nama_karakter]["rotasi"], pool_karakter[nama_karakter]["kondisi"])
+									# ubah visibilitas pool agar jangan rpc lagi
+									cek_visibilitas_pool_karakter[id_pemain][nama_karakter] = "spawn"
 
 func buat_koneksi():
 	interface = MultiplayerAPI.create_default_interface()
@@ -416,6 +447,11 @@ func spawn_pool_objek(id_pemain, nama_objek : String, jalur_instance_objek, id_p
 		#Panku.notify("spawn pool objek [%s] pada pemain %s" % [str(jalur_instance_objek), str(id_pemain)])
 		if id_pemain == 1: _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek)
 		else: rpc_id(id_pemain, "_spawn_visibilitas_objek", jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek)
+func spawn_pool_karakter(id_pemain, nama_karakter : String, jalur_instance_karakter, id_pengubah, posisi_karakter : Vector3, rotasi_karakter : Vector3, kondisi_karakter : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		#Panku.notify("spawn pool karakter [%s] pada pemain %s" % [str(jalur_instance_karakter), str(id_pemain)])
+		if id_pemain == 1: _spawn_visibilitas_karakter(jalur_instance_karakter, id_pengubah, nama_karakter, posisi_karakter, rotasi_karakter, kondisi_karakter)
+		else: rpc_id(id_pemain, "_spawn_visibilitas_karakter", jalur_instance_karakter, id_pengubah, nama_karakter, posisi_karakter, rotasi_karakter, kondisi_karakter)
 func sinkronkan_kondisi_entitas(id_pemain, nama_entitas : String, kondisi_entitas : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if id_pemain == 1:
@@ -434,6 +470,15 @@ func sinkronkan_kondisi_objek(id_pemain, nama_objek : String, kondisi_objek : Ar
 			rpc("_sinkronkan_kondisi_objek", nama_objek, kondisi_objek)
 		else:
 			rpc_id(id_pemain, "_sinkronkan_kondisi_objek", nama_objek, kondisi_objek)
+func sinkronkan_kondisi_karakter(id_pemain, nama_karakter : String, kondisi_karakter : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if id_pemain == 1:
+			_sinkronkan_kondisi_karakter(nama_karakter, kondisi_karakter)
+		elif id_pemain == -1:
+			_sinkronkan_kondisi_karakter(nama_karakter, kondisi_karakter)
+			rpc("_sinkronkan_kondisi_karakter", nama_karakter, kondisi_karakter)
+		else:
+			rpc_id(id_pemain, "_sinkronkan_kondisi_karakter", nama_karakter, kondisi_karakter)
 func hapus_pool_pemain(id_pemain, id_hapus_pemain):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if id_pemain == 1: _hapus_visibilitas_pemain(id_hapus_pemain)
@@ -449,6 +494,11 @@ func hapus_pool_objek(id_pemain, nama_objek : String):
 		#Panku.notify("menghapus pool objek [%s] pada pemain %s" % [nama_objek, str(id_pemain)])
 		if id_pemain == 1: _hapus_visibilitas_objek(nama_objek)
 		else: rpc_id(id_pemain, "_hapus_visibilitas_objek", nama_objek)
+func hapus_pool_karakter(id_pemain, nama_karakter : String):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		#Panku.notify("menghapus pool karakter [%s] pada pemain %s" % [nama_karakter, str(id_pemain)])
+		if id_pemain == 1: _hapus_visibilitas_karakter(nama_karakter)
+		else: rpc_id(id_pemain, "_hapus_visibilitas_karakter", nama_karakter)
 func gunakan_entitas(nama_entitas : String, fungsi : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_gunakan_entitas(nama_entitas, multiplayer.get_unique_id(), fungsi)
@@ -779,6 +829,34 @@ func _pemain_terputus(id_pemain):
 				}
 		else: push_error("[Galat] objek %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: push_error("[Galat] fungsi [tambahkan_objek] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
+@rpc("any_peer") func _tambahkan_karakter(jalur_skena : String, posisi : Vector3, rotasi : Vector3, kondisi : Array) -> void:
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if load(jalur_skena) != null:
+			jumlah_karakter += 1
+			var nama_karakter : StringName = "karakter_"+str(jumlah_karakter)
+			# INFO : tambahkan karakter ke array pool_karakter
+			pool_karakter[nama_karakter] = {
+				"jalur_instance": jalur_skena,
+				"id_proses": -1,
+				"id_pengubah": 0,
+		 		"posisi" : posisi,
+		 		"rotasi" : rotasi,
+				"kondisi": kondisi
+			}
+			# Timeline : spawn karakter
+			if not mode_replay:
+				if not timeline.has(timeline["data"]["frame"]):
+					timeline[timeline["data"]["frame"]] = {}
+				timeline[timeline["data"]["frame"]][nama_karakter] = {
+					"tipe": 		"spawn",
+					"tipe_objek":	"karakter",
+					"sumber": 		jalur_skena,
+					"posisi":		posisi,
+					"rotasi":		rotasi,
+					"properti":		kondisi,
+				}
+		else: push_error("[Galat] karakter %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Karakter tak ditemukan [%s]" % [jalur_skena])
+	else: push_error("[Galat] fungsi [tambahkan_karakter] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null and t_entitas.has_method(fungsi):
@@ -886,6 +964,21 @@ func _pemain_terputus(id_pemain):
 					sinkronkan_kondisi_objek(-1, nama_objek, [["id_pengubah", id_pengubah]])
 					# atur id_pengubah dengan id_pengubah
 					pool_objek[nama_objek]["id_pengubah"] = id_pengubah
+			else: return
+		elif pool_karakter.has(nama_objek):
+			jalur_objek = "/root/dunia/karakter/"
+			if pool_karakter[nama_objek]["id_pengubah"] == id_pengubah:
+				if !fungsi:
+					# rpc atur ulang id_pengubah di semua peer
+					sinkronkan_kondisi_karakter(-1, nama_objek, [["id_pengubah", 0]])
+					# atur ulang id_pengubah
+					pool_karakter[nama_objek]["id_pengubah"] = 0
+			elif pool_karakter[nama_objek]["id_pengubah"] == 0:
+				if fungsi:
+					# rpc atur id_pengubah sebagai pengubah karakter ke semua peer
+					sinkronkan_kondisi_karakter(-1, nama_objek, [["id_pengubah", id_pengubah]])
+					# atur id_pengubah dengan id_pengubah
+					pool_karakter[nama_objek]["id_pengubah"] = id_pengubah
 			else: return
 		
 		if tampilkan_ui:
@@ -1137,6 +1230,23 @@ func _pemain_terputus(id_pemain):
 			tmp_objek.id_pengubah = id_pengubah
 			tmp_objek.global_transform.origin = posisi_objek
 			tmp_objek.rotation = rotasi_objek
+@rpc("authority") func _spawn_visibilitas_karakter(jalur_instance_karakter, id_pengubah : int, nama_karakter : String, posisi_karakter : Vector3, rotasi_karakter : Vector3, kondisi_karakter : Array):
+	if permainan != null and dunia != null:
+		if dunia.get_node("karakter").get_node_or_null(nama_karakter) == null and load(jalur_instance_karakter) != null:
+			var tmp_karakter : Node3D = load(jalur_instance_karakter).instantiate()
+			var tmp_nama = tmp_karakter.name
+			tmp_karakter.name = nama_karakter
+			dunia.get_node("karakter").add_child(tmp_karakter, true)
+			for p in kondisi_karakter.size():
+				if tmp_karakter.get(kondisi_karakter[p][0]) != null:
+					if kondisi_karakter[p][0] == "kode":
+						var compile_kode = permainan._compile_blok_kode(kondisi_karakter[p][1])
+						if compile_kode != null: tmp_karakter.kode = compile_kode
+					else: tmp_karakter.set(kondisi_karakter[p][0], kondisi_karakter[p][1])
+				else: push_error("[Galat] "+tmp_nama+" tidak memiliki kondisi ["+kondisi_karakter[p][0]+"]")
+			tmp_karakter.id_pengubah = id_pengubah
+			tmp_karakter.global_transform.origin = posisi_karakter
+			tmp_karakter.rotation = rotasi_karakter
 @rpc("authority") func _sinkronkan_kondisi_pemain(id_pemain : int, kondisi_pemain : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("pemain").get_node_or_null(str(id_pemain)) != null:
@@ -1167,6 +1277,14 @@ func _pemain_terputus(id_pemain):
 					dunia.get_node("objek").get_node(nama_objek).kode = permainan._compile_blok_kode(kondisi_objek[p][1])
 				elif dunia.get_node("objek").get_node(nama_objek).get(kondisi_objek[p][0]) != null:
 					dunia.get_node("objek").get_node(nama_objek).set(kondisi_objek[p][0], kondisi_objek[p][1])
+@rpc("authority") func _sinkronkan_kondisi_karakter(nama_karakter : String, kondisi_karakter : Array):
+	if permainan != null and dunia != null:
+		if dunia.get_node("karakter").get_node_or_null(nama_karakter) != null:
+			for p in kondisi_karakter.size():
+				if kondisi_karakter[p][0] == "kode":
+					dunia.get_node("karakter").get_node(nama_karakter).kode = permainan._compile_blok_kode(kondisi_karakter[p][1])
+				elif dunia.get_node("karakter").get_node(nama_karakter).get(kondisi_karakter[p][0]) != null:
+					dunia.get_node("karakter").get_node(nama_karakter).set(kondisi_karakter[p][0], kondisi_karakter[p][1])
 @rpc("authority") func _hapus_visibilitas_pemain(id_pemain : int):
 	if permainan != null and dunia != null:
 		if dunia.get_node("pemain").get_node_or_null(str(id_pemain)) != null:
@@ -1188,6 +1306,13 @@ func _pemain_terputus(id_pemain):
 				dunia.get_node("objek").get_node(nama_objek).hapus()
 			else:
 				dunia.get_node("objek").get_node(nama_objek).queue_free()
+@rpc("authority") func _hapus_visibilitas_karakter(nama_karakter : String):
+	if permainan != null and dunia != null:
+		if dunia.get_node("karakter").get_node_or_null(nama_karakter) != null:
+			if dunia.get_node("karakter").get_node(nama_karakter).has_method("hapus"):
+				dunia.get_node("karakter").get_node(nama_karakter).hapus()
+			else:
+				dunia.get_node("karakter").get_node(nama_karakter).queue_free()
 @rpc("authority") func _hilangkan_objek(jalur_objek : NodePath):
 	var objek_dihapus = get_node_or_null(jalur_objek)
 	if objek_dihapus != null:
