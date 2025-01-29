@@ -24,9 +24,11 @@ var jumlah_entitas : int = 0
 var jumlah_objek : int = 0
 var pool_entitas : Dictionary = {}
 var pool_objek : Dictionary = {}
+var pool_karakter : Dictionary = {}
 var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "spawn" ? "hapus"
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
+var cek_visibilitas_pool_karakter : Dictionary = {} # [id_pemain][nama_karakter] = "spawn" ? "hapus"
 var b_cek_data_timeline : Dictionary
 var b_indeks_timeline : Array
 var b_nama_file_timeline : String
@@ -96,6 +98,22 @@ const jarak_render_entitas = 50
 # 		"posisi" : Vector3i(64, 443, 8),
 # 		"rotasi" : Vector3(11.9, 88, 0),
 #		"properti": {}
+# 	}
+# }
+
+# .: Karakter :.
+# karakter adalah gabungan dari objek dan entitas
+# karakter memerlukan pemroses dan memiliki id_pengubah
+# pool_karakter spawn hanya ketika berada di dekat pemain dan di didepan pemain (culling)
+# pool_karakter spawn dan de-spawn secara batch di client
+# pool_karakter{
+# 	"karakter_1" : {
+#		"id_proses": -1,
+#		"id_pengubah": 0,
+#		"jarak_render": 0,
+# 		"posisi" : Vector3i(988, 4, 75),
+# 		"rotasi" : Vector3(25.7, 90, 6),
+#		"kondisi": {}
 # 	}
 # }
 

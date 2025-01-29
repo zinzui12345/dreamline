@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 22/01/25 Early Access"
+const versi = "Dreamline v0.4.4 28/01/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2569,7 +2569,10 @@ func mainkan_replay():
 	else: return "tidak ada file rekaman permainan!"
 
 # bantuan pada console
-const _HELP_alamat_ip			:= "Cek alamat IP Lokal/Publik koneksi"
-const _HELP_cek_koneksi_server	:= "Cek status koneksi dengan server"
-const _HELP_putuskan_server 	:= "Hentikan/Putuskan server [fungsi ini dipanggil secara otomatis!] * memanggilnya secara manual akan membiarkan kursor mouse dalam kondisi capture"
-const _HELP_PERAN_KARAKTER		:= "Tipe-tipe peran yang dapat diperankan karakter/pemain" # gak work!
+const _HELP_alamat_ip				:= "Cek alamat IP Lokal/Publik koneksi"
+const _HELP_cek_koneksi_server		:= "Cek status koneksi dengan server"
+const _HELP_putuskan_server 		:= "Hentikan/Putuskan server [fungsi ini dipanggil secara otomatis!] * memanggilnya secara manual akan membiarkan kursor mouse dalam kondisi capture"
+const _HELP_PERAN_KARAKTER			:= "Tipe-tipe peran yang dapat diperankan karakter/pemain" # gak work!
+const _HELP_hasilkanKarakterAcak	:= "Menghasilkan karakter alfabet atau angka acak sebanyak jumlah yang ditentukan"
+const _HELP_tampilkan_editor_kode	:= "Menampilkan Editor Kode"
+const _HELP_buat_kode				:= "Membuat kode Kelas tertentu [hanya berfungsi saat Editor Kode ditampilkan]"

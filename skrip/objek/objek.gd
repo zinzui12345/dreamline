@@ -18,7 +18,7 @@ var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 #const abaikan_occlusion_culling = true		# hanya tambahkan jika objek tidak ingin dikalkulasi pada occlusion culling
 
 @export var efek_cahaya : GlowBorderEffectObject	# node efek garis cahaya ketika entitas di-fokus / highlight
-@export var wilayah_render : AABB :
+@export var wilayah_render : AABB :					# area batas culling
 	set(aabb):
 		if is_inside_tree():
 			var tmp_aabb : Array = []
@@ -27,13 +27,13 @@ var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 				tmp_aabb.append(aabb.get_endpoint(titik))
 			titik_sudut = tmp_aabb
 		wilayah_render = aabb
-@export var jarak_render : int = 10			# jarak maks render
-@export var radius_keterlihatan : int = 50	# area batas frustum culling
-@export var titik_sudut : Array = []		# titik tiap sudut AABB untuk occlusion culling
-@export var cek_titik : int = 0				# simpan titik terakhir occlusion culling
-@export var tak_terlihat : bool = false		# simpan kondisi frustum culling
-@export var terhalang : bool = false		# simpan kondisi occlusion culling
-@export var kode : BlockScriptSerialization :# jika menggunakan kode ubahan
+@export var jarak_render : int = 10					# jarak maks render
+@export var radius_keterlihatan : int = 50			# jarak batas frustum culling
+@export var titik_sudut : Array = []				# titik tiap sudut AABB untuk occlusion culling
+@export var cek_titik : int = 0						# simpan titik terakhir occlusion culling
+@export var tak_terlihat : bool = false				# simpan kondisi frustum culling
+@export var terhalang : bool = false				# simpan kondisi occlusion culling
+@export var kode : BlockScriptSerialization :		# jika menggunakan kode ubahan
 	set(kode_baru):
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
 			if $kode_ubahan.block_script != kode_baru:
