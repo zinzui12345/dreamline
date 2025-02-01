@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 29/01/25 Early Access"
+const versi = "Dreamline v0.4.4 01/02/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2090,10 +2090,18 @@ func buat_kode(nama_kelas : String = "objek"):
 				var skrip = load(kelas.path)
 				var node = skrip.new()
 				var kode = BlockCode.new()
-				node.name = "template_objek"
-				node.set_script(skrip)
-				dunia.get_node("objek").add_child(node)
-				kode.name = "KodeUbahan"
+				if nama_kelas == "npc_ai":
+					var komponen = load("res://skena/npc_ai.tscn").instantiate()
+					node.name = "template_karakter"
+					for bagian_komponen in komponen.get_child_count():
+						node.add_child(komponen.get_child(bagian_komponen).duplicate(true))
+					node.set_script(skrip)
+					dunia.get_node("karakter").add_child(node)
+				else: #elif nama_kelas == "objek":
+					node.name = "template_objek"
+					node.set_script(skrip)
+					dunia.get_node("objek").add_child(node)
+				kode.name = "KodeUbahan" # ini harus gak sesuai supaya blok kode nggak di eksekusi
 				node.add_child(kode)
 				$editor_kode/blok_kode._save_node_button.visible = true
 				$editor_kode/blok_kode.switch_block_code_node(kode)

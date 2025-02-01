@@ -3,7 +3,8 @@ extends CharacterBody3D
 
 class_name npc_ai
 
-# TODO : hanya proses navigasi pada peer pemroses
+# TODO : sinkronkan [kode, posisi, rotasi] ke semua peer
+# TODO : hanya proses navigasi [_physics_process, navigasi_ke()] pada peer pemroses
 
 var navigasi : NavigationAgent3D
 var _proses_navigasi : bool = false
@@ -26,7 +27,6 @@ enum grup {
 	musuh		# - monster
 }
 
-@export var jalur_skena : StringName = "res://skena/npc_ai.tscn"
 @export var nyawa : int = 100
 @export var serangan : int = 25
 @export var kelompok := grup.netral
@@ -57,7 +57,8 @@ enum grup {
 			kode = kode_baru
 
 ## setup ##
-func _ready() -> void:
+func _ready() -> void: call_deferred("_setup")
+func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("karakter").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada karakter | ini digunakan untuk menambahkan karakter ke server
@@ -83,13 +84,13 @@ func _ready() -> void:
 			else:
 				push_error("[Galat] npc %s tidak memiliki properti!" % name)
 			var _jalur_instance : String
-			if get("jalur_skena") == "":
+			if get("jalur_instance") != null:
 				_jalur_instance = get("jalur_instance")
 			else:
 				push_error("[Galat] npc %s tidak memiliki jalur skena!" % name)
 			
 			server._tambahkan_karakter(
-				jalur_skena,
+				_jalur_instance,
 				global_transform.origin,
 				rotation,
 				_sp_properti
@@ -149,9 +150,9 @@ func _ketika_berjalan(arah : Vector3) -> void:
 	# sinkronkan perubahan kondisi
 	if id_proses == client.id_koneksi:
 		if id_pengubah == 1:
-			server._sesuaikan_properti_objek(1, name, [["global_transform:origin", global_transform.origin]])
+			server._sesuaikan_properti_karakter(1, name, [["global_transform:origin", global_transform.origin]])
 		else:
-			server.rpc_id(1, "_sesuaikan_properti_objek", id_pengubah, name, [["global_transform:origin", global_transform.origin]])
+			server.rpc_id(1, "_sesuaikan_properti_karakter", id_pengubah, name, [["global_transform:origin", global_transform.origin]])
  
 # ketika sampai di posisi tujuan
 func _ketika_navigasi_selesai() -> void:
@@ -166,3 +167,13 @@ func mati() -> void:
 func _input(_event : InputEvent) -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if Input.is_action_just_pressed("daftar_pemain"): navigasi_ke(server.permainan.karakter.global_position)
+
+# 26/10/24 :: Fungsi sintaks blok kode
+const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")
+const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_catalog.gd")
+const BlockDefinition = preload("res://skrip/editor kode/code_generation/block_definition.gd")
+const Types = preload("res://skrip/editor kode/types/types.gd")
+
+func get_custom_class() -> String:	return "npc_ai"
+static func get_custom_categories() -> Array[BlockCategory]:
+	return [BlockCategory.new("%karakter%")]

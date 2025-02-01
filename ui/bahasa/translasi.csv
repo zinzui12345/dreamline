@@ -190,6 +190,7 @@ t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemu
 # blok kode,,
 gunakan():, gunakan():, use():
 %objek%,Objek,Object
+%karakter%,Karakter,Character
 %jika ,Jika ,If 
 %atau_jika ,Atau jika ,Else if 
 %jika_tidak,Selain itu,Else
@@ -257,6 +258,11 @@ terbuka,Terbuka,Is open
 %deskripsi_buka_pintu%,Membuka pintu,Open the door
 %aksi_tutup_pintu,Tutup Pintu,Close Door
 %deskripsi_tutup_pintu%,Menutup pintu,Close the door
+,,
+# blok kode karakter,,
+%navigasi_karakter_ke ,Navigasi ke ,Navigate to 
+ %navigasi_karakter_sambil_berlari% , sambil berlari , with running 
+%deskripsi_navigasi_karakter%,Mengarahkan karakter untuk berjalan atau berlari ke posisi tertentu,Navigate character to walk or run into defined position
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
