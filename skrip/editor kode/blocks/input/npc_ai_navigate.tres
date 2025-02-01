@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://onm2xkoim64"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_d8xvt"]
+
+[resource]
+script = ExtResource("1_d8xvt")
+name = &"npc_ai_navigate"
+target_node_class = "npc_ai"
+description = "%deskripsi_navigasi_karakter%"
+category = "%karakter%"
+type = 2
+variant_type = 0
+display_template = "%navigasi_karakter_ke {posisi: VECTOR3} %navigasi_karakter_sambil_berlari% {berlari: BOOL}"
+code_template = "navigasi_ke({posisi}, {berlari})
+
+"
+defaults = {
+"berlari": false,
+"posisi": Vector3(0, 0, 0)
+}
+signal_name = ""
+scope = ""

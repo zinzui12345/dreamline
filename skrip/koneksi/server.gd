@@ -13,7 +13,7 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = &"pulau"
+var map : StringName = &"empty"
 var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -1127,6 +1127,32 @@ func _pemain_terputus(id_pemain):
 			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
 				if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(pemain[idx_pemain]["id_client"], nama_objek, properti_objek)
+@rpc("any_peer") func _sesuaikan_properti_karakter(id_pengatur : int, nama_karakter : String, properti_karakter : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_karakter[nama_karakter]["id_pengubah"] == id_pengatur:
+		for p in properti_karakter.size():
+			if properti_karakter[p][0] == "position":		pool_karakter[nama_karakter]["posisi"] = properti_karakter[p][1]
+			elif properti_karakter[p][0] == "rotation":		pool_karakter[nama_karakter]["rotasi"] = properti_karakter[p][1]
+			elif pool_karakter[nama_karakter].get(properti_karakter[p][0]) != null:
+				pool_karakter[nama_karakter][properti_karakter[p][0]] = properti_karakter[p][1]
+			else:
+				for k in pool_karakter[nama_karakter]["properti"].size():
+					if pool_karakter[nama_karakter]["properti"][k][0] == properti_karakter[p][0]:
+						pool_karakter[nama_karakter]["properti"][k][1] = properti_karakter[p][1]
+		# Timeline : sinkronkan karakter (rekam)
+		if not mode_replay:
+			if not timeline.has(server.timeline["data"]["frame"]):
+				timeline[server.timeline["data"]["frame"]] = {}
+			timeline[server.timeline["data"]["frame"]][nama_karakter] = {
+				"tipe": 		"sinkron",
+				"posisi":		pool_karakter[nama_karakter]["posisi"],
+				"rotasi":		pool_karakter[nama_karakter]["rotasi"],
+				"properti":		pool_karakter[nama_karakter]["properti"],
+			}
+		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
+		for idx_pemain in pemain.keys():
+			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
+				if cek_visibilitas_pool_karakter[pemain[idx_pemain]["id_client"]][nama_karakter] == "spawn":
+					sinkronkan_kondisi_karakter(pemain[idx_pemain]["id_client"], nama_karakter, properti_karakter)
 @rpc("any_peer") func _kirim_map(id_pemain : int):						# 11/11/24 :: kirim map ke pemain tertentu
 	if map.substr(0,1) == "@" and ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)]):
 		kirim_aset(id_pemain, "%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)], map.substr(1))

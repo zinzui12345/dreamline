@@ -84,7 +84,7 @@ func _on_save_node_button_pressed():
 		if ch is BlockCode:
 			var script = ch.block_script.duplicate(true)
 			var block_script_ = BlockCode.new()
-			block_script_.name = "KodeUbahan"
+			block_script_.name = "kode_ubahan"
 			block_script_.block_script = script
 			script_parent.remove_child(ch)
 			script_parent.add_child(block_script_)

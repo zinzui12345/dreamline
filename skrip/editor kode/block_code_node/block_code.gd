@@ -42,7 +42,9 @@ func _update_parent_script():
 	script.reload()
 	
 	# 01/11/24 set parent property
-	if parent is objek and parent.kode != block_script: parent.kode = block_script
+	if parent is objek and parent.kode != block_script:		parent.kode = block_script
+	# 01/02/25 set parent property
+	elif parent is npc_ai and parent.kode != block_script:	parent.kode = block_script
 	
 	# Persist export script variables (like SimpleCharacter exported texture)
 	var persist_properties = {}
