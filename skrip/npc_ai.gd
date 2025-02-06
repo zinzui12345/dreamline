@@ -145,7 +145,8 @@ func _process(delta : float) -> void:
 		set_process(false)
 		set_physics_process(false)
 	
-	# sinkronkan perubahan kondisi
+	# FIXME : sinkronkan perubahan kondisi pada peer pemroses atau peer pengubah
+	#elif id_pengubah == client.id_koneksi or (id_proses == client.id_koneksi and id_pengubah == -1): # salah!
 	else:
 		# buat variabel pembanding
 		var perubahan_kondisi = []
@@ -154,6 +155,35 @@ func _process(delta : float) -> void:
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_kondisi.get("posisi") == null:	cek_kondisi["posisi"] = Vector3.ZERO
 		if cek_kondisi.get("rotasi") == null:	cek_kondisi["rotasi"] = rotation
+		
+		# cek apakah kode berubah (jika ada)
+		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+			# cek apakah kode sebelumnya telah tersimpan
+			if cek_kondisi.get("kode") == null: cek_kondisi["kode"] = $kode_ubahan.block_script.generated_script
+			
+			# cek apakah kode berubah
+			if cek_kondisi["kode"] != $kode_ubahan.block_script.generated_script:
+				var parse_cabang_blok : Dictionary
+				var parse_variabel_blok : Dictionary
+				for cabang_blok in $kode_ubahan.block_script.block_trees.size():
+					parse_cabang_blok[str(cabang_blok)+"|BlockSerialization"] = {
+						"name"							: $kode_ubahan.block_script.block_trees[cabang_blok].name,
+						"position"						: $kode_ubahan.block_script.block_trees[cabang_blok].position,
+						"path_child_pairs"				: server.permainan._parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
+						"block_serialized_properties"	: server.permainan._parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
+					}
+				for indeks_data_variabel in $kode_ubahan.block_script.variables.size():
+					parse_variabel_blok[str(indeks_data_variabel)+"|VariableResource"] = {
+						"var_name":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_name,
+						"var_type":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_type
+					}
+				var kirim_resource : Dictionary = {
+					"script_inherits":	$kode_ubahan.block_script.script_inherits,
+					"block_trees":		parse_cabang_blok,
+					"variables":		parse_variabel_blok,
+					"generated_script":	$kode_ubahan.block_script.generated_script
+				}
+				perubahan_kondisi.append(["kode", JSON.stringify(kirim_resource)])
 		
 		# reset kondisi jika npc jatuh ke void
 		if global_position.y < server.permainan.batas_bawah:
@@ -164,7 +194,7 @@ func _process(delta : float) -> void:
 		
 		# cek apakah kondisi berubah
 		else:
-			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
+			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position]); print_debug("debug"); Panku.notify("10C")
 			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		
 		## cek kondisi properti kustom
@@ -178,13 +208,17 @@ func _process(delta : float) -> void:
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
 		if perubahan_kondisi.size() > 0:
 			if id_proses == 1:
-				server._sesuaikan_properti_karakter(1, name, perubahan_kondisi)
+				server._sesuaikan_kondisi_karakter(1, name, perubahan_kondisi)
 			else:
-				server.rpc_id(1, "_sesuaikan_properti_karakter", id_proses, name, perubahan_kondisi)
+				server.rpc_id(1, "_sesuaikan_kondisi_karakter", id_proses, name, perubahan_kondisi)
 		
 		# simpan perubahan kondisi untuk di-cek lagi
 		cek_kondisi["posisi"] = position
 		cek_kondisi["rotasi"] = rotation
+		
+		# simpan perubahan kode untuk di-cek lagi
+		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+			cek_kondisi["kode"] = $kode_ubahan.block_script.generated_script
 		
 		## simpan perubahan kondisi properti kustom untuk di-cek lagi
 		#for p in sinkron_kondisi.size():
