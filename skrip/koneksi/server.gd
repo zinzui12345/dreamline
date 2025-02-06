@@ -285,10 +285,16 @@ func _process(_delta : float) -> void:
 								cek_visibilitas_pool_karakter[id_pemain] = {}
 							if cek_visibilitas_pool_karakter[id_pemain].get(nama_karakter) == null:
 								cek_visibilitas_pool_karakter[id_pemain][nama_karakter] = "hapus"
-							# jika frustum culling diaktifkan dan jarak pemain lebih dari jarak render karakter
-							if permainan.gunakan_frustum_culling and jarak_pemain > jarak_render_karakter:
+							# jika jarak pemain lebih dari jarak render karakter
+							if jarak_pemain > jarak_render_karakter:
 								# pastikan pemain saat ini tidak mengubah karakter
 								if pool_karakter[nama_karakter]["id_pengubah"] != id_pemain:
+									# cek jika id_proses telah diatur dan pemain saat ini adalah pemroses
+									if pool_karakter[nama_karakter]["id_proses"] != -1 and pool_karakter[nama_karakter]["id_proses"] == id_pemain:
+										# rpc atur -1 sebagai pemroses karakter ke semua peer
+										sinkronkan_kondisi_karakter(-1, nama_karakter, [["id_proses", -1]])
+										# atur id_proses dengan -1
+										pool_karakter[nama_karakter]["id_proses"] = -1
 									# hanya hapus jika pool telah di-spawn
 									if cek_visibilitas_pool_karakter[id_pemain][nama_karakter] == "spawn":
 										# rpc hapus pool_karakter
@@ -300,9 +306,15 @@ func _process(_delta : float) -> void:
 								# hanya spawn jika pool belum di-spawn
 								if cek_visibilitas_pool_karakter[id_pemain][nama_karakter] == "hapus":
 									# rpc spawn pool karakter
-									spawn_pool_karakter(id_pemain, nama_karakter, pool_karakter[nama_karakter]["jalur_instance"], pool_karakter[nama_karakter]["id_pengubah"], pool_karakter[nama_karakter]["posisi"], pool_karakter[nama_karakter]["rotasi"], pool_karakter[nama_karakter]["kondisi"])
+									spawn_pool_karakter(id_pemain, nama_karakter, pool_karakter[nama_karakter]["jalur_instance"], pool_karakter[nama_karakter]["id_proses"], pool_karakter[nama_karakter]["posisi"], pool_karakter[nama_karakter]["rotasi"], pool_karakter[nama_karakter]["kondisi"])
 									# ubah visibilitas pool agar jangan rpc lagi
 									cek_visibilitas_pool_karakter[id_pemain][nama_karakter] = "spawn"
+								# cek jika id_proses belum diatur
+								if pool_karakter[nama_karakter]["id_proses"] == -1:
+									# rpc atur pemain sebagai pemroses karakter ke semua peer
+									sinkronkan_kondisi_karakter(-1, nama_karakter, [["id_proses", id_pemain]])
+									# atur id_proses dengan id_pemain
+									pool_karakter[nama_karakter]["id_proses"] = id_pemain
 
 func buat_koneksi():
 	interface = MultiplayerAPI.create_default_interface()
@@ -1128,7 +1140,7 @@ func _pemain_terputus(id_pemain):
 				if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(pemain[idx_pemain]["id_client"], nama_objek, properti_objek)
 @rpc("any_peer") func _sesuaikan_properti_karakter(id_pengatur : int, nama_karakter : String, properti_karakter : Array):
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_karakter[nama_karakter]["id_pengubah"] == id_pengatur:
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_karakter[nama_karakter]["id_proses"] == id_pengatur:
 		for p in properti_karakter.size():
 			if properti_karakter[p][0] == "position":		pool_karakter[nama_karakter]["posisi"] = properti_karakter[p][1]
 			elif properti_karakter[p][0] == "rotation":		pool_karakter[nama_karakter]["rotasi"] = properti_karakter[p][1]
@@ -1146,7 +1158,7 @@ func _pemain_terputus(id_pemain):
 				"tipe": 		"sinkron",
 				"posisi":		pool_karakter[nama_karakter]["posisi"],
 				"rotasi":		pool_karakter[nama_karakter]["rotasi"],
-				"properti":		pool_karakter[nama_karakter]["properti"],
+				"properti":		pool_karakter[nama_karakter]["kondisi"],
 			}
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for idx_pemain in pemain.keys():

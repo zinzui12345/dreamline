@@ -3,23 +3,28 @@ extends CharacterBody3D
 
 class_name npc_ai
 
-# TODO : sinkronkan [kode, posisi, rotasi] ke semua peer
-# TODO : hanya proses navigasi [_physics_process, navigasi_ke()] pada peer pemroses
+# TODO : sinkronkan kode ke semua peer
 
 var navigasi : NavigationAgent3D
 var _proses_navigasi : bool = false
 var id_proses : int = -1:					# id peer/pemain yang memproses npc ini
 	set(id):
-		atur_pemroses(id)
 		id_proses = id
-var id_pengubah : int = -1:					# id peer/pemain yang mengubah npc ini
-	set(id):
+		atur_pemroses(id)
 		if id == client.id_koneksi:
 			set_process(true)
-		else:
-			set_process(false)
+			set_physics_process(true)
+		#Panku.notify("ini kecetak?")
+var id_pengubah : int = -1:					# id peer/pemain yang mengubah npc ini
+	set(id):
 		id_pengubah = id
-var cek_properti : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+		if id == client.id_koneksi:
+			set_process(true)
+			set_physics_process(true)
+		#Panku.notify("ini kecetak? gak???")
+var posisi_awal : Vector3					# simpan posisi awal npc
+var rotasi_awal : Vector3					# simpan rotasi awal npc
+var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 
 enum grup {
 	pemain,		# + teman, mis: hewan 
@@ -51,7 +56,7 @@ enum grup {
 	set(kode_baru):
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
 			if $kode_ubahan.block_script != kode_baru:
-				cek_properti["kode"] = kode_baru.generated_script
+				cek_kondisi["kode"] = kode_baru.generated_script
 				$kode_ubahan.block_script = kode_baru
 				$kode_ubahan._update_parent_script()
 			kode = kode_baru
@@ -107,6 +112,10 @@ func _setup() -> void:
 func mulai() -> void:
 	pass
 
+# fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
+func proses(_waktu_delta : float) -> void:
+	pass
+
 # fungsi yang akan dipanggil ketika id_proses diubah
 func atur_pemroses(_id_pemroses : int) -> void:
 	pass
@@ -114,8 +123,9 @@ func atur_pemroses(_id_pemroses : int) -> void:
 ## core ##
 # arahkan untuk pergi ke posisi tertentu
 func navigasi_ke(posisi : Vector3, _berlari : bool = false) -> void:
-	navigasi.set_target_position(posisi)
-	_proses_navigasi = true
+	if id_pengubah == client.id_koneksi or id_proses == client.id_koneksi:
+		navigasi.set_target_position(posisi)
+		_proses_navigasi = true
 
 # ketika diserang dengan nilai serangan tertentu
 func _diserang(_penyerang : Node3D, _damage_serangan : int) -> void:
@@ -126,6 +136,63 @@ func hapus() -> void:
 	queue_free()
 
 ## event ##
+func _process(delta : float) -> void:
+	# hentikan proses jika node tidak berada dalam permainan
+	if !is_instance_valid(server.permainan): set_process(false); return
+	
+	# hentikan proses pada peer yang bukan pemroses atau pengubah
+	if id_pengubah != client.id_koneksi and id_proses != client.id_koneksi:
+		set_process(false)
+		set_physics_process(false)
+	
+	# sinkronkan perubahan kondisi
+	else:
+		# buat variabel pembanding
+		var perubahan_kondisi = []
+		#var sinkron_kondisi : Array = get("sinkron_kondisi")
+		
+		# cek apakah kondisi sebelumnya telah tersimpan
+		if cek_kondisi.get("posisi") == null:	cek_kondisi["posisi"] = Vector3.ZERO
+		if cek_kondisi.get("rotasi") == null:	cek_kondisi["rotasi"] = rotation
+		
+		# reset kondisi jika npc jatuh ke void
+		if global_position.y < server.permainan.batas_bawah:
+			perubahan_kondisi.append(["position", posisi_awal])
+			perubahan_kondisi.append(["rotation", rotasi_awal])
+			global_transform.origin = posisi_awal
+			rotation		 		= rotasi_awal
+		
+		# cek apakah kondisi berubah
+		else:
+			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
+			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
+		
+		## cek kondisi properti kustom
+		#for p in sinkron_kondisi.size():
+			## cek apakah kondisi sebelumnya telah tersimpan
+			#if cek_kondisi.get(sinkron_kondisi[p][0]) == null:	cek_kondisi[sinkron_kondisi[p][0]] = sinkron_kondisi[p][1]
+			#
+			## cek apakah kondisi berubah
+			#if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	perubahan_kondisi.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
+		
+		# jika kondisi berubah, maka sinkronkan perubahan ke server
+		if perubahan_kondisi.size() > 0:
+			if id_proses == 1:
+				server._sesuaikan_properti_karakter(1, name, perubahan_kondisi)
+			else:
+				server.rpc_id(1, "_sesuaikan_properti_karakter", id_proses, name, perubahan_kondisi)
+		
+		# simpan perubahan kondisi untuk di-cek lagi
+		cek_kondisi["posisi"] = position
+		cek_kondisi["rotasi"] = rotation
+		
+		## simpan perubahan kondisi properti kustom untuk di-cek lagi
+		#for p in sinkron_kondisi.size():
+			#cek_kondisi[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
+		
+		# panggil fungsi pemroses npc
+		proses(delta)
+
 # proses navigasi
 func _physics_process(delta : float) -> void:
 	if _proses_navigasi:
@@ -146,13 +213,6 @@ func _physics_process(delta : float) -> void:
 func _ketika_berjalan(arah : Vector3) -> void:
 	velocity = arah
 	move_and_slide()
-	
-	# sinkronkan perubahan kondisi
-	if id_proses == client.id_koneksi:
-		if id_pengubah == 1:
-			server._sesuaikan_properti_karakter(1, name, [["global_transform:origin", global_transform.origin]])
-		else:
-			server.rpc_id(1, "_sesuaikan_properti_karakter", id_pengubah, name, [["global_transform:origin", global_transform.origin]])
  
 # ketika sampai di posisi tujuan
 func _ketika_navigasi_selesai() -> void:
