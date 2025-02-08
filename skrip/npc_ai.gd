@@ -1,9 +1,8 @@
 # 03/11/23
 extends CharacterBody3D
-
 class_name npc_ai
 
-# TODO : sinkronkan kode ke semua peer
+
 
 var navigasi : NavigationAgent3D
 var _proses_navigasi : bool = false
@@ -21,6 +20,16 @@ var id_pengubah : int = -1:					# id peer/pemain yang mengubah npc ini
 		if id == client.id_koneksi:
 			set_process(true)
 			set_physics_process(true)
+			#Panku.notify("disini yang penyinkron")
+		elif client.id_koneksi == id_proses:
+			if id == -1 or id == 0:
+				set_process(true)
+				set_physics_process(true)
+				#Panku.notify("disini yang jadi penyinkron")
+			else:
+				set_process(false)
+				set_physics_process(false)
+				#Panku.notify("disini bukan penyinkron")
 		#Panku.notify("ini kecetak? gak???")
 var posisi_awal : Vector3					# simpan posisi awal npc
 var rotasi_awal : Vector3					# simpan rotasi awal npc
@@ -144,9 +153,8 @@ func _process(delta : float) -> void:
 	if id_pengubah != client.id_koneksi and id_proses != client.id_koneksi:
 		set_process(false)
 		set_physics_process(false)
+		Panku.notify("disini bukan penyinkron, membatalkan sinkronisasi")
 	
-	# FIXME : sinkronkan perubahan kondisi pada peer pemroses atau peer pengubah
-	#elif id_pengubah == client.id_koneksi or (id_proses == client.id_koneksi and id_pengubah == -1): # salah!
 	else:
 		# buat variabel pembanding
 		var perubahan_kondisi = []
@@ -194,7 +202,7 @@ func _process(delta : float) -> void:
 		
 		# cek apakah kondisi berubah
 		else:
-			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position]); print_debug("debug"); Panku.notify("10C")
+			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
 			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		
 		## cek kondisi properti kustom
@@ -209,6 +217,8 @@ func _process(delta : float) -> void:
 		if perubahan_kondisi.size() > 0:
 			if id_proses == 1:
 				server._sesuaikan_kondisi_karakter(1, name, perubahan_kondisi)
+			elif id_pengubah == client.id_koneksi:
+				server.rpc_id(1, "_sesuaikan_kondisi_karakter", id_pengubah, name, perubahan_kondisi)
 			else:
 				server.rpc_id(1, "_sesuaikan_kondisi_karakter", id_proses, name, perubahan_kondisi)
 		

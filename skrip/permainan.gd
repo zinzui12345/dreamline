@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 01/02/25 Early Access"
+const versi = "Dreamline v0.4.4 08/02/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -987,7 +987,8 @@ func _kirim_pesan() -> void:
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
 	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
-	if edit_objek is objek: edit_objek.set_process(true)
+	if edit_objek is objek:		edit_objek.set_process(true)
+	elif edit_objek is npc_ai:	edit_objek.set_process(true)
 	else: edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
