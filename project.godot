@@ -51,6 +51,7 @@ window/vsync/vsync_mode=0
 
 [editor]
 
+run/main_run_args="--no-shadow"
 naming/default_signal_callback_name="_ketika_{node_name}_{signal_name}"
 naming/default_signal_callback_to_self_name="_ketika_{signal_name}"
 export/convert_text_resources_to_binary=false

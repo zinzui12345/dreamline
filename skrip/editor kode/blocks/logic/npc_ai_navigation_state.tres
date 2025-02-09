@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bvrresfdji0xj"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_a2rg0"]
+
+[resource]
+script = ExtResource("1_a2rg0")
+name = &"is_npc_ai_navigating"
+target_node_class = "npc_ai"
+description = "%deskripsi_karakter_menavigasi%"
+category = "%logika_kondisi%"
+type = 3
+variant_type = 1
+display_template = "%karakter_menavigasi"
+code_template = "_proses_navigasi"
+defaults = {}
+signal_name = ""
+scope = ""

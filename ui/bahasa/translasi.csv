@@ -205,6 +205,8 @@ posisi,posisi,position
 sudut,sudut,angle
 %ketika_mulai,Ketika Mulai,On Ready
 %deskripsi_ketika_mulai%,Blok yang terpasang akan dieksekusi pada saat node "dimulai",Attached blocks will be executed once when the node is "ready"
+%ketika_proses,Ketika Proses,On Process
+%deskripsi_ketika_proses%,Blok yang terpasang akan dieksekusi setiap waktu selama node diproses,Attached blocks will be executed during the processing step of the main loop
 %hapus_objek,Hapus Objek,Remove Object
 %deskripsi_hapus_objek%,Menghapus objek dari server,Remove the object from server.
 %gunakan_objek,Fungsikan,Use
@@ -263,6 +265,8 @@ terbuka,Terbuka,Is open
 %navigasi_karakter_ke ,Navigasi ke ,Navigate to 
  %navigasi_karakter_sambil_berlari% , sambil berlari , with running 
 %deskripsi_navigasi_karakter%,Mengarahkan karakter untuk berjalan atau berlari ke posisi tertentu,Navigate character to walk or run into defined position
+%karakter_menavigasi,sedang menavigasi,is navigating
+%deskripsi_karakter_menavigasi%,Nilai kondisi bila karakter bergerak ke posisi tertentu (menavigasi),Character navigation state
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?

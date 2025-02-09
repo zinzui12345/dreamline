@@ -4,6 +4,7 @@ class_name npc_ai
 
 
 
+var timer_proses : float = 0.0
 var navigasi : NavigationAgent3D
 var _proses_navigasi : bool = false
 var id_proses : int = -1:					# id peer/pemain yang memproses npc ini
@@ -39,6 +40,14 @@ enum grup {
 	pemain,		# + teman, mis: hewan 
 	netral,		# = hewan liar
 	musuh		# - monster
+}
+enum varian_kondisi {
+	diam,		# berdiam di tempat
+	keliling,	# navigasi ke posisi acak
+	mengejar,	# menarget musuh
+	menyerang,	# menyerang musuh
+	menghindar,	# menjauh dari musuh
+	mati		# gak usah ditanya lagi!
 }
 
 @export var nyawa : int = 100
@@ -153,7 +162,7 @@ func _process(delta : float) -> void:
 	if id_pengubah != client.id_koneksi and id_proses != client.id_koneksi:
 		set_process(false)
 		set_physics_process(false)
-		Panku.notify("disini bukan penyinkron, membatalkan sinkronisasi")
+		#Panku.notify("disini bukan penyinkron, membatalkan sinkronisasi")
 	
 	else:
 		# buat variabel pembanding
@@ -234,8 +243,11 @@ func _process(delta : float) -> void:
 		#for p in sinkron_kondisi.size():
 			#cek_kondisi[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
 		
-		# panggil fungsi pemroses npc
-		proses(delta)
+		# panggil fungsi pemroses npc setiap 200 milidetik
+		timer_proses += delta
+		if timer_proses >= 0.2:
+			proses(delta)
+			timer_proses = 0.0
 
 # proses navigasi
 func _physics_process(delta : float) -> void:

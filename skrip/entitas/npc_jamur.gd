@@ -3,14 +3,6 @@ extends npc_ai
 
 # FIXME : optimalkan performa
 
-enum varian_kondisi {
-	diam,		# idle / keliling
-	mengejar,	# menarget musuh
-	menyerang,	# menyerang musuh
-	menghindar,	# menjauh dari musuh
-	mati		# gak usah ditanya lagi!
-}
-
 const posisi_bar_nyawa = 0.65
 
 var musuh : Node3D

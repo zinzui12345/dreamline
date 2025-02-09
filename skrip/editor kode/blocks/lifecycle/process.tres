@@ -5,12 +5,13 @@
 [resource]
 script = ExtResource("1_pmina")
 name = &"process"
-description = "Attached blocks will be executed during the processing step of the main loop"
-category = "Lifecycle"
+target_node_class = ""
+description = "%deskripsi_ketika_proses%"
+category = "%siklus_server%"
 type = 1
 variant_type = 0
-display_template = "On Process"
-code_template = "func _process(delta):"
+display_template = "%ketika_proses"
+code_template = "func proses(delta):"
 defaults = {}
 signal_name = ""
 scope = ""
