@@ -1166,7 +1166,7 @@ func _pemain_terputus(id_pemain):
 				if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
 					if cek_visibilitas_pool_karakter[pemain[idx_pemain]["id_client"]][nama_karakter] == "spawn":
 						sinkronkan_kondisi_karakter(pemain[idx_pemain]["id_client"], nama_karakter, kondisi_karakter)
-	else: printerr("penyesuaian kondisi karakter hanya dapat dilakukan pada server!")
+	else: push_error("penyesuaian kondisi karakter hanya dapat dilakukan pada server!")
 @rpc("any_peer") func _kirim_map(id_pemain : int):						# 11/11/24 :: kirim map ke pemain tertentu
 	if map.substr(0,1) == "@" and ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)]):
 		kirim_aset(id_pemain, "%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)], map.substr(1))

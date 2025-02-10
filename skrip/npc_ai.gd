@@ -2,7 +2,7 @@
 extends CharacterBody3D
 class_name npc_ai
 
-# TODO : sinkronkan arah melihat
+
 
 const sinkron_kondisi : Array = [["arah_pandangan", 0.0]]
 
@@ -94,16 +94,36 @@ func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("karakter").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada karakter | ini digunakan untuk menambahkan karakter ke server
-			if get("properti") != null:
-				for properti_kustom : Array in get("properti"):
+			if get("sinkron_kondisi") != null:
+				for properti_kustom : Array in get("sinkron_kondisi"):
 					_sp_properti.append([
 						properti_kustom[0],
 						get(properti_kustom[0])
 					])
 				if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
+					var parse_cabang_blok : Dictionary
+					var parse_variabel_blok : Dictionary
+					for cabang_blok in $kode_ubahan.block_script.block_trees.size():
+						parse_cabang_blok[str(cabang_blok)+"|BlockSerialization"] = {
+							"name"							: $kode_ubahan.block_script.block_trees[cabang_blok].name,
+							"position"						: $kode_ubahan.block_script.block_trees[cabang_blok].position,
+							"path_child_pairs"				: server.permainan._parse_sub_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].path_child_pairs),
+							"block_serialized_properties"	: server.permainan._parse_sub_properti_blok_kode($kode_ubahan.block_script.block_trees[cabang_blok].block_serialized_properties)
+						}
+					for indeks_data_variabel in $kode_ubahan.block_script.variables.size():
+						parse_variabel_blok[str(indeks_data_variabel)+"|VariableResource"] = {
+							"var_name":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_name,
+							"var_type":		$kode_ubahan.block_script.variables[indeks_data_variabel].var_type
+						}
+					var kirim_resource : Dictionary = {
+						"script_inherits":	$kode_ubahan.block_script.script_inherits,
+						"block_trees":		parse_cabang_blok,
+						"variables":		parse_variabel_blok,
+						"generated_script":	$kode_ubahan.block_script.generated_script
+					}
 					_sp_properti.append([
 						"kode",
-						$kode_ubahan.block_script
+						JSON.stringify(kirim_resource)
 					])
 			elif has_meta("setelan"):
 				var dictionary_setelan : Dictionary = get_meta("setelan")
@@ -130,6 +150,7 @@ func _setup() -> void:
 		queue_free()
 	else:
 		model = get_node_or_null("model")
+		set("arah_pandangan", arah_pandangan)
 		navigasi = $navigasi
 		navigasi.avoidance_enabled = true
 		navigasi.connect("velocity_computed", _ketika_berjalan)
