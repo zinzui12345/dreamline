@@ -9,14 +9,14 @@ var musuh : Node3D
 var target : Node3D					# node yang akan diserang
 var kondisi = varian_kondisi.diam	# kondisi (state)
 var _kondisi_sebelumnya				# kondisi terakhir (transisi)
-var arah_pandangan = 0.0 :
-	set(nilai):
-		$model.rotation.y = nilai
-		$fisik.rotation.y = nilai
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			$pandangan.rotation.y = nilai
-			$proyektil.rotation.y = nilai
-		arah_pandangan = nilai
+#var arah_pandangan = 0.0 :
+	#set(nilai):
+		#$model.rotation.y = nilai
+		#$fisik.rotation.y = nilai
+		#if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+			#$pandangan.rotation.y = nilai
+			#$proyektil.rotation.y = nilai
+		#arah_pandangan = nilai
 
 func setup():
 	$model/Skeleton3D/Mushroom.visibility_range_end = jarak_render
@@ -120,10 +120,10 @@ func _ketika_menggigit_sesuatu(sesuatu : Node3D):
 		sesuatu.call("_diserang", self, serangan)
 	#Panku.notify("menggigit "+sesuatu.name)
 
-func lihat_ke(posisi : Vector3):
-	$model.look_at(posisi, Vector3.UP, true)
-	$model.rotation.x = 0
-	arah_pandangan = $model.rotation.y
+#func lihat_ke(posisi : Vector3):
+	#$model.look_at(posisi, Vector3.UP, true)
+	#$model.rotation.x = 0
+	#arah_pandangan = $model.rotation.y
 func menyerang(target_serangan : Node3D, tipe_serangan : StringName):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_kondisi_sebelumnya = kondisi
@@ -181,10 +181,10 @@ func mati():
 	_kondisi_sebelumnya = varian_kondisi.diam # FIXME : stop proses navigasi!
 	#$partikel_kematian.emitting = true >> pindah ke animasinya!
 	$model/AnimationTree.set("parameters/kondisi/transition_request", "mati")
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		$gigit.monitoring = false
-		$pandangan.monitoring = false
-		server.fungsikan_objek(self.get_path(), "mati", [])
+	#if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		#$gigit.monitoring = false
+		#$pandangan.monitoring = false
+		#server.fungsikan_objek(self.get_path(), "mati", [])
 func _setelah_mati():
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		hapus()

@@ -2,11 +2,20 @@
 extends CharacterBody3D
 class_name npc_ai
 
+# TODO : sinkronkan arah melihat
 
+const sinkron_kondisi : Array = [["arah_pandangan", 0.0]]
 
-var timer_proses : float = 0.0
+var model : Node3D
 var navigasi : NavigationAgent3D
 var _proses_navigasi : bool = false
+var timer_proses : float = 0.0
+var arah_pandangan = 0.0 :
+	set(nilai):
+		if model != null:
+			model.rotation.y = nilai
+			$fisik.rotation.y = nilai
+		arah_pandangan = nilai
 var id_proses : int = -1:					# id peer/pemain yang memproses npc ini
 	set(id):
 		id_proses = id
@@ -120,6 +129,7 @@ func _setup() -> void:
 			)
 		queue_free()
 	else:
+		model = get_node_or_null("model")
 		navigasi = $navigasi
 		navigasi.avoidance_enabled = true
 		navigasi.connect("velocity_computed", _ketika_berjalan)
@@ -141,9 +151,17 @@ func atur_pemroses(_id_pemroses : int) -> void:
 ## core ##
 # arahkan untuk pergi ke posisi tertentu
 func navigasi_ke(posisi : Vector3, _berlari : bool = false) -> void:
+	if posisi == global_position: return
 	if id_pengubah == client.id_koneksi or id_proses == client.id_koneksi:
 		navigasi.set_target_position(posisi)
 		_proses_navigasi = true
+
+# arahkan model ke posisi tertentu
+func lihat_ke(posisi : Vector3):
+	if model != null:
+		model.look_at(posisi, Vector3.UP, true)
+		model.rotation.x = 0
+		arah_pandangan = model.rotation.y
 
 # ketika diserang dengan nilai serangan tertentu
 func _diserang(_penyerang : Node3D, _damage_serangan : int) -> void:
@@ -167,7 +185,7 @@ func _process(delta : float) -> void:
 	else:
 		# buat variabel pembanding
 		var perubahan_kondisi = []
-		#var sinkron_kondisi : Array = get("sinkron_kondisi")
+		var sinkron_kondisi : Array = get("sinkron_kondisi")
 		
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_kondisi.get("posisi") == null:	cek_kondisi["posisi"] = Vector3.ZERO
@@ -214,13 +232,13 @@ func _process(delta : float) -> void:
 			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
 			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		
-		## cek kondisi properti kustom
-		#for p in sinkron_kondisi.size():
-			## cek apakah kondisi sebelumnya telah tersimpan
-			#if cek_kondisi.get(sinkron_kondisi[p][0]) == null:	cek_kondisi[sinkron_kondisi[p][0]] = sinkron_kondisi[p][1]
-			#
-			## cek apakah kondisi berubah
-			#if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	perubahan_kondisi.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
+		# cek kondisi properti kustom
+		for p in sinkron_kondisi.size():
+			# cek apakah kondisi sebelumnya telah tersimpan
+			if cek_kondisi.get(sinkron_kondisi[p][0]) == null:	cek_kondisi[sinkron_kondisi[p][0]] = sinkron_kondisi[p][1]
+			
+			# cek apakah kondisi berubah
+			if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	perubahan_kondisi.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
 		if perubahan_kondisi.size() > 0:
@@ -239,9 +257,9 @@ func _process(delta : float) -> void:
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
 			cek_kondisi["kode"] = $kode_ubahan.block_script.generated_script
 		
-		## simpan perubahan kondisi properti kustom untuk di-cek lagi
-		#for p in sinkron_kondisi.size():
-			#cek_kondisi[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
+		# simpan perubahan kondisi properti kustom untuk di-cek lagi
+		for p in sinkron_kondisi.size():
+			cek_kondisi[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
 		
 		# panggil fungsi pemroses npc setiap 200 milidetik
 		timer_proses += delta

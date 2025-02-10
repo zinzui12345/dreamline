@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cdk7rkn3tqxjb"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_8d2vd"]
+
+[resource]
+script = ExtResource("1_8d2vd")
+name = &"npc_ai_next_path_position"
+target_node_class = "npc_ai"
+description = "%deskripsi_posisi_navigasi_karakter%"
+category = "%transformasi_posisi%"
+type = 3
+variant_type = 9
+display_template = "%posisi_navigasi_karakter"
+code_template = "navigasi.get_next_path_position()"
+defaults = {}
+signal_name = ""
+scope = ""

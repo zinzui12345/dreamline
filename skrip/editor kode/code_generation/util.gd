@@ -13,11 +13,11 @@ static func get_files_in_dir_recursive(path: String, pattern: String) -> Array:
 	dir.list_dir_begin()
 
 	var file_name = dir.get_next()
-	print_debug("membuka direktori : "+path)
+	#print_debug("membuka direktori : "+path)
 	
 	while file_name != "":
 		var file_path = path + "/" + file_name
-		print_debug("membuka file : "+file_path)
+		#print_debug("membuka file : "+file_path)
 		if dir.current_is_dir():
 			files.append_array(get_files_in_dir_recursive(file_path, pattern))
 		elif file_name.matchn(pattern):
@@ -25,6 +25,6 @@ static func get_files_in_dir_recursive(path: String, pattern: String) -> Array:
 
 		file_name = dir.get_next()
 
-	print_debug("apakah file pada direktori ditemukan? : "+str(files != []))
+	#print_debug("apakah file pada direktori ditemukan? : "+str(files != []))
 
 	return files

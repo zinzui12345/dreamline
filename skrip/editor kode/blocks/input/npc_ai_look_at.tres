@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dhquu4m4ry3j7"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_deraa"]
+
+[resource]
+script = ExtResource("1_deraa")
+name = &"npc_ai_look_at"
+target_node_class = "npc_ai"
+description = "%deskripsi_arahkan_karakter%"
+category = "%karakter%"
+type = 2
+variant_type = 0
+display_template = "%arahkan_karakter_ke {posisi: VECTOR3}"
+code_template = "lihat_ke({posisi})
+"
+defaults = {
+"posisi": Vector3(0, 0, 0)
+}
+signal_name = ""
+scope = ""

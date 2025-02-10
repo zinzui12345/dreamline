@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://byclv4dxufkvs"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_gu4l0"]
+
+[resource]
+script = ExtResource("1_gu4l0")
+name = &"npc_ai_position"
+target_node_class = "npc_ai"
+description = "%deskripsi_posisi_karakter%"
+category = "%transformasi_posisi%"
+type = 3
+variant_type = 9
+display_template = "%posisi_karakter"
+code_template = "global_position"
+defaults = {}
+signal_name = ""
+scope = ""
