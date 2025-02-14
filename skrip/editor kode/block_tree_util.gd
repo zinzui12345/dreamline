@@ -30,6 +30,7 @@ static func generate_script_from_nodes(nodes: Array[Node], block_script: BlockSc
 		Panku.notify(extend_class)
 	else:
 		Panku.notify("kelas nggak ada")
+		print_debug("kelas nggak ada")
 
 	script += "extends %s\n\n" % extend_class
 

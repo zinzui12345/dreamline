@@ -45,10 +45,12 @@ func _ready() -> void:
 		for file_ in daftar_file:
 			var isi_file: BlockCode = load(file_).instantiate()
 			var id		= isi_file.get_meta("id_aset")
+			var kelas	= isi_file.get_meta("kelas")
 			var author	= isi_file.get_meta("author")
 			var versi	= isi_file.get_meta("versi")
 			data[id] = {
 				"tipe"		: "kode",
+				"kelas"		: kelas,
 				"author"	: author,
 				"sumber"	: file_,
 				"versi"		: versi

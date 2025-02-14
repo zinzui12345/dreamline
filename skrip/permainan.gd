@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 08/02/25 Early Access"
+const versi = "Dreamline v0.4.4 14/02/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -446,7 +446,7 @@ func atur_map(nama_map : StringName = "empty") -> String:
 	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
 	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;							return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);											return "map ["+nama_map+"] tidak ditemukan"
-func simpan_map():
+func simpan_map() -> void:
 	# simpan map ke user://map/nama_map.map
 	if koneksi == MODE_KONEKSI.SERVER and is_instance_valid(karakter):
 		var ekspor_map : PackedScene = PackedScene.new()
@@ -482,6 +482,27 @@ func simpan_map():
 		if hasil_simpan == OK:
 			var error = ResourceSaver.save(ekspor_map, "%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map], ResourceSaver.FLAG_BUNDLE_RESOURCES)
 			if error != OK: push_error("[Galat] Terjadi kesalahan ketika menyimpan map.")
+func buat_aset(jalur_aset : String, tipe_aset : String, kelas_node : String = "Node3D") -> Dictionary:
+	var id_aset : String = OS.get_unique_id() + '_' + str(daftar_aset.size() + 1)
+	var file : FileAccess = FileAccess.open(Konfigurasi.data_aset, FileAccess.WRITE)
+	if tipe_aset == "kode":
+		daftar_aset[id_aset] = {
+			"tipe"		: tipe_aset,
+			"kelas"		: kelas_node,
+			"author"	: data["nama"],
+			"sumber"	: jalur_aset,
+			"versi"		: 1
+		}
+	else:
+		daftar_aset[id_aset] = {
+			"tipe"		: tipe_aset,
+			"author"	: data["nama"],
+			"sumber"	: jalur_aset,
+			"versi"		: 1
+		}
+	file.store_var(daftar_aset)
+	file.close()
+	return { "id": id_aset, "author": data["nama"] }
 func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName = &"showcase", posisi := Vector3.ZERO, rotasi := Vector3.ZERO) -> void:
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
@@ -2084,7 +2105,7 @@ func tampilkan_editor_kode() -> void:
 		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.stop()
 	# 16/11/24 :: hentikan thread memuat kode
 	if thread.is_started(): thread.wait_to_finish()
-func buat_kode(nama_kelas : String = "objek"):
+func buat_kode(nama_kelas : String = "objek") -> void:
 	if $editor_kode.visible:
 		for kelas in ProjectSettings.get_global_class_list():
 			if kelas.class == nama_kelas and ClassDB.can_instantiate(nama_kelas):
@@ -2106,6 +2127,9 @@ func buat_kode(nama_kelas : String = "objek"):
 				node.add_child(kode)
 				$editor_kode/blok_kode._save_node_button.visible = true
 				$editor_kode/blok_kode.switch_block_code_node(kode)
+func _ketika_menyimpan_kode(jalur_file) -> void:
+	#Panku.notify("Menyimpan kode : "+jalur_file)
+	$editor_kode/blok_kode.save_scene(jalur_file)
 func tutup_editor_kode() -> void:
 	$editor_kode/blok_kode.switch_block_code_node(null)
 	# kalau bukan dalam permainan, tampilkan kembali menu utama

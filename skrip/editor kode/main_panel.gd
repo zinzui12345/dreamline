@@ -72,27 +72,10 @@ func _on_show_script_button_pressed():
 	%GeneratedScriptDisplay.show()
 
 func _on_save_node_button_pressed():
-	save_script()
-	_block_canvas.rebuild_block_trees()
-	_current_block_code_node._update_parent_script()
-	var pck : PackedScene = PackedScene.new()
-	var parent : Node = Node.new()
-	var script_parent : = _current_block_code_node.get_parent().duplicate()
-	parent.add_child(script_parent)
-	script_parent.set_owner(parent)
-	for ch in script_parent.get_children():
-		if ch is BlockCode:
-			var script = ch.block_script.duplicate(true)
-			var block_script_ = BlockCode.new()
-			block_script_.name = "kode_ubahan"
-			block_script_.block_script = script
-			script_parent.remove_child(ch)
-			script_parent.add_child(block_script_)
-			block_script_.set_owner(parent)
-		else:
-			script_parent.remove_child(ch)
-	pck.pack(parent)
-	ResourceSaver.save(pck, "res://blok_kode.scn")
+	save_scene("res://blok_kode.scn")
+
+func _on_save_scene_button_pressed():
+	get_parent().get_node("dialog_simpan_kode").show()
 
 func _on_close_script_button_pressed():
 	if _current_block_code_node == null:
@@ -150,7 +133,29 @@ func _try_migration():
 
 func switch_scene(scene_root: Node):
 	_title_bar.scene_selected(scene_root)
-
+func save_scene(path : String):
+	save_script()
+	_block_canvas.rebuild_block_trees()
+	_current_block_code_node._update_parent_script()
+	var pck : PackedScene = PackedScene.new()
+	var scene : BlockCode = _current_block_code_node.duplicate()
+	if !FileAccess.file_exists(path):
+		# tambahin metadata dan id aset kalau file belum ada / bukan overwrite | cek loader.gd:47
+		var kelas_node : String = _current_block_code_node.block_script.script_inherits
+		var data_aset = server.permainan.buat_aset(path, "kode", kelas_node)
+		scene.set_meta("id_aset", data_aset["id"])
+		scene.set_meta("kelas", kelas_node)
+		scene.set_meta("author", data_aset["author"])
+		scene.set_meta("versi", 1)
+	else:
+		# kalau file udah ada ambil metadata sebelum overwrite
+		var isi_file: BlockCode = load(path).instantiate()
+		scene.set_meta("id_aset", isi_file.get_meta("id_aset"))
+		scene.set_meta("kelas", isi_file.get_meta("kelas"))
+		scene.set_meta("author", isi_file.get_meta("author"))
+		scene.set_meta("versi", isi_file.get_meta("versi") + 1)
+	pck.pack(scene)
+	ResourceSaver.save(pck, path)
 
 func switch_block_code_node(block_code_node: BlockCode):
 	var block_script: BlockScriptSerialization = block_code_node.block_script if block_code_node else null

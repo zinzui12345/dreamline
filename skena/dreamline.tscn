@@ -8548,10 +8548,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 
 [node name="blok_kode" parent="editor_kode" instance=ExtResource("81_d4drg")]
 layout_mode = 1
+
+[node name="dialog_simpan_kode" type="FileDialog" parent="editor_kode"]
+initial_position = 1
+size = Vector2i(512, 320)
+popup_window = true
+ok_button_text = "%simpan"
+cancel_button_text = "%batal"
+access = 1
+root_subfolder = "user://aset/kode"
+filters = PackedStringArray("*.scn")
 
 [node name="animasi" type="AnimationPlayer" parent="editor_kode"]
 libraries = {
@@ -9489,6 +9498,7 @@ bus = &"Suara Pemain"
 [connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_debug/informasi_performa" to="." method="_ketika_mengatur_informasi_performa"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_log" to="." method="_buka_log"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_konsol" to="." method="_tampilkan_konsol"]
+[connection signal="file_selected" from="editor_kode/dialog_simpan_kode" to="." method="_ketika_menyimpan_kode"]
 [connection signal="tutup_panel" from="blok_kode/panel_kode" to="." method="tutup_editor_kode"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]

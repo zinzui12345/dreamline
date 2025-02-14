@@ -231,7 +231,7 @@ nama_metode,nama metode,method name
 %tunggu_node_siap,Tunggu hingga node dimulai,Await node ready
 %posisi_objek,Posisi Objek,Object Position
 %deskripsi_posisi_objek%,Posisi global objek pada dunia,Object global position in world space
-pindahkan_objek ,Pindahkan Objek ,Move Object 
+%pindahkan_objek ,Pindahkan Objek ,Move Object 
 %deskripsi_pindahkan_objek%,Memindahkan objek sejauh [i]arah[/i] tertentu,Move object by [i]direction[/i]
 %posisi_karakter,Posisi Karakter,Character Position
 %deskripsi_posisi_karakter%,Posisi global karakter pada dunia,Character global position in world space
