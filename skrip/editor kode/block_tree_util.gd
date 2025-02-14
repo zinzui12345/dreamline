@@ -25,13 +25,9 @@ static func generate_script_from_nodes(nodes: Array[Node], block_script: BlockSc
 	var script: String = ""
 	var extend_class = block_script.script_inherits
 
-	if type_exists("placeholder_" + extend_class):
-		extend_class = "placeholder_" + extend_class
-		Panku.notify(extend_class)
-	else:
-		Panku.notify("kelas nggak ada")
-		print_debug("kelas nggak ada")
-
+	# 14/02/25 :: godot belum bisa membandingkan kelas kustom, paksain aja
+	extend_class = "placeholder_" + extend_class
+	
 	script += "extends %s\n\n" % extend_class
 
 	var init_func = InstructionTree.TreeNode.new("func _init():")
