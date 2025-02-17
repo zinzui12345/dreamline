@@ -24,6 +24,8 @@ func scene_selected(scene_root: Node):
 func block_code_selected(block_code : Node):
 	if block_code == null: 
 		_node_option_button.clear()
+		for dummy_block_code in $dummy_script.get_children():
+			dummy_block_code.queue_free()
 		return
 	_node_option_button.add_item("{name} ({type})".format({"name": dunia.get_path_to(block_code).get_concatenated_names(), "type": block_code.block_script.script_inherits}))
 	_node_option_button.set_item_metadata(0, block_code)
@@ -34,20 +36,20 @@ func block_script_selected(block_script: BlockScriptSerialization):
 	#       we'll crudely update the list of BlockCode nodes whenever the
 	#       selection changes.
 
-	#_update_node_option_button_items()
+	_update_node_option_button_items(block_script)
 
 	var select_index = _get_block_script_index(block_script)
 	if _node_option_button.selected != select_index:
 		_node_option_button.select(select_index)
 
 
-func _update_node_option_button_items():
-	_node_option_button.clear()
+func _update_node_option_button_items(block_script = null):
+	#_node_option_button.clear() # jangan lakuin ini!
 
-	var scene_root = false # EditorInterface.get_edited_scene_root()
+	#var scene_root = false # EditorInterface.get_edited_scene_root()
 
-	if not scene_root:
-		return
+	#if not scene_root:
+	#	return
 
 	#for block_code in BlockCodePlugin.list_block_code_nodes_for_node(scene_root, true):
 		#if not BlockCodePlugin.is_block_code_editable(block_code):
@@ -58,6 +60,28 @@ func _update_node_option_button_items():
 		#_node_option_button.add_item(node_label)
 		#_node_option_button.set_item_icon(node_item_index, _block_code_icon)
 		#_node_option_button.set_item_metadata(node_item_index, block_code)
+	
+	# 17/02/25 :: muat setiap aset kode yang memiliki kelas yang sama
+	if block_script != null:
+		for aset_ in server.permainan.daftar_aset:
+			var objekk : Dictionary = server.permainan.daftar_aset[aset_]
+			if objekk.tipe == "kode":
+				if objekk.has("kelas") and objekk.kelas == block_script.script_inherits:
+					var block_code : BlockCode = load(objekk.sumber).instantiate()
+					for kelas in ProjectSettings.get_global_class_list():
+						if kelas.class == objekk.kelas and ClassDB.can_instantiate(objekk.kelas):
+							var skrip = load(kelas.path)
+							var node = skrip.new()
+							var node_item_index = _node_option_button.item_count
+							var node_label = "{name} ({type})".format({"name": objekk.sumber, "type": block_code.block_script.script_inherits})
+							_node_option_button.add_item(node_label)
+							_node_option_button.set_item_icon(node_item_index, _block_code_icon)
+							_node_option_button.set_item_metadata(node_item_index, block_code)
+							block_code.process_mode = PROCESS_MODE_DISABLED
+							node.process_mode = PROCESS_MODE_DISABLED
+							node.name = "kode_ubahan_kustom_" + str(node_item_index)
+							node.add_child(block_code)
+							$dummy_script.add_child(node)
 
 
 func _get_block_script_index(block_script: BlockScriptSerialization) -> int:
@@ -71,6 +95,12 @@ func _get_block_script_index(block_script: BlockScriptSerialization) -> int:
 func _on_node_option_button_item_selected(index):
 	var block_code_node = _node_option_button.get_item_metadata(index) as BlockCode
 	var parent_node = block_code_node.get_parent() as Node
+	
+	Panku.notify("Love Trip")
+	# simpan kode asli node di suatu variabel pada client dan server
+	# gunakan id aset kode untuk membandingkan apakah node menggunakan kode aset atau kode aslinya
+	# jika tidak menggunakan kode asli, sesuaikan indeks kode yang terpilih
+	
 	#_editor_selection.clear()
 	#_editor_selection.add_node(block_code_node)
 	#if parent_node:

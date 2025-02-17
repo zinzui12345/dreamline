@@ -25,8 +25,9 @@ static func generate_script_from_nodes(nodes: Array[Node], block_script: BlockSc
 	var script: String = ""
 	var extend_class = block_script.script_inherits
 
-	# 14/02/25 :: godot belum bisa membandingkan kelas kustom, paksain aja
-	extend_class = "placeholder_" + extend_class
+	# 17/02/25 :: skrip placeholder dipake untuk mempertahankan properti default seperti jalur_instance
+	if ClassDB.can_instantiate("placeholder_" + extend_class):
+		extend_class = "placeholder_" + extend_class
 	
 	script += "extends %s\n\n" % extend_class
 

@@ -13,7 +13,7 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = &"empty"
+var map : StringName = &"pulau"
 var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -1111,7 +1111,7 @@ func _pemain_terputus(id_pemain):
 			var id_pemain_target = pemain[idx_pemain]["id_client"]
 			# pastikan pemain valid dan pemain bukan pengatur
 			if id_pemain_target != 0 and id_pemain_target != id_pengatur:
-				if cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":
+				if cek_visibilitas_pool_entitas.has(id_pemain_target) and cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":
 					sinkronkan_kondisi_entitas(id_pemain_target, nama_entitas, kondisi_entitas)
 @rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:

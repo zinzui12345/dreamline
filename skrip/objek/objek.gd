@@ -42,7 +42,9 @@ var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 				$kode_ubahan._update_parent_script()
 			kode = kode_baru
 
-func _ready() -> void: call_deferred("_setup")
+func _ready() -> void:
+	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED: return
+	else: call_deferred("_setup")
 func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("objek").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):

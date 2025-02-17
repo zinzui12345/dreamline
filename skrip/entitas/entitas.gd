@@ -14,7 +14,9 @@ var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame unt
 #const jalur_instance = ""					# jalur aset skena node entitas ini misalnya: "res://skena/entitas/bola_batu.scn"
 #const abaikan_occlusion_culling = true		# hanya tambahkan jika tidak ingin entitas menghalangi objek pada occlusion culling
 
-func _ready() -> void: call_deferred("_setup")
+func _ready() -> void:
+	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED: return
+	else: call_deferred("_setup")
 func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
