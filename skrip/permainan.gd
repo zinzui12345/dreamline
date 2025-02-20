@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 17/02/25 Early Access"
+const versi = "Dreamline v0.4.4 20/02/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1866,6 +1866,16 @@ func _ketika_mengubah_kode_objek() -> void:
 		# 16/11/24 :: proses blok kode di thread
 		var tmp_perintah := Callable(self, "_muat_kode")
 		thread.start(tmp_perintah.bind(edit_objek.get_node("kode_ubahan")), Thread.PRIORITY_NORMAL)
+func _ketika_mengganti_kode_objek(kode_pengganti : BlockCode) -> void:
+	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
+		edit_objek.get_node("kode_ubahan").block_script = kode_pengganti.block_script.duplicate(true)
+		edit_objek.get_node("kode_ubahan").set_meta("id_aset", kode_pengganti.get_meta("id_aset"))
+		edit_objek.get_node("kode_ubahan").set_meta("kelas", kode_pengganti.get_meta("kelas"))
+		edit_objek.get_node("kode_ubahan").set_meta("author", kode_pengganti.get_meta("author"))
+		edit_objek.get_node("kode_ubahan").set_meta("versi", kode_pengganti.get_meta("versi"))
+		#editor_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
+		#editor_kode.save_script()
+		_ketika_mengubah_kode_objek()
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):

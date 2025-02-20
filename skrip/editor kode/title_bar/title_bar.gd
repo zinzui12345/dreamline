@@ -39,6 +39,7 @@ func block_script_selected(block_script: BlockScriptSerialization):
 	_update_node_option_button_items(block_script)
 
 	var select_index = _get_block_script_index(block_script)
+	# FIXME : kode_ubahan custom urutan ke 2 terhapus
 	if _node_option_button.selected != select_index:
 		_node_option_button.select(select_index)
 
@@ -63,6 +64,7 @@ func _update_node_option_button_items(block_script = null):
 	
 	# 17/02/25 :: muat setiap aset kode yang memiliki kelas yang sama
 	if block_script != null:
+		#Panku.notify("memuat kode kustom...")
 		for aset_ in server.permainan.daftar_aset:
 			var objekk : Dictionary = server.permainan.daftar_aset[aset_]
 			if objekk.tipe == "kode":
@@ -82,6 +84,8 @@ func _update_node_option_button_items(block_script = null):
 							node.name = "kode_ubahan_kustom_" + str(node_item_index)
 							node.add_child(block_code)
 							$dummy_script.add_child(node)
+	#else:
+	#	Panku.notify("error")
 
 
 func _get_block_script_index(block_script: BlockScriptSerialization) -> int:
@@ -93,15 +97,22 @@ func _get_block_script_index(block_script: BlockScriptSerialization) -> int:
 
 
 func _on_node_option_button_item_selected(index):
-	var block_code_node = _node_option_button.get_item_metadata(index) as BlockCode
-	var parent_node = block_code_node.get_parent() as Node
-	
-	Panku.notify("Love Trip")
-	# simpan kode asli node di suatu variabel pada client dan server
-	# gunakan id aset kode untuk membandingkan apakah node menggunakan kode aset atau kode aslinya
-	# jika tidak menggunakan kode asli, sesuaikan indeks kode yang terpilih
-	
-	#_editor_selection.clear()
-	#_editor_selection.add_node(block_code_node)
-	#if parent_node:
-	#	_editor_selection.add_node(parent_node)
+	if is_instance_valid(_node_option_button.get_item_metadata(index)):
+		var block_code_node = _node_option_button.get_item_metadata(index) as BlockCode
+		var parent_node = block_code_node.get_parent() as Node
+		
+		# TODO: *
+		# simpan kode asli node di suatu variabel pada client dan server
+		# gunakan id aset kode untuk membandingkan apakah node menggunakan kode aset atau kode aslinya
+		# jika tidak menggunakan kode asli, sesuaikan indeks kode yang terpilih
+		
+		# 20/02/25 :: cukup yang simpel aja, ganti di block_code node dan main_panel dengan block_code_node
+		_node_option_button.clear()
+		server.permainan._ketika_mengganti_kode_objek(block_code_node)
+		
+		#_editor_selection.clear()
+		#_editor_selection.add_node(block_code_node)
+		#if parent_node:
+		#	_editor_selection.add_node(parent_node)
+	else:
+		server.permainan._tampilkan_popup_informasi_("NULL")

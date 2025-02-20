@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://skrip/editor kode/picker/picker.gd" id="1_tkt44"]
 
 [node name="Picker" type="MarginContainer"]
-offset_right = 251.0
+offset_right = 272.0
 offset_bottom = 253.0
 script = ExtResource("1_tkt44")
 
