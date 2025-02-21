@@ -10,4 +10,5 @@ class_name placeholder_objek
 @export var jalur_instance = "res://skena/objek/placeholder_objek.tscn"
 
 func _ready() -> void:
-	call_deferred("_setup")
+	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED: return
+	else: call_deferred("_setup")

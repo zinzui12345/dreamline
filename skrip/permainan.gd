@@ -1868,7 +1868,6 @@ func _ketika_mengubah_kode_objek() -> void:
 		thread.start(tmp_perintah.bind(edit_objek.get_node("kode_ubahan")), Thread.PRIORITY_NORMAL)
 func _ketika_mengganti_kode_objek(kode_pengganti : BlockCode) -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
-		# FIXME : objek menjadi duplikat karena kode_ubahan memuat ulang skrip
 		edit_objek.get_node("kode_ubahan").block_script = kode_pengganti.block_script.duplicate(true)
 		edit_objek.get_node("kode_ubahan").set_meta("id_aset", kode_pengganti.get_meta("id_aset"))
 		edit_objek.get_node("kode_ubahan").set_meta("kelas", kode_pengganti.get_meta("kelas"))

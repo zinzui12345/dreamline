@@ -39,8 +39,6 @@ func block_script_selected(block_script: BlockScriptSerialization):
 	_update_node_option_button_items(block_script)
 
 	var select_index = _get_block_script_index(block_script)
-	# FIXME : kode_ubahan custom urutan ke 2 terhapus
-	# root.get_node("editor_kode/blok_kode/MarginContainer/HBoxContainer/ScriptVBox/HBoxContainer/TitleBar/dummy_script").get_children()
 	if _node_option_button.selected != select_index:
 		_node_option_button.select(select_index)
 
@@ -77,11 +75,11 @@ func _update_node_option_button_items(block_script = null):
 							var node = skrip.new()
 							var node_item_index = _node_option_button.item_count
 							var node_label = "{name} ({type})".format({"name": objekk.sumber, "type": block_code.block_script.script_inherits})
+							node.process_mode = PROCESS_MODE_DISABLED
+							block_code.process_mode = PROCESS_MODE_DISABLED
 							_node_option_button.add_item(node_label)
 							_node_option_button.set_item_icon(node_item_index, _block_code_icon)
 							_node_option_button.set_item_metadata(node_item_index, block_code)
-							block_code.process_mode = PROCESS_MODE_DISABLED
-							node.process_mode = PROCESS_MODE_DISABLED
 							node.name = "kode_ubahan_kustom_" + str(node_item_index)
 							node.add_child(block_code)
 							$dummy_script.add_child(node)

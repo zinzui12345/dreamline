@@ -10,4 +10,5 @@ class_name placeholder_npc_ai
 @export var jalur_instance = ""
 
 func _ready() -> void:
-	call_deferred("_setup")
+	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED: return
+	else: call_deferred("_setup")
