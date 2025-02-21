@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 20/02/25 Early Access"
+const versi = "Dreamline v0.4.4 22/02/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -861,6 +861,13 @@ func _muat_kode(node_kode_ubahan : BlockCode) -> void:
 	editor_kode.call_deferred("switch_block_code_node", node_kode_ubahan)
 	editor_kode.call_deferred("save_script")
 	call_deferred("tampilkan_editor_kode")
+func _muat_pengganti_kode(node_kode_ubahan : BlockCode, kode_pengganti : BlockScriptSerialization) -> void:
+	# 22/02/25 :: muat kode pengganti
+	editor_kode._current_block_code_node.block_script.block_trees = kode_pengganti.block_trees
+	editor_kode._current_block_code_node.block_script.variables = kode_pengganti.variables
+	editor_kode.call_deferred("switch_block_code_node", node_kode_ubahan)
+	editor_kode.call_deferred("save_script")
+	call_deferred("_berhenti_memuat_kode")
 func _mulai_server_cli() -> void:
 	print(alamat_ip())
 	if permukaan != null: permukaan.gunakan_frustum_culling = false
@@ -1868,14 +1875,18 @@ func _ketika_mengubah_kode_objek() -> void:
 		thread.start(tmp_perintah.bind(edit_objek.get_node("kode_ubahan")), Thread.PRIORITY_NORMAL)
 func _ketika_mengganti_kode_objek(kode_pengganti : BlockCode) -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
-		edit_objek.get_node("kode_ubahan").block_script = kode_pengganti.block_script.duplicate(true)
+		# 15/11/24 :: animasi proses memuat kode
+		$proses_memuat/layar/animasi.play("tampilkan")
+		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.play("kuru_kuru")
+		await get_tree().create_timer(0.25).timeout
+		# FIXME : sinkronkan metadata kode ke pool
 		edit_objek.get_node("kode_ubahan").set_meta("id_aset", kode_pengganti.get_meta("id_aset"))
 		edit_objek.get_node("kode_ubahan").set_meta("kelas", kode_pengganti.get_meta("kelas"))
 		edit_objek.get_node("kode_ubahan").set_meta("author", kode_pengganti.get_meta("author"))
 		edit_objek.get_node("kode_ubahan").set_meta("versi", kode_pengganti.get_meta("versi"))
-		#editor_kode.switch_block_code_node(edit_objek.get_node("kode_ubahan"))
-		#editor_kode.save_script()
-		_ketika_mengubah_kode_objek()
+		# 16/11/24 :: proses blok kode di thread
+		var tmp_perintah := Callable(self, "_muat_pengganti_kode")
+		thread.start(tmp_perintah.bind(edit_objek.get_node("kode_ubahan"), kode_pengganti.block_script.duplicate(true)), Thread.PRIORITY_NORMAL)
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
@@ -2110,11 +2121,7 @@ func tampilkan_editor_kode() -> void:
 		$menu_utama/animasi.play("lipat")
 	$editor_kode/animasi.play("tampilkan")
 	# 15/11/24 :: animasi proses memuat kode
-	if $proses_memuat.visible:
-		$proses_memuat/layar/animasi.play("sembunyikan")
-		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.stop()
-	# 16/11/24 :: hentikan thread memuat kode
-	if thread.is_started(): thread.wait_to_finish()
+	_berhenti_memuat_kode()
 func buat_kode(nama_kelas : String = "objek") -> void:
 	if $editor_kode.visible:
 		for kelas in ProjectSettings.get_global_class_list():
@@ -2140,6 +2147,12 @@ func buat_kode(nama_kelas : String = "objek") -> void:
 func _ketika_menyimpan_kode(jalur_file) -> void:
 	#Panku.notify("Menyimpan kode : "+jalur_file)
 	$editor_kode/blok_kode.save_scene(jalur_file)
+func _berhenti_memuat_kode() -> void:
+	if $proses_memuat.visible:
+		$proses_memuat/layar/animasi.play("sembunyikan")
+		$proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat/AnimationPlayer.stop()
+	# 16/11/24 :: hentikan thread memuat kode
+	if thread.is_started(): thread.wait_to_finish()
 func tutup_editor_kode() -> void:
 	$editor_kode/blok_kode.switch_block_code_node(null)
 	# kalau bukan dalam permainan, tampilkan kembali menu utama

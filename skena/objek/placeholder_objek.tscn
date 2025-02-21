@@ -59,6 +59,14 @@ version = 0
 
 [node name="placeholder_objek" type="StaticBody3D" groups=["dapat_diedit"]]
 script = ExtResource("1_q8q8n")
+metadata/id_aset = "00003"
+metadata/author = "ProgrammerIndonesia44"
+metadata/setelan = {
+"ikon": null,
+"kode": "{}"
+}
+metadata/versi = 6
+metadata/id_kode = ""
 
 [node name="bentuk" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_kqjb5")
