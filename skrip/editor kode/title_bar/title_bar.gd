@@ -40,6 +40,7 @@ func block_script_selected(block_script: BlockScriptSerialization):
 
 	var select_index = _get_block_script_index(block_script)
 	# FIXME : kode_ubahan custom urutan ke 2 terhapus
+	# root.get_node("editor_kode/blok_kode/MarginContainer/HBoxContainer/ScriptVBox/HBoxContainer/TitleBar/dummy_script").get_children()
 	if _node_option_button.selected != select_index:
 		_node_option_button.select(select_index)
 
