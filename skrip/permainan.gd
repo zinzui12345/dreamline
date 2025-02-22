@@ -2572,6 +2572,11 @@ func _compile_blok_kode(data : String) -> BlockScriptSerialization:
 	return hasil_resource
 
 # fungsi lain
+func dapatkanPosisiObjek(cekobjek : Object) -> Vector3:
+	if cekobjek is Node3D:
+		return cekobjek.global_position
+	else:
+		return Vector3.ZERO
 func detikKeMenit(detik: int) -> String:
 	var menit = ceil(detik) / 60
 	var detik_tersisa = detik % 60

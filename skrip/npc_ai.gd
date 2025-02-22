@@ -323,7 +323,7 @@ func mati() -> void:
 ## debug ##
 func _input(_event : InputEvent) -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		if Input.is_action_just_pressed("daftar_pemain"): navigasi_ke(server.permainan.karakter.global_position)
+		if Input.is_action_just_pressed("daftar_pemain"): _diserang(server.permainan.get_node("../dunia/pemain/"+str(client.id_koneksi)), 7)
 
 # 26/10/24 :: Fungsi sintaks blok kode
 const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")
@@ -334,3 +334,20 @@ const Types = preload("res://skrip/editor kode/types/types.gd")
 func get_custom_class() -> String:	return "npc_ai"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("%karakter%")]
+static func setup_custom_blocks():
+	var _class_name = "npc_ai"
+	var block_list: Array[BlockDefinition] = []
+	var property_list: Array[Dictionary] = [
+		{
+			"name": "nyawa",
+			"type": TYPE_INT,
+		}
+	]
+	var property_settings = {
+		"nyawa":
+		{
+			"category": "%variabel%",
+			"default_set": 100,
+		}
+	}
+	BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)

@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_bkx7h")
-name = &"process"
+name = &"npc_ai_process"
 target_node_class = "npc_ai"
 description = "%deskripsi_ketika_proses%"
 category = "%siklus_server%"

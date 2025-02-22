@@ -157,6 +157,7 @@ t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemu
 %buat_kode_pengganti%,Buat Duplikat Kode,Add Code Override
 %siklus_server%,Siklus | Server,Lifecycle | Server
 %siklus_client%,Siklus | Client,Lifecycle | Client
+%siklus_karakter%,Siklus | Karakter,Lifecycle | Character
 %transformasi_posisi%,Transformasi | Posisi,Transform | Position
 %metode%,Metode,Methods
 %metode_objek%,Metode | Objek,Methods | Object
@@ -231,6 +232,8 @@ nama_metode,nama metode,method name
 %tunggu_node_siap,Tunggu hingga node dimulai,Await node ready
 %posisi_objek,Posisi Objek,Object Position
 %deskripsi_posisi_objek%,Posisi global objek pada dunia,Object global position in world space
+%dapatkan_posisi_objek ,dapatkan posisi objek ,get object position 
+%deskripsi_dapatkan_posisi_objek%,Dapatkan nilai posisi dari objek tertentu,Get position value from an object
 %pindahkan_objek ,Pindahkan Objek ,Move Object 
 %deskripsi_pindahkan_objek%,Memindahkan objek sejauh [i]arah[/i] tertentu,Move object by [i]direction[/i]
 %posisi_karakter,Posisi Karakter,Character Position
@@ -266,6 +269,12 @@ terbuka,Terbuka,Is open
 %deskripsi_tutup_pintu%,Menutup pintu,Close the door
 ,,
 # blok kode karakter,,
+nyawa,nyawa,health
+Nyawa,Nyawa,Health
+Set Nyawa to ,,Set Health to 
+Change Nyawa by ,,Change Health by 
+penyerang,penyerang,attacker
+damage_serangan,damage_serangan,attack_damage
 %navigasi_karakter_ke ,Navigasi ke ,Navigate to 
  %navigasi_karakter_sambil_berlari% , sambil berlari , with running 
 %deskripsi_navigasi_karakter%,Mengarahkan karakter untuk berjalan atau berlari ke posisi tertentu,Navigate character to walk or run into defined position
@@ -273,6 +282,9 @@ terbuka,Terbuka,Is open
 %deskripsi_karakter_menavigasi%,Nilai kondisi bila karakter bergerak ke posisi tertentu (menavigasi),Character navigation state
 %arahkan_karakter_ke ,Lihat ke ,Look at 
 %deskripsi_arahkan_karakter%,Mengatur arah karakter ke posisi tertentu,Make character look to a defined position
+%ketika_karakter_diserang ,Ketika Diserang ,On Attacked by 
+ %karakter_diserang_dengan_damage% , sebanyak , with damage 
+%deskripsi_npc_diserang%,Blok yang terpasang akan dieksekusi pada saat karakter diserang,Attached blocks will be executed when character get attacked
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?

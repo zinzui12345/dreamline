@@ -57,6 +57,10 @@ static func get_general_blocks() -> Array[Block]:
 	for block_name in [&"for", &"while", &"break", &"continue"]: # &"await_node_ready"
 		block = Util.instantiate_block_by_name(block_name)
 		block_list.append(block)
+	
+	# Transform
+	block = Util.instantiate_block_by_name(&"get_objek_position")
+	block_list.append(block)
 
 	# Logs
 	for block_name in [&"print", &"message", &"notify"]:
@@ -84,13 +88,14 @@ static func get_general_blocks() -> Array[Block]:
 		block_list.append(block)
 
 	# Logic
-	for block_name in [&"if", &"else_if", &"else", &"compare", &"and", &"or", &"not"]:
+	for block_name in [&"if", &"else_if", &"else", &"compare", &"compare_int", &"and", &"or", &"not"]:
 		block = Util.instantiate_block_by_name(block_name)
 		block_list.append(block)
 
 	# Input
 	block = Util.instantiate_block_by_name(&"is_input_actioned")
 	block_list.append(block)
+	
 
 	# Sounds
 	#for block_name in [&"load_sound", &"play_sound", &"pause_continue_sound", &"stop_sound"]:

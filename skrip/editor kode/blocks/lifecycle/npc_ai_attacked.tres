@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://b4kllw3kjnbxe"]
+
+[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_dgsq4"]
+
+[resource]
+script = ExtResource("1_dgsq4")
+name = &"npc_ai_attacked"
+target_node_class = "npc_ai"
+description = "%deskripsi_npc_diserang%"
+category = "%siklus_karakter%"
+type = 1
+variant_type = 0
+display_template = "%ketika_karakter_diserang [penyerang: OBJECT] %karakter_diserang_dengan_damage% [damage_serangan: INT]"
+code_template = "func _diserang(penyerang, damage_serangan):"
+defaults = {}
+signal_name = ""
+scope = ""
