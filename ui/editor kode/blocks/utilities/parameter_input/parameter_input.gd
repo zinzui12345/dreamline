@@ -20,6 +20,9 @@ var option: bool = false
 # Text
 @onready var _text_input := %TextInput
 @onready var _line_edit := %LineEdit
+# Audio
+@onready var _audio_input := %AudioInput
+@onready var _audio_file_path := %AudioFilePath
 # Color
 @onready var _color_input := %ColorInput
 # Option Dropdown
@@ -40,6 +43,7 @@ var option: bool = false
 # Used to submit the text when losing focus:
 @onready var _last_submitted_text = {
 	_line_edit: _line_edit.text,
+	_audio_file_path: _audio_file_path.text,
 	_x_line_edit: _x_line_edit.text,
 	_y_line_edit: _y_line_edit.text,
 	_xx_line_edit: _xx_line_edit.text,
@@ -60,6 +64,8 @@ func set_raw_input(raw_input):
 		return
 
 	match variant_type:
+		257: # AUDIO
+			_audio_file_path.text = "" if raw_input == null else str(raw_input)
 		TYPE_COLOR:
 			_color_input.color = raw_input
 			_update_panel_bg_color(raw_input)
@@ -88,6 +94,8 @@ func get_raw_input():
 		return OptionData.new(options, _option_input.selected)
 
 	match variant_type:
+		257: # AUDIO
+			return _audio_file_path.text 
 		TYPE_COLOR:
 			return _color_input.color
 		TYPE_VECTOR2:
@@ -153,6 +161,8 @@ func get_string() -> String:
 			return "Vector2%s" % str(input)
 		TYPE_VECTOR3:
 			return "Vector3%s" % str(input)
+		257: # AUDIO
+			return "%s" % input.replace("\\", "\\\\").replace("'", "\\'")
 		TYPE_COLOR:
 			return "Color%s" % str(input)
 		TYPE_OBJECT:
@@ -182,7 +192,6 @@ func _validate_and_submit_edit_text(line_edit: Node, type: Variant.Type):
 
 func _on_line_edit_text_submitted(_new_text):
 	_validate_and_submit_edit_text(_line_edit, variant_type)
-
 func _on_line_edit_focus_exited():
 	_validate_and_submit_edit_text(_line_edit, variant_type)
 
@@ -209,6 +218,8 @@ func _update_visible_input():
 		_switch_input(_option_input)
 	else:
 		match variant_type:
+			257: # AUDIO
+				_switch_input(_audio_input)
 			TYPE_COLOR:
 				_switch_input(_color_input)
 			TYPE_VECTOR2:
@@ -225,6 +236,17 @@ func _switch_input(node: Node):
 	for c in _input_switcher.get_children():
 		c.visible = c == node
 
+func _on_audio_input_path_changed(path):
+	#Panku.notify(path)
+	if ResourceLoader.exists(path):
+		%PlayAudio.disabled = false
+	else:
+		%PlayAudio.disabled = true
+	_validate_and_submit_edit_text(_audio_file_path, 257)
+func _on_select_audio_file():
+	server.permainan._ketika_menelusuri_audio(_audio_file_path)
+func _on_play_audio_file():
+	server.permainan._ketika_memutar_audio(_audio_file_path.text)
 
 func _on_color_input_color_changed(color):
 	_update_panel_bg_color(color)

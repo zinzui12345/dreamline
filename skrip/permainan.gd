@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 22/02/25 Early Access"
+const versi = "Dreamline v0.4.4 26/02/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -90,6 +90,7 @@ var _touchpad_disentuh : bool = false
 var _arah_sentuhan_touchpad : Vector2
 var _timer_kirim_suara := Timer.new()
 var _timer_tampilkan_pesan := Timer.new()
+var _node_pilih_audio : NodePath # Node yang menerima jalur file ketika dialog buka audio ditampilkan
 var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_1:
@@ -1874,6 +1875,7 @@ func _ketika_mengubah_kode_objek() -> void:
 		var tmp_perintah := Callable(self, "_muat_kode")
 		thread.start(tmp_perintah.bind(edit_objek.get_node("kode_ubahan")), Thread.PRIORITY_NORMAL)
 func _ketika_mengganti_kode_objek(kode_pengganti : BlockCode) -> void:
+	_ketika_menghentikan_audio()
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
 		# 15/11/24 :: animasi proses memuat kode
 		$proses_memuat/layar/animasi.play("tampilkan")
@@ -2154,6 +2156,7 @@ func _berhenti_memuat_kode() -> void:
 	# 16/11/24 :: hentikan thread memuat kode
 	if thread.is_started(): thread.wait_to_finish()
 func tutup_editor_kode() -> void:
+	_ketika_menghentikan_audio()
 	$editor_kode/blok_kode.switch_block_code_node(null)
 	# kalau bukan dalam permainan, tampilkan kembali menu utama
 	if !is_instance_valid(karakter):
@@ -2161,6 +2164,21 @@ func tutup_editor_kode() -> void:
 	#$blok_kode/animasi.play("sembunyikan")
 	$editor_kode/animasi.play("sembunyikan")
 	$editor_kode/blok_kode._save_node_button.visible = false
+func _ketika_menelusuri_audio(node_penerima : Node) -> void:
+	_node_pilih_audio = node_penerima.get_path()
+	$editor_kode/dialog_buka_audio.show()
+func _ketika_memilih_audio(jalur : String) -> void:
+	if _node_pilih_audio != null and get_node(_node_pilih_audio) is LineEdit:
+		get_node(_node_pilih_audio).text = jalur
+		get_node(_node_pilih_audio).emit_signal("text_changed", jalur)
+		_node_pilih_audio = ""
+func _ketika_memutar_audio(jalur_file_audio : String) -> void:
+	if ResourceLoader.exists(jalur_file_audio):
+		$editor_kode/pemutar_file_audio.stream = load(jalur_file_audio)
+		$editor_kode/pemutar_file_audio.play()
+func _ketika_menghentikan_audio() -> void:
+	if $editor_kode/pemutar_file_audio.playing:
+		$editor_kode/pemutar_file_audio.stop()
 func tampilkan_dialog(file_dialog : DialogueResource, id_dialog) -> void:
 	var penampil_dialog : Node = load("res://ui/dialog.tscn").instantiate()
 	$dialog.add_child(penampil_dialog)

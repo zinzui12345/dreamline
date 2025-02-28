@@ -8556,11 +8556,23 @@ layout_mode = 1
 initial_position = 1
 size = Vector2i(512, 320)
 popup_window = true
-ok_button_text = "%simpan"
-cancel_button_text = "%batal"
+ok_button_text = "%simpan%"
+cancel_button_text = "%batal%"
 access = 1
 root_subfolder = "user://aset/kode"
 filters = PackedStringArray("*.scn")
+
+[node name="dialog_buka_audio" type="FileDialog" parent="editor_kode"]
+title = "Open a File"
+initial_position = 1
+size = Vector2i(400, 256)
+ok_button_text = "Open"
+cancel_button_text = "%batal%"
+file_mode = 0
+root_subfolder = "audio"
+filters = PackedStringArray("*.ogg", "*.mp3", "*.wav")
+
+[node name="pemutar_file_audio" type="AudioStreamPlayer" parent="editor_kode"]
 
 [node name="animasi" type="AnimationPlayer" parent="editor_kode"]
 libraries = {
@@ -9499,6 +9511,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_log" to="." method="_buka_log"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_konsol" to="." method="_tampilkan_konsol"]
 [connection signal="file_selected" from="editor_kode/dialog_simpan_kode" to="." method="_ketika_menyimpan_kode"]
+[connection signal="file_selected" from="editor_kode/dialog_buka_audio" to="." method="_ketika_memilih_audio"]
 [connection signal="tutup_panel" from="blok_kode/panel_kode" to="." method="tutup_editor_kode"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]

@@ -331,12 +331,24 @@ const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_ca
 const BlockDefinition = preload("res://skrip/editor kode/code_generation/block_definition.gd")
 const Types = preload("res://skrip/editor kode/types/types.gd")
 
-func get_custom_class() -> String:	return "npc_ai"
+static func get_custom_class() -> String:	return "npc_ai"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("%karakter%")]
-static func setup_custom_blocks():
+func setup_custom_blocks():
 	var _class_name = "npc_ai"
 	var block_list: Array[BlockDefinition] = []
+	
+	#if get_node_or_null("bunyi") != null:
+		#var block_definition: BlockDefinition = BlockDefinition.new()
+		#block_definition.name = &"play_sound"
+		#block_definition.target_node_class = _class_name
+		#block_definition.category = "%input%"
+		#block_definition.type = Types.BlockType.STATEMENT
+		##block_definition.variant_type = TYPE_STRING
+		#block_definition.display_template = "putar suara {nilai: AUDIO}"
+		#block_definition.code_template = "$bunyi.stream = load(\"{nilai}\")\n$bunyi.play()"
+		#block_list.append(block_definition)
+	
 	var property_list: Array[Dictionary] = [
 		{
 			"name": "nyawa",

@@ -29,6 +29,14 @@ const _FALLBACK_CHANGE_FOR_TYPE = {
 }
 
 const _SETTINGS_FOR_CLASS_PROPERTY = {
+	#"npc_ai":
+	#{
+		#"nyawa":
+		#{
+			#"category": "%variabel%",
+			#"default_set": 100,
+		#}
+	#},
 	#"Node3D":
 	#{
 		#"rotation_degrees":

@@ -20,7 +20,7 @@ var scroll_tween: Tween
 var _variable_category_display: VariableCategoryDisplay = null
 
 
-func block_script_selected(block_script: BlockScriptSerialization):
+func block_script_selected(block_script: BlockScriptSerialization, script_node = null):
 	if not block_script:
 		reset_picker()
 		return
@@ -29,7 +29,11 @@ func block_script_selected(block_script: BlockScriptSerialization):
 
 	for class_dict in ProjectSettings.get_global_class_list():
 		if class_dict.class == block_script.script_inherits:
-			var script = load(class_dict.path)
+			var script
+			if script_node != null and script_node is Node:
+				script = script_node
+			else:
+				script = load(class_dict.path)
 			if script.has_method("get_custom_categories"):
 				categories_to_add = script.get_custom_categories()
 			if script.has_method("setup_custom_blocks"):

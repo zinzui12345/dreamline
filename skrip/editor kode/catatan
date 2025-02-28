@@ -48,3 +48,5 @@ selain itu blok dan properti berdasarkan kelas dapat diatur di _SETTINGS_FOR_CLA
 tipe data dapat ditambahkan pada /skrip/editor kode/types/types.gd dan /ui/editor kode/blocks/utilities/parameter_input/parameter_input.tscn
 
 daftar blok berdasarkan nama blok dan kategori diatur di fungsi get_general_blocks() pada /skrip/editor kode/picker/categories/category_factory.gd
+
+tipe data untuk resource atau audio (TYPE_RESOURCE/TYPE_AUDIO) tidak tersedia, jadi untuk resource audio menggunakan bilangan INT 257

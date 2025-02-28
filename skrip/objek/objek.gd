@@ -208,47 +208,50 @@ const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_ca
 const BlockDefinition = preload("res://skrip/editor kode/code_generation/block_definition.gd")
 const Types = preload("res://skrip/editor kode/types/types.gd")
 
-func get_custom_class() -> String:	return "objek"
+static func get_custom_class() -> String:	return "objek"
 static func get_custom_categories() -> Array[BlockCategory]:
 	return [BlockCategory.new("Objek")]
-#static func setup_custom_blocks():
-	#var _class_name = "objek"
-	#var block_list: Array[BlockDefinition] = []
-	#
-	#var block_definition: BlockDefinition = BlockDefinition.new()
-	#block_definition.name = &"fungsi_mulai"
-	#block_definition.target_node_class = _class_name
-	#block_definition.category = "%siklus%"
-	#block_definition.type = Types.BlockType.ENTRY
-	#block_definition.display_template = "mulai"
-	#block_definition.description = "Fungsi yang dipanggil pada saat objek ditambahkan ke dunia."
-	#block_definition.code_template = "func mulai():"
-	#block_list.append(block_definition)
-	#
+func setup_custom_blocks() -> void:
+	var _class_name = "objek"
+	var block_list: Array[BlockDefinition] = []
+	
+	# 28/02/25 :: cari node suara/bunyi
+	for node in self.get_children():
+		if node is AudioStreamPlayer3D:
+			var block_definition: BlockDefinition = BlockDefinition.new()
+			block_definition.name = &"play_sound_" + node.name
+			block_definition.target_node_class = _class_name
+			block_definition.category = "%input%"
+			block_definition.type = Types.BlockType.STATEMENT
+			#block_definition.variant_type = TYPE_STRING
+			block_definition.display_template = "putar suara {nilai: AUDIO} pada " + node.name
+			block_definition.code_template = "$bunyi.play()"
+			block_list.append(block_definition)
+	
 	#BlocksCatalog.add_custom_blocks(_class_name, block_list)
-	#
-	#var property_list: Array[Dictionary] = [
-		#{
-			#"name": "radius_keterlihatan",
-			#"type": TYPE_INT,
-		#},
-		#{
-			#"name": "jarak_render",
-			#"type": TYPE_INT,
-		#}
-	#]
-	#egahlihskawh
-	#var property_settings = {
-		#"radius_keterlihatan":
-		#{
-			#"category": "%variabel%",
-			#"default_set": 50,
-		#},
-		#"jarak_render":
-		#{
-			#"category": "%variabel%",
-			#"default_set": 10,
-		#}
-	#}
-#
-	#BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
+	
+	var property_list: Array[Dictionary] = [
+		{
+			"name": "radius_keterlihatan",
+			"type": TYPE_INT,
+		},
+		{
+			"name": "jarak_render",
+			"type": TYPE_INT,
+		}
+	]
+	
+	var property_settings = {
+		"radius_keterlihatan":
+		{
+			"category": "%variabel%",
+			"default_set": 50,
+		},
+		"jarak_render":
+		{
+			"category": "%variabel%",
+			"default_set": 10,
+		}
+	}
+
+	BlocksCatalog.add_custom_blocks(_class_name, block_list, property_list, property_settings)
