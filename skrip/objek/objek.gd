@@ -99,6 +99,19 @@ func pindahkan(arah : Vector3) -> void:
 		[ arah ]
 	)
 	set_indexed("global_transform:origin", posisi_perpindahan)
+# fungsi untuk memutar audio pada node audio yang terdapat pada objek
+func putar_audio(nama_node_audio : String, jalur_file_audio : String, putar : bool) -> void:
+	if get_node_or_null(nama_node_audio) != null and get_node(nama_node_audio) is AudioStreamPlayer3D:
+		if putar:
+			if ResourceLoader.exists(jalur_file_audio):
+				get_node(nama_node_audio).stream = load(jalur_file_audio)
+				get_node(nama_node_audio).play()
+			else:
+				Panku.notify("404 : Audio tak ditemukan [%s]" % [jalur_file_audio])
+		else:
+			get_node(nama_node_audio).stop()
+	else:
+		Panku.notify("404 : Node tak ditemukan [%s]" % [nama_node_audio])
 # fungsi untuk menghapus objek, menghilangkan dari dunia dan server
 func hilangkan() -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -216,7 +229,7 @@ func setup_custom_blocks() -> void:
 	var block_list: Array[BlockDefinition] = []
 	
 	# 28/02/25 :: cari node suara/bunyi
-	for node in self.get_children():
+	for node in get_children():
 		if node is AudioStreamPlayer3D:
 			var block_definition: BlockDefinition = BlockDefinition.new()
 			block_definition.name = &"play_sound_" + node.name
@@ -225,7 +238,7 @@ func setup_custom_blocks() -> void:
 			block_definition.type = Types.BlockType.STATEMENT
 			#block_definition.variant_type = TYPE_STRING
 			block_definition.display_template = "putar suara {nilai: AUDIO} pada " + node.name
-			block_definition.code_template = "$bunyi.play()"
+			block_definition.code_template = "putar_audio(\""+node.name+"\", \"{nilai}\", true)"
 			block_list.append(block_definition)
 	
 	#BlocksCatalog.add_custom_blocks(_class_name, block_list)

@@ -86,7 +86,8 @@ const _SETTINGS_FOR_CLASS_PROPERTY = {
 
 static var _catalog: Dictionary
 static var _by_class_name: Dictionary
-
+static var _custom_blocks: Array[String]
+static var _current_class: String
 
 static func _setup_definitions_from_files():
 	var definition_files = Util.get_files_in_dir_recursive(_BLOCKS_PATH, "*.tres")
@@ -255,7 +256,10 @@ static func add_custom_blocks(
 	if not _class_name in _by_class_name:
 		_by_class_name[_class_name] = {}
 
+	_current_class = _class_name
+
 	for block_definition in block_definitions:
+		_custom_blocks.append(block_definition.name)
 		_catalog[block_definition.name] = block_definition
 		_by_class_name[_class_name][block_definition.name] = block_definition
 

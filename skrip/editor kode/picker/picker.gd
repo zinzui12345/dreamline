@@ -1,6 +1,7 @@
 @tool
 extends MarginContainer
 
+const BlocksCatalog = preload("res://skrip/editor kode/code_generation/blocks_catalog.gd")
 const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")
 const BlockCategoryButtonScene = preload("res://ui/editor kode/picker/categories/block_category_button.tscn")
 const BlockCategoryButton = preload("res://skrip/editor kode/picker/categories/block_category_button.gd")
@@ -23,6 +24,10 @@ var _variable_category_display: VariableCategoryDisplay = null
 func block_script_selected(block_script: BlockScriptSerialization, script_node = null):
 	if not block_script:
 		reset_picker()
+		for custom_block in BlocksCatalog._custom_blocks:
+			BlocksCatalog._catalog.erase(custom_block)
+			BlocksCatalog._by_class_name[BlocksCatalog._current_class].erase(custom_block)
+			BlocksCatalog._custom_blocks.erase(custom_block)
 		return
 
 	var categories_to_add: Array[BlockCategory] = []

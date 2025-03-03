@@ -166,7 +166,7 @@ func switch_block_code_node(block_code_node: BlockCode):
 	if block_code_node != null:
 		_picker.block_script_selected(block_script, block_code_node.get_parent())
 	else:
-		_picker.block_script_selected(block_script, block_code_node)
+		_picker.block_script_selected(block_script)
 	_title_bar.block_code_selected(block_code_node)
 	_title_bar.block_script_selected(block_script)
 	_block_canvas.block_script_selected(block_script, block_code_node)
