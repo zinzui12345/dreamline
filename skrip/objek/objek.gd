@@ -281,10 +281,10 @@ func setup_custom_blocks() -> void:
 		var block_definition: BlockDefinition = BlockDefinition.new()
 		block_definition.name = &"play_sound_" + node
 		block_definition.target_node_class = _class_name
-		block_definition.category = "%input%"
+		block_definition.category = "%suara%"
 		block_definition.type = Types.BlockType.STATEMENT
 		#block_definition.variant_type = TYPE_STRING
-		block_definition.display_template = "putar suara {nilai: AUDIO} pada " + node
+		block_definition.display_template = "%putar_suara {nilai: AUDIO} " + TranslationServer.translate("%putar_suara_x_pada_node%") + " $" + node
 		block_definition.code_template = "putar_audio(\""+node+"\", \"{nilai}\", true)"
 		block_list.append(block_definition)
 	

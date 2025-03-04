@@ -61,7 +61,7 @@ const BUILTIN_CATEGORIES_PROPS: Dictionary = {
 		"color": Color("03aa74"),
 		"order": 62,
 	},
-	"Sounds":
+	"%suara%":
 	{
 		"color": Color("e30fc0"),
 		"order": 70,

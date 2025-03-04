@@ -7,7 +7,8 @@ Cross-Platform Multiplayer Game using Godot 4
 - [x] Character Customization
 - [x] Voice Chat
 - [x] Mobile VR
-- [ ] Block Based Coding
+- [x] Block Based Coding
+- [ ] Publict Server
 
 **System Requirements**:
 * Desktop
