@@ -17,6 +17,24 @@ var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 #const abaikan_transformasi = true			# hanya tambahkan jika objek tidak ingin diubah transformasinya dengan mode edit
 #const abaikan_occlusion_culling = true		# hanya tambahkan jika objek tidak ingin dikalkulasi pada occlusion culling
 
+@export var audio : String :						# jika terdapat node audio
+	set(data):
+		var array_audio = JSON.parse_string(data)
+		if array_audio != null and array_audio is Dictionary:
+			for _node_audio_ in array_audio:
+				if get_node_or_null(_node_audio_) != null and get_node(_node_audio_) is AudioStreamPlayer3D:
+					if array_audio[_node_audio_]["berbunyi"]:
+						if ResourceLoader.exists(array_audio[_node_audio_]["jalur_audio"]):
+							get_node(_node_audio_).stream = load(array_audio[_node_audio_]["jalur_audio"])
+							get_node(_node_audio_).play(array_audio[_node_audio_]["posisi_durasi"])
+						else:
+							Panku.notify("404 : Audio tak ditemukan [%s]" % [array_audio[_node_audio_]["jalur_audio"]])
+					else:
+						get_node(_node_audio_).stop()
+				else:
+					Panku.notify("404 : Node tak ditemukan [%s]" % [_node_audio_])
+		audio = data
+@export var node_audio : Array[String]				# daftar node audio yang tersedia
 @export var efek_cahaya : GlowBorderEffectObject	# node efek garis cahaya ketika entitas di-fokus / highlight
 @export var wilayah_render : AABB :					# area batas culling
 	set(aabb):
@@ -85,6 +103,12 @@ func _setup() -> void:
 			)
 		queue_free()
 	else:
+		# 03/03/25 :: buat daftar node suara/bunyi
+		for node in get_children():
+			if node is AudioStreamPlayer3D:
+				node_audio.append(node.name)
+		
+		# panggil fungsi mulai
 		mulai()
 
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
@@ -100,18 +124,19 @@ func pindahkan(arah : Vector3) -> void:
 	)
 	set_indexed("global_transform:origin", posisi_perpindahan)
 # fungsi untuk memutar audio pada node audio yang terdapat pada objek
-func putar_audio(nama_node_audio : String, jalur_file_audio : String, putar : bool) -> void:
-	if get_node_or_null(nama_node_audio) != null and get_node(nama_node_audio) is AudioStreamPlayer3D:
-		if putar:
-			if ResourceLoader.exists(jalur_file_audio):
-				get_node(nama_node_audio).stream = load(jalur_file_audio)
-				get_node(nama_node_audio).play()
-			else:
-				Panku.notify("404 : Audio tak ditemukan [%s]" % [jalur_file_audio])
-		else:
-			get_node(nama_node_audio).stop()
-	else:
-		Panku.notify("404 : Node tak ditemukan [%s]" % [nama_node_audio])
+func putar_audio(nama_node_audio : String, jalur_file_audio : String, putar : bool, posisi_durasi : float = 0.0) -> void:
+	var _data_audio_ = JSON.parse_string(dapatkan_data_audio())
+	if _data_audio_ != null and _data_audio_ is Dictionary:
+		if _data_audio_.get(nama_node_audio) != null:
+			_data_audio_[nama_node_audio]["berbunyi"] = putar
+			_data_audio_[nama_node_audio]["jalur_audio"] = jalur_file_audio
+			_data_audio_[nama_node_audio]["posisi_durasi"] = posisi_durasi
+	
+	server.fungsikan_objek(
+		name,
+		"berbunyi",
+		[ JSON.stringify(_data_audio_) ]
+	)
 # fungsi untuk menghapus objek, menghilangkan dari dunia dan server
 func hilangkan() -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -157,6 +182,13 @@ func _process(_delta : float) -> void:
 		if cek_properti["posisi"] != position:	perubahan_kondisi.append(["position", position])
 		if cek_properti["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		if cek_properti["jarak_render"] != jarak_render:	perubahan_kondisi.append(["jarak_render", jarak_render])
+		
+		# cek pemutaran audio
+		if !node_audio.is_empty():
+			if cek_properti.get("audio") == null:	cek_properti["audio"] = dapatkan_data_audio()
+			
+			if cek_properti["audio"] != dapatkan_data_audio():
+				perubahan_kondisi.append(["audio", dapatkan_data_audio()])
 		
 		# cek apakah kode berubah (jika ada)
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
@@ -207,6 +239,10 @@ func _process(_delta : float) -> void:
 		cek_properti["rotasi"] = rotation
 		cek_properti["jarak_render"] = jarak_render
 		
+		# simpan pemutaran audio untuk di-cek lagi
+		if !node_audio.is_empty():
+			cek_properti["audio"] = dapatkan_data_audio()
+		
 		# simpan perubahan kode untuk di-cek lagi
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
 			cek_properti["kode"] = $kode_ubahan.block_script.generated_script
@@ -214,6 +250,18 @@ func _process(_delta : float) -> void:
 		# simpan perubahan kondisi properti kustom untuk di-cek lagi
 		for p in sinkron_kondisi.size():
 			cek_properti[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
+
+# 03/03/25 :: fungsi untuk mendapatkan data audio dari node audio
+func dapatkan_data_audio() -> String:
+	var gabung_data : Dictionary
+	for node_ in node_audio:
+		var node_audio_ : AudioStreamPlayer3D = get_node(node_)
+		gabung_data[node_] = {
+			"berbunyi":			node_audio_.playing,
+			"jalur_audio":		node_audio_.stream.resource_path if node_audio_.stream != null else "",
+			"posisi_durasi":	node_audio_.get_playback_position()
+		}
+	return JSON.stringify(gabung_data)
 
 # 26/10/24 :: Fungsi sintaks blok kode
 const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")
@@ -228,18 +276,17 @@ func setup_custom_blocks() -> void:
 	var _class_name = "objek"
 	var block_list: Array[BlockDefinition] = []
 	
-	# 28/02/25 :: cari node suara/bunyi
-	for node in get_children():
-		if node is AudioStreamPlayer3D:
-			var block_definition: BlockDefinition = BlockDefinition.new()
-			block_definition.name = &"play_sound_" + node.name
-			block_definition.target_node_class = _class_name
-			block_definition.category = "%input%"
-			block_definition.type = Types.BlockType.STATEMENT
-			#block_definition.variant_type = TYPE_STRING
-			block_definition.display_template = "putar suara {nilai: AUDIO} pada " + node.name
-			block_definition.code_template = "putar_audio(\""+node.name+"\", \"{nilai}\", true)"
-			block_list.append(block_definition)
+	# 28/02/25 :: buat blok kode node suara/bunyi
+	for node in node_audio:
+		var block_definition: BlockDefinition = BlockDefinition.new()
+		block_definition.name = &"play_sound_" + node
+		block_definition.target_node_class = _class_name
+		block_definition.category = "%input%"
+		block_definition.type = Types.BlockType.STATEMENT
+		#block_definition.variant_type = TYPE_STRING
+		block_definition.display_template = "putar suara {nilai: AUDIO} pada " + node
+		block_definition.code_template = "putar_audio(\""+node+"\", \"{nilai}\", true)"
+		block_list.append(block_definition)
 	
 	#BlocksCatalog.add_custom_blocks(_class_name, block_list)
 	

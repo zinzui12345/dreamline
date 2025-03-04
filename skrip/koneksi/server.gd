@@ -13,7 +13,7 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = &"pulau"
+var map : StringName = &"empty"
 var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -892,7 +892,7 @@ func _pemain_terputus(id_pemain):
 				pool_objek[nama_objek]["id_pengubah"],
 				nama_objek,
 				[
-					["kondisi", parameter[0]]
+					["audio", parameter[0]]
 				]
 			)
 			return
