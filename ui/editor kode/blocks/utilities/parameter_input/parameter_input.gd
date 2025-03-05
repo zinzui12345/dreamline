@@ -66,6 +66,7 @@ func set_raw_input(raw_input):
 	match variant_type:
 		257: # AUDIO
 			_audio_file_path.text = "" if raw_input == null else str(raw_input)
+			_on_audio_input_path_changed(_audio_file_path.text)
 		TYPE_COLOR:
 			_color_input.color = raw_input
 			_update_panel_bg_color(raw_input)
@@ -237,7 +238,7 @@ func _switch_input(node: Node):
 		c.visible = c == node
 
 func _on_audio_input_path_changed(path):
-	#Panku.notify(path)
+	#Panku.notify(path) # FIXME : fungsi ini nggak kepanggil pada saat memuat blok
 	if ResourceLoader.exists(path):
 		%PlayAudio.disabled = false
 	else:
