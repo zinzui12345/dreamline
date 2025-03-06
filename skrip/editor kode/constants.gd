@@ -56,7 +56,7 @@ const BUILTIN_CATEGORIES_PROPS: Dictionary = {
 		"color": Color("03aa74"),
 		"order": 61,
 	},
-	"Graphics | Animation":
+	"%animasi%":
 	{
 		"color": Color("03aa74"),
 		"order": 62,

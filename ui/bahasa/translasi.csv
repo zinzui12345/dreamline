@@ -159,6 +159,7 @@ t7e680ad2a4,untuk menambah atau mengubah blok kode objek` gunakan mode edit kemu
 %siklus_client%,Siklus | Client,Lifecycle | Client
 %siklus_karakter%,Siklus | Karakter,Lifecycle | Character
 %transformasi_posisi%,Transformasi | Posisi,Transform | Position
+%animasi%,Animasi,Animation
 %suara%,Suara,Sounds
 %metode%,Metode,Methods
 %metode_objek%,Metode | Objek,Methods | Object
@@ -241,8 +242,12 @@ nama_metode,nama metode,method name
 %deskripsi_posisi_karakter%,Posisi global karakter pada dunia,Character global position in world space
 %posisi_navigasi_karakter,Posisi Navigasi Karakter,Character Navigation Position
 %deskripsi_posisi_navigasi_karakter%,Posisi global navigasi karakter pada dunia,Character navigation global position in world space
+%putar_animasi ,Putar Animasi ,Play Animation 
+%putar_animasi_x_pada_node%,pada node,on node
+%deskripsi_putar_animasi%,Memutar animasi yang tersedia pada node,Play available animations on node
 %putar_suara ,Putar Audio ,Play Audio 
 %putar_suara_x_pada_node%,pada node,on node
+%deskripsi_putar_suara%,Memutar file audio tertentu pada node,Play any audio file on node
 %angka_desimal_acak ,Bilangan desimal acak di antara ,Random floating point number between 
 %deskripsi_angka_desimal_acak%,Menghasilkan bilangan desimal acak di antara kedua nilai yang ditentukan,Generate a random floating point number between [i]from[/i] and [i]to[/i] inclusively
 %angka_bulat_acak ,Bilangan bulat acak di antara ,Random integer number between 

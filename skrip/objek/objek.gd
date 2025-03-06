@@ -280,6 +280,7 @@ func setup_custom_blocks() -> void:
 	for node in node_audio:
 		var block_definition: BlockDefinition = BlockDefinition.new()
 		block_definition.name = &"play_sound_" + node
+		block_definition.description = "%deskripsi_putar_suara%"
 		block_definition.target_node_class = _class_name
 		block_definition.category = "%suara%"
 		block_definition.type = Types.BlockType.STATEMENT

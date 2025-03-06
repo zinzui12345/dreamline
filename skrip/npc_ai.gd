@@ -64,6 +64,8 @@ enum varian_kondisi {
 @export var kelompok := grup.netral
 @export var kecepatan_gerak : float = 2
 
+@export var animasi : String						# jika terdapat node animasi
+@export var node_animasi : Array					# daftar node animasi yang tersedia
 @export var wilayah_render : AABB :					# area batas culling
 	set(aabb):
 		if is_inside_tree():
@@ -152,6 +154,12 @@ func _setup() -> void:
 		queue_free()
 	else:
 		model = get_node_or_null("model")
+		if model != null:
+			for node in model.get_children():
+				if node is AnimationPlayer:
+					node_animasi.append(["model/" + node.name, "AnimationPlayer"])
+				elif node is AnimationTree:
+					node_animasi.append(["model/" + node.name, "AnimationTree"])
 		set("arah_pandangan", arah_pandangan)
 		navigasi = $navigasi
 		navigasi.avoidance_enabled = true
@@ -185,6 +193,10 @@ func lihat_ke(posisi : Vector3):
 		model.look_at(posisi, Vector3.UP, true)
 		model.rotation.x = 0
 		arah_pandangan = model.rotation.y
+
+# putar animasi tertentu
+func putar_animasi(jalur_node_animasi : String, nama_animasi : String, putar : bool) -> void:
+	pass
 
 # ketika diserang dengan nilai serangan tertentu
 func _diserang(_penyerang : Node3D, _damage_serangan : int) -> void:
@@ -338,16 +350,24 @@ func setup_custom_blocks():
 	var _class_name = "npc_ai"
 	var block_list: Array[BlockDefinition] = []
 	
-	#if get_node_or_null("bunyi") != null:
-		#var block_definition: BlockDefinition = BlockDefinition.new()
-		#block_definition.name = &"play_sound"
-		#block_definition.target_node_class = _class_name
-		#block_definition.category = "%input%"
-		#block_definition.type = Types.BlockType.STATEMENT
-		##block_definition.variant_type = TYPE_STRING
-		#block_definition.display_template = "putar suara {nilai: AUDIO}"
-		#block_definition.code_template = "$bunyi.stream = load(\"{nilai}\")\n$bunyi.play()"
-		#block_list.append(block_definition)
+	# 06/03/25 :: buat blok kode node animasi
+	for data_node in node_animasi:
+		if data_node[1] == "AnimationPlayer":
+			var block_definition: BlockDefinition = BlockDefinition.new()
+			var _node_animasi_ = get_node(data_node[0])
+			
+			block_definition.name = &"play_animation_" + _node_animasi_.name
+			block_definition.description = "%deskripsi_putar_animasi%"
+			block_definition.target_node_class = _class_name
+			block_definition.category = "%animasi%"
+			block_definition.type = Types.BlockType.STATEMENT
+			block_definition.display_template = "%putar_animasi {animasi: OPTION} " + TranslationServer.translate("%putar_animasi_x_pada_node%") + " $" + data_node[0]
+			block_definition.code_template = "putar_animasi(\""+data_node[0]+"\", \"{animasi}\", true)"
+			block_definition.defaults = {
+				"animasi": OptionData.new(_node_animasi_.get_animation_list())
+			}
+			
+			block_list.append(block_definition)
 	
 	var property_list: Array[Dictionary] = [
 		{
