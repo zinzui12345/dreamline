@@ -2,9 +2,7 @@
 extends CharacterBody3D
 class_name npc_ai
 
-
-
-const sinkron_kondisi : Array = [["arah_pandangan", 0.0]]
+const sinkron_kondisi : Array = [["arah_pandangan", 0.0], ["animasi", "{}"]]
 
 var model : Node3D
 var navigasi : NavigationAgent3D
@@ -64,7 +62,28 @@ enum varian_kondisi {
 @export var kelompok := grup.netral
 @export var kecepatan_gerak : float = 2
 
-@export var animasi : String						# jika terdapat node animasi
+@export var animasi : String :						# jika terdapat node animasi
+	set(data):
+		var array_animasi = JSON.parse_string(data)
+		if array_animasi != null and array_animasi is Dictionary:
+			for _node_animasi_ in array_animasi:
+				if get_node_or_null(_node_animasi_) != null and get_node(_node_animasi_) is AnimationPlayer:
+					var pemutar_animasi : AnimationPlayer = get_node(_node_animasi_)
+					if array_animasi[_node_animasi_]["memutar"]:
+						if pemutar_animasi.has_animation(array_animasi[_node_animasi_]["nama_animasi"]):
+							if !pemutar_animasi.is_playing() or pemutar_animasi.current_animation != array_animasi[_node_animasi_]["nama_animasi"]:
+								if array_animasi[_node_animasi_]["posisi_durasi"] == 0.0:
+									pemutar_animasi.play(array_animasi[_node_animasi_]["nama_animasi"])
+								elif array_animasi[_node_animasi_]["posisi_durasi"] > 0.0:
+									pemutar_animasi.play(array_animasi[_node_animasi_]["nama_animasi"])
+									pemutar_animasi.seek(array_animasi[_node_animasi_]["posisi_durasi"])
+						else:
+							Panku.notify("404 : Animasi tak ditemukan [%s]" % [array_animasi[_node_animasi_]["nama_animasi"]])
+					else:
+						pemutar_animasi.stop()
+				else:
+					Panku.notify("404 : Node tak ditemukan [%s]" % [_node_animasi_])
+		animasi = data
 @export var node_animasi : Array					# daftar node animasi yang tersedia
 @export var wilayah_render : AABB :					# area batas culling
 	set(aabb):
@@ -196,7 +215,15 @@ func lihat_ke(posisi : Vector3):
 
 # putar animasi tertentu
 func putar_animasi(jalur_node_animasi : String, nama_animasi : String, putar : bool) -> void:
-	pass
+	var pemutar_animasi = get_node_or_null(jalur_node_animasi)
+	if pemutar_animasi != null:
+		var _data_animasi_ = JSON.parse_string(dapatkan_data_animasi())
+		if _data_animasi_ != null and _data_animasi_ is Dictionary:
+			if _data_animasi_.get(jalur_node_animasi) != null:
+				_data_animasi_[jalur_node_animasi]["memutar"] = putar
+				_data_animasi_[jalur_node_animasi]["nama_animasi"] = nama_animasi
+				_data_animasi_[jalur_node_animasi]["posisi_durasi"] = 0.0
+		set("animasi", JSON.stringify(_data_animasi_))
 
 # ketika diserang dengan nilai serangan tertentu
 func _diserang(_penyerang : Node3D, _damage_serangan : int) -> void:
@@ -225,6 +252,13 @@ func _process(delta : float) -> void:
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_kondisi.get("posisi") == null:	cek_kondisi["posisi"] = Vector3.ZERO
 		if cek_kondisi.get("rotasi") == null:	cek_kondisi["rotasi"] = rotation
+		
+		# cek pemutaran animasi
+		if !node_animasi.is_empty():
+			if cek_kondisi.get("animasi") == null:	cek_kondisi["animasi"] = dapatkan_data_animasi()
+			
+			if cek_kondisi["animasi"] != dapatkan_data_animasi():
+				perubahan_kondisi.append(["animasi", dapatkan_data_animasi()])
 		
 		# cek apakah kode berubah (jika ada)
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
@@ -288,6 +322,10 @@ func _process(delta : float) -> void:
 		cek_kondisi["posisi"] = position
 		cek_kondisi["rotasi"] = rotation
 		
+		# simpan pemutaran animasi untuk di-cek lagi
+		if !node_animasi.is_empty():
+			cek_kondisi["animasi"] = dapatkan_data_animasi()
+		
 		# simpan perubahan kode untuk di-cek lagi
 		if get_node_or_null("kode_ubahan") != null and get_node("kode_ubahan") is BlockCode:
 			cek_kondisi["kode"] = $kode_ubahan.block_script.generated_script
@@ -332,6 +370,19 @@ func _ketika_navigasi_selesai() -> void:
 func mati() -> void:
 	Panku.notify(name+" mati >~<")
 
+# 07/03/25 :: fungsi untuk mendapatkan data animasi dari node animasi
+func dapatkan_data_animasi() -> String:
+	var gabung_data : Dictionary
+	for node_ in node_animasi:
+		var node_animasi_ = get_node(node_[0])
+		if node_animasi_ is AnimationPlayer and node_[1] == "AnimationPlayer":
+			gabung_data[node_[0]] = {
+				"memutar":			node_animasi_.is_playing(),
+				"nama_animasi":		node_animasi_.current_animation if node_animasi_.is_playing() else "",
+				"posisi_durasi":	node_animasi_.current_animation_position if node_animasi_.is_playing() else 0.0
+			}
+	return JSON.stringify(gabung_data)
+
 ## debug ##
 func _input(_event : InputEvent) -> void:
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -351,6 +402,11 @@ func setup_custom_blocks():
 	var block_list: Array[BlockDefinition] = []
 	
 	# 06/03/25 :: buat blok kode node animasi
+	# TODO : blok kode node AnimationTree
+	# loop data_node lagi untuk mencari node AnimationTree
+	# kalau properti active di AnimationTree true, cek node AnimationPlayer di properti anim_player
+	# terus hapus blok kode AnimationPlayer itu
+	# selain itu gak usah lakuin apa-apa
 	for data_node in node_animasi:
 		if data_node[1] == "AnimationPlayer":
 			var block_definition: BlockDefinition = BlockDefinition.new()
