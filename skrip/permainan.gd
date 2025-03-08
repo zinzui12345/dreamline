@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 05/03/25 Early Access"
+const versi = "Dreamline v0.4.4 07/03/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -162,6 +162,7 @@ enum PERAN_KARAKTER {
 #region setup
 func _enter_tree() -> void:
 	get_tree().get_root().set("min_size", Vector2(980, 600))
+	dunia.get_node("matahari").shadow_enabled = Konfigurasi.render_pencahayaan
 	PerenderEfekGarisCahaya.atur_proses_render(false)
 func _ready() -> void:
 	var argumen : Array = OS.get_cmdline_args() # ["res://skena/dreamline.tscn", "--server", "empty"]
@@ -178,7 +179,7 @@ func _ready() -> void:
 			mulai_server(true);
 			return
 		if argumen[arg] == "--no-shadow":
-			dunia.get_node("matahari").shadow_enabled = false
+			_ketika_mengatur_mode_render_pencahayaan(false)
 	var loader = await load("res://skena/loader.scn").instantiate()
 	get_tree().get_root().call_deferred("add_child", loader)
 	$hud.visible = false
@@ -201,6 +202,9 @@ func _setup() -> void:
 	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable = false
 	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.value = Konfigurasi.volume_musik_latar
 	$setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable = true
+	$setelan/panel/gulir/tab_setelan/setelan_performa/render_pencahayaan.disabled = true
+	$setelan/panel/gulir/tab_setelan/setelan_performa/render_pencahayaan.button_pressed = Konfigurasi.render_pencahayaan
+	$setelan/panel/gulir/tab_setelan/setelan_performa/render_pencahayaan.disabled = false
 	$setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.disabled = true
 	$setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.button_pressed = Konfigurasi.render_objek_interaktif
 	$setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.disabled = false
@@ -2002,6 +2006,7 @@ func _tampilkan_setelan_permainan() -> void:
 		"bahasa": 					Konfigurasi.bahasa,
 		"mode_layar_penuh": 		Konfigurasi.mode_layar_penuh,
 		"volume_musik_latar": 		Konfigurasi.volume_musik_latar,
+		"render_pencahayaan":		Konfigurasi.render_pencahayaan,
 		"render_objek_interaktif":	Konfigurasi.render_objek_interaktif,
 		"jarak_render": 			Konfigurasi.jarak_render,
 		"mode_kontrol_gerak": 		Konfigurasi.mode_kontrol_gerak,
@@ -2346,7 +2351,7 @@ func _keluar():
 	_tampilkan_popup_konfirmasi($menu_utama/keluar, Callable(get_tree(), "quit"), "%keluar%")
 
 # konfigurasi
-func _ketika_mengatur_mode_vr(nilai):
+func _ketika_mengatur_mode_vr(nilai : bool) -> void:
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if nilai and !mode_vr:
 			pengamat_vr = load("res://skena/pengamat_vr.tscn").instantiate()
@@ -2367,25 +2372,29 @@ func _ketika_mengatur_mode_vr(nilai):
 			dunia.get_node("pengamat_vr").queue_free()
 			$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 			mode_vr = false
-func _ketika_mengatur_mode_layar_penuh(nilai):
+func _ketika_mengatur_mode_layar_penuh(nilai : bool) -> void:
 	if not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.disabled:
 		Konfigurasi.mode_layar_penuh = nilai
-func _ketika_mengatur_bahasa(nilai):
+func _ketika_mengatur_bahasa(nilai : int) -> void:
 	if not $setelan/panel/gulir/tab_setelan/setelan_umum/pilih_bahasa.disabled:
 		Konfigurasi.bahasa = nilai
-func _ketika_mengatur_volume_musik_latar(nilai):
+func _ketika_mengatur_volume_musik_latar(nilai : float) -> void:
 	if $setelan/panel/gulir/tab_setelan/setelan_suara/volume_musik.editable:
 		Konfigurasi.volume_musik_latar = nilai
-func _ketika_mengatur_mode_render_objek_interaktif(nilai):
+func _ketika_mengatur_mode_render_pencahayaan(nilai : bool) -> void:
+	dunia.get_node("matahari").shadow_enabled = nilai
+	if not $setelan/panel/gulir/tab_setelan/setelan_performa/render_pencahayaan.disabled:
+		Konfigurasi.render_pencahayaan = nilai
+func _ketika_mengatur_mode_render_objek_interaktif(nilai : bool) -> void:
 	if not $setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif.disabled:
 		Konfigurasi.render_objek_interaktif = nilai
-func _ketika_mengatur_jarak_render(jarak):
+func _ketika_mengatur_jarak_render(jarak : int) -> void:
 	if dunia.get_node_or_null("lingkungan") != null:
 		dunia.get_node("pemain/"+str(multiplayer.get_unique_id())+"/%pandangan").set("far", jarak)
 	if $setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render.editable:
 		Konfigurasi.jarak_render = jarak
 	$setelan/panel/gulir/tab_setelan/setelan_performa/info_jarak_render/nilai_jarak_render.text = str(jarak)+"m"
-func _ketika_mengatur_mode_kontrol_gerak(mode):
+func _ketika_mengatur_mode_kontrol_gerak(mode : int) -> void:
 	$kontrol_sentuh/kontrol_gerakan/analog.visible = false
 	$"kontrol_sentuh/kontrol_gerakan/d-pad".visible = false
 	match mode:
@@ -2393,7 +2402,7 @@ func _ketika_mengatur_mode_kontrol_gerak(mode):
 		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true
 	if not $setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled:
 		Konfigurasi.mode_kontrol_gerak = mode
-func _ketika_mengatur_sensitivitas_pandangan(nilai):
+func _ketika_mengatur_sensitivitas_pandangan(nilai : float) -> void:
 	if $setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable:
 		Konfigurasi.sensitivitasPandangan = nilai
 	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(nilai)

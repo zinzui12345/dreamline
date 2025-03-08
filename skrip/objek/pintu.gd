@@ -35,10 +35,10 @@ func terapkan_warna(warnanya : Color) -> void:
 			material_pintu_lod = null
 		
 		if material_pintu_detail == null:
-			material_pintu_detail = $engsel/pintu/detail.get_surface_override_material(0).duplicate()
-			material_pintu_lod = $engsel/pintu/lod.get_surface_override_material(0).duplicate()
-			$engsel/pintu/detail.set_surface_override_material(0, material_pintu_detail)
-			$engsel/pintu/lod.set_surface_override_material(0, material_pintu_lod)
+			material_pintu_detail = $engsel/pintu/detail.get_surface_override_material(0).duplicate() if $engsel/pintu/detail.get_surface_override_material(0) != null else StandardMaterial3D.new()
+			material_pintu_lod = $engsel/pintu/lod.get_surface_override_material(0).duplicate() if $engsel/pintu/lod.get_surface_override_material(0) != null else StandardMaterial3D.new()
+			$engsel/pintu/detail.set_material_override(material_pintu_detail)
+			$engsel/pintu/lod.set_material_override(material_pintu_lod)
 		
 		_warna_pintu = warnanya
 		material_pintu_detail.set("albedo_color", _warna_pintu)
@@ -62,8 +62,6 @@ func tutup() -> void:
 			[]
 		)
 		set("terbuka", false)
-
-#extends pintu\n\nfunc fungsikan():\n\tif !terbuka:\n\t\tbuka()\n\telse:\n\t\ttutup()\n\nfunc get_custom_class() -> String:\n\treturn "pintu"
 
 static func get_custom_class() -> String:
 	return "pintu"

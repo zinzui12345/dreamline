@@ -8259,6 +8259,22 @@ text = "%performa"
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 
+[node name="render_pencahayaan" type="CheckBox" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../../setelan_umum/sarankan_fitur")
+focus_neighbor_bottom = NodePath("../jarak_render")
+focus_next = NodePath("../jarak_render")
+focus_previous = NodePath("../../setelan_umum/sarankan_fitur")
+theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
+text = "%render_pencahayaan"
+
 [node name="render_objek_interaktif" type="CheckBox" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
 layout_mode = 2
 focus_neighbor_top = NodePath("../../setelan_umum/sarankan_fitur")
@@ -9502,6 +9518,7 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr" to="." method="_aktifkan_mode_vr"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/laporkan_bug" to="." method="_laporkan_bug"]
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_umum/sarankan_fitur" to="." method="_sarankan_fitur"]
+[connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_performa/render_pencahayaan" to="." method="_ketika_mengatur_mode_render_pencahayaan"]
 [connection signal="toggled" from="setelan/panel/gulir/tab_setelan/setelan_performa/render_objek_interaktif" to="." method="_ketika_mengatur_mode_render_objek_interaktif"]
 [connection signal="value_changed" from="setelan/panel/gulir/tab_setelan/setelan_performa/jarak_render" to="." method="_ketika_mengatur_jarak_render"]
 [connection signal="item_selected" from="setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak" to="." method="_ketika_mengatur_mode_kontrol_gerak"]

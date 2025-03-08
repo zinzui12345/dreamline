@@ -19,7 +19,7 @@ var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 
 @export var audio : String :						# jika terdapat node audio
 	set(data):
-		var array_audio = JSON.parse_string(data)
+		var array_audio = JSON.parse_string(data) if data != "" else null
 		if array_audio != null and array_audio is Dictionary:
 			for _node_audio_ in array_audio:
 				if get_node_or_null(_node_audio_) != null and get_node(_node_audio_) is AudioStreamPlayer3D:

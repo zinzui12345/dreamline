@@ -42,14 +42,15 @@ class_name GlowBorderEffectRenderer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Setup the shader inputs
-	material.set_shader_parameter("intensity", intensity)
-	material.set_shader_parameter("view_prepass", view_prepass.get_texture())
-	material.set_shader_parameter("view_blure", view_blure.get_texture())
-	
-	if external_viewport_use_external and external_viewport_viewport:
-		material.set_shader_parameter("view_scene", external_viewport_viewport.get_texture())
-	else:
-		material.set_shader_parameter("view_scene", view_scene.get_texture())
+	if material != null:
+		material.set_shader_parameter("intensity", intensity)
+		material.set_shader_parameter("view_prepass", view_prepass.get_texture())
+		material.set_shader_parameter("view_blure", view_blure.get_texture())
+		
+		if external_viewport_use_external and external_viewport_viewport:
+			material.set_shader_parameter("view_scene", external_viewport_viewport.get_texture())
+		else:
+			material.set_shader_parameter("view_scene", view_scene.get_texture())
 	
 	# Ensure that the internal cameras cull sceen and shadow objects
 	camera_prepass.cull_mask = effect_cull_mask
@@ -73,7 +74,8 @@ func set_scene_cull_mask(val):
 # Setter function for the intensity. Enusre update of the internal shader
 func set_intensity(val):
 	intensity = val
-	material.set_shader_parameter("intensity", intensity)
+	if material != null:
+		material.set_shader_parameter("intensity", intensity)
 
 # Setter function to enable/disable render process
 func atur_proses_render(nilai : bool) -> void:

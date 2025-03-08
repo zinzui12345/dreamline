@@ -188,6 +188,7 @@ func gunakan(id_pemain):
 	if id_pengemudi == id_pemain:					server.gunakan_entitas(name, "_lepas")
 	elif id_pengemudi == -1: 						server.gunakan_entitas(name, "_kemudikan")
 func hapus(): # ketika tampilan dihapus
+	Panku.notify("oh yeah") # FIXME : material_casts_shadows: Parameter "material" is null.
 	if id_pengemudi != -1 and dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 		if id_pengemudi == multiplayer.get_unique_id():
 			dunia.get_node("pemain/"+str(id_pengemudi)).global_position = posisi_awal

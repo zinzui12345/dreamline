@@ -64,7 +64,7 @@ enum varian_kondisi {
 
 @export var animasi : String :						# jika terdapat node animasi
 	set(data):
-		var array_animasi = JSON.parse_string(data)
+		var array_animasi = JSON.parse_string(data) if data != "" else null
 		if array_animasi != null and array_animasi is Dictionary:
 			for _node_animasi_ in array_animasi:
 				if get_node_or_null(_node_animasi_) != null and get_node(_node_animasi_) is AnimationPlayer:
