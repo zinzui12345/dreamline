@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bcfjmx2ny2mle"]
 
-[ext_resource type="Script" path="res://addons/compass/example/player.gd" id="1_ptr3k"]
-[ext_resource type="Script" path="res://addons/compass/entities/compass2d.gd" id="2_gaay4"]
+[ext_resource type="Script" uid="uid://bnpbvxgg60oi4" path="res://addons/compass/example/player.gd" id="1_ptr3k"]
+[ext_resource type="Script" uid="uid://jtmffjor1ajg" path="res://addons/compass/entities/compass2d.gd" id="2_gaay4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g88fw"]
 

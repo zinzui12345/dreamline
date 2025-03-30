@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bmxco03vqyq2t"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/tooltip/tooltip.gd" id="1_t6erf"]
+[ext_resource type="Script" uid="uid://bbuog7t3ux6b" path="res://skrip/editor kode/tooltip/tooltip.gd" id="1_t6erf"]
 
 [node name="Tooltip" type="RichTextLabel"]
 custom_minimum_size = Vector2(360, 48)

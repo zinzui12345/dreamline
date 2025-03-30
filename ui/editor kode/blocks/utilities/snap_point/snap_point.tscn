@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b1oge52xhjqnu"]
 
-[ext_resource type="Script" path="res://ui/editor kode/blocks/utilities/snap_point/snap_point.gd" id="1_kseym"]
+[ext_resource type="Script" uid="uid://btxl3bosxussp" path="res://ui/editor kode/blocks/utilities/snap_point/snap_point.gd" id="1_kseym"]
 
 [node name="SnapPoint" type="MarginContainer" groups=["snap_point"]]
 anchors_preset = 15

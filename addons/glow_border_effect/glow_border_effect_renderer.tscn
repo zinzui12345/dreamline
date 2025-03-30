@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://mjc1ujficlc2"]
 
-[ext_resource type="Script" path="res://addons/glow_border_effect/glow_border_effect_rederer.gd" id="1"]
+[ext_resource type="Script" uid="uid://bq1v8ud0kdtsq" path="res://addons/glow_border_effect/glow_border_effect_rederer.gd" id="1"]
 [ext_resource type="Environment" uid="uid://b6hqsqakkwgfo" path="res://addons/glow_border_effect/glow_camera_environment.tres" id="5"]
 
 [sub_resource type="Shader" id="Shader_d54av"]
@@ -30,10 +30,10 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="15"]
 resource_local_to_scene = true
 shader = SubResource("Shader_d54av")
-shader_parameter/intensity = 3.0
 shader_parameter/view_prepass = SubResource("ViewportTexture_sle7s")
 shader_parameter/view_blure = SubResource("ViewportTexture_xb8m5")
 shader_parameter/view_scene = SubResource("ViewportTexture_kgi4r")
+shader_parameter/intensity = 3.0
 
 [sub_resource type="Shader" id="16"]
 code = "shader_type canvas_item;

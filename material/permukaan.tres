@@ -96,7 +96,7 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_s
 // Varyings
 varying float var_posisi_y;
 
-uniform float skala = 1;
+uniform float skala = 1.0;
 uniform sampler2D warna_pasir_basah : source_color, repeat_enable;
 uniform sampler2D warna_pasir : source_color, repeat_enable;
 uniform float ketinggian_pasir_basah;

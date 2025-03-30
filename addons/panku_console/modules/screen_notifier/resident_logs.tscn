@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ccr06ddwa73ca"]
 
-[ext_resource type="Script" path="res://addons/panku_console/modules/screen_notifier/resident_logs.gd" id="1_uq2bh"]
+[ext_resource type="Script" uid="uid://cdsfev6d55i5x" path="res://addons/panku_console/modules/screen_notifier/resident_logs.gd" id="1_uq2bh"]
 
 [node name="ScreenNotifier" type="CanvasLayer" node_paths=PackedStringArray("area_indicator", "container")]
 script = ExtResource("1_uq2bh")

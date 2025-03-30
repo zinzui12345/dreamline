@@ -1,7 +1,7 @@
 [gd_scene load_steps=24 format=3 uid="uid://df1ilfxugnd5p"]
 
 [ext_resource type="PackedScene" uid="uid://mjc1ujficlc2" path="res://addons/glow_border_effect/glow_border_effect_renderer.tscn" id="1"]
-[ext_resource type="Script" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="2"]
+[ext_resource type="Script" uid="uid://bp67046pd78qd" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="2"]
 
 [sub_resource type="GDScript" id="11"]
 script/source = "extends Node
@@ -134,10 +134,10 @@ void fragment() {
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4s84g"]
 resource_local_to_scene = true
 shader = SubResource("14")
-shader_parameter/intensity = 3.0
 shader_parameter/view_prepass = SubResource("ViewportTexture_l4h2o")
 shader_parameter/view_blure = SubResource("ViewportTexture_omrpl")
 shader_parameter/view_scene = SubResource("ViewportTexture_uxtg4")
+shader_parameter/intensity = 3.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1cxsw"]
 albedo_color = Color(1, 0.0313726, 0.0235294, 1)

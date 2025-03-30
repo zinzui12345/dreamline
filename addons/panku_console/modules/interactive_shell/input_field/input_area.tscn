@@ -1,12 +1,13 @@
 [gd_scene load_steps=6 format=3 uid="uid://bme8twac4ick5"]
 
 [ext_resource type="Theme" uid="uid://bk18yfu0d77wk" path="res://addons/panku_console/res/panku_console_theme.tres" id="1_rocdy"]
-[ext_resource type="Script" path="res://addons/panku_console/modules/interactive_shell/input_field/input_area.gd" id="2_6g40s"]
-[ext_resource type="Script" path="res://addons/panku_console/modules/interactive_shell/input_field/input_field.gd" id="4_xjt2l"]
+[ext_resource type="Script" uid="uid://nxjf6ev3nedv" path="res://addons/panku_console/modules/interactive_shell/input_field/input_area.gd" id="2_6g40s"]
+[ext_resource type="Script" uid="uid://cj877yg3l3us6" path="res://addons/panku_console/modules/interactive_shell/input_field/input_field.gd" id="4_xjt2l"]
 [ext_resource type="Texture2D" uid="uid://b4jd6tqlie0wx" path="res://addons/panku_console/res/icons2/reply.svg" id="6_w88f1"]
 
 [sub_resource type="SystemFont" id="SystemFont_104sb"]
 font_names = PackedStringArray("Consolas")
+subpixel_positioning = 0
 
 [node name="InputArea" type="HBoxContainer" node_paths=PackedStringArray("input", "btn")]
 offset_right = 277.0

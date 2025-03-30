@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://0oxqnecb81l"]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/example_balloon/example_balloon.gd" id="1_dx877"]
+[ext_resource type="Script" uid="uid://jik0hp8bkm8v" path="res://addons/dialogue_manager/example_balloon/example_balloon.gd" id="1_dx877"]
 [ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_ubve0"]
 [ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="2_xspl8"]
 [ext_resource type="FontFile" uid="uid://co7iy1ydh6h4u" path="res://ui/fonta/noto_sans_bold.ttf" id="3_4ktra"]
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_reponses_menu.gd" id="3_5hgbq"]
+[ext_resource type="Script" uid="uid://bxob6ki37oyj0" path="res://addons/dialogue_manager/dialogue_reponses_menu.gd" id="3_5hgbq"]
 [ext_resource type="FontFile" uid="uid://c32o2cnow484n" path="res://ui/fonta/noto_sans_italic.ttf" id="4_nmjbk"]
 [ext_resource type="FontFile" uid="uid://c1jk62f52u06p" path="res://ui/fonta/noto_sans_bold-italic.ttf" id="5_fverd"]
 [ext_resource type="FontFile" uid="uid://cyrts7v2aistq" path="res://ui/fonta/Monaco_Linux.ttf" id="7_wikys"]

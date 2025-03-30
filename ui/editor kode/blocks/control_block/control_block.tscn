@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bk2argmujy0kk"]
 
-[ext_resource type="Script" path="res://ui/editor kode/blocks/control_block/control_block.gd" id="1_2hbir"]
+[ext_resource type="Script" uid="uid://bqsdjmn31gl2x" path="res://ui/editor kode/blocks/control_block/control_block.gd" id="1_2hbir"]
 [ext_resource type="PackedScene" uid="uid://b1oge52xhjqnu" path="res://ui/editor kode/blocks/utilities/snap_point/snap_point.tscn" id="3_nhryi"]
 
 [node name="ControlBlock" type="MarginContainer"]

@@ -311,6 +311,7 @@ func muat_terrain():
 									var instance_vegetasi = model_vegetasi.instantiate()
 									instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
 									instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
+									instance_vegetasi.set_meta("id_objek", "vegetasi_" + str(v))
 									add_child(instance_vegetasi)
 								"pohon":
 									if pohon[vegetasi[v]["model"]] is String:
@@ -318,6 +319,7 @@ func muat_terrain():
 										var instance_vegetasi = model_vegetasi.instantiate()
 										instance_vegetasi.transform.origin = vegetasi[v]["posisi"]
 										instance_vegetasi.transform.basis = vegetasi[v]["rotasi"]
+										instance_vegetasi.set_meta("id_objek", "vegetasi_" + str(v))
 										add_child(instance_vegetasi)
 	else: print("tidak ada data permukaan")
 

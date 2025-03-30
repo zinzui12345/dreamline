@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://rdd8r8vrk3cb"]
 
-[ext_resource type="Texture2D" path="res://addons/godot-idea-board/icon/handle.svg" id="1_hiwoi"]
-[ext_resource type="Script" path="res://addons/godot-idea-board/group_node.gd" id="1_m4t2i"]
+[ext_resource type="Texture2D" uid="uid://dy06f0wqoxrt7" path="res://addons/godot-idea-board/icon/handle.svg" id="1_hiwoi"]
+[ext_resource type="Script" uid="uid://bf2msqmckcnln" path="res://addons/godot-idea-board/group_node.gd" id="1_m4t2i"]
 [ext_resource type="StyleBox" uid="uid://b06cmyqqc77jv" path="res://addons/godot-idea-board/theme/group_frame_stylebox.tres" id="2_bq8a8"]
-[ext_resource type="Script" path="res://addons/godot-idea-board/context_menu/group_menu.gd" id="2_bqeb5"]
+[ext_resource type="Script" uid="uid://obaosdc0e03s" path="res://addons/godot-idea-board/context_menu/group_menu.gd" id="2_bqeb5"]
 [ext_resource type="StyleBox" uid="uid://cif6pdlua51vx" path="res://addons/godot-idea-board/theme/group_selected_frame_stylebox.tres" id="3_g6olt"]
 [ext_resource type="StyleBox" uid="uid://chihapvyjmh2o" path="res://addons/godot-idea-board/theme/transparent_title_line_edit.tres" id="5_gmg6p"]
 [ext_resource type="StyleBox" uid="uid://c0ptw6jphi0td" path="res://addons/godot-idea-board/theme/transparent_title_selected_line_edit.tres" id="6_qoikp"]

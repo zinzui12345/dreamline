@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://fmubeeq8rgs5"]
 
-[ext_resource type="Script" path="res://skrip/antarmuka/Analog.gd" id="1"]
+[ext_resource type="Script" uid="uid://ccbe5y673t7wv" path="res://skrip/antarmuka/Analog.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://b2pfsvfi4gkqg" path="res://ui/tombol/bg_analog.svg" id="2"]
 [ext_resource type="Texture2D" uid="uid://ch03th7orav0y" path="res://ui/tombol/stik_analog.svg" id="3"]
 
@@ -81,10 +81,10 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d4qli"]
 _data = {
-"alpha_in": SubResource("1"),
-"alpha_out": SubResource("2"),
-"ball_center": SubResource("3"),
-"default": SubResource("4")
+&"alpha_in": SubResource("1"),
+&"alpha_out": SubResource("2"),
+&"ball_center": SubResource("3"),
+&"default": SubResource("4")
 }
 
 [node name="Analog" type="Node2D"]

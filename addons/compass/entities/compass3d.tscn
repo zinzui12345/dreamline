@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bmgmm8ie3e1pf"]
 
-[ext_resource type="Script" path="res://addons/compass/entities/compass3d.gd" id="1_3qhln"]
+[ext_resource type="Script" uid="uid://bi4aywnhtrg2b" path="res://addons/compass/entities/compass3d.gd" id="1_3qhln"]
 [ext_resource type="ArrayMesh" uid="uid://c4w7x6c6mqj0m" path="res://addons/compass/resources/container3d.mesh" id="2_004jj"]
 [ext_resource type="ArrayMesh" uid="uid://15hux57fnk2y" path="res://addons/compass/resources/needle3d.mesh" id="3_tcrtv"]
 

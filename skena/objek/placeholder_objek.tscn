@@ -1,12 +1,12 @@
 [gd_scene load_steps=16 format=3 uid="uid://df2034e3s77u4"]
 
 [ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="1_mb6uj"]
-[ext_resource type="Script" path="res://skrip/objek/placeholder_objek.gd" id="1_q8q8n"]
-[ext_resource type="Script" path="res://skrip/editor kode/block_code_node/block_code.gd" id="2_pflcm"]
-[ext_resource type="Script" path="res://skrip/editor kode/serialization/block_serialization.gd" id="3_u80rt"]
-[ext_resource type="Script" path="res://skrip/editor kode/serialization/block_serialized_properties.gd" id="4_0ksvp"]
-[ext_resource type="Script" path="res://skrip/editor kode/serialization/block_script_serialization.gd" id="5_f6gj8"]
-[ext_resource type="Script" path="res://skrip/editor kode/block canvas/variable_resource.gd" id="6_wwvnq"]
+[ext_resource type="Script" uid="uid://dko7rqnhxwhrf" path="res://skrip/objek/placeholder_objek.gd" id="1_q8q8n"]
+[ext_resource type="Script" uid="uid://dv3thrfydbgo8" path="res://skrip/editor kode/block_code_node/block_code.gd" id="2_pflcm"]
+[ext_resource type="Script" uid="uid://0isyuyfkp520" path="res://skrip/editor kode/serialization/block_serialization.gd" id="3_u80rt"]
+[ext_resource type="Script" uid="uid://cboqv5613dyqh" path="res://skrip/editor kode/serialization/block_serialized_properties.gd" id="4_0ksvp"]
+[ext_resource type="Script" uid="uid://bro61gvadb4dq" path="res://skrip/editor kode/serialization/block_script_serialization.gd" id="5_f6gj8"]
+[ext_resource type="Script" uid="uid://cjeamx37yxr2x" path="res://skrip/editor kode/block canvas/variable_resource.gd" id="6_wwvnq"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_kqjb5"]
 

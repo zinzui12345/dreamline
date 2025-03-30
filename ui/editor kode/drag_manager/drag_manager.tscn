@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cph1k5cfximbf"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/drag_manager/drag_manager.gd" id="1_rif3x"]
+[ext_resource type="Script" uid="uid://cyp4usku85hw2" path="res://skrip/editor kode/drag_manager/drag_manager.gd" id="1_rif3x"]
 
 [node name="DragManager" type="Control"]
 layout_mode = 3

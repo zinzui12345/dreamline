@@ -1,15 +1,17 @@
 [gd_scene load_steps=7 format=3 uid="uid://nynkaa0igrh5"]
 
-[ext_resource type="Script" path="res://addons/panku_console/modules/interactive_shell/console_logs/console_logs.gd" id="1_3r4hk"]
-[ext_resource type="Script" path="res://addons/panku_console/common/smooth_scroll/smooth_scroll.gd" id="2_46ya8"]
+[ext_resource type="Script" uid="uid://pmp62ralh1dc" path="res://addons/panku_console/modules/interactive_shell/console_logs/console_logs.gd" id="1_3r4hk"]
+[ext_resource type="Script" uid="uid://ckbnimg63xb1s" path="res://addons/panku_console/common/smooth_scroll/smooth_scroll.gd" id="2_46ya8"]
 
 [sub_resource type="SystemFont" id="SystemFont_gfwak"]
 font_names = PackedStringArray("Consolas", "Monospace")
+subpixel_positioning = 0
 multichannel_signed_distance_field = true
 
 [sub_resource type="SystemFont" id="SystemFont_oh6n8"]
 font_names = PackedStringArray("Consolas", "Monospace")
 font_weight = 700
+subpixel_positioning = 0
 multichannel_signed_distance_field = true
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g8eap"]

@@ -1,6 +1,6 @@
-[gd_scene load_steps=342 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=343 format=3 uid="uid://ppsgdaff1jxu"]
 
-[ext_resource type="Script" path="res://skrip/permainan.gd" id="1_7ws0s"]
+[ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
 [ext_resource type="Texture2D" uid="uid://b82t6pt13avfu" path="res://ui/spinner_memuat.svg" id="2_v0ki3"]
@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://b8mrr8lt7uci" path="res://ui/ikon/ikon_tombol_play.svg" id="3_sojxf"]
 [ext_resource type="PackedScene" uid="uid://fmubeeq8rgs5" path="res://ui/Analog.tscn" id="4_0f5j0"]
 [ext_resource type="Texture2D" uid="uid://l5pycvwcl5qn" path="res://ui/ikon/ikon_tombol_statistik.svg" id="4_fdf7p"]
-[ext_resource type="Script" path="res://addons/compass/entities/compassbar.gd" id="4_qrdv8"]
+[ext_resource type="Script" uid="uid://ctss15d50kv6q" path="res://addons/compass/entities/compassbar.gd" id="4_qrdv8"]
 [ext_resource type="PackedScene" uid="uid://dshoprkgyv6ov" path="res://ui/objek.tscn" id="5_0d7jc"]
 [ext_resource type="Texture2D" uid="uid://1td3kq0tsvxi" path="res://ui/ikon/ikon_tombol_putuskan.svg" id="5_d421m"]
 [ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="6_2op7y"]
@@ -41,6 +41,7 @@
 [ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/rulu/rulu.scn" id="12_mhmg0"]
 [ext_resource type="Texture2D" uid="uid://fqepvioy3jkr" path="res://ui/ikon/ikon_gender_cewek.svg" id="13_yyl5t"]
 [ext_resource type="Texture2D" uid="uid://c3taco8pqoduy" path="res://ui/ikon/ikon_gender_cowok.svg" id="14_oalbb"]
+[ext_resource type="PackedScene" uid="uid://bwdt16766j55u" path="res://ui/properti_id.tscn" id="14_t6ric"]
 [ext_resource type="PackedScene" uid="uid://b6o3t5meckrn" path="res://ui/Touchpad.tscn" id="14_tax0q"]
 [ext_resource type="Texture2D" uid="uid://7c1ekxa6i7yc" path="res://ui/ikon/ikon_tombol_batal.svg" id="14_xsr60"]
 [ext_resource type="Texture2D" uid="uid://bicruf52uowkw" path="res://ui/tombol/lompat.svg" id="15_5l3bk"]
@@ -65,7 +66,7 @@
 [ext_resource type="Texture2D" uid="uid://3flv2byt2kkb" path="res://ui/tombol/jongkok_tekan.svg" id="26_5khf0"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
-[ext_resource type="Script" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
+[ext_resource type="Script" uid="uid://enxx5lgjrugf" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
 [ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="32_clll1"]
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
@@ -83,7 +84,7 @@
 [ext_resource type="Texture2D" uid="uid://b5frug6id5d0s" path="res://ui/ikon/ikon_analog.svg" id="67_5s073"]
 [ext_resource type="Texture2D" uid="uid://bowie8rndsrl3" path="res://ui/ikon/ikon_d-pad.svg" id="68_a41ut"]
 [ext_resource type="PackedScene" uid="uid://d2k86ht18kg0d" path="res://ui/blok kode/panel_kode.tscn" id="72_fg215"]
-[ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
+[ext_resource type="Script" uid="uid://dpxfqane0ylo6" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 [ext_resource type="Texture2D" uid="uid://cjrflqocbkufn" path="res://ui/ikon/ikon_vr.svg" id="74_jekg6"]
 [ext_resource type="AudioStream" uid="uid://g4nl77pajw1n" path="res://audio/antarmuka/pilih.ogg" id="76_m8wn8"]
@@ -172,8 +173,8 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6geu8"]
 _data = {
-"sembunyikan": SubResource("Animation_6qw4d"),
-"tampilkan": SubResource("Animation_548c5")
+&"sembunyikan": SubResource("Animation_6qw4d"),
+&"tampilkan": SubResource("Animation_548c5")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6tox"]
@@ -483,8 +484,8 @@ tracks/8/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_v0gts"]
 _data = {
-"sembunyikan": SubResource("Animation_kfwqj"),
-"tampilkan": SubResource("Animation_phfil")
+&"sembunyikan": SubResource("Animation_kfwqj"),
+&"tampilkan": SubResource("Animation_phfil")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_60lyf"]
@@ -550,7 +551,7 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8uu1a"]
 _data = {
-"tampilkan": SubResource("Animation_3kb00")
+&"tampilkan": SubResource("Animation_3kb00")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0x3q"]
@@ -892,8 +893,8 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_u8o78"]
 _data = {
-"sembunyikan": SubResource("Animation_0lfi1"),
-"tampilkan": SubResource("Animation_dtpav")
+&"sembunyikan": SubResource("Animation_0lfi1"),
+&"tampilkan": SubResource("Animation_dtpav")
 }
 
 [sub_resource type="Animation" id="Animation_tc33y"]
@@ -939,7 +940,7 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ss8fo"]
 _data = {
-"tampilkan": SubResource("Animation_tc33y")
+&"tampilkan": SubResource("Animation_tc33y")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ugl5"]
@@ -992,7 +993,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_2lqgy"]
 _data = {
-"tampilkan": SubResource("Animation_rhu7g")
+&"tampilkan": SubResource("Animation_rhu7g")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj7vl"]
@@ -1246,9 +1247,9 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rjl2w"]
 _data = {
-"RESET": SubResource("Animation_s4uqx"),
-"sembunyikan": SubResource("Animation_phy3t"),
-"tampilkan": SubResource("Animation_cuolv")
+&"RESET": SubResource("Animation_s4uqx"),
+&"sembunyikan": SubResource("Animation_phy3t"),
+&"tampilkan": SubResource("Animation_cuolv")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32pwm"]
@@ -1439,8 +1440,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_318gb"]
 _data = {
-"sembunyikan": SubResource("Animation_x2qnu"),
-"tampilkan": SubResource("Animation_iimcj")
+&"sembunyikan": SubResource("Animation_x2qnu"),
+&"tampilkan": SubResource("Animation_iimcj")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cfipv"]
@@ -1866,8 +1867,8 @@ tracks/11/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_n8cdl"]
 _data = {
-"tampilkan_daftar_server": SubResource("Animation_3dia6"),
-"tampilkan_karakter": SubResource("Animation_6ksid")
+&"tampilkan_daftar_server": SubResource("Animation_3dia6"),
+&"tampilkan_karakter": SubResource("Animation_6ksid")
 }
 
 [sub_resource type="Animation" id="Animation_2eblh"]
@@ -2171,9 +2172,9 @@ tracks/4/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5l0ga"]
 _data = {
-"sembunyikan": SubResource("Animation_2eblh"),
-"tampilkan": SubResource("Animation_cuyc1"),
-"tutup": SubResource("Animation_1vkyc")
+&"sembunyikan": SubResource("Animation_2eblh"),
+&"tampilkan": SubResource("Animation_cuyc1"),
+&"tutup": SubResource("Animation_1vkyc")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bbtue"]
@@ -2288,8 +2289,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5gn6a"]
 _data = {
-"internet": SubResource("Animation_i7olc"),
-"lan": SubResource("Animation_a3ibd")
+&"internet": SubResource("Animation_i7olc"),
+&"lan": SubResource("Animation_a3ibd")
 }
 
 [sub_resource type="Animation" id="Animation_dccsk"]
@@ -2604,8 +2605,8 @@ tracks/10/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d37ht"]
 _data = {
-"tampilkan_buat_server": SubResource("Animation_dccsk"),
-"tampilkan_karakter": SubResource("Animation_bxgbk")
+&"tampilkan_buat_server": SubResource("Animation_dccsk"),
+&"tampilkan_karakter": SubResource("Animation_bxgbk")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_acxcj"]
@@ -2786,12 +2787,12 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_j1wgd"]
 _data = {
-"fokus_badan": SubResource("Animation_neroi"),
-"fokus_baju": SubResource("Animation_stsyl"),
-"fokus_celana": SubResource("Animation_hb0g6"),
-"fokus_rambut": SubResource("Animation_claad"),
-"fokus_sepatu": SubResource("Animation_lctiw"),
-"fokus_wajah": SubResource("Animation_jogjy")
+&"fokus_badan": SubResource("Animation_neroi"),
+&"fokus_baju": SubResource("Animation_stsyl"),
+&"fokus_celana": SubResource("Animation_hb0g6"),
+&"fokus_rambut": SubResource("Animation_claad"),
+&"fokus_sepatu": SubResource("Animation_lctiw"),
+&"fokus_wajah": SubResource("Animation_jogjy")
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t37k3"]
@@ -3281,9 +3282,9 @@ tracks/10/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_il0vv"]
 _data = {
-"tampilkan": SubResource("Animation_s2c4a"),
-"tampilkan_buat_server": SubResource("Animation_ptimv"),
-"tampilkan_server": SubResource("Animation_vesl1")
+&"tampilkan": SubResource("Animation_s2c4a"),
+&"tampilkan_buat_server": SubResource("Animation_ptimv"),
+&"tampilkan_server": SubResource("Animation_vesl1")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itixd"]
@@ -3985,11 +3986,11 @@ tracks/13/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wcqo5"]
 _data = {
-"lipat": SubResource("Animation_8n7xu"),
-"perluas": SubResource("Animation_eqad1"),
-"perluas_": SubResource("Animation_0aegn"),
-"sembunyikan": SubResource("Animation_m3jbe"),
-"tampilkan": SubResource("Animation_ucr08")
+&"lipat": SubResource("Animation_8n7xu"),
+&"perluas": SubResource("Animation_eqad1"),
+&"perluas_": SubResource("Animation_0aegn"),
+&"sembunyikan": SubResource("Animation_m3jbe"),
+&"tampilkan": SubResource("Animation_ucr08")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hr6tp"]
@@ -4068,8 +4069,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_e2rd0"]
 _data = {
-"sembunyikan": SubResource("Animation_fpowq"),
-"tampilkan": SubResource("Animation_p0xgs")
+&"sembunyikan": SubResource("Animation_fpowq"),
+&"tampilkan": SubResource("Animation_p0xgs")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klg23"]
@@ -4165,7 +4166,7 @@ tracks/4/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6xkyq"]
 _data = {
-"tampilkan": SubResource("Animation_xwgds")
+&"tampilkan": SubResource("Animation_xwgds")
 }
 
 [sub_resource type="Animation" id="Animation_s42y5"]
@@ -4315,9 +4316,9 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_nq78w"]
 _data = {
-"RESET": SubResource("Animation_s42y5"),
-"sembunyikan": SubResource("Animation_jtrf2"),
-"tampilkan": SubResource("Animation_ixlj8")
+&"RESET": SubResource("Animation_s42y5"),
+&"sembunyikan": SubResource("Animation_jtrf2"),
+&"tampilkan": SubResource("Animation_ixlj8")
 }
 
 [sub_resource type="Animation" id="Animation_mfb3i"]
@@ -4404,8 +4405,8 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hdbku"]
 _data = {
-"sembunyikan": SubResource("Animation_mfb3i"),
-"tampilkan": SubResource("Animation_usbi0")
+&"sembunyikan": SubResource("Animation_mfb3i"),
+&"tampilkan": SubResource("Animation_usbi0")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6u3l"]
@@ -4445,7 +4446,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qr4hl"]
 _data = {
-"proses": SubResource("Animation_lpjt7")
+&"proses": SubResource("Animation_lpjt7")
 }
 
 [sub_resource type="Animation" id="Animation_3kg2n"]
@@ -4467,7 +4468,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d7reu"]
 _data = {
-"kuru_kuru": SubResource("Animation_3kg2n")
+&"kuru_kuru": SubResource("Animation_3kg2n")
 }
 
 [sub_resource type="Animation" id="Animation_2ldya"]
@@ -4501,7 +4502,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r6rat"]
 _data = {
-"tampilkan": SubResource("Animation_2ldya")
+&"tampilkan": SubResource("Animation_2ldya")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22v7y"]
@@ -4593,9 +4594,9 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kip3h"]
 _data = {
-"RESET": SubResource("Animation_xwivh"),
-"sembunyikan": SubResource("Animation_ob5eb"),
-"tampilkan": SubResource("Animation_4sabh")
+&"RESET": SubResource("Animation_xwivh"),
+&"sembunyikan": SubResource("Animation_ob5eb"),
+&"tampilkan": SubResource("Animation_4sabh")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6os86"]
@@ -4624,7 +4625,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5fm8j"]
 _data = {
-"proses": SubResource("Animation_261f6")
+&"proses": SubResource("Animation_261f6")
 }
 
 [sub_resource type="Animation" id="Animation_due7j"]
@@ -4684,8 +4685,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_p6qv4"]
 _data = {
-"sembunyikan": SubResource("Animation_due7j"),
-"tampilkan": SubResource("Animation_cmd6u")
+&"sembunyikan": SubResource("Animation_due7j"),
+&"tampilkan": SubResource("Animation_cmd6u")
 }
 
 [sub_resource type="GDScript" id="GDScript_njeme"]
@@ -4846,8 +4847,8 @@ tracks/3/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mmswf"]
 _data = {
-"tampilkan": SubResource("Animation_w2hc4"),
-"tutup": SubResource("Animation_8jjes")
+&"tampilkan": SubResource("Animation_w2hc4"),
+&"tutup": SubResource("Animation_8jjes")
 }
 
 [sub_resource type="GDScript" id="GDScript_arhgf"]
@@ -5020,10 +5021,10 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_n5ce4"]
 _data = {
-"batalkan_proses_konfirmasi": SubResource("Animation_ixdyn"),
-"proses_konfirmasi": SubResource("Animation_0p4r8"),
-"tampilkan": SubResource("Animation_w2hc4"),
-"tutup": SubResource("Animation_8jjes")
+&"batalkan_proses_konfirmasi": SubResource("Animation_ixdyn"),
+&"proses_konfirmasi": SubResource("Animation_0p4r8"),
+&"tampilkan": SubResource("Animation_w2hc4"),
+&"tutup": SubResource("Animation_8jjes")
 }
 
 [sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_skxpm"]
@@ -5114,7 +5115,7 @@ metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="hud/pesan/daftar_pesan"]
 libraries = {
-"": SubResource("AnimationLibrary_6geu8")
+&"": SubResource("AnimationLibrary_6geu8")
 }
 
 [node name="layout_input_pesan" type="Control" parent="hud/pesan"]
@@ -5171,8 +5172,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath("../../tutup")
 focus_previous = NodePath("../input_pesan")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
@@ -5202,8 +5203,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath("../layout_input_pesan/kirim_pesan")
 focus_next = NodePath(".")
 focus_previous = NodePath("../layout_input_pesan/kirim_pesan")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_2ndal")
@@ -5218,7 +5219,7 @@ metadata/_edit_use_anchors_ = true
 [node name="animasi" type="AnimationPlayer" parent="hud/pesan"]
 root_node = NodePath("../layout_input_pesan")
 libraries = {
-"": SubResource("AnimationLibrary_v0gts")
+&"": SubResource("AnimationLibrary_v0gts")
 }
 
 [node name="daftar_pemain" type="Control" parent="hud"]
@@ -5305,7 +5306,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="hud/daftar_pemain"]
 libraries = {
-"": SubResource("AnimationLibrary_8uu1a")
+&"": SubResource("AnimationLibrary_8uu1a")
 }
 
 [node name="bantuan_input" type="VBoxContainer" parent="hud"]
@@ -5522,8 +5523,8 @@ anchor_bottom = 0.349667
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
@@ -5542,8 +5543,8 @@ anchor_bottom = 0.349667
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
@@ -5576,8 +5577,8 @@ anchor_bottom = 0.464668
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
@@ -5596,8 +5597,8 @@ anchor_bottom = 0.464668
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
@@ -5630,8 +5631,8 @@ anchor_bottom = 0.578001
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
@@ -5650,8 +5651,8 @@ anchor_bottom = 0.578001
 offset_right = 0.0956573
 offset_bottom = 0.200729
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
@@ -5675,6 +5676,9 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
+
+[node name="id" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("14_t6ric")]
+layout_mode = 2
 
 [node name="warna_1" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
@@ -5765,7 +5769,7 @@ value = -50.0
 
 [node name="animasi" type="AnimationPlayer" parent="hud/daftar_properti_objek"]
 libraries = {
-"": SubResource("AnimationLibrary_u8o78")
+&"": SubResource("AnimationLibrary_u8o78")
 }
 
 [node name="frekuensi_mic" type="Control" parent="hud"]
@@ -5808,7 +5812,7 @@ texture_progress = ExtResource("6_tsv27")
 
 [node name="animasi" type="AnimationPlayer" parent="hud/frekuensi_mic"]
 libraries = {
-"": SubResource("AnimationLibrary_ss8fo")
+&"": SubResource("AnimationLibrary_ss8fo")
 }
 
 [node name="timeline" type="Panel" parent="hud"]
@@ -5896,7 +5900,7 @@ text = "t"
 
 [node name="animasi" type="AnimationPlayer" parent="hud/timeline"]
 libraries = {
-"": SubResource("AnimationLibrary_2lqgy")
+&"": SubResource("AnimationLibrary_2lqgy")
 }
 
 [node name="nilai_debug" type="Label" parent="hud"]
@@ -6182,8 +6186,8 @@ metadata/_edit_lock_ = true
 [node name="main" type="Button" parent="mode_bermain"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/hover = SubResource("StyleBoxFlat_w24bl")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vftos")
 theme_override_styles/normal = SubResource("StyleBoxFlat_m22gl")
@@ -6195,8 +6199,8 @@ metadata/_edit_lock_ = true
 [node name="edit" type="Button" parent="mode_bermain"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/hover = SubResource("StyleBoxFlat_xw7bh")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4gpu4")
 theme_override_styles/normal = SubResource("StyleBoxFlat_b06or")
@@ -6218,7 +6222,7 @@ metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="daftar_objek"]
 libraries = {
-"": SubResource("AnimationLibrary_rjl2w")
+&"": SubResource("AnimationLibrary_rjl2w")
 }
 
 [node name="Panel" type="Panel" parent="daftar_objek"]
@@ -6384,9 +6388,9 @@ focus_neighbor_bottom = NodePath("../statistik")
 focus_next = NodePath("../statistik")
 focus_previous = NodePath("../../../../setelan")
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/hover = SubResource("StyleBoxFlat_0hhe0")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_qogat")
@@ -6412,9 +6416,9 @@ focus_neighbor_bottom = NodePath("../putuskan")
 focus_next = NodePath("../putuskan")
 focus_previous = NodePath("../lanjutkan")
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/hover = SubResource("StyleBoxFlat_a3qu8")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_5k18m")
@@ -6440,9 +6444,9 @@ focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath("../../../../setelan")
 focus_previous = NodePath("../statistik")
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/hover = SubResource("StyleBoxFlat_iegqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_4ngvc")
@@ -6457,7 +6461,7 @@ metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="menu_jeda/menu"]
 libraries = {
-"": SubResource("AnimationLibrary_318gb")
+&"": SubResource("AnimationLibrary_318gb")
 }
 
 [node name="setelan" type="Button" parent="menu_jeda"]
@@ -6524,8 +6528,8 @@ offset_top = -27.7784
 offset_right = -257.706
 offset_bottom = 28.2216
 focus_neighbor_right = NodePath("../mulai")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -6550,8 +6554,8 @@ offset_top = -27.7784
 offset_right = -31.9999
 offset_bottom = 28.2216
 focus_neighbor_left = NodePath("../batal")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -6668,8 +6672,8 @@ offset_top = -1.52588e-05
 offset_right = 0.109924
 offset_bottom = -0.0800171
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
@@ -6689,8 +6693,8 @@ offset_left = 0.22998
 offset_top = -1.52588e-05
 offset_right = -0.204041
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 theme_override_styles/focus = SubResource("StyleBoxFlat_8xdra")
 theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
@@ -6737,6 +6741,7 @@ selected = 0
 item_count = 2
 popup/item_0/text = "%lokal"
 popup/item_0/icon = ExtResource("10_ggwxk")
+popup/item_0/id = 0
 popup/item_1/text = "%publik"
 popup/item_1/icon = ExtResource("11_662sn")
 popup/item_1/id = 1
@@ -6745,8 +6750,8 @@ metadata/_edit_use_anchors_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="buat_server"]
 libraries = {
-"": SubResource("AnimationLibrary_n8cdl"),
-"animasi_panel": SubResource("AnimationLibrary_5l0ga")
+&"": SubResource("AnimationLibrary_n8cdl"),
+&"animasi_panel": SubResource("AnimationLibrary_5l0ga")
 }
 
 [node name="daftar_server" type="Control" parent="."]
@@ -6795,8 +6800,8 @@ offset_left = 31.208
 offset_top = -28.032
 offset_right = 223.209
 offset_bottom = 27.968
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -6846,8 +6851,8 @@ offset_left = -248.001
 offset_top = -28.0321
 offset_right = -33.0
 offset_bottom = 27.9679
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -6869,12 +6874,12 @@ offset_left = 0.208
 offset_top = -57.2
 offset_right = 0.0400085
 offset_bottom = -1.2
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxFlat_hsvym")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ir4p6")
@@ -6897,12 +6902,12 @@ anchor_bottom = 0.282
 offset_top = -57.2
 offset_right = 0.375977
 offset_bottom = -1.2
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.247059, 0.247059, 0.247059, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxFlat_uygn8")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ir4p6")
@@ -6966,13 +6971,13 @@ text = "%belum_tersedia"
 
 [node name="animasi_tab" type="AnimationPlayer" parent="daftar_server/panel"]
 libraries = {
-"": SubResource("AnimationLibrary_5gn6a")
+&"": SubResource("AnimationLibrary_5gn6a")
 }
 
 [node name="animasi" type="AnimationPlayer" parent="daftar_server"]
 libraries = {
-"": SubResource("AnimationLibrary_d37ht"),
-"animasi_panel": ExtResource("11_4hn36")
+&"": SubResource("AnimationLibrary_d37ht"),
+&"animasi_panel": ExtResource("11_4hn36")
 }
 
 [node name="karakter" type="Control" parent="."]
@@ -7055,7 +7060,7 @@ far = 10.0
 
 [node name="animasi" type="AnimationPlayer" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat"]
 libraries = {
-"": SubResource("AnimationLibrary_j1wgd")
+&"": SubResource("AnimationLibrary_j1wgd")
 }
 
 [node name="lantai" type="StaticBody3D" parent="karakter/panel/tampilan/SubViewportContainer/SubViewport"]
@@ -7091,8 +7096,8 @@ offset_top = -28.0
 offset_right = -236.628
 offset_bottom = 28.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -7116,8 +7121,8 @@ offset_top = -28.0
 offset_right = -19.6277
 offset_bottom = 28.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -7228,6 +7233,7 @@ selected = 0
 item_count = 2
 popup/item_0/text = "%cewek"
 popup/item_0/icon = ExtResource("13_yyl5t")
+popup/item_0/id = 0
 popup/item_1/text = "%cowok"
 popup/item_1/icon = ExtResource("14_oalbb")
 popup/item_1/id = 1
@@ -7279,6 +7285,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
 selected = 0
 item_count = 2
 popup/item_0/text = "%alis0"
+popup/item_0/id = 0
 popup/item_1/text = "%alis1"
 popup/item_1/id = 1
 
@@ -7303,6 +7310,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
 selected = 0
 item_count = 2
 popup/item_0/text = "%model0"
+popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
 metadata/_edit_use_anchors_ = true
@@ -7327,6 +7335,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
 selected = 0
 item_count = 2
 popup/item_0/text = "%model0"
+popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
 
@@ -7386,6 +7395,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
 selected = 0
 item_count = 2
 popup/item_0/text = "%model0"
+popup/item_0/id = 0
 popup/item_1/text = "%model1"
 popup/item_1/id = 1
 
@@ -7459,6 +7469,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
 selected = 0
 item_count = 2
 popup/item_0/text = "%baju0"
+popup/item_0/id = 0
 popup/item_1/text = "%baju1"
 popup/item_1/id = 1
 
@@ -7532,6 +7543,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o18w5")
 selected = 0
 item_count = 2
 popup/item_0/text = "%celana0"
+popup/item_0/id = 0
 popup/item_1/text = "%celana1"
 popup/item_1/id = 1
 
@@ -7606,6 +7618,7 @@ selected = 0
 fit_to_longest_item = false
 item_count = 2
 popup/item_0/text = "%sepatu0"
+popup/item_0/id = 0
 popup/item_1/text = "%sepatu1"
 popup/item_1/id = 1
 
@@ -7646,10 +7659,10 @@ offset_left = -30.2656
 offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
@@ -7672,10 +7685,10 @@ offset_left = -30.2656
 offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
@@ -7697,10 +7710,10 @@ offset_left = -34.2658
 offset_top = -29.8
 offset_right = 25.7342
 offset_bottom = 30.2
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
@@ -7722,10 +7735,10 @@ offset_left = -30.2656
 offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
@@ -7748,10 +7761,10 @@ offset_left = -30.2656
 offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
@@ -7774,10 +7787,10 @@ offset_left = -30.2656
 offset_top = -29.8
 offset_right = 29.7344
 offset_bottom = 30.2
-theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_qnkxy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ql5nv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_6swxy")
@@ -7791,8 +7804,8 @@ metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="karakter"]
 libraries = {
-"": SubResource("AnimationLibrary_il0vv"),
-"animasi_panel": ExtResource("11_4hn36")
+&"": SubResource("AnimationLibrary_il0vv"),
+&"animasi_panel": ExtResource("11_4hn36")
 }
 
 [node name="menu_utama" type="Control" parent="."]
@@ -7836,9 +7849,9 @@ offset_bottom = 8.0
 focus_neighbor_left = NodePath("../../../setelan")
 focus_neighbor_bottom = NodePath("../gabung_server")
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_2dl5y")
@@ -7865,9 +7878,9 @@ focus_neighbor_top = NodePath("../buat_server")
 focus_neighbor_bottom = NodePath("../karakter")
 theme_override_colors/font_disabled_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_2dl5y")
@@ -7892,9 +7905,9 @@ offset_bottom = 8.0
 focus_neighbor_left = NodePath("../../../keluar")
 focus_neighbor_top = NodePath("../gabung_server")
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.14902, 0.14902, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_font_sizes/font_size = 24
 theme_override_styles/disabled = SubResource("StyleBoxFlat_m3mbe")
 theme_override_styles/hover = SubResource("StyleBoxFlat_lhgek")
@@ -7990,7 +8003,7 @@ metadata/_edit_lock_ = true
 [node name="animasi" type="AnimationPlayer" parent="menu_utama"]
 root_node = NodePath("../menu")
 libraries = {
-"": SubResource("AnimationLibrary_wcqo5")
+&"": SubResource("AnimationLibrary_wcqo5")
 }
 
 [node name="bunyi_pilih" type="AudioStreamPlayer" parent="menu_utama"]
@@ -8098,7 +8111,7 @@ horizontal_alignment = 2
 
 [node name="animasi" type="AnimationPlayer" parent="pemutar_musik"]
 libraries = {
-"": SubResource("AnimationLibrary_e2rd0")
+&"": SubResource("AnimationLibrary_e2rd0")
 }
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="pemutar_musik"]
@@ -8171,6 +8184,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 selected = 0
 item_count = 3
 popup/item_0/text = "Auto"
+popup/item_0/id = 0
 popup/item_1/text = "English"
 popup/item_1/icon = ExtResource("63_r5flb")
 popup/item_1/id = 1
@@ -8191,9 +8205,9 @@ focus_previous = NodePath("../pilih_bahasa")
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
 theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%mode_layar_penuh"
@@ -8268,9 +8282,9 @@ focus_previous = NodePath("../../setelan_umum/sarankan_fitur")
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
 theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%render_pencahayaan"
@@ -8284,9 +8298,9 @@ focus_previous = NodePath("../../setelan_umum/sarankan_fitur")
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
 theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%render_objek_interaktif"
@@ -8489,9 +8503,9 @@ focus_previous = NodePath(".")
 theme_override_colors/font_disabled_color = Color(0.882353, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0.117647, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
 theme_override_colors/font_color = Color(0.270588, 0.270588, 0.270588, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0.207843, 1)
+theme_override_colors/font_pressed_color = Color(0, 0.388235, 0, 1)
 theme_override_font_sizes/font_size = 20
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 button_pressed = true
@@ -8530,7 +8544,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="animasi" type="AnimationPlayer" parent="setelan"]
 libraries = {
-"": SubResource("AnimationLibrary_6xkyq")
+&"": SubResource("AnimationLibrary_6xkyq")
 }
 
 [node name="tutup" type="TextureButton" parent="setelan"]
@@ -8572,7 +8586,6 @@ layout_mode = 1
 initial_position = 1
 size = Vector2i(512, 320)
 popup_window = true
-ok_button_text = "%simpan%"
 cancel_button_text = "%batal%"
 access = 1
 root_subfolder = "user://aset/kode"
@@ -8592,7 +8605,7 @@ filters = PackedStringArray("*.ogg", "*.mp3", "*.wav")
 
 [node name="animasi" type="AnimationPlayer" parent="editor_kode"]
 libraries = {
-"": SubResource("AnimationLibrary_nq78w")
+&"": SubResource("AnimationLibrary_nq78w")
 }
 
 [node name="blok_kode" type="Control" parent="."]
@@ -8612,7 +8625,7 @@ offset_left = 0.0
 
 [node name="animasi" type="AnimationPlayer" parent="blok_kode"]
 libraries = {
-"": SubResource("AnimationLibrary_hdbku")
+&"": SubResource("AnimationLibrary_hdbku")
 }
 
 [node name="proses_memuat" type="Control" parent="."]
@@ -8696,7 +8709,7 @@ metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="proses_memuat/panel_bawah/Panel/ProsesMemuat"]
 libraries = {
-"": SubResource("AnimationLibrary_qr4hl")
+&"": SubResource("AnimationLibrary_qr4hl")
 }
 
 [node name="SpinnerMemuat" type="Sprite2D" parent="proses_memuat/panel_bawah/Panel"]
@@ -8705,12 +8718,12 @@ texture = ExtResource("2_v0ki3")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="proses_memuat/panel_bawah/Panel/SpinnerMemuat"]
 libraries = {
-"": SubResource("AnimationLibrary_d7reu")
+&"": SubResource("AnimationLibrary_d7reu")
 }
 
 [node name="animasi" type="AnimationPlayer" parent="proses_memuat/panel_bawah"]
 libraries = {
-"": SubResource("AnimationLibrary_r6rat")
+&"": SubResource("AnimationLibrary_r6rat")
 }
 
 [node name="layar" type="Panel" parent="proses_memuat"]
@@ -8749,7 +8762,7 @@ texture = ExtResource("2_v0ki3")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="proses_memuat/layar/pemisah_vertikal/pemisah_horizontal/spinner/SpinnerMemuat"]
 libraries = {
-"": SubResource("AnimationLibrary_d7reu")
+&"": SubResource("AnimationLibrary_d7reu")
 }
 
 [node name="teks_memuat" type="Label" parent="proses_memuat/layar/pemisah_vertikal/pemisah_horizontal"]
@@ -8760,7 +8773,7 @@ vertical_alignment = 1
 
 [node name="animasi" type="AnimationPlayer" parent="proses_memuat/layar"]
 libraries = {
-"": SubResource("AnimationLibrary_kip3h")
+&"": SubResource("AnimationLibrary_kip3h")
 }
 
 [node name="proses_koneksi" type="Control" parent="."]
@@ -8824,12 +8837,12 @@ vertical_alignment = 1
 
 [node name="animasi" type="AnimationPlayer" parent="proses_koneksi/panel"]
 libraries = {
-"": SubResource("AnimationLibrary_5fm8j")
+&"": SubResource("AnimationLibrary_5fm8j")
 }
 
 [node name="animasi" type="AnimationPlayer" parent="proses_koneksi"]
 libraries = {
-"": SubResource("AnimationLibrary_p6qv4")
+&"": SubResource("AnimationLibrary_p6qv4")
 }
 
 [node name="popup_informasi" type="Control" parent="."]
@@ -8912,8 +8925,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
@@ -8925,7 +8938,7 @@ icon_alignment = 1
 
 [node name="animasi" type="AnimationPlayer" parent="popup_informasi"]
 libraries = {
-"": SubResource("AnimationLibrary_mmswf")
+&"": SubResource("AnimationLibrary_mmswf")
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_informasi"]
@@ -9009,8 +9022,8 @@ focus_neighbor_top = NodePath(".")
 focus_neighbor_right = NodePath("../oke")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath("../oke")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -9037,8 +9050,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath("../batal")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -9051,7 +9064,7 @@ alignment = 0
 
 [node name="animasi" type="AnimationPlayer" parent="popup_konfirmasi"]
 libraries = {
-"": SubResource("AnimationLibrary_mmswf")
+&"": SubResource("AnimationLibrary_mmswf")
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi"]
@@ -9220,8 +9233,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath(".")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_bk8sk")
@@ -9234,7 +9247,7 @@ alignment = 0
 
 [node name="animasi" type="AnimationPlayer" parent="informasi"]
 libraries = {
-"": SubResource("AnimationLibrary_mmswf")
+&"": SubResource("AnimationLibrary_mmswf")
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="informasi"]
@@ -9327,10 +9340,10 @@ focus_neighbor_right = NodePath("../batal")
 focus_neighbor_bottom = NodePath("../batal")
 focus_next = NodePath("../batal")
 focus_previous = NodePath(".")
-theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -9360,8 +9373,8 @@ focus_neighbor_right = NodePath(".")
 focus_neighbor_bottom = NodePath(".")
 focus_next = NodePath(".")
 focus_previous = NodePath("../oke")
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_c2goa")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/focus = SubResource("StyleBoxFlat_pg4ow")
@@ -9374,7 +9387,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="popup_konfirmasi_peringatan"]
 libraries = {
-"": SubResource("AnimationLibrary_n5ce4")
+&"": SubResource("AnimationLibrary_n5ce4")
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi_peringatan"]

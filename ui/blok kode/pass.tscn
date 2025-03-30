@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bcg5s3yxmfviy"]
 
-[ext_resource type="Script" path="res://skrip/blok kode/pass.gd" id="1_8gqui"]
+[ext_resource type="Script" uid="uid://c0dahdipe0xr2" path="res://skrip/blok kode/pass.gd" id="1_8gqui"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eex05"]
 bg_color = Color(1, 1, 1, 1)

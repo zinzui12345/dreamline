@@ -1266,6 +1266,9 @@ func _pemain_terputus(id_pemain):
 						var compile_kode = permainan._compile_blok_kode(properti_objek[p][1])
 						if compile_kode != null: tmp_objek.kode = compile_kode
 					else: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
+				elif properti_objek[p][0] == "id_objek":
+					tmp_objek.set_meta("id_objek", properti_objek[p][1])
+					#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [nama_objek, properti_objek[p][1]])
 				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
 			tmp_objek.id_pengubah = id_pengubah
 			tmp_objek.global_transform.origin = posisi_objek

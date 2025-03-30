@@ -1,8 +1,8 @@
 [gd_scene load_steps=46 format=4 uid="uid://vmu30s8uhlbt"]
 
-[ext_resource type="Script" path="res://skrip/entitas/pengamat_vr.gd" id="1_am60v"]
+[ext_resource type="Script" uid="uid://cn4vn7fseemlx" path="res://skrip/entitas/pengamat_vr.gd" id="1_am60v"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="2_4qxan"]
-[ext_resource type="Script" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="3_fjqtm"]
+[ext_resource type="Script" uid="uid://dpxfqane0ylo6" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="3_fjqtm"]
 [ext_resource type="Texture2D" uid="uid://5vuyf64x150p" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_right_outline.svg" id="4_2atv6"]
 [ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="4_jher3"]
 [ext_resource type="Texture2D" uid="uid://dwe5xfduipbj7" path="res://ui/tombol/mic_on.svg" id="5_b7a8m"]
@@ -132,8 +132,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ioxll"]
 _data = {
-"RESET": SubResource("Animation_qq00f"),
-"tampilkan_antarmuka": SubResource("Animation_xnrq7")
+&"RESET": SubResource("Animation_qq00f"),
+&"tampilkan_antarmuka": SubResource("Animation_xnrq7")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4rfe"]

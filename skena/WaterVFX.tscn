@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://bep5o4in1vs27"]
 
-[ext_resource type="Shader" uid="uid://bbo1abph4arco" path="res://WaterShader.tres" id="1_wkeku"]
+[ext_resource type="Shader" uid="uid://bbo1abph4arco" path="res://material/air.tres" id="1_wkeku"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_n7xyp"]
 sky_top_color = Color(0.141176, 0.294118, 0.490196, 1)
@@ -22,7 +22,8 @@ glow_blend_mode = 0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ss84j"]
 render_priority = 0
 shader = ExtResource("1_wkeku")
-shader_parameter/ColorParameter = null
+shader_parameter/ColorParameter = Color(0, 0.266667, 0.533333, 1)
+shader_parameter/posisi_offset = Vector2(0, 0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_au8eh"]
 material = SubResource("ShaderMaterial_ss84j")

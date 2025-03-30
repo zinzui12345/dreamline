@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://chdkdwk8q7ps6"]
 
-[ext_resource type="Script" path="res://skrip/map.gd" id="1_lwxdj"]
+[ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_lwxdj"]
 
 [node name="TemplatMap" type="Node3D"]
 script = ExtResource("1_lwxdj")

@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://ctvg3e2tkspqb"]
 
-[ext_resource type="Script" path="res://addons/godot-idea-board/sekkei_main.gd" id="1_2n0ft"]
+[ext_resource type="Script" uid="uid://3mhlf5uw15kg" path="res://addons/godot-idea-board/sekkei_main.gd" id="1_2n0ft"]
 [ext_resource type="Theme" uid="uid://dp1xxx710usj3" path="res://addons/godot-idea-board/main_theme.tres" id="1_eha6v"]
-[ext_resource type="Script" path="res://addons/godot-idea-board/sekkei_graph.gd" id="1_lrq46"]
+[ext_resource type="Script" uid="uid://btuojqu2rqj33" path="res://addons/godot-idea-board/sekkei_graph.gd" id="1_lrq46"]
 [ext_resource type="ButtonGroup" uid="uid://b8qct4jrxfu76" path="res://addons/godot-idea-board/left_right_button_group.tres" id="2_wtk48"]
-[ext_resource type="Script" path="res://addons/godot-idea-board/context_menu/graph_menu.gd" id="5_extsy"]
+[ext_resource type="Script" uid="uid://modtwuph6ywk" path="res://addons/godot-idea-board/context_menu/graph_menu.gd" id="5_extsy"]
 
 [sub_resource type="Animation" id="Animation_w05kn"]
 length = 0.001
@@ -39,8 +39,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_jn6kl"]
 _data = {
-"RESET": SubResource("Animation_w05kn"),
-"blink": SubResource("Animation_gi5j8")
+&"RESET": SubResource("Animation_w05kn"),
+&"blink": SubResource("Animation_gi5j8")
 }
 
 [node name="SekkeiMain" type="HSplitContainer"]

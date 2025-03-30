@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://rsf7vgy50fpk"]
 
-[ext_resource type="Script" path="res://skrip/blok kode/aksi.gd" id="1_dir5u"]
+[ext_resource type="Script" uid="uid://hw2k7emk0lf5" path="res://skrip/blok kode/aksi.gd" id="1_dir5u"]
 [ext_resource type="StyleBox" uid="uid://cdajf56g1psex" path="res://ui/blok kode/warna/aksi.stylebox" id="1_t6cy6"]
-[ext_resource type="Script" path="res://skrip/blok kode/parameter_aksi.gd" id="2_ljb6u"]
+[ext_resource type="Script" uid="uid://cjmlcii1vm45f" path="res://skrip/blok kode/parameter_aksi.gd" id="2_ljb6u"]
 [ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="4_loywf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hckmw"]

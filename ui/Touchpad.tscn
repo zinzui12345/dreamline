@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b6o3t5meckrn"]
 
-[ext_resource type="Script" path="res://skrip/antarmuka/Touchpad.gd" id="1"]
+[ext_resource type="Script" uid="uid://yedbix5dx45t" path="res://skrip/antarmuka/Touchpad.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bgx8s8lt2o2bv" path="res://ui/tombol/touch_bg_circle.svg" id="2"]
 
 [sub_resource type="Animation" id="1"]
@@ -80,10 +80,10 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_a3oy3"]
 _data = {
-"alpha_in": SubResource("1"),
-"alpha_out": SubResource("2"),
-"ball_center": SubResource("3"),
-"default": SubResource("4")
+&"alpha_in": SubResource("1"),
+&"alpha_out": SubResource("2"),
+&"ball_center": SubResource("3"),
+&"default": SubResource("4")
 }
 
 [node name="Touchpad" type="Node2D"]

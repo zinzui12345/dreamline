@@ -13,7 +13,7 @@ config_version=5
 config/name="Dreamline"
 run/main_scene="res://skena/dreamline.tscn"
 config/quit_on_go_back=false
-config/features=PackedStringArray("4.3", "Mobile")
+config/features=PackedStringArray("4.4", "Mobile")
 run/delta_smoothing=false
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
@@ -32,8 +32,8 @@ Konfigurasi="*res://skrip/konfigurasi.gd"
 server="*res://skrip/koneksi/server.gd"
 client="*res://skrip/koneksi/client.gd"
 Panku="*res://addons/panku_console/console.tscn"
-DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 PerenderEfekGarisCahaya="*res://addons/glow_border_effect/glow_border_effect_renderer.tscn"
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 
 [debug]
 
@@ -71,6 +71,7 @@ folder_colors={
 
 [filesystem]
 
+import/blender/enabled=false
 import/fbx/enabled=false
 
 [global_group]
@@ -250,7 +251,6 @@ menu_vr={
 
 [input_devices]
 
-pointing/emulate_touch_from_mouse=true
 pointing/emulate_mouse_from_touch=false
 pointing/emulate_touch_from_mouse.pc=true
 pointing/emulate_mouse_from_touch.pc=false

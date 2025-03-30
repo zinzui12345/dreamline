@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bdtetj0gs45hv"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/picker/categories/block_category_button.gd" id="1_pxxnl"]
+[ext_resource type="Script" uid="uid://budnviw2m1hol" path="res://skrip/editor kode/picker/categories/block_category_button.gd" id="1_pxxnl"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eogpc"]
 bg_color = Color(1, 0, 0, 1)

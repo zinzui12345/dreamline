@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="InputIconScheme" load_steps=367 format=3 uid="uid://dkuho2ggp7k6s"]
 
-[ext_resource type="Script" path="res://addons/awesome_input_icons/resources/scripts/KeyIcon.gd" id="1_kuw04"]
+[ext_resource type="Script" uid="uid://dym5vm5pn2315" path="res://addons/awesome_input_icons/resources/scripts/KeyIcon.gd" id="1_kuw04"]
 [ext_resource type="Texture2D" uid="uid://db0utjwq7cq8g" path="res://addons/awesome_input_icons/assets/ps4 vector/playstation_button_cross_outline.svg" id="2_n5iew"]
 [ext_resource type="Texture2D" uid="uid://dn6ry8w6js4c0" path="res://addons/awesome_input_icons/assets/ps4 vector/playstation_stick_l_left.svg" id="2_nqi1j"]
 [ext_resource type="Texture2D" uid="uid://cj64ovdgb3cnf" path="res://addons/awesome_input_icons/assets/ps4 vector/playstation_stick_l_right.svg" id="3_pe731"]
@@ -119,7 +119,7 @@
 [ext_resource type="Texture2D" uid="uid://csblu3t7loqr8" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_scroll_outline.svg" id="107_i3avo"]
 [ext_resource type="Texture2D" uid="uid://b4id0pnpfxcgt" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_scroll_up_outline.svg" id="108_x7wpl"]
 [ext_resource type="Texture2D" uid="uid://evc73p7d160w" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_scroll_down_outline.svg" id="109_ahlfr"]
-[ext_resource type="Script" path="res://addons/awesome_input_icons/resources/scripts/InputIconScheme.gd" id="110_gvihj"]
+[ext_resource type="Script" uid="uid://cw8pbeqwkxfvv" path="res://addons/awesome_input_icons/resources/scripts/InputIconScheme.gd" id="110_gvihj"]
 [ext_resource type="Texture2D" uid="uid://17cslfi27qky" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_horizontal_left.svg" id="120_ty52k"]
 [ext_resource type="Texture2D" uid="uid://bffpjou4w8uer" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_horizontal_right.svg" id="121_8527l"]
 [ext_resource type="Texture2D" uid="uid://dgc6ywghwjd3g" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_vertical_up.svg" id="122_bi7be"]
@@ -581,7 +581,7 @@ axis_value = 0.0
 icon = ExtResource("33_k68hs")
 
 [sub_resource type="Resource" id="Resource_b7w3h"]
-resource_name = "Windows"
+resource_name = "Meta"
 script = ExtResource("1_kuw04")
 input_type = 0
 keycode = 4194327

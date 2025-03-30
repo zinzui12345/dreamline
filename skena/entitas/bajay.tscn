@@ -1,9 +1,9 @@
 [gd_scene load_steps=68 format=4 uid="uid://duhikxgofcvdn"]
 
 [ext_resource type="AudioStream" uid="uid://vj64jsvs1gy" path="res://audio/kendaraan/tabrak.wav" id="1"]
-[ext_resource type="Script" path="res://skrip/entitas/bajay.gd" id="1_thjsr"]
+[ext_resource type="Script" uid="uid://js0ohc7r83it" path="res://skrip/entitas/bajay.gd" id="1_thjsr"]
 [ext_resource type="AudioStream" uid="uid://4fhypqgci2nc" path="res://audio/kendaraan/rem.wav" id="2"]
-[ext_resource type="Script" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="3_68vc3"]
+[ext_resource type="Script" uid="uid://bp67046pd78qd" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="3_68vc3"]
 [ext_resource type="AudioStream" uid="uid://m50p4o2xpt3y" path="res://audio/kendaraan/mesin1-mulai.ogg" id="3_ml7cc"]
 [ext_resource type="AudioStream" uid="uid://b4yw2u4ixu4sx" path="res://audio/kendaraan/mesin1-ulang.ogg" id="4_das3n"]
 [ext_resource type="AudioStream" uid="uid://b3q24yebpafud" path="res://audio/kendaraan/mesin1-berhenti.ogg" id="5_xie4g"]
@@ -1380,19 +1380,19 @@ clip_2/stream = ExtResource("5_xie4g")
 clip_2/auto_advance = 2
 _transitions = {
 Vector2i(0, 1): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 0,
 "from_time": 0,
 "to_time": 1
 },
 Vector2i(1, 2): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 0,
 "from_time": 0,
 "to_time": 1
 },
 Vector2i(2, 0): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "from_time": 3,
 "to_time": 1

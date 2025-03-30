@@ -1,10 +1,11 @@
 [gd_resource type="Resource" load_steps=2 format=3 uid="uid://bxl7n4tkf1mvd"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_s0hq0"]
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_s0hq0"]
 
 [resource]
 script = ExtResource("1_s0hq0")
 name = &"physics_process"
+target_node_class = ""
 description = "Attached blocks will be executed during the \"physics\" processing step of the main loop"
 category = "Lifecycle"
 type = 1

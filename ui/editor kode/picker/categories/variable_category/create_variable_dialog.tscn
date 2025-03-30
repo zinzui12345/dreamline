@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dbrm7wwkao0c0"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/picker/categories/variable_category/create_variable_dialog.gd" id="1_b52me"]
+[ext_resource type="Script" uid="uid://ed72o7v242c2" path="res://skrip/editor kode/picker/categories/variable_category/create_variable_dialog.gd" id="1_b52me"]
 
 [node name="CreateVariableDialog" type="ConfirmationDialog"]
 title = "%buat_variabel"

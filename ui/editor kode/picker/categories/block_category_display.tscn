@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://duhpwtfo3k0sk"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/picker/categories/block_category_display.gd" id="1_wkdht"]
+[ext_resource type="Script" uid="uid://bp3ryclkoemfw" path="res://skrip/editor kode/picker/categories/block_category_display.gd" id="1_wkdht"]
 
 [node name="BlockCategoryDisplay" type="MarginContainer"]
 anchors_preset = 15

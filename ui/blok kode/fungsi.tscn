@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://dflond24ibfnj"]
 
-[ext_resource type="Script" path="res://skrip/blok kode/fungsi.gd" id="1_xoe0o"]
+[ext_resource type="Script" uid="uid://b2s3j5m3dik2w" path="res://skrip/blok kode/fungsi.gd" id="1_xoe0o"]
 [ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="2_u8i24"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gj1vm"]

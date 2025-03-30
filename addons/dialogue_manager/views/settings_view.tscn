@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cpg4lg1r3ff6m"]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/views/settings_view.gd" id="1_06uxa"]
+[ext_resource type="Script" uid="uid://cpntbx2imxh77" path="res://addons/dialogue_manager/views/settings_view.gd" id="1_06uxa"]
 
 [sub_resource type="Theme" id="Theme_3a8rc"]
 HSeparator/constants/separation = 20

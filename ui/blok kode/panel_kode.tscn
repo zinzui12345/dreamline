@@ -1,6 +1,6 @@
 [gd_scene load_steps=21 format=3 uid="uid://d2k86ht18kg0d"]
 
-[ext_resource type="Script" path="res://skrip/blok kode/panel_kode.gd" id="1_0xc42"]
+[ext_resource type="Script" uid="uid://cfb8ij5waw0r3" path="res://skrip/blok kode/panel_kode.gd" id="1_0xc42"]
 [ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="2_7ls2e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0s0w"]
@@ -269,9 +269,9 @@ tracks/6/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_hfk2v"]
 _data = {
-"perkecil": SubResource("Animation_e74s2"),
-"perluas": SubResource("Animation_8ch00"),
-"tampilkan_panel_edit": SubResource("Animation_uvnph")
+&"perkecil": SubResource("Animation_e74s2"),
+&"perluas": SubResource("Animation_8ch00"),
+&"tampilkan_panel_edit": SubResource("Animation_uvnph")
 }
 
 [node name="panel_kode" type="Panel"]

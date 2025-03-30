@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://clipm2dd28jde"]
 
-[ext_resource type="Script" path="res://ui/editor kode/blocks/parameter_block/parameter_block.gd" id="1_0hajy"]
+[ext_resource type="Script" uid="uid://7ius5bjqoh0u" path="res://ui/editor kode/blocks/parameter_block/parameter_block.gd" id="1_0hajy"]
 [ext_resource type="PackedScene" uid="uid://c7puyxpqcq6xo" path="res://ui/editor kode/blocks/utilities/drag_drop_area/drag_drop_area.tscn" id="2_gy5co"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dbera"]

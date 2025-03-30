@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=2 format=3 uid="uid://d0g11cp3ff81i"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="2_lxlcw"]
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="2_lxlcw"]
 
 [resource]
 script = ExtResource("2_lxlcw")

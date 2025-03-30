@@ -141,9 +141,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1bm3d"]
 _data = {
-"animasi1": SubResource("Animation_nw4wg"),
-"sembunyikan": SubResource("Animation_khvls"),
-"tampilkan": SubResource("Animation_j2wvp")
+&"animasi1": SubResource("Animation_nw4wg"),
+&"sembunyikan": SubResource("Animation_khvls"),
+&"tampilkan": SubResource("Animation_j2wvp")
 }
 
 [node name="latar" type="Control"]

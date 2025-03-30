@@ -1,10 +1,11 @@
 [gd_resource type="Resource" load_steps=2 format=3 uid="uid://bdm4yr68mdf4d"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_1debb"]
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_1debb"]
 
 [resource]
 script = ExtResource("1_1debb")
 name = &"viewport_height"
+target_node_class = ""
 description = ""
 category = "Graphics | Viewport"
 type = 3

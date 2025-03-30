@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bw2mt60amtyl1"]
 
-[ext_resource type="Script" path="res://skrip/npc_ai.gd" id="1_af5lk"]
+[ext_resource type="Script" uid="uid://d3tgunpnahcgi" path="res://skrip/npc_ai.gd" id="1_af5lk"]
 [ext_resource type="Texture2D" uid="uid://b68vyh4ydqyy8" path="res://ui/ikon/ikon_bug.svg" id="2_pfqmu"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_e25su"]

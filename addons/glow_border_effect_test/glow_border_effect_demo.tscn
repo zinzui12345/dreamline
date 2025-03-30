@@ -1,9 +1,9 @@
 [gd_scene load_steps=22 format=3 uid="uid://ddnxlo4hjr054"]
 
 [ext_resource type="PackedScene" uid="uid://mjc1ujficlc2" path="res://addons/glow_border_effect/glow_border_effect_renderer.tscn" id="1_nu2gu"]
-[ext_resource type="Script" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="2_53moe"]
+[ext_resource type="Script" uid="uid://bp67046pd78qd" path="res://addons/glow_border_effect/glow_border_effect_object.gd" id="2_53moe"]
 [ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="3_aee8e"]
-[ext_resource type="Script" path="res://addons/glow_border_effect_test/glow_border_effect_demo_camera.gd" id="3_lwun3"]
+[ext_resource type="Script" uid="uid://b5x200y2p3sqg" path="res://addons/glow_border_effect_test/glow_border_effect_demo_camera.gd" id="3_lwun3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_f68tu"]
 sun_angle_max = 79.09
@@ -47,10 +47,10 @@ viewport_path = NodePath("ViewportScene")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h14us"]
 resource_local_to_scene = true
 shader = SubResource("Shader_t2a2m")
-shader_parameter/intensity = 3.0
 shader_parameter/view_prepass = SubResource("ViewportTexture_jnq07")
 shader_parameter/view_blure = SubResource("ViewportTexture_6ux4n")
 shader_parameter/view_scene = SubResource("ViewportTexture_kmav8")
+shader_parameter/intensity = 3.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1rsw3"]
 albedo_color = Color(0.160784, 1, 0.231373, 1)
@@ -207,8 +207,8 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_e2lg2"]
 _data = {
-"Pan Camera3D": SubResource("3"),
-"RESET": SubResource("4")
+&"Pan Camera3D": SubResource("3"),
+&"RESET": SubResource("4")
 }
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_270v0"]

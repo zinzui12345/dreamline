@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bm1183pm05p6a"]
 
-[ext_resource type="Script" path="res://skrip/editor kode/title_bar/title_bar.gd" id="1_hpvmt"]
+[ext_resource type="Script" uid="uid://dgbg1hpwe22lo" path="res://skrip/editor kode/title_bar/title_bar.gd" id="1_hpvmt"]
 
 [node name="TitleBar" type="MarginContainer"]
 custom_minimum_size = Vector2(0, 40)

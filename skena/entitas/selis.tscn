@@ -1,7 +1,7 @@
 [gd_scene load_steps=63 format=4 uid="uid://bodq1gcamen6h"]
 
 [ext_resource type="AudioStream" uid="uid://vj64jsvs1gy" path="res://audio/kendaraan/tabrak.wav" id="1"]
-[ext_resource type="Script" path="res://skrip/entitas/selis.gd" id="1_e7y8u"]
+[ext_resource type="Script" uid="uid://kckv02wq617m" path="res://skrip/entitas/selis.gd" id="1_e7y8u"]
 [ext_resource type="AudioStream" uid="uid://4fhypqgci2nc" path="res://audio/kendaraan/rem.wav" id="2"]
 [ext_resource type="AudioStream" uid="uid://58ehf8k2uy2j" path="res://audio/kendaraan/bip-mundur.ogg" id="21"]
 [ext_resource type="AudioStream" uid="uid://cwqd5eit4wrjk" path="res://audio/kendaraan/klakson-ulang.ogg" id="22"]

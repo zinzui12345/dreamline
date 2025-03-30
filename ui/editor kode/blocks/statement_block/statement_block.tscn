@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c84vmg3odrtxt"]
 
-[ext_resource type="Script" path="res://ui/editor kode/blocks/statement_block/statement_block.gd" id="1_6wvlf"]
-[ext_resource type="Script" path="res://ui/editor kode/blocks/utilities/background/background.gd" id="2_lctqt"]
+[ext_resource type="Script" uid="uid://d3yfax7nle26h" path="res://ui/editor kode/blocks/statement_block/statement_block.gd" id="1_6wvlf"]
+[ext_resource type="Script" uid="uid://bai1d1up6vcdb" path="res://ui/editor kode/blocks/utilities/background/background.gd" id="2_lctqt"]
 [ext_resource type="PackedScene" uid="uid://c7puyxpqcq6xo" path="res://ui/editor kode/blocks/utilities/drag_drop_area/drag_drop_area.tscn" id="2_owgdx"]
 [ext_resource type="PackedScene" uid="uid://b1oge52xhjqnu" path="res://ui/editor kode/blocks/utilities/snap_point/snap_point.tscn" id="3_5vaov"]
 

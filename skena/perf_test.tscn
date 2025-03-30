@@ -1,7 +1,7 @@
 [gd_scene load_steps=40 format=3 uid="uid://dodo3q7h6ujaa"]
 
-[ext_resource type="Script" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
-[ext_resource type="Script" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
+[ext_resource type="Script" uid="uid://uyf1t8kxjx26" path="res://skrip/antarmuka/performance_info.gd" id="1_cgt1u"]
+[ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="1_n5sj6"]
 [ext_resource type="Texture2D" uid="uid://dsjkya7g111eu" path="res://ui/ikon/ikon_mode_bermain.svg" id="2_wn08a"]
 [ext_resource type="Texture2D" uid="uid://c23oxwal8i07d" path="res://ui/ikon/ikon_mode_render.svg" id="3_pxv10"]
 [ext_resource type="FontFile" uid="uid://c32o2cnow484n" path="res://ui/fonta/noto_sans_italic.ttf" id="5_80doc"]
@@ -396,7 +396,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qr4hl"]
 _data = {
-"proses": SubResource("Animation_lpjt7")
+&"proses": SubResource("Animation_lpjt7")
 }
 
 [sub_resource type="Animation" id="Animation_3kg2n"]
@@ -418,7 +418,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d7reu"]
 _data = {
-"kuru_kuru": SubResource("Animation_3kg2n")
+&"kuru_kuru": SubResource("Animation_3kg2n")
 }
 
 [sub_resource type="Animation" id="Animation_gh1a4"]
@@ -452,7 +452,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fy5nv"]
 _data = {
-"tampilkan": SubResource("Animation_gh1a4")
+&"tampilkan": SubResource("Animation_gh1a4")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djxsm"]

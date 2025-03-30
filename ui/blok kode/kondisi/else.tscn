@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://cxsxqgv7je20p"]
 
-[ext_resource type="Script" path="res://skrip/blok kode/kondisi.gd" id="1_d67e0"]
+[ext_resource type="Script" uid="uid://bv4m501ttjb5c" path="res://skrip/blok kode/kondisi.gd" id="1_d67e0"]
 [ext_resource type="FontFile" uid="uid://bjum7pw4w7wu" path="res://ui/fonta/Modernpictograms-YJW8.otf" id="2_sk3qk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gj1vm"]

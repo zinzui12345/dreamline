@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://ihafed1x1w4f"]
 
-[ext_resource type="Script" path="res://skrip/map.gd" id="1_h3x2o"]
+[ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
 [ext_resource type="PackedScene" uid="uid://df2034e3s77u4" path="res://skena/objek/placeholder_objek.tscn" id="3_2k3jx"]
 [ext_resource type="PackedScene" uid="uid://fbtpsokjfoin" path="res://skena/entitas/npc_jamur.scn" id="4_bfkg2"]

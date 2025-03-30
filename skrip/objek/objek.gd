@@ -67,6 +67,11 @@ func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("objek").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada objek | ini digunakan untuk menambahkan objek ke server
+			if has_meta("id_objek"):
+				_sp_properti.append([
+					"id_objek",
+					get_meta("id_objek")
+				])
 			if get("properti") != null:
 				for properti_kustom : Array in get("properti"):
 					_sp_properti.append([
