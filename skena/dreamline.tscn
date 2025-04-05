@@ -72,7 +72,7 @@
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
-[ext_resource type="AudioStream" uid="uid://cv1e461msmahn" path="res://audio/antarmuka/buat objek.ogg" id="40_yw8vn"]
+[ext_resource type="AudioStream" uid="uid://c0hcoitga5s5g" path="res://audio/antarmuka/buat objek.ogg" id="40_yw8vn"]
 [ext_resource type="Texture2D" uid="uid://dyxhyga1gys7k" path="res://ui/ikon/ikon_entitas_granat.png" id="41_nvbjq"]
 [ext_resource type="Texture2D" uid="uid://xluyqwb0nns0" path="res://ui/ikon/ikon_entitas_bajay.png" id="42_krisr"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
@@ -87,10 +87,10 @@
 [ext_resource type="Script" uid="uid://dpxfqane0ylo6" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 [ext_resource type="Texture2D" uid="uid://cjrflqocbkufn" path="res://ui/ikon/ikon_vr.svg" id="74_jekg6"]
-[ext_resource type="AudioStream" uid="uid://g4nl77pajw1n" path="res://audio/antarmuka/pilih.ogg" id="76_m8wn8"]
+[ext_resource type="AudioStream" uid="uid://b1r1pmos6ks5i" path="res://audio/antarmuka/pilih.ogg" id="76_m8wn8"]
 [ext_resource type="PackedScene" uid="uid://bq37yla8ya707" path="res://ui/editor kode/main_panel.tscn" id="81_d4drg"]
-[ext_resource type="AudioStream" uid="uid://b1dhl72vfxvq1" path="res://audio/antarmuka/panel informasi.ogg" id="87_0yo5j"]
-[ext_resource type="AudioStream" uid="uid://dnlgtcmstqcuj" path="res://audio/antarmuka/panel konfirmasi.wav" id="90_ur733"]
+[ext_resource type="AudioStream" uid="uid://c10n6ngyca04u" path="res://audio/antarmuka/panel informasi.ogg" id="87_0yo5j"]
+[ext_resource type="AudioStream" uid="uid://b7h55clqef6w4" path="res://audio/antarmuka/panel konfirmasi.wav" id="90_ur733"]
 
 [sub_resource type="Animation" id="Animation_6qw4d"]
 resource_name = "sembunyikan"

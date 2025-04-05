@@ -57,7 +57,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/anthonyec.camera_preview/plugin.cfg", "res://addons/awesome_input_icons/plugin.cfg", "res://addons/compass/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/godot-idea-board/plugin.cfg", "res://addons/panku_console/plugin.cfg", "res://addons/vrm/plugin.cfg", "res://addons/wigglebone/plugin.cfg")
+enabled=PackedStringArray("res://addons/LANServerBroadcast/plugin.cfg", "res://addons/Todo_Manager/plugin.cfg", "res://addons/awesome_input_icons/plugin.cfg", "res://addons/compass/plugin.cfg", "res://addons/dialogue_manager/plugin.cfg", "res://addons/godot-idea-board/plugin.cfg", "res://addons/panku_console/plugin.cfg", "res://addons/road-generator/plugin.cfg", "res://addons/vrm/plugin.cfg")
 
 [file_customization]
 
@@ -260,7 +260,7 @@ pointing/emulate_mouse_from_touch.mobile=true
 [internationalization]
 
 locale/translations=PackedStringArray("res://ui/bahasa/translasi.en.translation", "res://ui/bahasa/translasi.id.translation")
-locale/translations_pot_files=PackedStringArray("res://ui/dialog/test.dialogue", "res://ui/dialog/intro.dialogue")
+locale/translations_pot_files=PackedStringArray("res://ui/dialog/intro.dialogue", "res://ui/dialog/test.dialogue")
 
 [layer_names]
 

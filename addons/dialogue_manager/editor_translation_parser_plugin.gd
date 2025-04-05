@@ -7,7 +7,7 @@ const DialogueManagerParser = preload("./components/parser.gd")
 const DialogueManagerParseResult = preload("./components/parse_result.gd")
 
 
-func _parse_file(path: String, msgids: Array, msgids_context_plural: Array) -> void:
+func _parse_file(path: String) -> Array[PackedStringArray]:
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	var text: String = file.get_as_text()
 
@@ -21,8 +21,7 @@ func _parse_file(path: String, msgids: Array, msgids_context_plural: Array) -> v
 			if character_name in known_keys: continue
 
 			known_keys.append(character_name)
-
-			msgids_context_plural.append([character_name.replace('"', '\\"'), "dialogue", ""])
+			#msgids_context_plural.append([character_name.replace('"', '\\"'), "dialogue", ""])
 
 	# Add all dialogue lines and responses
 	var dialogue: Dictionary = data.lines
@@ -34,10 +33,20 @@ func _parse_file(path: String, msgids: Array, msgids_context_plural: Array) -> v
 
 		known_keys.append(line.translation_key)
 
-		if line.translation_key == "" or line.translation_key == line.text:
-			msgids_context_plural.append([line.text.replace('"', '\\"'), "", ""])
-		else:
-			msgids_context_plural.append([line.text.replace('"', '\\"'), line.translation_key.replace('"', '\\"'), ""])
+		#if line.translation_key == "" or line.translation_key == line.text:
+			#msgids_context_plural.append([line.text.replace('"', '\\"'), "", ""])
+		#else:
+			#msgids_context_plural.append([line.text.replace('"', '\\"'), line.translation_key.replace('"', '\\"'), ""])
+	
+	var ret: Array[PackedStringArray] = []
+	var split_strs = text.split(",", false)
+	for s in split_strs:
+		ret.append(PackedStringArray([s]))
+		#print("Extracted string: " + s)
+
+	return ret
+
+
 
 
 func _get_recognized_extensions() -> PackedStringArray:
