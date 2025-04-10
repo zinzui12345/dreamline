@@ -632,8 +632,8 @@ func _pemain_terputus(id_pemain):
 			# jika pemain adalah target, reset idnya
 			if id_pemain_target == id_pemain: pemain[idx_pemain]["id_client"] = 0
 			# hapus visibilitas pemain pada pemain target
-			elif cek_visibilitas_pemain[id_pemain_target].has(id_pemain):
-				if cek_visibilitas_pemain.has(id_pemain_target):
+			elif cek_visibilitas_pemain.has(id_pemain_target):
+				if cek_visibilitas_pemain[id_pemain_target].has(id_pemain):
 					cek_visibilitas_pemain[id_pemain_target].erase(id_pemain)
 				hapus_pool_pemain(id_pemain_target, id_pemain)
 	
@@ -1164,8 +1164,9 @@ func _pemain_terputus(id_pemain):
 			# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 			for idx_pemain in pemain.keys():
 				if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
-					if cek_visibilitas_pool_karakter[pemain[idx_pemain]["id_client"]][nama_karakter] == "spawn":
-						sinkronkan_kondisi_karakter(pemain[idx_pemain]["id_client"], nama_karakter, kondisi_karakter)
+					if cek_visibilitas_pool_karakter.has(pemain[idx_pemain]["id_client"]) and cek_visibilitas_pool_karakter[pemain[idx_pemain]["id_client"]].has(nama_karakter):
+						if cek_visibilitas_pool_karakter[pemain[idx_pemain]["id_client"]][nama_karakter] == "spawn":
+							sinkronkan_kondisi_karakter(pemain[idx_pemain]["id_client"], nama_karakter, kondisi_karakter)
 	else: push_error("penyesuaian kondisi karakter hanya dapat dilakukan pada server!")
 @rpc("any_peer") func _kirim_map(id_pemain : int):						# 11/11/24 :: kirim map ke pemain tertentu
 	if map.substr(0,1) == "@" and ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, map.substr(1)]):

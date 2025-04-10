@@ -61,7 +61,7 @@ func init_module():
 	_is_gui_open = not (window.visible or simple_launcher.visible)
 	update_gui_state()
 
-	get_module_opt().init_expression = load_module_data("init_expr", "")
+	if get_module_opt() != null: get_module_opt().init_expression = load_module_data("init_expr", "")
 	# execute init_expr
 	if init_expr != "":
 		core.gd_exprenv.execute(init_expr)
