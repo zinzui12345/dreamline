@@ -179,7 +179,7 @@ func _input(_event): # lepas walaupun tidak di-fokus
 		elif Input.is_action_pressed("kanan"):	arah_kemudi.x = -Input.get_action_strength("kanan")
 		else:									arah_kemudi.x = 0
 		
-		if Input.is_action_pressed("lompat"):	self.brake = Input.get_action_strength("lompat")
+		if Input.is_action_pressed("lompat"):	self.brake = Input.get_action_strength("lompat") * 1.5
 		else:									self.brake = 0
 
 func fokus():
@@ -188,7 +188,8 @@ func gunakan(id_pemain):
 	if id_pengemudi == id_pemain:					server.gunakan_entitas(name, "_lepas")
 	elif id_pengemudi == -1: 						server.gunakan_entitas(name, "_kemudikan")
 func hapus(): # ketika tampilan dihapus
-	Panku.notify("oh yeah") # FIXME : material_casts_shadows: Parameter "material" is null.
+	visible = false
+	#Panku.notify("oh yeah") # FIXME : material_casts_shadows: Parameter "material" is null.
 	if id_pengemudi != -1 and dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 		if id_pengemudi == multiplayer.get_unique_id():
 			dunia.get_node("pemain/"+str(id_pengemudi)).global_position = posisi_awal
@@ -255,6 +256,9 @@ func _lepas(id):
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.bantuan_aksi_1 = false
 		server.permainan.bantuan_aksi_2 = false
+		
+		# 10/04/25 : hentikan laju
+		self.brake = 1.0
 		
 		# atur ulang arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:

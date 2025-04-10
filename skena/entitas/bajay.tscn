@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=4 uid="uid://duhikxgofcvdn"]
+[gd_scene load_steps=72 format=4 uid="uid://duhikxgofcvdn"]
 
 [ext_resource type="AudioStream" uid="uid://vj64jsvs1gy" path="res://audio/kendaraan/tabrak.wav" id="1"]
 [ext_resource type="Script" uid="uid://js0ohc7r83it" path="res://skrip/entitas/bajay.gd" id="1_thjsr"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://m50p4o2xpt3y" path="res://audio/kendaraan/mesin1-mulai.ogg" id="3_ml7cc"]
 [ext_resource type="AudioStream" uid="uid://b4yw2u4ixu4sx" path="res://audio/kendaraan/mesin1-ulang.ogg" id="4_das3n"]
 [ext_resource type="AudioStream" uid="uid://b3q24yebpafud" path="res://audio/kendaraan/mesin1-berhenti.ogg" id="5_xie4g"]
+[ext_resource type="Script" uid="uid://bpipyr8548i57" path="res://skrip/objek/platform_bergerak.gd" id="11_vpw5p"]
 [ext_resource type="AudioStream" uid="uid://58ehf8k2uy2j" path="res://audio/kendaraan/bip-mundur.ogg" id="21"]
 [ext_resource type="AudioStream" uid="uid://cwqd5eit4wrjk" path="res://audio/kendaraan/klakson-ulang.ogg" id="22"]
 [ext_resource type="AudioStream" uid="uid://5qn1xpuetffq" path="res://audio/kendaraan/mesin1-gas.ogg" id="23"]
@@ -1399,6 +1400,15 @@ Vector2i(2, 0): {
 }
 }
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_h8oth"]
+size = Vector3(1, 0.361865, 0.844727)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_arsuq"]
+size = Vector3(1, 0.0716675, 0.458328)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ds16c"]
+size = Vector3(1.08301, 0.150119, 0.731119)
+
 [node name="bajay" type="VehicleBody3D" groups=["dapat_diedit", "dapat_digunakan"]]
 collision_layer = 50
 collision_mask = 533
@@ -1653,6 +1663,26 @@ visible = false
 [node name="arah_pandangan" type="Node3D" parent="arah_pengamat_vr/arah_putar"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
+[node name="platform_bergerak" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("11_vpw5p")
+
+[node name="area_1" type="CollisionShape3D" parent="platform_bergerak"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.344067, 0.0776367)
+shape = SubResource("BoxShape3D_h8oth")
+
+[node name="area_2" type="CollisionShape3D" parent="platform_bergerak"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.588796, -0.703572)
+shape = SubResource("BoxShape3D_arsuq")
+
+[node name="area_3" type="CollisionShape3D" parent="platform_bergerak"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03123, -0.127773)
+shape = SubResource("BoxShape3D_ds16c")
+
 [connection signal="body_entered" from="." to="." method="_ketika_menabrak_sesuatu"]
 [connection signal="finished" from="AudioMesin" to="." method="_on_AudioMesin_finished"]
 [connection signal="finished" from="AudioHentikanMesin" to="." method="_on_AudioMesin_finished"]
+[connection signal="body_entered" from="platform_bergerak" to="platform_bergerak" method="_ketika_body_entered"]
+[connection signal="body_exited" from="platform_bergerak" to="platform_bergerak" method="_ketika_body_exited"]
