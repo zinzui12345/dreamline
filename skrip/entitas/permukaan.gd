@@ -83,6 +83,7 @@ var total_pencemaran = 0
 var total_bunga_nektar = 0
 
 var shader_air : MeshInstance3D
+var bentuk_air : MeshInstance3D
 var fisik : StaticBody3D
 
 func _enter_tree():
@@ -101,6 +102,8 @@ func _ready():
 		muat_terrain()
 		if get_node_or_null("air") != null and get_node_or_null("air/shader_air") != null:
 			shader_air = get_node("air/shader_air")
+		if get_node_or_null("air") != null and get_node_or_null("air/air_laut") != null:
+			bentuk_air = get_node("air/air_laut")
 func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
@@ -115,6 +118,9 @@ func _process(_delta):
 					-shader_air.position.z
 				)
 			)
+		if bentuk_air != null:
+			bentuk_air.global_position.x = pengamat.global_position.x
+			bentuk_air.global_position.z = pengamat.global_position.z
 func _exit_tree():
 	if Engine.is_editor_hint():
 		if $tanah.get_node_or_null("placeholder_permukaan") != null:
