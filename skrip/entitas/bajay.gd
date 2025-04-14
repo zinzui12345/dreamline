@@ -204,6 +204,7 @@ func hapus(): # ketika tampilan dihapus
 func _kemudikan(id):
 	# atur pengemudi
 	if id == client.id_koneksi:
+		$platform_bergerak.atur_proses(false)
 		dunia.raycast_occlusion_culling.add_exception(self)
 		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
 		
@@ -244,6 +245,7 @@ func _kemudikan(id):
 func _lepas(id):
 	# atur pengemudi
 	if id == client.id_koneksi:
+		$platform_bergerak.atur_proses(true)
 		dunia.raycast_occlusion_culling.remove_exception(self)
 		dunia.raycast_occlusion_culling.remove_exception(dunia.get_node("pemain/"+str(id)))
 		
