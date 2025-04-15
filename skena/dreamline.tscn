@@ -5963,7 +5963,6 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="kontrol_sentuh" type="Control" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -6024,39 +6023,35 @@ texture_pressed = ExtResource("6_beubk")
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="lari" type="TextureButton" parent="kontrol_sentuh"]
+[node name="lari" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.102539
 anchor_top = 0.293333
 anchor_right = 0.200195
 anchor_bottom = 0.460333
-action_mode = 0
-texture_normal = ExtResource("15_67glo")
-texture_pressed = ExtResource("23_28me6")
+offset_right = 0.000259399
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lari"]
-position = Vector2(50, 50)
+texture_normal = ExtResource("15_67glo")
+texture_pressed = ExtResource("23_28me6")
 shape = SubResource("CircleShape2D_2jlpn")
 action = "berlari"
 
-[node name="lompat" type="TextureButton" parent="kontrol_sentuh"]
+[node name="lompat" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.898438
 anchor_top = 0.293333
 anchor_right = 0.996
 anchor_bottom = 0.46
-action_mode = 0
-texture_normal = ExtResource("15_5l3bk")
-texture_pressed = ExtResource("16_t7mcc")
+offset_right = 0.0964966
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lompat"]
-position = Vector2(50, 50)
+texture_normal = ExtResource("15_5l3bk")
+texture_pressed = ExtResource("16_t7mcc")
 shape = SubResource("CircleShape2D_2jlpn")
 action = "lompat"
 
@@ -6080,9 +6075,8 @@ texture_pressed = ExtResource("26_5khf0")
 shape = SubResource("CircleShape2D_tw50u")
 action = "jongkok"
 
-[node name="aksi_1" type="TextureButton" parent="kontrol_sentuh"]
+[node name="aksi_1" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.691
 anchor_top = 0.853
 anchor_right = 0.691
@@ -6091,8 +6085,6 @@ offset_left = -55.584
 offset_top = -55.8
 offset_right = 56.4154
 offset_bottom = 56.1997
-action_mode = 0
-stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
@@ -6100,7 +6092,6 @@ metadata/_edit_lock_ = true
 texture_normal = ExtResource("23_p8sf0")
 texture_pressed = ExtResource("24_5vy8q")
 shape = SubResource("CircleShape2D_28tvu")
-action = "aksi1_sentuh"
 
 [node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -9467,12 +9458,10 @@ bus = &"Suara Pemain"
 [connection signal="touch_stop" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
 [connection signal="analog_force_change" from="kontrol_sentuh/kontrol_gerakan/analog" to="." method="_ketika_mengontrol_arah_gerak"]
 [connection signal="toggled" from="kontrol_sentuh/mic" to="." method="_berbicara"]
-[connection signal="button_down" from="kontrol_sentuh/lari" to="." method="_ketika_mulai_berlari"]
-[connection signal="button_up" from="kontrol_sentuh/lari" to="." method="_ketika_berhenti_berlari"]
-[connection signal="button_down" from="kontrol_sentuh/lompat" to="." method="_ketika_mulai_melompat"]
-[connection signal="button_up" from="kontrol_sentuh/lompat" to="." method="_ketika_berhenti_melompat"]
 [connection signal="button_down" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_tekan"]
 [connection signal="button_up" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_lepas"]
+[connection signal="pressed" from="kontrol_sentuh/aksi_1/tombol_sentuh" to="." method="_aksi_1_tekan"]
+[connection signal="released" from="kontrol_sentuh/aksi_1/tombol_sentuh" to="." method="_aksi_1_lepas"]
 [connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]
 [connection signal="button_up" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]
