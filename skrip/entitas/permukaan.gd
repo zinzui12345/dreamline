@@ -8,6 +8,7 @@ extends Node3D
 # Posisi node ini harus di (0, 0, 0)!
 
 # TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
+# TODO : Multi-Threading
 
 @export var nama_permukaan = "pulau"
 @export var hasilkan_vegetasi = false
