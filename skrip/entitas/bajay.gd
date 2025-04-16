@@ -11,6 +11,7 @@ const sinkron_kondisi = [
 	["id_pengemudi", -1],
 	["steering", 0.0],
 	["engine_force", 0.0],
+	["linear_velocity", Vector3.ZERO],
 	["klakson", false]
 ]
 const jalur_instance = "res://skena/entitas/bajay.tscn"
@@ -160,6 +161,9 @@ func proses(waktu_delta : float) -> void:
 	if id_pengemudi != -1:
 		_atur_audio_mesin(waktu_delta)
 		percepatan = kecepatan_laju
+	else:
+		# 16/04/25 : hentikan laju
+		self.brake = 2.0
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengemudi == multiplayer.get_unique_id() and dunia.get_node("pemain/"+str(id_pengemudi)).kontrol:
 		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
@@ -263,9 +267,6 @@ func _lepas(id):
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.bantuan_aksi_1 = false
 		server.permainan.bantuan_aksi_2 = false
-		
-		# 10/04/25 : hentikan laju
-		self.brake = 1.0
 		
 		# atur ulang arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
