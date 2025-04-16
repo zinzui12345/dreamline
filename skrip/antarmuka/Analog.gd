@@ -53,7 +53,7 @@ func calculate_node_sizes():
 	squaredHalfSizeLength = halfSize.x * halfSize.y
 	
 func _input(event):
-	if visible or isDynamicallyShowing:		#untuk mencegah deteksi ketika analog disable
+	if visible and isDynamicallyShowing:		#untuk mencegah deteksi ketika analog disable
 		var incomingPointer = extract_pointer_index(event)
 		if incomingPointer == INACTIVE_IDX:
 			#Input was not a touch
