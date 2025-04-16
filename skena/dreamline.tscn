@@ -1,17 +1,14 @@
-[gd_scene load_steps=351 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=348 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
-[ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
 [ext_resource type="Texture2D" uid="uid://b82t6pt13avfu" path="res://ui/spinner_memuat.svg" id="2_v0ki3"]
 [ext_resource type="FontFile" uid="uid://c32o2cnow484n" path="res://ui/fonta/noto_sans_italic.ttf" id="3_2ugog"]
 [ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="3_c2goa"]
-[ext_resource type="Texture2D" uid="uid://bg5fxjgjk8nfg" path="res://addons/compass/resources/compassbar.png" id="3_ctamh"]
 [ext_resource type="PackedScene" uid="uid://bl6ex1ayqq3gy" path="res://ui/DPad.tscn" id="3_mar25"]
 [ext_resource type="Texture2D" uid="uid://b8mrr8lt7uci" path="res://ui/ikon/ikon_tombol_play.svg" id="3_sojxf"]
 [ext_resource type="PackedScene" uid="uid://fmubeeq8rgs5" path="res://ui/Analog.tscn" id="4_0f5j0"]
 [ext_resource type="Texture2D" uid="uid://l5pycvwcl5qn" path="res://ui/ikon/ikon_tombol_statistik.svg" id="4_fdf7p"]
-[ext_resource type="Script" uid="uid://ctss15d50kv6q" path="res://addons/compass/entities/compassbar.gd" id="4_qrdv8"]
 [ext_resource type="PackedScene" uid="uid://dshoprkgyv6ov" path="res://ui/objek.tscn" id="5_0d7jc"]
 [ext_resource type="Texture2D" uid="uid://1td3kq0tsvxi" path="res://ui/ikon/ikon_tombol_putuskan.svg" id="5_d421m"]
 [ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="6_2op7y"]
@@ -5059,25 +5056,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="kompas" type="TextureRect" parent="hud"]
-texture_repeat = 2
-material = ExtResource("2_gw3f6")
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -48.0
-offset_top = -48.0
-offset_right = 48.0
-offset_bottom = -24.0
-grow_horizontal = 2
-grow_vertical = 0
-texture = ExtResource("3_ctamh")
-stretch_mode = 3
-script = ExtResource("4_qrdv8")
 
 [node name="pesan" type="Control" parent="hud"]
 layout_mode = 1

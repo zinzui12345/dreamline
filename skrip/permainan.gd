@@ -1414,9 +1414,9 @@ func _tampilkan_permainan() -> void:
 	$proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 	$latar.sembunyikan()
 	_hentikan_musik_latar()
-	$hud/kompas.visible = true
-	$hud/kompas.parent = karakter
-	$hud/kompas.set_physics_process(true)
+	#$hud/kompas.visible = true
+	#$hud/kompas.parent = karakter
+	#$hud/kompas.set_physics_process(true)
 	$mode_bermain.visible = true
 	$mode_bermain/main.button_pressed = true
 	$mode_bermain/edit.button_pressed = false
@@ -1432,8 +1432,8 @@ func _sembunyikan_antarmuka_permainan() -> void:
 		$setelan/panel/gulir/tab_setelan/setelan_umum/mode_vr.visible = false
 	$hud/bantuan_input/aksi1.visible = false
 	$hud/bantuan_input/aksi2.visible = false
-	$hud/kompas.set_physics_process(false)
-	$hud/kompas.parent = null
+	#$hud/kompas.set_physics_process(false)
+	#$hud/kompas.parent = null
 	$hud.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
@@ -1717,7 +1717,7 @@ func _pilih_tab_sepatu_karakter() -> void:
 	$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat/animasi.play("fokus_sepatu")
 func pilih_mode_bermain() -> void:
 	if is_instance_valid(karakter) and !jeda:
-		$hud/kompas.visible = true
+		#$hud/kompas.visible = true
 		$hud/info_posisi.visible = false
 		$mode_bermain/main.button_pressed = true
 		$mode_bermain/edit.button_pressed = false
@@ -1729,7 +1729,7 @@ func pilih_mode_bermain() -> void:
 		%timeline/animasi.play_backwards("tampilkan")
 func pilih_mode_edit() -> void:
 	if is_instance_valid(karakter) and !jeda:
-		$hud/kompas.visible = false
+		#$hud/kompas.visible = false
 		$hud/info_posisi.visible = true
 		$mode_bermain/main.button_pressed = false
 		$mode_bermain/edit.button_pressed = true
