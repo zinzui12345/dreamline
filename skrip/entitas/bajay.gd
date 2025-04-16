@@ -22,8 +22,8 @@ var id_pengemudi = -1:
 			# atur kondisi pengemudi
 			if dunia.get_node_or_null("pemain/"+str(id)) != null:
 				# sesuaikan pose pengemudi
+				dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengemudi") # atur pose sebelum gestur
 				dunia.get_node("pemain/"+str(id)).set("gestur", "duduk")
-				dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengemudi")
 				
 				# atur IK tangan pengemudi | otomatis set ketika pos_tangan tidak valid kemudian ready(), skrip pada pos_tangan
 				if dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null and is_inside_tree():
@@ -217,6 +217,7 @@ func _kemudikan(id):
 		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		server.permainan.bantuan_aksi_2 = true
+		server.permainan.set("tombol_aksi_3", "rem")
 		
 		# atur arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
@@ -254,6 +255,10 @@ func _lepas(id):
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
+		dunia.get_node("pemain/"+str(id)).move_and_slide()
+		
+		server.permainan.set("tombol_aksi_3", "lompat")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.bantuan_aksi_1 = false

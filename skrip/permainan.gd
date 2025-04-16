@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 15/04/25 Early Access"
+const versi = "Dreamline v0.4.4 16/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -119,10 +119,11 @@ var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 			"kemudikan_sesuatu":	$hud/bantuan_input/aksi2/teks.text = "%kemudikan"
 		if mode_vr and pengamat_vr != null:
 			pengamat_vr.teks_bantuan_aksi_2 = $hud/bantuan_input/aksi2/teks.text
-var tombol_aksi_3 : StringName = "berlari" :
+var tombol_aksi_3 : StringName = "lompat" :
 	set(ikon):
 		if ikon != tombol_aksi_3:
-			get_node("kontrol_sentuh/lari").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			get_node("kontrol_sentuh/lompat/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			get_node("kontrol_sentuh/lompat/tombol_sentuh").set("texture_pressed", load("res://ui/tombol/%s_tekan.svg" % [ikon]))
 			tombol_aksi_3 = ikon
 var bantuan_aksi_1 : bool = false :
 	set(visibilitas):
@@ -187,6 +188,7 @@ func _ready() -> void:
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_1.visible = false
 	$kontrol_sentuh/aksi_2.visible = false
+	$kontrol_sentuh/kontrol_kendaraan.visible = false
 	$hud/daftar_properti_objek/DragPad.visible = false
 	editor_kode = $editor_kode/blok_kode
 func _setup() -> void:
@@ -1436,6 +1438,7 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/menu.visible = true
+	$kontrol_sentuh/kontrol_kendaraan.visible = false
 	$daftar_objek/tutup/TouchScreenButton.visible = false
 	if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
 	if $dialog.get_node_or_null("ExampleBalloon") != null: $dialog.get_node("ExampleBalloon").queue_free()
@@ -2406,6 +2409,20 @@ func _ketika_mengatur_mode_kontrol_gerak(mode : int) -> void:
 		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true
 	if not $setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled:
 		Konfigurasi.mode_kontrol_gerak = mode
+func _ketika_mengatur_mode_kontrol_kendaraan(aktif : bool) -> void:
+	if aktif:
+		$kontrol_sentuh/kontrol_gerakan/analog.visible = false
+		$"kontrol_sentuh/kontrol_gerakan/d-pad".visible = false
+		$kontrol_sentuh/jongkok.visible = false
+		if karakter.pose_duduk == "mengemudi":
+			$kontrol_sentuh/kontrol_kendaraan.visible = true
+		else:
+			$kontrol_sentuh/lompat.visible = false
+	else:
+		$kontrol_sentuh/lompat.visible = true
+		$kontrol_sentuh/jongkok.visible = true
+		$kontrol_sentuh/kontrol_kendaraan.visible = false
+		_ketika_mengatur_mode_kontrol_gerak(Konfigurasi.mode_kontrol_gerak)
 func _ketika_mengatur_sensitivitas_pandangan(nilai : float) -> void:
 	if $setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable:
 		Konfigurasi.sensitivitasPandangan = nilai

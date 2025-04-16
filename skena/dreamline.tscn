@@ -1,4 +1,4 @@
-[gd_scene load_steps=343 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=351 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="2_gw3f6"]
@@ -61,14 +61,22 @@
 [ext_resource type="Texture2D" uid="uid://bv30icjt11rtb" path="res://ui/tombol/berlari_tekan.svg" id="23_28me6"]
 [ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/lempar_sesuatu.svg" id="23_p8sf0"]
 [ext_resource type="Texture2D" uid="uid://xf60ppb2l5u2" path="res://ui/tombol/aksi_1_tekan.svg" id="24_5vy8q"]
+[ext_resource type="Texture2D" uid="uid://b2703a51e6o0m" path="res://ui/tombol/maju_kendaraan.svg" id="25_l7fll"]
 [ext_resource type="Texture2D" uid="uid://qqj0n5dk5sk3" path="res://ui/ikon/ikon_tab_celana.svg" id="25_qgmii"]
 [ext_resource type="Texture2D" uid="uid://bdbbtd3gddyws" path="res://ui/tombol/jongkok.svg" id="25_umeh2"]
 [ext_resource type="Texture2D" uid="uid://3flv2byt2kkb" path="res://ui/tombol/jongkok_tekan.svg" id="26_5khf0"]
 [ext_resource type="Texture2D" uid="uid://o7tolt5jb85q" path="res://ui/ikon/ikon_tab_sepatu.svg" id="26_ifmuk"]
+[ext_resource type="Texture2D" uid="uid://t7eh06h5f0wu" path="res://ui/tombol/maju_kendaraan_tekan.svg" id="26_ny31w"]
+[ext_resource type="Texture2D" uid="uid://cr154lsmcb6bi" path="res://ui/tombol/mundur_kendaraan.svg" id="27_8mojr"]
+[ext_resource type="Texture2D" uid="uid://d0bp8sshdhcec" path="res://ui/tombol/mundur_kendaraan_tekan.svg" id="28_52iuq"]
 [ext_resource type="PackedScene" uid="uid://dfuer1vn0eafj" path="res://karakter/reno/reno.scn" id="28_djtbr"]
 [ext_resource type="Script" uid="uid://enxx5lgjrugf" path="res://skrip/antarmuka/Dragpad.gd" id="28_iksfn"]
 [ext_resource type="Texture2D" uid="uid://cgjt8ot1ioq5c" path="res://ui/ikon/ikon_tombol_oke.svg" id="28_s2n4g"]
+[ext_resource type="Texture2D" uid="uid://duxo2aroferxu" path="res://ui/tombol/kiri_kendaraan.svg" id="29_x8k3l"]
+[ext_resource type="Texture2D" uid="uid://b277rpkrqn6eu" path="res://ui/tombol/kiri_kendaraan_tekan.svg" id="30_q6cyv"]
+[ext_resource type="Texture2D" uid="uid://756shytlg87l" path="res://ui/tombol/kanan_kendaraan.svg" id="31_pfpc7"]
 [ext_resource type="Texture2D" uid="uid://c41b8e5spwwqr" path="res://ui/tombol/tutup_panel_objek.svg" id="32_clll1"]
+[ext_resource type="Texture2D" uid="uid://bl85yneama7uw" path="res://ui/tombol/kanan_kendaraan_tekan.svg" id="32_x2mh6"]
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
@@ -999,14 +1007,14 @@ _data = {
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj7vl"]
 bg_color = Color(1, 1, 1, 1)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_28tvu"]
+radius = 50.0
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_2jlpn"]
 radius = 45.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_tw50u"]
 radius = 45.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_28tvu"]
-radius = 50.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m033d"]
 bg_color = Color(1, 1, 1, 0)
@@ -6008,6 +6016,95 @@ position = Vector2(174, 272)
 scale = Vector2(0.8, 0.8)
 isDynamicallyShowing = true
 
+[node name="kontrol_kendaraan" type="Control" parent="kontrol_sentuh"]
+layout_mode = 1
+anchor_top = 0.48
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_lock_ = true
+
+[node name="gas" type="Control" parent="kontrol_sentuh/kontrol_kendaraan"]
+layout_mode = 1
+anchor_left = 0.108
+anchor_top = 0.231
+anchor_right = 0.108
+anchor_bottom = 0.231
+offset_left = -54.592
+offset_top = -55.072
+offset_right = 55.408
+offset_bottom = 54.928
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/kontrol_kendaraan/gas"]
+texture_normal = ExtResource("25_l7fll")
+texture_pressed = ExtResource("26_ny31w")
+shape = SubResource("CircleShape2D_28tvu")
+action = "maju"
+visibility_mode = 1
+
+[node name="mundur" type="Control" parent="kontrol_sentuh/kontrol_kendaraan"]
+layout_mode = 1
+anchor_left = 0.206
+anchor_top = 0.551
+anchor_right = 0.206
+anchor_bottom = 0.551
+offset_left = -54.944
+offset_top = -54.912
+offset_right = 55.056
+offset_bottom = 55.088
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/kontrol_kendaraan/mundur"]
+texture_normal = ExtResource("27_8mojr")
+texture_pressed = ExtResource("28_52iuq")
+shape = SubResource("CircleShape2D_28tvu")
+action = "mundur"
+visibility_mode = 1
+
+[node name="kiri" type="Control" parent="kontrol_sentuh/kontrol_kendaraan"]
+layout_mode = 1
+anchor_left = 0.775063
+anchor_top = 0.314282
+anchor_right = 0.775063
+anchor_bottom = 0.314282
+offset_left = -49.664
+offset_top = -50.056
+offset_right = 50.336
+offset_bottom = 49.944
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/kontrol_kendaraan/kiri"]
+texture_normal = ExtResource("29_x8k3l")
+texture_pressed = ExtResource("30_q6cyv")
+shape = SubResource("CircleShape2D_28tvu")
+action = "kiri"
+visibility_mode = 1
+
+[node name="kanan" type="Control" parent="kontrol_sentuh/kontrol_kendaraan"]
+layout_mode = 1
+anchor_left = 0.909828
+anchor_top = 0.314282
+anchor_right = 0.909828
+anchor_bottom = 0.314282
+offset_left = -47.664
+offset_top = -50.056
+offset_right = 52.336
+offset_bottom = 49.944
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/kontrol_kendaraan/kanan"]
+texture_normal = ExtResource("31_pfpc7")
+texture_pressed = ExtResource("32_x2mh6")
+shape = SubResource("CircleShape2D_28tvu")
+action = "kanan"
+visibility_mode = 1
+
 [node name="mic" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = -1
@@ -6033,7 +6130,7 @@ offset_right = 0.000259399
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lari"]
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/lari"]
 texture_normal = ExtResource("15_67glo")
 texture_pressed = ExtResource("23_28me6")
 shape = SubResource("CircleShape2D_2jlpn")
@@ -6049,7 +6146,7 @@ offset_right = 0.0964966
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/lompat"]
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/lompat"]
 texture_normal = ExtResource("15_5l3bk")
 texture_pressed = ExtResource("16_t7mcc")
 shape = SubResource("CircleShape2D_2jlpn")
@@ -8253,6 +8350,7 @@ theme_override_styles/normal = SubResource("StyleBoxLine_hrpxb")
 
 [node name="setelan_performa" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
 layout_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="label setelan" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_performa"]
 layout_mode = 2
@@ -8344,6 +8442,7 @@ theme_override_styles/normal = SubResource("StyleBoxLine_hrpxb")
 
 [node name="setelan_input" type="VBoxContainer" parent="setelan/panel/gulir/tab_setelan"]
 layout_mode = 2
+metadata/_edit_lock_ = true
 
 [node name="label setelan" type="Label" parent="setelan/panel/gulir/tab_setelan/setelan_input"]
 layout_mode = 2

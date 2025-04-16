@@ -23,9 +23,11 @@ var gestur : String = "berdiri":			# ini mode gestur
 			$pose.set("parameters/gestur/transition_request", ubah)
 			match ubah:
 				"berdiri":
+					server.permainan._ketika_mengatur_mode_kontrol_kendaraan(false)
 					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 1)
 					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 0)
 				"duduk":
+					server.permainan._ketika_mengatur_mode_kontrol_kendaraan(true)
 					$pose.set("parameters/arah_pandangan_vertikal/blend_amount", 0)
 					$pose.set("parameters/arah_pandangan_horizontal/blend_amount", 1)
 			gestur = ubah
