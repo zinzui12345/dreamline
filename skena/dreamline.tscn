@@ -1,4 +1,4 @@
-[gd_scene load_steps=348 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=349 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -641,7 +641,7 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ycsiu"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_52iuq"]
 bg_color = Color(1, 1, 1, 1)
 border_width_left = 1
 border_width_top = 1
@@ -655,7 +655,7 @@ corner_radius_bottom_left = 5
 [sub_resource type="Theme" id="Theme_su67x"]
 LineEdit/colors/font_color = Color(1, 0.12549, 0.12549, 1)
 LineEdit/font_sizes/font_size = 25
-LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_52iuq")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8xdra"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -712,12 +712,12 @@ corner_radius_bottom_left = 8
 [sub_resource type="Theme" id="Theme_wpahf"]
 LineEdit/colors/font_color = Color(0.0745098, 0.537255, 0.0745098, 1)
 LineEdit/font_sizes/font_size = 25
-LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_52iuq")
 
 [sub_resource type="Theme" id="Theme_dqa7m"]
 LineEdit/colors/font_color = Color(0, 0, 0.501961, 1)
 LineEdit/font_sizes/font_size = 25
-LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_52iuq")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yy6xj"]
 corner_radius_top_left = 5
@@ -1526,6 +1526,17 @@ border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
 border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ycsiu"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5

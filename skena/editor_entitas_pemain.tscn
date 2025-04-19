@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dx8y5u3abiq7"]
+[gd_scene load_steps=33 format=3 uid="uid://dx8y5u3abiq7"]
 
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="1_mbf47"]
 [ext_resource type="Texture2D" uid="uid://fqepvioy3jkr" path="res://ui/ikon/ikon_gender_cewek.svg" id="4_mavi4"]
@@ -30,20 +30,31 @@ var edit_entitas : entitas
 var mode_pandangan_karakter : int = 1
 
 func _ready() -> void:
+	%translasi_x_node.min_value = -2147483648
+	%translasi_x_node.max_value = 2147483647
+	%translasi_y_node.min_value = -2147483648
+	%translasi_y_node.max_value = 2147483647
+	%translasi_z_node.min_value = -2147483648
+	%translasi_z_node.max_value = 2147483647
+	
 	karakter_cewek = load(\"res://karakter/rulu/rulu.scn\").instantiate()
 	karakter_cowok = load(\"res://karakter/reno/reno.scn\").instantiate()
-	client.id_koneksi = 44
+	
 	dunia = server.get_node(\"/root/dunia\")
 	dunia.get_node(\"pemain\").add_child(karakter_cewek)
 	dunia.get_node(\"pemain\").add_child(karakter_cowok)
+	
+	client.id_koneksi = 44
 	karakter = karakter_cewek
 	karakter_cowok.visible = false
 	karakter_cewek.id_pemain = client.id_koneksi
 	karakter_cewek.name = str(client.id_koneksi)
+	
 	karakter.get_node(\"pengamat\").atur_mode(mode_pandangan_karakter)
 	karakter.get_node(\"pengamat\").kontrol = true
 	karakter.get_node(\"%GeneralSkeleton/badan/badan_f\").set_layer_mask_value(2, true)
 	karakter.get_node(\"%GeneralSkeleton/tangan\").set_layer_mask_value(2, false)
+	
 	server.permainan = self
 
 func _process(delta: float) -> void:
@@ -57,7 +68,7 @@ func ubah_karakter(indeks : int) -> void:
 	_ketika_mengatur_slider_arah_pandangan_y(0.0)
 	if edit_entitas != null:
 		edit_entitas.hapus()
-		$antarmuka/inspektur/model/jalur_entitas.text = \"\"
+		%jalur_entitas.text = \"\"
 	match indeks:
 		0:
 			karakter_cowok.visible = false
@@ -78,11 +89,23 @@ func ubah_karakter(indeks : int) -> void:
 	karakter.get_node(\"pengamat\").kontrol = true
 	karakter.get_node(\"%GeneralSkeleton/badan/badan_f\").set_layer_mask_value(2, true)
 	karakter.get_node(\"%GeneralSkeleton/tangan\").set_layer_mask_value(2, false)
+func perbarui_informasi() -> void:
+	%informasi.text = \"\"
+	for indeks_node in %pilih_node.item_count:
+		var nama_node : String = %pilih_node.get_item_text(indeks_node)
+		var posisi_node : Vector3 = edit_entitas.get_node(nama_node).position
+		var rotasi_node : Vector3 = edit_entitas.get_node(nama_node).rotation_degrees
+		%informasi.text += \"[color=#00ff00]%s[/color]\\n	pos:	%s \\n	rot:	%s \\n\\n\" % [nama_node, str(posisi_node), str(rotasi_node)]
+func ubah_properti_node(properti : String, nilai) -> void:
+	var nama_node : String = %pilih_node.get_item_text(%pilih_node.selected)
+	var node : Node3D = edit_entitas.get_node_or_null(nama_node)
+	
+	if is_instance_valid(node): node.set_indexed(properti, nilai)
 
 func _ketika_pilih_entitas() -> void:
-	$antarmuka/inspektur/model/dialog_buka_entitas.show()
+	%dialog_buka_entitas.show()
 func _ketika_memilih_entitas(jalur_entitas : String) -> void:
-	$antarmuka/inspektur/model/jalur_entitas.text = \"...\"
+	%jalur_entitas.text = \"...\"
 	await get_tree().create_timer(0.25).timeout
 	var tmp_edit_entitas = load(jalur_entitas).instantiate()
 	if edit_entitas != null and edit_entitas.get(\"jalur_instance\") != jalur_entitas:
@@ -92,24 +115,112 @@ func _ketika_memilih_entitas(jalur_entitas : String) -> void:
 	dunia.get_node(\"entitas\").add_child(edit_entitas)
 	if edit_entitas.has_method(\"_angkat\"):
 		edit_entitas._angkat(client.id_koneksi)
-	$antarmuka/inspektur/model/jalur_entitas.text = jalur_entitas
+	%jalur_entitas.text = jalur_entitas
+	%pilih_node.clear()
+	if edit_entitas.has_node(\"posisi_angkat\"):		%pilih_node.add_item(\"posisi_angkat\")
+	if edit_entitas.has_node(\"pos_tangan_kiri\"):	%pilih_node.add_item(\"pos_tangan_kiri\")
+	if edit_entitas.has_node(\"pos_tangan_kanan\"):	%pilih_node.add_item(\"pos_tangan_kanan\")
+	_ketika_memilih_node(0)
+	perbarui_informasi()
 
 func _ketika_mengatur_slider_arah_pandangan_y(value_changed: float) -> void:
-	$antarmuka/inspektur/karakter/nilai_arah_pandangan_y.value = value_changed
+	%nilai_arah_pandangan_y.value = value_changed
 func _ketika_mengatur_arah_pandangan_y(value: float) -> void:
 	karakter.arah_pandangan.y = value
 	match mode_pandangan_karakter:
 		1:	karakter.get_node(\"%pandangan\").rotation_degrees.x = value * (karakter.get_node(\"pengamat\").putaranMaxVertikalPandangan if value < 0 else absf(karakter.get_node(\"pengamat\").putaranMinVertikalPandangan))
 		3:	karakter.get_node(\"pengamat/kamera/rotasi_vertikal\").rotation_degrees.x = -(value * (karakter.get_node(\"pengamat\").putaranMaxVertikalPandangan if value < 0 else 65))
-	$antarmuka/inspektur/karakter/atur_arah_pandangan_y.value = value
+	%atur_arah_pandangan_y.value = value
 
 func _ketika_memilih_mode_pandangan(mode: int) -> void:
 	_ketika_mengatur_slider_arah_pandangan_y(0.0)
-	mode_pandangan_karakter = int($antarmuka/inspektur/karakter/pilih_mode_pandangan.get_item_text(mode))
+	mode_pandangan_karakter = int(%pilih_mode_pandangan.get_item_text(mode))
 	karakter.get_node(\"pengamat\").atur_mode(mode_pandangan_karakter)
+
+func _ketika_memilih_node(indeks_node: int) -> void:
+	var nama_node : String = %pilih_node.get_item_text(indeks_node)
+	var node : Node3D = edit_entitas.get_node_or_null(nama_node)
+	
+	if not is_instance_valid(node): return
+	
+	var posisi_node : Vector3 = node.position
+	var rotasi_node : Vector3 = node.rotation_degrees
+	
+	_ketika_memilih_langkah_transformasi(0)
+	%pilih_langkah_transformasi.select(0)
+	%pilih_langkah_transformasi.disabled = true
+	
+	%translasi_x_node.editable = false
+	%translasi_y_node.editable = false
+	%translasi_z_node.editable = false
+	%translasi_x_node.value = posisi_node.x
+	%translasi_y_node.value = posisi_node.y
+	%translasi_z_node.value = posisi_node.z
+	%translasi_x_node.editable = true
+	%translasi_y_node.editable = true
+	%translasi_z_node.editable = true
+	
+	%rotasi_x_node.editable = false
+	%rotasi_y_node.editable = false
+	%rotasi_z_node.editable = false
+	%rotasi_x_node.value = rotasi_node.x
+	%rotasi_y_node.value = rotasi_node.y
+	%rotasi_z_node.value = rotasi_node.z
+	
+	if nama_node != \"posisi_angkat\":
+		%rotasi_x_node.editable = true
+		%rotasi_y_node.editable = true
+		%rotasi_z_node.editable = true
+	
+	%pilih_langkah_transformasi.disabled = false
+
+func _ketika_memilih_langkah_transformasi(indeks_langkah : int) -> void:
+	%translasi_x_node.step = float(%pilih_langkah_transformasi.get_item_text(indeks_langkah))
+	%translasi_y_node.step = float(%pilih_langkah_transformasi.get_item_text(indeks_langkah))
+	%translasi_z_node.step = float(%pilih_langkah_transformasi.get_item_text(indeks_langkah))
+	
+	%rotasi_x_node.step = float(%pilih_langkah_transformasi.get_item_text(indeks_langkah))
+	%rotasi_y_node.step = float(%pilih_langkah_transformasi.get_item_text(indeks_langkah))
+	%rotasi_z_node.step = float(%pilih_langkah_transformasi.get_item_text(indeks_langkah))
+
+func _ketika_translasi_x_node_diubah(nilai: float) -> void:
+	if %translasi_x_node.editable:
+		ubah_properti_node(\"position:x\", nilai)
+		perbarui_informasi()
+func _ketika_translasi_y_node_diubah(nilai: float) -> void:
+	if %translasi_y_node.editable:
+		ubah_properti_node(\"position:y\", nilai)
+		perbarui_informasi()
+func _ketika_translasi_z_node_diubah(nilai: float) -> void:
+	if %translasi_z_node.editable:
+		ubah_properti_node(\"position:z\", nilai)
+		perbarui_informasi()
+
+func _ketika_rotasi_x_node_diubah(nilai: float) -> void:
+	if %rotasi_x_node.editable:
+		ubah_properti_node(\"rotation_degrees:x\", nilai)
+		perbarui_informasi()
+func _ketika_rotasi_y_node_diubah(nilai: float) -> void:
+	if %rotasi_y_node.editable:
+		ubah_properti_node(\"rotation_degrees:y\", nilai)
+		perbarui_informasi()
+func _ketika_rotasi_z_node_diubah(nilai: float) -> void:
+	if %rotasi_z_node.editable:
+		ubah_properti_node(\"rotation_degrees:z\", nilai)
+		perbarui_informasi()
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opc4n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sdhkx"]
+bg_color = Color(0.783524, 0.783523, 0.783523, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3wv47"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Theme" id="Theme_eaw3p"]
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_sdhkx")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_3wv47")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbf47"]
 bg_color = Color(1, 1, 1, 1)
@@ -202,6 +313,32 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ycsiu"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Theme" id="Theme_vy5ut"]
+LineEdit/colors/font_color = Color(1, 0.12549, 0.12549, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+
+[sub_resource type="Theme" id="Theme_w5jcf"]
+LineEdit/colors/font_color = Color(0.0745098, 0.537255, 0.0745098, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+
+[sub_resource type="Theme" id="Theme_jcx6r"]
+LineEdit/colors/font_color = Color(0, 0, 0.501961, 1)
+LineEdit/font_sizes/font_size = 25
+LineEdit/styles/normal = SubResource("StyleBoxFlat_ycsiu")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8josj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjwkp"]
@@ -245,6 +382,7 @@ anchor_right = 0.625
 anchor_bottom = 0.587
 offset_bottom = -0.200012
 stretch = true
+metadata/_edit_lock_ = true
 
 [node name="perender" type="SubViewport" parent="antarmuka/tampilan"]
 handle_input_locally = false
@@ -264,20 +402,37 @@ anchor_left = 0.625
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_opc4n")
+metadata/_edit_lock_ = true
 
-[node name="model" type="Panel" parent="antarmuka/inspektur"]
+[node name="gulir" type="ScrollContainer" parent="antarmuka/inspektur"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_eaw3p")
+horizontal_scroll_mode = 0
+metadata/_edit_lock_ = true
+
+[node name="area" type="Control" parent="antarmuka/inspektur/gulir"]
+custom_minimum_size = Vector2(0, 784)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="model" type="Panel" parent="antarmuka/inspektur/gulir/area"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.021
 anchor_right = 0.979
-offset_left = -0.064002
+offset_left = 0.104
 offset_top = 8.0
-offset_right = 0.0639954
+offset_right = 0.231995
 offset_bottom = 184.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
 metadata/_edit_lock_ = true
 
-[node name="gender" type="Label" parent="antarmuka/inspektur/model"]
+[node name="gender" type="Label" parent="antarmuka/inspektur/gulir/area/model"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -295,7 +450,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pilih_gender" type="OptionButton" parent="antarmuka/inspektur/model"]
+[node name="pilih_gender" type="OptionButton" parent="antarmuka/inspektur/gulir/area/model"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -324,7 +479,7 @@ popup/item_1/icon = ExtResource("5_np8of")
 popup/item_1/id = 1
 metadata/_edit_lock_ = true
 
-[node name="entitas" type="Label" parent="antarmuka/inspektur/model"]
+[node name="entitas" type="Label" parent="antarmuka/inspektur/gulir/area/model"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -341,7 +496,8 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="jalur_entitas" type="LineEdit" parent="antarmuka/inspektur/model"]
+[node name="jalur_entitas" type="LineEdit" parent="antarmuka/inspektur/gulir/area/model"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.065
@@ -367,7 +523,7 @@ editable = false
 caret_blink = true
 metadata/_edit_lock_ = true
 
-[node name="pilih_entitas" type="Button" parent="antarmuka/inspektur/model"]
+[node name="pilih_entitas" type="Button" parent="antarmuka/inspektur/gulir/area/model"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.783
@@ -392,7 +548,8 @@ alignment = 0
 icon_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/model"]
+[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/gulir/area/model"]
+unique_name_in_owner = true
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 1
@@ -402,19 +559,19 @@ file_mode = 0
 root_subfolder = "skena/entitas"
 filters = PackedStringArray("*.scn")
 
-[node name="karakter" type="Panel" parent="antarmuka/inspektur"]
+[node name="karakter" type="Panel" parent="antarmuka/inspektur/gulir/area"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.021
 anchor_right = 0.979
-offset_left = -0.064002
+offset_left = 0.104
 offset_top = 192.0
-offset_right = 0.0639954
+offset_right = 0.231995
 offset_bottom = 384.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
 metadata/_edit_lock_ = true
 
-[node name="arah_pandangan_y" type="Label" parent="antarmuka/inspektur/karakter"]
+[node name="arah_pandangan_y" type="Label" parent="antarmuka/inspektur/gulir/area/karakter"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -432,7 +589,8 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="atur_arah_pandangan_y" type="HSlider" parent="antarmuka/inspektur/karakter"]
+[node name="atur_arah_pandangan_y" type="HSlider" parent="antarmuka/inspektur/gulir/area/karakter"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -446,7 +604,8 @@ max_value = 1.0
 step = 0.1
 metadata/_edit_lock_ = true
 
-[node name="nilai_arah_pandangan_y" type="SpinBox" parent="antarmuka/inspektur/karakter"]
+[node name="nilai_arah_pandangan_y" type="SpinBox" parent="antarmuka/inspektur/gulir/area/karakter"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.954
@@ -461,7 +620,7 @@ max_value = 1.0
 step = 0.1
 metadata/_edit_lock_ = true
 
-[node name="mode_pandangan" type="Label" parent="antarmuka/inspektur/karakter"]
+[node name="mode_pandangan" type="Label" parent="antarmuka/inspektur/gulir/area/karakter"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -479,7 +638,8 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pilih_mode_pandangan" type="OptionButton" parent="antarmuka/inspektur/karakter"]
+[node name="pilih_mode_pandangan" type="OptionButton" parent="antarmuka/inspektur/gulir/area/karakter"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -506,7 +666,7 @@ popup/item_1/text = "3"
 popup/item_1/id = 0
 metadata/_edit_lock_ = true
 
-[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/karakter"]
+[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/gulir/area/karakter"]
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 1
@@ -516,6 +676,362 @@ file_mode = 0
 root_subfolder = "skena/entitas"
 filters = PackedStringArray("*.scn")
 
+[node name="transformasi" type="Panel" parent="antarmuka/inspektur/gulir/area"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021
+anchor_right = 0.979
+offset_left = 0.104
+offset_top = 392.0
+offset_right = 0.231995
+offset_bottom = 776.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
+metadata/_edit_lock_ = true
+
+[node name="node" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.042
+anchor_right = 0.957
+anchor_bottom = 0.125
+offset_left = 0.176
+offset_top = -0.128002
+offset_right = -0.175995
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%node%"
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="pilih_node" type="OptionButton" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.125
+anchor_right = 0.957
+anchor_bottom = 0.229
+offset_left = 0.176
+offset_right = -0.175995
+offset_bottom = 0.0639954
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../../../batal")
+focus_neighbor_right = NodePath("../../../simpan")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxFlat_vy5ut")
+theme_override_styles/normal = SubResource("StyleBoxFlat_w5jcf")
+selected = 0
+metadata/_edit_lock_ = true
+
+[node name="langkah_transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.271
+anchor_right = 0.957
+anchor_bottom = 0.354
+offset_left = 0.176
+offset_top = -0.0640106
+offset_right = -0.175995
+offset_bottom = 0.0639954
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%langkah%"
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="pilih_langkah_transformasi" type="OptionButton" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.354
+anchor_right = 0.957
+anchor_bottom = 0.458
+offset_left = 0.176
+offset_top = 0.0639954
+offset_right = -0.175995
+offset_bottom = 0.127991
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../../../batal")
+focus_neighbor_right = NodePath("../../../simpan")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxFlat_vy5ut")
+theme_override_styles/normal = SubResource("StyleBoxFlat_w5jcf")
+selected = 0
+item_count = 4
+popup/item_0/text = "0.001"
+popup/item_0/id = 0
+popup/item_1/text = "0.01"
+popup/item_1/id = 1
+popup/item_2/text = "0.1"
+popup/item_2/id = 2
+popup/item_3/text = "1.0"
+popup/item_3/id = 3
+metadata/_edit_lock_ = true
+
+[node name="transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.5
+anchor_right = 0.957
+anchor_bottom = 0.583
+offset_left = 0.176
+offset_right = -0.175995
+offset_bottom = 0.127991
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%transformasi%"
+horizontal_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="px" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.583
+anchor_right = 0.13
+anchor_bottom = 0.687
+offset_left = 0.176
+offset_top = 0.127991
+offset_right = 0.159996
+offset_bottom = 0.191986
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "px"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="py" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.708
+anchor_right = 0.13
+anchor_bottom = 0.812
+offset_left = 0.176
+offset_top = 0.127991
+offset_right = 0.159996
+offset_bottom = 0.191986
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "py"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="pz" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.833
+anchor_right = 0.13
+anchor_bottom = 0.937
+offset_left = 0.176
+offset_top = 0.127991
+offset_right = 0.159996
+offset_bottom = 0.191986
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "pz"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="translasi_x_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.152
+anchor_top = 0.583
+anchor_right = 0.484
+anchor_bottom = 0.695
+offset_left = 0.0639954
+offset_top = 0.127991
+offset_right = -0.112015
+offset_bottom = 0.119995
+theme = SubResource("Theme_vy5ut")
+step = 0.001
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="translasi_y_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.152
+anchor_top = 0.708
+anchor_right = 0.484
+anchor_bottom = 0.82
+offset_left = 0.0639954
+offset_top = 0.127991
+offset_right = -0.112015
+offset_bottom = 0.119995
+theme = SubResource("Theme_w5jcf")
+step = 0.001
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="translasi_z_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.152
+anchor_top = 0.833
+anchor_right = 0.484
+anchor_bottom = 0.945
+offset_left = 0.0639954
+offset_top = 0.127991
+offset_right = -0.112015
+offset_bottom = 0.119995
+theme = SubResource("Theme_jcx6r")
+step = 0.001
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="rx" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.522
+anchor_top = 0.583
+anchor_right = 0.609
+anchor_bottom = 0.687
+offset_left = -0.0960083
+offset_top = 0.127991
+offset_right = -0.112015
+offset_bottom = 0.191986
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "rx"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="ry" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.522
+anchor_top = 0.708
+anchor_right = 0.609
+anchor_bottom = 0.812
+offset_left = -0.0960083
+offset_top = 0.127991
+offset_right = -0.112015
+offset_bottom = 0.191986
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "ry"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="rz" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.522
+anchor_top = 0.833
+anchor_right = 0.609
+anchor_bottom = 0.937
+offset_left = -0.0960083
+offset_top = 0.127991
+offset_right = -0.112015
+offset_bottom = 0.191986
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "rz"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="rotasi_x_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.63
+anchor_top = 0.583
+anchor_right = 0.962
+anchor_bottom = 0.695
+offset_left = 0.159973
+offset_top = 0.127991
+offset_right = -0.0160217
+offset_bottom = 0.119995
+theme = SubResource("Theme_vy5ut")
+min_value = -360.0
+max_value = 360.0
+step = 0.001
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="rotasi_y_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.63
+anchor_top = 0.708
+anchor_right = 0.962
+anchor_bottom = 0.82
+offset_left = 0.159973
+offset_top = 0.127991
+offset_right = -0.0160217
+offset_bottom = 0.119995
+theme = SubResource("Theme_w5jcf")
+min_value = -360.0
+max_value = 360.0
+step = 0.001
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="rotasi_z_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.63
+anchor_top = 0.833
+anchor_right = 0.962
+anchor_bottom = 0.945
+offset_left = 0.159973
+offset_top = 0.127991
+offset_right = -0.0160217
+offset_bottom = 0.119995
+theme = SubResource("Theme_jcx6r")
+min_value = -360.0
+max_value = 360.0
+step = 0.001
+alignment = 1
+metadata/_edit_lock_ = true
+
 [node name="keluaran" type="Panel" parent="antarmuka"]
 layout_mode = 1
 anchors_preset = -1
@@ -524,6 +1040,7 @@ anchor_right = 0.625
 anchor_bottom = 1.0
 offset_top = -0.200012
 theme_override_styles/panel = SubResource("StyleBoxFlat_8josj")
+metadata/_edit_lock_ = true
 
 [node name="tampilan" type="SubViewportContainer" parent="antarmuka/keluaran"]
 layout_mode = 1
@@ -536,6 +1053,7 @@ offset_left = 0.32
 offset_top = 0.0639997
 offset_bottom = -0.0640106
 stretch = true
+metadata/_edit_lock_ = true
 
 [node name="SubViewport" type="SubViewport" parent="antarmuka/keluaran/tampilan"]
 handle_input_locally = false
@@ -547,6 +1065,7 @@ unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04623, 1.09075)
 
 [node name="informasi" type="RichTextLabel" parent="antarmuka/keluaran"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.512
@@ -556,10 +1075,13 @@ anchor_bottom = 0.968
 offset_left = 0.319977
 offset_top = 0.0639997
 offset_bottom = -0.0640106
+focus_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_fjwkp")
 bbcode_enabled = true
-text = "[color=#00ff00]posisi angkat[/color]
-pos: 0 1 0		rot: 0 0 0"
+context_menu_enabled = true
+selection_enabled = true
+drag_and_drop_selection_enabled = false
+metadata/_edit_lock_ = true
 
 [node name="lantai" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.500324, 0)
@@ -615,10 +1137,18 @@ position = Vector2(50, 50)
 shape = SubResource("CircleShape2D_crxf7")
 action = "aksi2"
 
-[connection signal="item_selected" from="antarmuka/inspektur/model/pilih_gender" to="." method="ubah_karakter"]
-[connection signal="pressed" from="antarmuka/inspektur/model/pilih_entitas" to="." method="_ketika_pilih_entitas"]
-[connection signal="file_selected" from="antarmuka/inspektur/model/dialog_buka_entitas" to="." method="_ketika_memilih_entitas"]
-[connection signal="value_changed" from="antarmuka/inspektur/karakter/atur_arah_pandangan_y" to="." method="_ketika_mengatur_slider_arah_pandangan_y"]
-[connection signal="value_changed" from="antarmuka/inspektur/karakter/nilai_arah_pandangan_y" to="." method="_ketika_mengatur_arah_pandangan_y"]
-[connection signal="item_selected" from="antarmuka/inspektur/karakter/pilih_mode_pandangan" to="." method="_ketika_memilih_mode_pandangan"]
-[connection signal="file_selected" from="antarmuka/inspektur/karakter/dialog_buka_entitas" to="." method="_ketika_memilih_entitas"]
+[connection signal="item_selected" from="antarmuka/inspektur/gulir/area/model/pilih_gender" to="." method="ubah_karakter"]
+[connection signal="pressed" from="antarmuka/inspektur/gulir/area/model/pilih_entitas" to="." method="_ketika_pilih_entitas"]
+[connection signal="file_selected" from="antarmuka/inspektur/gulir/area/model/dialog_buka_entitas" to="." method="_ketika_memilih_entitas"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/karakter/atur_arah_pandangan_y" to="." method="_ketika_mengatur_slider_arah_pandangan_y"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/karakter/nilai_arah_pandangan_y" to="." method="_ketika_mengatur_arah_pandangan_y"]
+[connection signal="item_selected" from="antarmuka/inspektur/gulir/area/karakter/pilih_mode_pandangan" to="." method="_ketika_memilih_mode_pandangan"]
+[connection signal="file_selected" from="antarmuka/inspektur/gulir/area/karakter/dialog_buka_entitas" to="." method="_ketika_memilih_entitas"]
+[connection signal="item_selected" from="antarmuka/inspektur/gulir/area/transformasi/pilih_node" to="." method="_ketika_memilih_node"]
+[connection signal="item_selected" from="antarmuka/inspektur/gulir/area/transformasi/pilih_langkah_transformasi" to="." method="_ketika_memilih_langkah_transformasi"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/transformasi/translasi_x_node" to="." method="_ketika_translasi_x_node_diubah"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/transformasi/translasi_y_node" to="." method="_ketika_translasi_y_node_diubah"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/transformasi/translasi_z_node" to="." method="_ketika_translasi_z_node_diubah"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/transformasi/rotasi_x_node" to="." method="_ketika_rotasi_x_node_diubah"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/transformasi/rotasi_y_node" to="." method="_ketika_rotasi_y_node_diubah"]
+[connection signal="value_changed" from="antarmuka/inspektur/gulir/area/transformasi/rotasi_z_node" to="." method="_ketika_rotasi_z_node_diubah"]
