@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 16/04/25 Early Access"
+const versi = "Dreamline v0.4.4 17/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -448,6 +448,8 @@ func uji_vr() -> void:
 func uji_viewport() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
+func editor_entitas() -> void:
+	get_tree().change_scene_to_file("res://skena/editor_entitas_pemain.tscn")
 func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();											return "memulai uji performa"
 	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
@@ -1394,9 +1396,9 @@ func _tampilkan_permainan() -> void:
 			"jalur_ikon": "res://ui/ikon/ikon_entitas_bola_pantai.png"
 		},
 		{
-			"nama_aset_": "granat",
-			"jalur_aset": "res://skena/entitas/granat.scn",
-			"jalur_ikon": "res://ui/ikon/ikon_entitas_granat.png"
+			"nama_aset_": "gas_melon",
+			"jalur_aset": "res://skena/entitas/gas_elpiji_3kg.scn",
+			"jalur_ikon": "res://ui/ikon/ikon_entitas_gas_melon.png"
 		},
 		{
 			"nama_aset_": "bajay",

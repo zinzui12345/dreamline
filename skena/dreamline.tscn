@@ -78,9 +78,9 @@
 [ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
 [ext_resource type="AudioStream" uid="uid://c0hcoitga5s5g" path="res://audio/antarmuka/buat objek.ogg" id="40_yw8vn"]
-[ext_resource type="Texture2D" uid="uid://dyxhyga1gys7k" path="res://ui/ikon/ikon_entitas_granat.png" id="41_nvbjq"]
 [ext_resource type="Texture2D" uid="uid://xluyqwb0nns0" path="res://ui/ikon/ikon_entitas_bajay.png" id="42_krisr"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
+[ext_resource type="Texture2D" uid="uid://by0ehaty0xo3r" path="res://ui/ikon/ikon_entitas_gas_melon.png" id="49_52iuq"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english_kecil.svg" id="63_r5flb"]
 [ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia_kecil.svg" id="64_gnps4"]
@@ -6329,10 +6329,10 @@ layout_mode = 2
 texture_normal = ExtResource("39_jspvy")
 metadata/jalur_objek = "res://skena/entitas/bola_pantai.scn"
 
-[node name="granat" parent="daftar_objek/Panel/DaftarObjek" instance=ExtResource("5_0d7jc")]
+[node name="gas_melon" parent="daftar_objek/Panel/DaftarObjek" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
-texture_normal = ExtResource("41_nvbjq")
-metadata/jalur_objek = "res://skena/entitas/granat.scn"
+texture_normal = ExtResource("49_52iuq")
+metadata/jalur_objek = "res://skena/entitas/gas_elpiji_3kg.scn"
 
 [node name="bajay" parent="daftar_objek/Panel/DaftarObjek" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
