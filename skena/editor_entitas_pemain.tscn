@@ -1,0 +1,624 @@
+[gd_scene load_steps=26 format=3 uid="uid://dx8y5u3abiq7"]
+
+[ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="1_mbf47"]
+[ext_resource type="Texture2D" uid="uid://fqepvioy3jkr" path="res://ui/ikon/ikon_gender_cewek.svg" id="4_mavi4"]
+[ext_resource type="Texture2D" uid="uid://c3taco8pqoduy" path="res://ui/ikon/ikon_gender_cowok.svg" id="5_np8of"]
+[ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="6_op6fk"]
+[ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/lempar_sesuatu.svg" id="6_vy5ut"]
+[ext_resource type="Texture2D" uid="uid://dv1eeh17dqpy0" path="res://ui/ikon/ikon_mode_edit.svg" id="7_vy5ut"]
+[ext_resource type="Texture2D" uid="uid://xf60ppb2l5u2" path="res://ui/tombol/aksi_1_tekan.svg" id="7_w5jcf"]
+[ext_resource type="Texture2D" uid="uid://bo2v23ce34rnw" path="res://ui/tombol/angkat_sesuatu.svg" id="8_jcx6r"]
+
+[sub_resource type="GDScript" id="GDScript_op6fk"]
+resource_name = "editor_entitas_pemain"
+script/source = "extends Node3D
+
+var dunia
+var karakter
+var koneksi = Permainan.MODE_KONEKSI.CLIENT
+var batas_bawah : int = -1
+var tombol_aksi_1 : StringName = \"lempar_sesuatu\"
+var tombol_aksi_2 : StringName = \"angkat_sesuatu\"
+var tombol_aksi_3 : StringName = \"lompat\"
+var bantuan_aksi_1 : bool = false
+var bantuan_aksi_2 : bool = false
+
+var karakter_cewek : Karakter
+var karakter_cowok : Karakter
+
+var edit_entitas : entitas
+var mode_pandangan_karakter : int = 1
+
+func _ready() -> void:
+	karakter_cewek = load(\"res://karakter/rulu/rulu.scn\").instantiate()
+	karakter_cowok = load(\"res://karakter/reno/reno.scn\").instantiate()
+	client.id_koneksi = 44
+	dunia = server.get_node(\"/root/dunia\")
+	dunia.get_node(\"pemain\").add_child(karakter_cewek)
+	dunia.get_node(\"pemain\").add_child(karakter_cowok)
+	karakter = karakter_cewek
+	karakter_cowok.visible = false
+	karakter_cewek.id_pemain = client.id_koneksi
+	karakter_cewek.name = str(client.id_koneksi)
+	karakter.get_node(\"pengamat\").atur_mode(mode_pandangan_karakter)
+	karakter.get_node(\"pengamat\").kontrol = true
+	karakter.get_node(\"%GeneralSkeleton/badan/badan_f\").set_layer_mask_value(2, true)
+	karakter.get_node(\"%GeneralSkeleton/tangan\").set_layer_mask_value(2, false)
+	server.permainan = self
+
+func _process(delta: float) -> void:
+	if %kamera_fps.cull_mask != karakter.get_node(\"%pandangan\").cull_mask:
+		%kamera_fps.cull_mask = karakter.get_node(\"%pandangan\").cull_mask
+		%kamera_bebas.cull_mask = karakter.get_node(\"%pandangan\").cull_mask
+	%kamera_fps.global_position = karakter.get_node(\"%pandangan\").global_position
+	%kamera_fps.global_rotation = karakter.get_node(\"%pandangan\").global_rotation
+
+func ubah_karakter(indeks : int) -> void:
+	_ketika_mengatur_slider_arah_pandangan_y(0.0)
+	if edit_entitas != null:
+		edit_entitas.hapus()
+		$antarmuka/inspektur/model/jalur_entitas.text = \"\"
+	match indeks:
+		0:
+			karakter_cowok.visible = false
+			karakter_cowok.id_pemain = -44
+			karakter_cowok.name = \"reno\"
+			karakter = karakter_cewek
+			karakter_cewek.name = str(client.id_koneksi)
+			karakter_cewek.visible = true
+		1:
+			karakter_cewek.visible = false
+			karakter_cewek.id_pemain = -44
+			karakter_cewek.name = \"rulu\"
+			karakter = karakter_cowok
+			karakter_cowok.name = str(client.id_koneksi)
+			karakter_cowok.visible = true
+	karakter.id_pemain = client.id_koneksi
+	karakter.get_node(\"pengamat\").atur_mode(mode_pandangan_karakter)
+	karakter.get_node(\"pengamat\").kontrol = true
+	karakter.get_node(\"%GeneralSkeleton/badan/badan_f\").set_layer_mask_value(2, true)
+	karakter.get_node(\"%GeneralSkeleton/tangan\").set_layer_mask_value(2, false)
+
+func _ketika_pilih_entitas() -> void:
+	$antarmuka/inspektur/model/dialog_buka_entitas.show()
+func _ketika_memilih_entitas(jalur_entitas : String) -> void:
+	$antarmuka/inspektur/model/jalur_entitas.text = \"...\"
+	await get_tree().create_timer(0.25).timeout
+	var tmp_edit_entitas = load(jalur_entitas).instantiate()
+	if edit_entitas != null and edit_entitas.get(\"jalur_instance\") != jalur_entitas:
+		edit_entitas.hapus()
+	edit_entitas = tmp_edit_entitas
+	edit_entitas.id_proses = client.id_koneksi
+	dunia.get_node(\"entitas\").add_child(edit_entitas)
+	if edit_entitas.has_method(\"_angkat\"):
+		edit_entitas._angkat(client.id_koneksi)
+	$antarmuka/inspektur/model/jalur_entitas.text = jalur_entitas
+
+func _ketika_mengatur_slider_arah_pandangan_y(value_changed: float) -> void:
+	$antarmuka/inspektur/karakter/nilai_arah_pandangan_y.value = value_changed
+func _ketika_mengatur_arah_pandangan_y(value: float) -> void:
+	karakter.arah_pandangan.y = value
+	match mode_pandangan_karakter:
+		1:	karakter.get_node(\"%pandangan\").rotation_degrees.x = value * (karakter.get_node(\"pengamat\").putaranMaxVertikalPandangan if value < 0 else absf(karakter.get_node(\"pengamat\").putaranMinVertikalPandangan))
+		3:	karakter.get_node(\"pengamat/kamera/rotasi_vertikal\").rotation_degrees.x = -(value * (karakter.get_node(\"pengamat\").putaranMaxVertikalPandangan if value < 0 else 65))
+	$antarmuka/inspektur/karakter/atur_arah_pandangan_y.value = value
+
+func _ketika_memilih_mode_pandangan(mode: int) -> void:
+	_ketika_mengatur_slider_arah_pandangan_y(0.0)
+	mode_pandangan_karakter = int($antarmuka/inspektur/karakter/pilih_mode_pandangan.get_item_text(mode))
+	karakter.get_node(\"pengamat\").atur_mode(mode_pandangan_karakter)
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_opc4n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mbf47"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vy5ut"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w5jcf"]
+bg_color = Color(0.341176, 0.341176, 0.341176, 1)
+border_width_left = 15
+border_color = Color(0.341176, 0.341176, 0.341176, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcx6r"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b7wtf"]
+bg_color = Color(0.341176, 0.341176, 0.341176, 1)
+border_width_left = 5
+border_color = Color(0.341176, 0.341176, 0.341176, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_crxf7"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ijlrn"]
+bg_color = Color(0.286275, 0.313726, 0.341176, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.286275, 0.313726, 0.341176, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_15v4l"]
+bg_color = Color(0.203922, 0.227451, 0.25098, 1)
+border_width_left = 10
+border_width_right = 10
+border_color = Color(0.203922, 0.227451, 0.25098, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y586b"]
+bg_color = Color(0.423529, 0.458824, 0.490196, 1)
+border_width_left = 10
+border_width_right = 8
+border_color = Color(0.423529, 0.458824, 0.490196, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8josj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fjwkp"]
+bg_color = Color(0.138034, 0.138034, 0.138034, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.138034, 0.138034, 0.138034, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="BoxMesh" id="BoxMesh_op6fk"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_vy5ut"]
+points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b7wtf"]
+radius = 50.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_crxf7"]
+radius = 45.0
+
+[node name="editor_entitas" type="Node3D"]
+script = SubResource("GDScript_op6fk")
+
+[node name="antarmuka" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="tampilan" type="SubViewportContainer" parent="antarmuka"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.625
+anchor_bottom = 0.587
+offset_bottom = -0.200012
+stretch = true
+
+[node name="perender" type="SubViewport" parent="antarmuka/tampilan"]
+handle_input_locally = false
+size = Vector2i(640, 352)
+render_target_update_mode = 4
+
+[node name="kamera_bebas" type="Camera3D" parent="antarmuka/tampilan/perender"]
+unique_name_in_owner = true
+cull_mask = 7
+current = true
+script = ExtResource("1_mbf47")
+
+[node name="inspektur" type="Panel" parent="antarmuka"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.625
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_opc4n")
+
+[node name="model" type="Panel" parent="antarmuka/inspektur"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021
+anchor_right = 0.979
+offset_left = -0.064002
+offset_top = 8.0
+offset_right = 0.0639954
+offset_bottom = 184.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
+metadata/_edit_lock_ = true
+
+[node name="gender" type="Label" parent="antarmuka/inspektur/model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.045
+anchor_right = 0.957
+anchor_bottom = 0.227
+offset_left = 0.176
+offset_top = 0.0800004
+offset_right = -0.175995
+offset_bottom = 0.0480003
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%karakter%"
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="pilih_gender" type="OptionButton" parent="antarmuka/inspektur/model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.227
+anchor_right = 0.957
+anchor_bottom = 0.455
+offset_left = 0.176
+offset_top = 0.0480003
+offset_right = -0.175995
+offset_bottom = -0.0799942
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../../../batal")
+focus_neighbor_right = NodePath("../../../simpan")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxFlat_vy5ut")
+theme_override_styles/normal = SubResource("StyleBoxFlat_w5jcf")
+selected = 0
+item_count = 2
+popup/item_0/text = "%cewek"
+popup/item_0/icon = ExtResource("4_mavi4")
+popup/item_0/id = 0
+popup/item_1/text = "%cowok"
+popup/item_1/icon = ExtResource("5_np8of")
+popup/item_1/id = 1
+metadata/_edit_lock_ = true
+
+[node name="entitas" type="Label" parent="antarmuka/inspektur/model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.5
+anchor_right = 0.957
+anchor_bottom = 0.682
+offset_left = 0.176
+offset_right = -0.175995
+offset_bottom = -0.0319977
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "ENTITAS"
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="jalur_entitas" type="LineEdit" parent="antarmuka/inspektur/model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.065
+anchor_top = 0.682
+anchor_right = 0.761
+anchor_bottom = 0.909
+offset_left = -7.92
+offset_top = -0.0319977
+offset_right = -0.0480042
+offset_bottom = 0.0160065
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../../../batal")
+focus_neighbor_right = NodePath("../../../simpan")
+theme_override_colors/caret_color = Color(0.443137, 0.443137, 0.443137, 1)
+theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
+theme_override_colors/font_uneditable_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxFlat_jcx6r")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_b7wtf")
+editable = false
+caret_blink = true
+metadata/_edit_lock_ = true
+
+[node name="pilih_entitas" type="Button" parent="antarmuka/inspektur/model"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.783
+anchor_top = 0.682
+anchor_right = 0.957
+anchor_bottom = 0.909
+offset_left = -0.144012
+offset_top = -0.0319977
+offset_right = -0.175995
+offset_bottom = 0.0160065
+grow_horizontal = 2
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_op6fk")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxFlat_crxf7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ijlrn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_15v4l")
+theme_override_styles/normal = SubResource("StyleBoxFlat_y586b")
+icon = ExtResource("7_vy5ut")
+alignment = 0
+icon_alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/model"]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 1
+ok_button_text = "Open"
+cancel_button_text = "%batal%"
+file_mode = 0
+root_subfolder = "skena/entitas"
+filters = PackedStringArray("*.scn")
+
+[node name="karakter" type="Panel" parent="antarmuka/inspektur"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021
+anchor_right = 0.979
+offset_left = -0.064002
+offset_top = 192.0
+offset_right = 0.0639954
+offset_bottom = 384.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
+metadata/_edit_lock_ = true
+
+[node name="arah_pandangan_y" type="Label" parent="antarmuka/inspektur/karakter"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.083
+anchor_right = 0.957
+anchor_bottom = 0.25
+offset_left = 0.176
+offset_top = 0.0639992
+offset_right = -0.175995
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%arah_pandangan_v%"
+autowrap_mode = 2
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="atur_arah_pandangan_y" type="HSlider" parent="antarmuka/inspektur/karakter"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.25
+anchor_right = 0.696
+anchor_bottom = 0.458
+offset_bottom = 0.0639954
+grow_horizontal = 0
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+metadata/_edit_lock_ = true
+
+[node name="nilai_arah_pandangan_y" type="SpinBox" parent="antarmuka/inspektur/karakter"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.954
+anchor_top = 0.25
+anchor_right = 0.954
+anchor_bottom = 0.458
+offset_left = -87.072
+offset_right = -0.0720215
+offset_bottom = 0.0639954
+min_value = -1.0
+max_value = 1.0
+step = 0.1
+metadata/_edit_lock_ = true
+
+[node name="mode_pandangan" type="Label" parent="antarmuka/inspektur/karakter"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.5
+anchor_right = 0.957
+anchor_bottom = 0.667
+offset_left = 0.175999
+offset_top = 1.52588e-05
+offset_right = -0.176025
+offset_bottom = -0.0640259
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "%mode_pandangan%"
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_lock_ = true
+
+[node name="pilih_mode_pandangan" type="OptionButton" parent="antarmuka/inspektur/karakter"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.043
+anchor_top = 0.667
+anchor_right = 0.957
+anchor_bottom = 0.875
+offset_left = 0.176
+offset_top = -0.0640106
+offset_right = -0.175995
+offset_bottom = -1.52588e-05
+grow_horizontal = 2
+grow_vertical = 2
+focus_neighbor_left = NodePath("../../../batal")
+focus_neighbor_right = NodePath("../../../simpan")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/focus = SubResource("StyleBoxFlat_vy5ut")
+theme_override_styles/normal = SubResource("StyleBoxFlat_w5jcf")
+selected = 0
+item_count = 2
+popup/item_0/text = "1"
+popup/item_0/id = 0
+popup/item_1/text = "3"
+popup/item_1/id = 0
+metadata/_edit_lock_ = true
+
+[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/karakter"]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 1
+ok_button_text = "Open"
+cancel_button_text = "%batal%"
+file_mode = 0
+root_subfolder = "skena/entitas"
+filters = PackedStringArray("*.scn")
+
+[node name="keluaran" type="Panel" parent="antarmuka"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.587
+anchor_right = 0.625
+anchor_bottom = 1.0
+offset_top = -0.200012
+theme_override_styles/panel = SubResource("StyleBoxFlat_8josj")
+
+[node name="tampilan" type="SubViewportContainer" parent="antarmuka/keluaran"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.012
+anchor_top = 0.032
+anchor_right = 0.5
+anchor_bottom = 0.968
+offset_left = 0.32
+offset_top = 0.0639997
+offset_bottom = -0.0640106
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="antarmuka/keluaran/tampilan"]
+handle_input_locally = false
+size = Vector2i(312, 231)
+render_target_update_mode = 4
+
+[node name="kamera_fps" type="Camera3D" parent="antarmuka/keluaran/tampilan/SubViewport"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04623, 1.09075)
+
+[node name="informasi" type="RichTextLabel" parent="antarmuka/keluaran"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.512
+anchor_top = 0.032
+anchor_right = 1.0
+anchor_bottom = 0.968
+offset_left = 0.319977
+offset_top = 0.0639997
+offset_bottom = -0.0640106
+theme_override_styles/normal = SubResource("StyleBoxFlat_fjwkp")
+bbcode_enabled = true
+text = "[color=#00ff00]posisi angkat[/color]
+pos: 0 1 0		rot: 0 0 0"
+
+[node name="lantai" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.500324, 0)
+mesh = SubResource("BoxMesh_op6fk")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="lantai"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="lantai/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_vy5ut")
+
+[node name="objek" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.499676, 3)
+mesh = SubResource("BoxMesh_op6fk")
+
+[node name="kontrol_sentuh" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="aksi_1" type="Control" parent="kontrol_sentuh"]
+layout_mode = 1
+anchor_left = 0.691
+anchor_top = 0.853
+anchor_right = 0.691
+anchor_bottom = 0.853
+offset_left = -55.584
+offset_top = -55.8
+offset_right = 56.4154
+offset_bottom = 56.1997
+metadata/_edit_use_anchors_ = true
+
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
+texture_normal = ExtResource("6_vy5ut")
+texture_pressed = ExtResource("7_w5jcf")
+shape = SubResource("CircleShape2D_b7wtf")
+
+[node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.788086
+anchor_top = 0.293333
+anchor_right = 0.885742
+anchor_bottom = 0.460333
+action_mode = 0
+texture_normal = ExtResource("8_jcx6r")
+metadata/_edit_use_anchors_ = true
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2"]
+position = Vector2(50, 50)
+shape = SubResource("CircleShape2D_crxf7")
+action = "aksi2"
+
+[connection signal="item_selected" from="antarmuka/inspektur/model/pilih_gender" to="." method="ubah_karakter"]
+[connection signal="pressed" from="antarmuka/inspektur/model/pilih_entitas" to="." method="_ketika_pilih_entitas"]
+[connection signal="file_selected" from="antarmuka/inspektur/model/dialog_buka_entitas" to="." method="_ketika_memilih_entitas"]
+[connection signal="value_changed" from="antarmuka/inspektur/karakter/atur_arah_pandangan_y" to="." method="_ketika_mengatur_slider_arah_pandangan_y"]
+[connection signal="value_changed" from="antarmuka/inspektur/karakter/nilai_arah_pandangan_y" to="." method="_ketika_mengatur_arah_pandangan_y"]
+[connection signal="item_selected" from="antarmuka/inspektur/karakter/pilih_mode_pandangan" to="." method="_ketika_memilih_mode_pandangan"]
+[connection signal="file_selected" from="antarmuka/inspektur/karakter/dialog_buka_entitas" to="." method="_ketika_memilih_entitas"]
