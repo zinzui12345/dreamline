@@ -484,6 +484,9 @@ func _input(event : InputEvent) -> void:
 					Permainan.PERAN_KARAKTER.Arsitek:
 						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()	# FIXME : ini gak work karena kendali pemain == false!
 func _physics_process(delta : float) -> void:
+	# hentikan proses jika node tidak berada dalam permainan
+	if !is_instance_valid(server.permainan): set_process(false); return
+	
 	# kendalikan karakter dengan input
 	if kontrol:
 		# maju / mundur
@@ -738,7 +741,7 @@ func _physics_process(delta : float) -> void:
 			perubahan_kondisi.append(["mati", _ragdoll])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
-		if perubahan_kondisi.size() > 0:
+		if perubahan_kondisi.size() > 0 and (is_instance_valid(server.peer) or is_instance_valid(client.peer)):
 			if id_pemain == 1 and client.id_koneksi == 1:
 				server._sesuaikan_kondisi_pemain("admin", 1, perubahan_kondisi)
 			else:

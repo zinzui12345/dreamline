@@ -81,7 +81,7 @@ func _process(delta : float) -> void:
 			if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	perubahan_kondisi.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
-		if perubahan_kondisi.size() > 0:
+		if perubahan_kondisi.size() > 0 and (is_instance_valid(server.peer) or is_instance_valid(client.peer)):
 			if id_proses == 1:
 				server._sesuaikan_kondisi_entitas(1, name, perubahan_kondisi)
 			else:
