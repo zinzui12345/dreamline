@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 17/04/25 Early Access"
+const versi = "Dreamline v0.4.4 19/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
