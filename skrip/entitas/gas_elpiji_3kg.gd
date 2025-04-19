@@ -13,6 +13,9 @@ var id_pengangkat : int = -1:
 			if get_node_or_null("pos_tangan_kanan") != null and get_node_or_null("pos_tangan_kanan").is_inside_tree() and dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kanan") != null:
 				dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node(get_node("pos_tangan_kanan").get_path())
 				dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
+			if get_node_or_null("pos_tangan_kiri") != null and get_node_or_null("pos_tangan_kiri").is_inside_tree() and dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null:
+				dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node(get_node("pos_tangan_kiri").get_path())
+				dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
 			call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
 		else:
 			set("freeze", false)
@@ -20,6 +23,8 @@ var id_pengangkat : int = -1:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) != null:
 				dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").set_target_node("")
 				dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kanan").stop()
+				dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").set_target_node("")
+				dunia.get_node("pemain/"+str(id_pengangkat)+"/%tangan_kiri").stop()
 		id_pengangkat = id
 var id_pelempar : int = -1
 var timer_ledakan : Timer
