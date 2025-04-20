@@ -28,6 +28,50 @@ var id_pengangkat : int = -1:
 		id_pengangkat = id
 var id_pelempar : int = -1
 var timer_ledakan : Timer
+var arah_angkat : float = 0.0
+var transformasi_angkat : Dictionary = {
+	"posisi_angkat" : {
+		"posisi": [
+			[ -1.0,		Vector3(-0.075, -0.01, 0.452) ],
+			[ -0.5,		Vector3(-0.08, -0.177, 0.468) ],
+			[ -0.25,	Vector3(-0.082, -0.2685, 0.404) ],
+			[ 0.0,		Vector3(-0.085, -0.36, 0.34) ],
+			[ 1.0,		Vector3(-0.085, -0.365, 0.233) ]
+		]
+	},
+	"pos_tangan_kiri" : {
+		"posisi": [
+			[ -1.0,		Vector3(0.207, -0.017, 0.03) ],
+			[ -0.5,		Vector3(0.1995, -0.05, 0.008) ],
+			[ -0.25,	Vector3(0.19575, -0.082, -0.003) ],
+			[ 0.0,		Vector3(0.192, -0.083, -0.014) ],
+			[ 1.0,		Vector3(0.192, -0.083, -0.014) ]
+		],
+		"rotasi": [
+			[ -1.0,		Vector3(1.0, -115.0, -57.0) ],
+			[ -0.5,		Vector3(-18.0, -101.0, -115.5) ],
+			[ -0.25,	Vector3(-43.0, -92.0, -144.75) ],
+			[ 0.0,		Vector3(-30.0, -75.0, -174.0) ],
+			[ 1.0,		Vector3(-30.0, -75.0, -174.0) ]
+		]
+	},
+	"pos_tangan_kanan" : {
+		"posisi": [
+			[ -1.0,		Vector3(-0.259, 0.091, 0.054) ],
+			[ -0.5,		Vector3(-0.216, 0.0, -0.07) ],
+			[ -0.25,	Vector3(-0.214, 0.07, -0.008) ],
+			[ 0.0,		Vector3(-0.194, 0.08, -0.04) ],
+			[ 1.0,		Vector3(-0.217, 0.03, -0.04) ]
+		],
+		"rotasi": [
+			[ -1.0,		Vector3(9.0, 108.0, 97.0) ],
+			[ -0.5,		Vector3(0.0, 99.0, 86.45) ],
+			[ -0.25,	Vector3(31.0, 109.0, 81.175) ],
+			[ 0.0,		Vector3(27.0, 97.0, 93.0) ],
+			[ 1.0,		Vector3(3.0, 104.0, 105.0) ]
+		]
+	}
+}
 
 func _ready(): call_deferred("_setup")
 func _setup():
@@ -86,6 +130,18 @@ func proses(_waktu_delta : float) -> void:
 			# kalo pengangkatnya terputus, lepas # FIXME : pool gimana caranya???
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) == null:
 				server._gunakan_entitas(name, 1, "_lepas")
+		
+		# 20/04/25 :: sesuaikan node-node posisi angkat dengan transformasi_angkat
+		if dunia.get_node_or_null("pemain/"+str(id_pengangkat)) != null:
+			var pengangkat = dunia.get_node("pemain/"+str(id_pengangkat))
+			if pengangkat.arah_pandangan.y != arah_angkat:
+				for nama_node in transformasi_angkat.keys():
+					if get_node_or_null(nama_node) != null:
+						if transformasi_angkat[nama_node].has("posisi"):
+							get_node(nama_node).position = server.permainan.interpolasiPosisi(transformasi_angkat[nama_node]["posisi"], pengangkat.arah_pandangan.y)
+						if transformasi_angkat[nama_node].has("rotasi"):
+							get_node(nama_node).rotation_degrees = server.permainan.interpolasiPosisi(transformasi_angkat[nama_node]["rotasi"], pengangkat.arah_pandangan.y)
+				arah_angkat = pengangkat.arah_pandangan.y
 
 func fokus():
 	server.permainan.set("tombol_aksi_2", "angkat_sesuatu")
@@ -160,6 +216,7 @@ func _lepas(id):
 	# atur ulang id_pengangkat, id_pelempar dan id_proses
 	id_pengangkat = -1
 	id_pelempar = -1
+	arah_angkat = 0.0
 	id_proses = -1
 func _lempar(_pelempar):
 	var kekuatan = 8
@@ -194,6 +251,7 @@ func _lempar(_pelempar):
 	# atur ulang id_pengangkat, id_pelempar dan id_proses
 	id_pengangkat = -1
 	id_pelempar = _pelempar
+	arah_angkat = 0.0
 	id_proses = -1
 	timer_ledakan.start()
 
