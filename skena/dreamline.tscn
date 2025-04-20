@@ -1,4 +1,4 @@
-[gd_scene load_steps=349 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=351 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -11,11 +11,13 @@
 [ext_resource type="Texture2D" uid="uid://l5pycvwcl5qn" path="res://ui/ikon/ikon_tombol_statistik.svg" id="4_fdf7p"]
 [ext_resource type="PackedScene" uid="uid://dshoprkgyv6ov" path="res://ui/objek.tscn" id="5_0d7jc"]
 [ext_resource type="Texture2D" uid="uid://1td3kq0tsvxi" path="res://ui/ikon/ikon_tombol_putuskan.svg" id="5_d421m"]
+[ext_resource type="Texture2D" uid="uid://cf13uq3lr3xup" path="res://ui/ikon/ikon_informasi_sinyal.svg" id="5_x8k3l"]
 [ext_resource type="Texture2D" uid="uid://cec6schexhdkp" path="res://ui/tombol/mic_off.svg" id="6_2op7y"]
 [ext_resource type="Texture2D" uid="uid://b1n6u16tnb14w" path="res://ui/frekuensi-mikrofon-bg.svg" id="6_4p8xt"]
 [ext_resource type="Texture2D" uid="uid://dwe5xfduipbj7" path="res://ui/tombol/mic_on.svg" id="6_beubk"]
 [ext_resource type="Texture2D" uid="uid://drpqx4dyihtlx" path="res://ui/ikon/ikon_posisi_objek.svg" id="6_eofx6"]
 [ext_resource type="Texture2D" uid="uid://dbltu38krgfjg" path="res://ui/ikon/ikon_tombol_setelan.svg" id="6_ps5t2"]
+[ext_resource type="Texture2D" uid="uid://b36mepmgg6urb" path="res://ui/ikon/ikon_informasi_pemain.svg" id="6_q6cyv"]
 [ext_resource type="Texture2D" uid="uid://bilfr77a8syp3" path="res://ui/frekuensi-mikrofon.svg" id="6_tsv27"]
 [ext_resource type="Texture2D" uid="uid://b7tn5ukllv270" path="res://ui/ikon/ikon_tombol_kirim_pesan.svg" id="6_y0cdn"]
 [ext_resource type="Texture2D" uid="uid://bc0g7tkpje5k0" path="res://ui/ikon/ikon_tombol_server.svg" id="7_ayqde"]
@@ -500,6 +502,10 @@ border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_akc24"]
 bg_color = Color(0.8, 0.8, 0.8, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="Animation" id="Animation_3kb00"]
 resource_name = "tampilkan"
@@ -5058,6 +5064,7 @@ size_flags_vertical = 3
 mouse_filter = 1
 script = ExtResource("1_7ws0s")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="hud" type="Control" parent="."]
 layout_mode = 1
@@ -5067,6 +5074,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="pesan" type="Control" parent="hud"]
 layout_mode = 1
@@ -5154,6 +5162,7 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_c6tox")
 theme_override_styles/normal = SubResource("StyleBoxFlat_8cefx")
 caret_blink = true
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="kirim_pesan" type="Button" parent="hud/pesan/layout_input_pesan"]
 modulate = Color(1, 1, 1, 0)
@@ -5180,6 +5189,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_07rji")
 icon = ExtResource("6_y0cdn")
 alignment = 0
 icon_alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="tutup" type="Button" parent="hud/pesan"]
 modulate = Color(1, 1, 1, 0)
@@ -5222,9 +5232,8 @@ libraries = {
 [node name="daftar_pemain" type="Control" parent="hud"]
 visible = false
 layout_mode = 1
-anchor_right = 0.281188
 anchor_bottom = 1.00033
-offset_right = 0.0639992
+offset_right = 288.001
 offset_bottom = -0.200001
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
@@ -5238,16 +5247,21 @@ anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_60lyf")
+metadata/_edit_lock_ = true
 
 [node name="informasi" type="Panel" parent="hud/daftar_pemain/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = -8.00052
-offset_bottom = 152.0
+anchor_left = 0.028
+anchor_top = 0.013
+anchor_right = 0.972
+anchor_bottom = 0.253
+offset_left = -0.0640144
+offset_top = 0.200026
+offset_right = 0.0634766
+offset_bottom = 0.2005
 theme_override_styles/panel = SubResource("StyleBoxFlat_akc24")
+metadata/_edit_lock_ = true
 
 [node name="nama_server" type="Label" parent="hud/daftar_pemain/panel/informasi"]
 layout_mode = 1
@@ -5264,6 +5278,7 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "localhost"
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="alamat_ip" type="Label" parent="hud/daftar_pemain/panel/informasi"]
 layout_mode = 1
@@ -5278,28 +5293,116 @@ offset_right = -0.11203
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "192.168.254.123
 dummy0 : fe80:0:0:0:e6c:e3ff:fe1b:d009
-ap0 : 192:168:8:13
+ap0 : 192.168.8.13
 ccmni0 : 10.147.225.180"
 clip_text = true
 text_overrun_behavior = 3
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="informasi_realtime" type="Panel" parent="hud/daftar_pemain/panel"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.028
+anchor_top = 0.267
+anchor_right = 0.972554
+anchor_bottom = 0.306333
+offset_left = -0.0640144
+offset_top = -0.199478
+offset_right = -0.0960884
+offset_bottom = 0.200577
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="informasi_mode_koneksi" type="Label" parent="hud/daftar_pemain/panel/informasi_realtime"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0291765
+anchor_right = 0.324
+anchor_bottom = 1.0
+offset_left = 0.0639954
+offset_right = -0.127991
+text = "client"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="ikon_sinyal" type="TextureRect" parent="hud/daftar_pemain/panel/informasi_realtime"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.382353
+anchor_right = 0.470353
+anchor_bottom = 1.0
+offset_right = 0.0639973
+texture = ExtResource("5_x8k3l")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="informasi_sinyal" type="Label" parent="hud/daftar_pemain/panel/informasi_realtime"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.470353
+anchor_right = 0.706353
+anchor_bottom = 1.0
+offset_left = 0.0639973
+offset_right = -0.127998
+text = "1200 ms"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="ikon_jumlah_pemain" type="TextureRect" parent="hud/daftar_pemain/panel/informasi_realtime"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.764588
+anchor_right = 0.852588
+anchor_bottom = 1.0
+offset_left = 0.0319977
+offset_right = 0.095993
+texture = ExtResource("6_q6cyv")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="informasi_jumlah_pemain" type="Label" parent="hud/daftar_pemain/panel/informasi_realtime"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.852588
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.095993
+text = "NaN"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="gulir" type="ScrollContainer" parent="hud/daftar_pemain/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 160.0
-offset_right = -8.00052
-offset_bottom = -7.99799
+anchor_left = 0.028
+anchor_top = 0.320334
+anchor_right = 0.972
+anchor_bottom = 0.987
+offset_left = -0.0640144
+offset_top = -0.199478
+offset_right = 0.0634766
+offset_bottom = -0.198059
 grow_horizontal = 2
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="baris" type="VBoxContainer" parent="hud/daftar_pemain/panel/gulir"]
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="hud/daftar_pemain"]
 libraries = {
@@ -5317,6 +5420,7 @@ offset_left = -6.10352e-05
 offset_top = 0.199997
 offset_right = 0.383972
 offset_bottom = -72.0
+metadata/_edit_lock_ = true
 
 [node name="aksi1" type="Panel" parent="hud/bantuan_input"]
 visible = false
@@ -5942,6 +6046,7 @@ theme_override_font_sizes/font_size = 18
 text = "(0,0,0)"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 visible = false
@@ -8657,6 +8762,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true
 
 [node name="blok_kode" parent="editor_kode" instance=ExtResource("81_d4drg")]
 layout_mode = 1
@@ -8717,6 +8823,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="panel_bawah" type="Control" parent="proses_memuat"]
 layout_mode = 1
@@ -9491,6 +9598,7 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
 text = "Entitas : 20  | Penggambaran : 2048 | VRAM : 512MiB | culling : true"
 horizontal_alignment = 2
+metadata/_edit_lock_ = true
 
 [node name="versi" type="Label" parent="."]
 top_level = true
@@ -9509,7 +9617,7 @@ grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 12
-text = "Dreamline alpha v1.4.4 rev 24/09/23 devtest | 512MiB | 100fps | server"
+text = "Dreamline alpha v1.4.4 rev 20/04/25 alpha | 512MiB | 100fps"
 horizontal_alignment = 2
 metadata/_edit_lock_ = true
 

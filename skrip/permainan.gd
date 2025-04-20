@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 19/04/25 Early Access"
+const versi = "Dreamline v0.4.4 20/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -403,6 +403,10 @@ func _process(delta : float) -> void:
 	match koneksi:
 		0: info_mode_koneksi = "server"
 		1: info_mode_koneksi = "client"
+	if $hud/daftar_pemain.visible:
+		$hud/daftar_pemain/panel/informasi_realtime/informasi_mode_koneksi.text = info_mode_koneksi
+		$hud/daftar_pemain/panel/informasi_realtime/informasi_sinyal.text = str(ENetPacketPeer.PeerStatistic.PEER_ROUND_TRIP_TIME) + " ms"
+		#$hud/daftar_pemain/panel/informasi_realtime/informasi_jumlah_pemain.text = str()
 	if $performa.visible:
 		var info_jumlah_sudut := "0"
 		var info_jumlah_entitas := 0
@@ -421,7 +425,7 @@ func _process(delta : float) -> void:
 			String.humanize_size(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED)),
 			str((gunakan_frustum_culling or gunakan_occlusion_culling))
 		]
-	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps | "+info_mode_koneksi
+	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps"
 func _notification(what : int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if is_instance_valid(karakter): # ketika dalam permainan
@@ -2681,7 +2685,8 @@ func tampilkan_info_koneksi():
 	if koneksi == MODE_KONEKSI.SERVER and OS.get_name() != "Windows":
 		for dev in addr.size():
 			var addrdata = addr[dev]
-			ipinf += str(addrdata["name"]) + " : " + str(addrdata["addresses"][0]) + "\n"
+			if addrdata["addresses"][0].length() <= 21:
+				ipinf += str(addrdata["name"]) + " : " + str(addrdata["addresses"][0]) + "\n"
 	else: ipinf = str(client.id_koneksi)
 	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ipinf
 func mainkan_replay():
