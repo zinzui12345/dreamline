@@ -2650,10 +2650,29 @@ func hasilkanKarakterAcak(jumlah: int) -> String:
 		var indeks_acak = randi_range(0, length - 1)
 		karakter_acak += set_karakter[indeks_acak]
 	return karakter_acak
-func aturPemilikNode(node : Node, node_pemilik : Node):
+func aturPemilikNode(node : Node, node_pemilik : Node) -> void:
 	node.owner = node_pemilik
 	for node_internal in node.get_children():
 		aturPemilikNode(node_internal, node_pemilik)
+func interpolasiPosisi(titik : Array, t : float) -> Vector3:
+	# 20/04/25 :: interpolasi beberapa titik berdasarkan rentang posisi (t)
+	
+	# properti titik berisi array dengan dua nilai, yaitu posisi (float) dan nilai (Vector3)
+	# contohnya seperti ini:
+	# hasil_posisi = interpolasiPosisi([[0.0, Vector3(0, 13, 0)], [1.0, Vector3(11, 78, 2)]], 1.0)
+	
+	if titik.size() < 1:
+		return Vector3.ZERO
+	elif t < titik[0][0]:
+		return titik[0][1] # return nilai pertama jika t lebih kecil dari indeks pertama
+	elif t > titik[titik.size() - 1][0]:
+		return titik[titik.size() - 1][1] # return nilai terakhir jika t lebih besar dari indeks terakhir
+
+	for i in range(titik.size() - 1):
+		if titik[i][0] <= t && t <= titik[i+1][0]:
+			var lerp_t = (t - titik[i][0]) / (titik[i+1][0] - titik[i][0])
+			return lerp(titik[i][1], titik[i+1][1], lerp_t)
+	return Vector3.ZERO # harusnya gak bakalan nyampe sini >-<
 func tampilkan_info_koneksi():
 	# Dapatkan IP
 	var addr : Array
