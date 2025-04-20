@@ -29,6 +29,26 @@ var karakter_cowok : Karakter
 var edit_entitas : entitas
 var mode_pandangan_karakter : int = 1
 
+func interpolasiPosisi(titik : Array, t : float) -> Vector3:
+	# 20/04/25 :: interpolasi beberapa titik berdasarkan rentang posisi (t)
+	
+	# properti titik berisi array dengan dua nilai, yaitu posisi (float) dan nilai (Vector3)
+	# contohnya seperti ini:
+	# hasil_posisi = interpolasiPosisi([[0.0, Vector3(0, 13, 0)], [1.0, Vector3(11, 78, 2)]], 1.0)
+	
+	if titik.size() < 1:
+		return Vector3.ZERO
+	elif t < titik[0][0]:
+		return titik[0][1] # return nilai pertama jika t lebih kecil dari indeks pertama
+	elif t > titik[titik.size() - 1][0]:
+		return titik[titik.size() - 1][1] # return nilai terakhir jika t lebih besar dari indeks terakhir
+
+	for i in range(titik.size() - 1):
+		if titik[i][0] <= t && t <= titik[i+1][0]:
+			var lerp_t = (t - titik[i][0]) / (titik[i+1][0] - titik[i][0])
+			return lerp(titik[i][1], titik[i+1][1], lerp_t)
+	return Vector3.ZERO # harusnya gak bakalan nyampe sini >-<
+
 func _ready() -> void:
 	%translasi_x_node.min_value = -2147483648
 	%translasi_x_node.max_value = 2147483647
@@ -617,7 +637,7 @@ offset_right = -0.0720215
 offset_bottom = 0.0639954
 min_value = -1.0
 max_value = 1.0
-step = 0.1
+step = 0.05
 metadata/_edit_lock_ = true
 
 [node name="mode_pandangan" type="Label" parent="antarmuka/inspektur/gulir/area/karakter"]
@@ -725,7 +745,6 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 22
 theme_override_styles/focus = SubResource("StyleBoxFlat_vy5ut")
 theme_override_styles/normal = SubResource("StyleBoxFlat_w5jcf")
-selected = 0
 metadata/_edit_lock_ = true
 
 [node name="langkah_transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
