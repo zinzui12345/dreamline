@@ -685,7 +685,7 @@ func _physics_process(delta : float) -> void:
 			Panku.notify("re-spawn")
 	
 	# kalkulasi arah gerakan
-	arah_gerakan = get_real_velocity() * transform.basis
+	arah_gerakan = (get_real_velocity() * transform.basis) * arah.normalized()
 	
 	# sinkronkan perubahan kondisi
 	if id_pemain == client.id_koneksi and client.id_koneksi > 0:
