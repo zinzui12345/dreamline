@@ -9579,6 +9579,17 @@ libraries = {
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi_peringatan"]
 stream = ExtResource("90_ur733")
 
+[node name="dialog_buka_rekaman" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 1
+size = Vector2i(500, 400)
+ok_button_text = "Open"
+cancel_button_text = "%batal%"
+file_mode = 0
+access = 1
+filters = PackedStringArray("*.dreamline_replay")
+
 [node name="performa" type="Label" parent="."]
 top_level = true
 layout_mode = 1
@@ -9737,5 +9748,6 @@ bus = &"Suara Pemain"
 [connection signal="button_down" from="popup_konfirmasi_peringatan/panel/oke" to="." method="_konfirmasi_peringatan"]
 [connection signal="button_up" from="popup_konfirmasi_peringatan/panel/oke" to="." method="_batalkan_konfirmasi_peringatan"]
 [connection signal="pressed" from="popup_konfirmasi_peringatan/panel/batal" to="." method="_tutup_popup_konfirmasi_peringatan"]
+[connection signal="file_selected" from="dialog_buka_rekaman" to="." method="mainkanReplay"]
 
 [editable path="latar"]

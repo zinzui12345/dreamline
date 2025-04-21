@@ -452,6 +452,8 @@ func uji_vr() -> void:
 func uji_viewport() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
+func mainkan_replay() -> void:
+	$dialog_buka_rekaman.show()
 func editor_entitas() -> void:
 	get_tree().change_scene_to_file("res://skena/editor_entitas_pemain.tscn")
 func atur_map(nama_map : StringName = "empty") -> String:
@@ -2689,9 +2691,9 @@ func tampilkan_info_koneksi():
 				ipinf += str(addrdata["name"]) + " : " + str(addrdata["addresses"][0]) + "\n"
 	else: ipinf = str(client.id_koneksi)
 	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ipinf
-func mainkan_replay():
-	if FileAccess.file_exists(server.file_replay):
-		var file_rekaman = FileAccess.open(server.file_replay, FileAccess.READ)
+func mainkanReplay(jalur_rekaman : String = server.file_replay):
+	if FileAccess.file_exists(jalur_rekaman):
+		var file_rekaman = FileAccess.open(jalur_rekaman, FileAccess.READ)
 		if file_rekaman != null:
 			var rekaman = file_rekaman.get_var()
 			server.timeline = rekaman
@@ -2706,6 +2708,8 @@ func mainkan_replay():
 # bantuan pada console
 const _HELP_alamat_ip				:= "Cek alamat IP Lokal/Publik koneksi"
 const _HELP_cek_koneksi_server		:= "Cek status koneksi dengan server"
+const _HELP_editor_entitas			:= "Edit entitas yang dapat digunakan pemain"
+const _HELP_mainkan_replay			:= "Memainkan rekaman replay yang tersimpan"
 const _HELP_putuskan_server 		:= "Hentikan/Putuskan server [fungsi ini dipanggil secara otomatis!] * memanggilnya secara manual akan membiarkan kursor mouse dalam kondisi capture"
 const _HELP_PERAN_KARAKTER			:= "Tipe-tipe peran yang dapat diperankan karakter/pemain" # gak work!
 const _HELP_hasilkanKarakterAcak	:= "Menghasilkan karakter alfabet atau angka acak sebanyak jumlah yang ditentukan"
