@@ -316,10 +316,9 @@ func _process(_delta : float) -> void:
 									# atur id_proses dengan id_pemain
 									pool_karakter[nama_karakter]["id_proses"] = id_pemain
 
-func buat_koneksi():
+func buat_koneksi() -> void:
 	interface = MultiplayerAPI.create_default_interface()
 	peer = ENetMultiplayerPeer.new()
-	broadcast = ServerAdvertiser.new()
 	peer.create_server(10567, jumlah_pemain)
 	interface.connect("peer_connected", self._pemain_bergabung)
 	interface.connect("peer_disconnected", self._pemain_terputus)
@@ -328,14 +327,7 @@ func buat_koneksi():
 	#interface.set_root_path(NodePath("/root/dunia"))
 	interface.set_refuse_new_connections(false)
 	client.id_koneksi = 1
-	broadcast.name = "broadcast server"
-	broadcast.broadcastPort = 10568
-	broadcast.serverInfo["nama"] = nama
-	broadcast.serverInfo["sys"] = permainan.data["sistem"]
-	broadcast.serverInfo["map"] = map
-	broadcast.serverInfo["jml_pemain"] = pemain_terhubung
-	broadcast.serverInfo["max_pemain"] = jumlah_pemain
-	permainan.add_child(broadcast)
+	siarkan_server()
 	set_process(true)
 	if publik: # koneksi publik
 		upnp = UPNP.new()
@@ -362,9 +354,9 @@ func buat_koneksi():
 	var t_inf_kon = TranslationServer.translate("%buatkoneksi")
 	Panku.notify(t_inf_kon % [map, "localhost"])
 	Panku.gd_exprenv.register_env("server", self)
-func putuskan():
+func putuskan() -> void:
 	interface.set_refuse_new_connections(true)
-	broadcast.queue_free()
+	hapus_siaran_server()
 	if publik: # koneksi publik
 		upnp.delete_port_mapping(10567, "UDP")
 		upnp.delete_port_mapping(10567, "TCP")
@@ -428,6 +420,21 @@ func putuskan():
 	cek_visibilitas_pool_objek.clear()
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
+	
+func siarkan_server() -> void:
+	hapus_siaran_server()
+	broadcast = ServerAdvertiser.new()
+	broadcast.name = "broadcast server"
+	broadcast.broadcastPort = 10568
+	broadcast.serverInfo["nama"] = nama
+	broadcast.serverInfo["sys"] = permainan.data["sistem"]
+	broadcast.serverInfo["map"] = map
+	broadcast.serverInfo["jml_pemain"] = pemain_terhubung
+	broadcast.serverInfo["max_pemain"] = jumlah_pemain
+	permainan.add_child(broadcast)
+func hapus_siaran_server() -> void:
+	if is_instance_valid(broadcast):
+		broadcast.queue_free()
 
 func buat_koneksi_virtual():
 	interface = MultiplayerAPI.create_default_interface()
@@ -605,6 +612,7 @@ func _pemain_bergabung(id_pemain):
 	)
 	print("%s => pemain [%s] telah bergabung" % [Time.get_ticks_msec(), id_pemain])
 	pemain_terhubung += 1
+	siarkan_server()
 func _pemain_terputus(id_pemain):
 	# Timeline : hapus pemain
 	var frame_sekarang = timeline["data"]["frame"]
@@ -660,6 +668,7 @@ func _pemain_terputus(id_pemain):
 	
 	print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 	pemain_terhubung -= 1
+	siarkan_server()
 
 @rpc("any_peer") func _tambahkan_pemain_ke_dunia(id_pemain, id_sesi, data_pemain):
 	if permainan.koneksi == permainan.MODE_KONEKSI.SERVER:
