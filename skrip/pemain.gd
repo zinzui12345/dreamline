@@ -27,7 +27,7 @@ var objek_target : Node3D
 var pos_target : Vector3 # posisi raycast
 
 func atur_pengendali(id):
-	await karakter.atur_model()
+	karakter.atur_model()
 	karakter.atur_warna()
 	if not server.mode_replay:
 		set_multiplayer_authority(id)

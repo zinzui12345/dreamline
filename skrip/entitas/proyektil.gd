@@ -1,8 +1,6 @@
 # 17/11/23
 extends Node3D
 
-# TODO : opsi arah_tembakan.y berdasarkan jarak target | lemparan
-
 @export var penembak : NodePath
 @export var serangan : int
 
@@ -47,17 +45,17 @@ func tembakkan():
 			"posisi":	fisik.global_transform.origin
 		}
 		
-		server.fungsikan_objek(self.get_path(), "buat_tampilan", [nama_peluru])
+		server.fungsikan_objek(name, "buat_tampilan", [nama_peluru])
 
 func hapus_peluru(id : int):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and server.permainan.dunia.get_node_or_null("entitas/"+str(_peluru_ditembak[str(id)].nama)) != null:
 		server.permainan.dunia.get_node("entitas/"+str(_peluru_ditembak[str(id)].nama)).queue_free()
 		_peluru_ditembak.erase(id)
-		server.fungsikan_objek(self.get_path(), "hapus_tampilan", [str(_peluru_ditembak[str(id)].nama)])
+		server.fungsikan_objek(name, "hapus_tampilan", [str(_peluru_ditembak[str(id)].nama)])
 
 func sinkronisasi_peluru(id):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		server.fungsikan_objek(self.get_path(), "sinkronkan_tampilan", [_peluru_ditembak[str(id)].nama, _peluru_ditembak[str(id)].arah, _peluru_ditembak[str(id)].posisi])
+		server.fungsikan_objek(name, "sinkronkan_tampilan", [_peluru_ditembak[str(id)].nama, _peluru_ditembak[str(id)].arah, _peluru_ditembak[str(id)].posisi])
 
 func buat_tampilan(nama):
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.CLIENT:

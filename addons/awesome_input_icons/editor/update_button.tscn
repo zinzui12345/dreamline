@@ -2,9 +2,10 @@
 
 [ext_resource type="Script" uid="uid://sd1aqwv0kx0b" path="res://addons/awesome_input_icons/editor/update_button.gd" id="1_n2nq1"]
 [ext_resource type="Script" uid="uid://k34ebahyb088" path="res://addons/awesome_input_icons/editor/DownloadUpdate.gd" id="2_mpgh5"]
-[ext_resource type="Texture2D" uid="uid://b3kc1tywuoptw" path="res://icon.svg" id="3_1ww4k"]
+[ext_resource type="Texture2D" uid="uid://p2iawn0rqvn0" path="res://icon.svg" id="3_1ww4k"]
 
 [node name="UpdateButton" type="Button"]
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

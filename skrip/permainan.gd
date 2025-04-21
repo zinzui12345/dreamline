@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 20/04/25 Early Access"
+const versi = "Dreamline v0.4.4 21/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -883,7 +883,7 @@ func _muat_pengganti_kode(node_kode_ubahan : BlockCode, kode_pengganti : BlockSc
 	call_deferred("_berhenti_memuat_kode")
 func _mulai_server_cli() -> void:
 	print(alamat_ip())
-	if permukaan != null: permukaan.gunakan_frustum_culling = false
+	#if permukaan != null: permukaan.gunakan_frustum_culling = false # deprecated
 func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 	if is_instance_valid(dunia):
 		# tambahkan pemain utama
