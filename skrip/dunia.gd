@@ -1,5 +1,7 @@
 extends Node3D
 
+# TODO : Multi Threading
+
 var pengamat : Camera3D
 var jarak_objek : float
 var posisi_objek : Vector3
