@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 class_name Karakter
 
-# TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
+# TODO : floor_constant_speed = true, kecuali ketika menaiki tangga 
 
 var arah : Vector3
 var arah_gerakan : Vector3 :				# ini arah gerakan
@@ -111,7 +111,7 @@ var mode_menyerang : StringName = "a"		# ini mode serangan misalnya: a / b
 var melompat : bool = false : 
 	set(lompat):
 		if get_node_or_null("pose") != null:
-			if lompat:
+			if lompat and !jongkok:
 				$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			melompat = lompat
 var menyerang : bool = false : 
@@ -141,7 +141,7 @@ var cek_perubahan_kondisi : Dictionary = {}	# simpan beberapa properti di tiap f
 @export var gender := "P"
 @export var peran := Permainan.PERAN_KARAKTER.Arsitek
 @export var id_pemain := -44
-@export var pose_duduk : StringName = "normal":
+@export var pose_duduk := "normal":
 	set(ubah):
 		if ubah != $pose.get("parameters/pose_duduk/current_state"):
 			$pose.set("parameters/pose_duduk/transition_request", ubah)
@@ -542,6 +542,9 @@ func _physics_process(delta : float) -> void:
 							arah.z = clampf(arah.z * 1.025, 0.0, 250 * delta)
 						else:
 							arah.z = clampf(arah.z * 1.025, 0.0, 125 * delta)
+				elif Input.is_action_pressed("maju") and arah.z > 0.5:
+					if is_on_floor():
+						arah.y = 82 * delta
 				elif is_on_floor():
 					melompat = true
 					arah.y = 75 * delta
@@ -703,6 +706,8 @@ func _physics_process(delta : float) -> void:
 			cek_perubahan_kondisi["arah_gerakan"] = Vector3.ZERO
 		if cek_perubahan_kondisi.get("mode_gestur") == null:
 			cek_perubahan_kondisi["mode_gestur"] = "berdiri"
+		if cek_perubahan_kondisi.get("pose_duduk") == null:
+			cek_perubahan_kondisi["pose_duduk"] = "normal"
 		if cek_perubahan_kondisi.get("gestur_jongkok") == null:
 			cek_perubahan_kondisi["gestur_jongkok"] = 0.0
 		if cek_perubahan_kondisi.get("mode_menyerang") == null:
@@ -727,6 +732,8 @@ func _physics_process(delta : float) -> void:
 			perubahan_kondisi.append(["arah_gerakan", arah_gerakan])
 		if cek_perubahan_kondisi["mode_gestur"] != gestur:
 			perubahan_kondisi.append(["mode_gestur", gestur])
+		if cek_perubahan_kondisi["pose_duduk"] != pose_duduk:
+			perubahan_kondisi.append(["pose_duduk", pose_duduk])
 		if cek_perubahan_kondisi["gestur_jongkok"] != gestur_jongkok:
 			perubahan_kondisi.append(["gestur_jongkok", gestur_jongkok])
 		if cek_perubahan_kondisi["mode_menyerang"] != mode_menyerang:
@@ -754,6 +761,7 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["melompat"] = melompat
 		cek_perubahan_kondisi["menyerang"] = menyerang
 		cek_perubahan_kondisi["mode_gestur"] = gestur
+		cek_perubahan_kondisi["pose_duduk"] = pose_duduk
 		cek_perubahan_kondisi["arah_gerakan"] = arah_gerakan
 		cek_perubahan_kondisi["arah_pandangan"] = arah_pandangan
 		cek_perubahan_kondisi["gestur_jongkok"] = gestur_jongkok
@@ -761,7 +769,8 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["arah_terserang"] = _percepatan_ragdoll
 	
 	# terapkan arah gerakan
-	if !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
+	if gestur == "duduk": arah.y = -(ProjectSettings.get_setting("physics/3d/default_gravity"))
+	elif !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
 	elif is_on_floor() and arah.y < 0: arah.y = 0
 	# jangan fungsikan kendali kalo animasi gak aktif
 	if $pose.active: velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
