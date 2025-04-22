@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 21/04/25 Early Access"
+const versi = "Dreamline v0.4.4 22/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -406,7 +406,7 @@ func _process(delta : float) -> void:
 	if $hud/daftar_pemain.visible:
 		$hud/daftar_pemain/panel/informasi_realtime/informasi_mode_koneksi.text = info_mode_koneksi
 		$hud/daftar_pemain/panel/informasi_realtime/informasi_sinyal.text = str(ENetPacketPeer.PeerStatistic.PEER_ROUND_TRIP_TIME) + " ms"
-		#$hud/daftar_pemain/panel/informasi_realtime/informasi_jumlah_pemain.text = str()
+		#$hud/daftar_pemain/panel/informasi_realtime/informasi_jumlah_pemain.text = str() 
 	if $performa.visible:
 		var info_jumlah_sudut := "0"
 		var info_jumlah_entitas := 0
@@ -637,6 +637,7 @@ func _muat_map(file_map : StringName) -> void:
 					"arah_gerakan": 	Vector3.ZERO,
 					"arah_pandangan":	Vector2.ZERO,
 					"mode_gestur":		"berdiri",
+					"pose_duduk":		"normal",
 					"gestur_jongkok": 	0.0,
 					"mode_menyerang": 	"a"
 				}
@@ -767,7 +768,13 @@ func _muat_map(file_map : StringName) -> void:
 											skenario.track_set_path(server.timeline.trek[entitas_]["arah_y_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_y_pandangan/blend_position")
 										if server.timeline.trek[entitas_].get("gestur") == null:
 											server.timeline.trek[entitas_]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+":gestur")
+											skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+"/pose:parameters/gestur/transition_request")
+											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["gestur"], Animation.INTERPOLATION_CUBIC)
+											skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"], 0.0, "berdiri")
+										if server.timeline.trek[entitas_].get("pose_duduk") == null:
+											server.timeline.trek[entitas_]["pose_duduk"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas_]["pose_duduk"], "pemain/"+str(entitas_)+"/pose:parameters/pose_duduk/transition_request")
+											skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"], 0.0, "normal")
 										if server.timeline.trek[entitas_].get("gestur_jongkok") == null:
 											server.timeline.trek[entitas_]["gestur_jongkok"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas_]["gestur_jongkok"], "pemain/"+str(entitas_)+":gestur_jongkok")
@@ -797,6 +804,7 @@ func _muat_map(file_map : StringName) -> void:
 										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_gerakan"],		waktu, data_frame.kondisi.arah_gerakan)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_y_pandangan"],	waktu, data_frame.kondisi.arah_y_pandangan)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"],				waktu, data_frame.kondisi.gestur)
+										skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"],			waktu, data_frame.kondisi.pose_duduk)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur_jongkok"],		waktu, data_frame.kondisi.gestur_jongkok)
 										if data_frame.kondisi.lompat and not server.timeline.trek[entitas_]["lompat?"]:
 											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
@@ -2687,7 +2695,7 @@ func tampilkan_info_koneksi():
 	if koneksi == MODE_KONEKSI.SERVER and OS.get_name() != "Windows":
 		for dev in addr.size():
 			var addrdata = addr[dev]
-			if addrdata["addresses"][0].length() <= 21:
+			if str(addrdata["addresses"][0]).length() <= 21:
 				ipinf += str(addrdata["name"]) + " : " + str(addrdata["addresses"][0]) + "\n"
 	else: ipinf = str(client.id_koneksi)
 	$hud/daftar_pemain/panel/informasi/alamat_ip.text = ipinf

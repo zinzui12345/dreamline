@@ -728,6 +728,7 @@ func _pemain_terputus(id_pemain):
 					"arah_gerakan": 	Vector3.ZERO,
 					"arah_pandangan":	Vector2.ZERO,
 					"mode_gestur":		"berdiri",
+					"pose_duduk":		"normal",
 					"gestur_jongkok":	0.0,
 					"mode_menyerang": 	"a"
 				}
@@ -1022,6 +1023,7 @@ func _pemain_terputus(id_pemain):
 				if kondisi_pemain[0] == "posisi":			pemain[id_sesi_pemain]["posisi"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "rotasi":			pemain[id_sesi_pemain]["rotasi"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "mati":			pemain[id_sesi_pemain]["kondisi"]["mati"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "pose_duduk":		pemain[id_sesi_pemain]["kondisi"]["pose_duduk"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "mode_gestur":	pemain[id_sesi_pemain]["kondisi"]["mode_gestur"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "arah_gerakan":	pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "arah_pandangan":	pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"] = kondisi_pemain[1]
@@ -1058,6 +1060,7 @@ func _pemain_terputus(id_pemain):
 						"arah_gerakan": 	Vector2(-pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].x, pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].z / 2),
 						"arah_y_pandangan": pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"].y,
 						"gestur":			pemain[id_sesi_pemain]["kondisi"]["mode_gestur"],
+						"pose_duduk":		pemain[id_sesi_pemain]["kondisi"]["pose_duduk"],
 						"gestur_jongkok":	pemain[id_sesi_pemain]["kondisi"]["gestur_jongkok"],
 						"mode_menyerang": 	pemain[id_sesi_pemain]["kondisi"]["mode_menyerang"],
 						"lompat":			r_melompat,
@@ -1303,7 +1306,7 @@ func _pemain_terputus(id_pemain):
 @rpc("authority") func _sinkronkan_kondisi_pemain(id_pemain : int, kondisi_pemain : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("pemain").get_node_or_null(str(id_pemain)) != null:
-			var _pemain = dunia.get_node("pemain").get_node(str(id_pemain))
+			var _pemain : Karakter = dunia.get_node("pemain").get_node(str(id_pemain))
 			for kondisi in kondisi_pemain:
 				if kondisi[0] == "mati":				_pemain._ragdoll = kondisi[1]
 				elif kondisi[0] == "posisi":			_pemain.position = kondisi[1]
@@ -1311,6 +1314,7 @@ func _pemain_terputus(id_pemain):
 				elif kondisi[0] == "melompat":			_pemain.melompat = kondisi[1]
 				elif kondisi[0] == "menyerang":			_pemain.menyerang = kondisi[1]
 				elif kondisi[0] == "mode_gestur":		_pemain.gestur = kondisi[1]
+				elif kondisi[0] == "pose_duduk":		_pemain.pose_duduk = kondisi[1]
 				elif kondisi[0] == "arah_gerakan":		_pemain.arah_gerakan = kondisi[1]
 				elif kondisi[0] == "arah_pandangan":	_pemain.arah_pandangan = kondisi[1]
 				elif kondisi[0] == "gestur_jongkok":	_pemain.gestur_jongkok = kondisi[1]
