@@ -1,4 +1,4 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=42 format=3 uid="uid://biebpppindc77"]
+[gd_resource type="AnimationNodeBlendTree" load_steps=43 format=3 uid="uid://biebpppindc77"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cmy7d"]
 animation = &"animasi/menendang"
@@ -165,6 +165,9 @@ animation = &"animasi/melompat"
 
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_8svk4"]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_lod4u"]
+animation = &"animasi/duduk_meluncur"
+
 [sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_bvgms"]
 filter_enabled = true
 filters = ["%GeneralSkeleton:Chest", "%GeneralSkeleton:Hips", "%GeneralSkeleton:LeftHand", "%GeneralSkeleton:LeftIndexDistal", "%GeneralSkeleton:LeftIndexIntermediate", "%GeneralSkeleton:LeftIndexProximal", "%GeneralSkeleton:LeftLittleDistal", "%GeneralSkeleton:LeftLittleIntermediate", "%GeneralSkeleton:LeftLittleProximal", "%GeneralSkeleton:LeftLowerArm", "%GeneralSkeleton:LeftLowerLeg", "%GeneralSkeleton:LeftMiddleDistal", "%GeneralSkeleton:LeftMiddleIntermediate", "%GeneralSkeleton:LeftMiddleProximal", "%GeneralSkeleton:LeftRingDistal", "%GeneralSkeleton:LeftRingIntermediate", "%GeneralSkeleton:LeftRingProximal", "%GeneralSkeleton:LeftShoulder", "%GeneralSkeleton:LeftThumbDistal", "%GeneralSkeleton:LeftThumbMetacarpal", "%GeneralSkeleton:LeftThumbProximal", "%GeneralSkeleton:LeftUpperArm", "%GeneralSkeleton:LeftUpperLeg", "%GeneralSkeleton:RightHand", "%GeneralSkeleton:RightIndexDistal", "%GeneralSkeleton:RightIndexIntermediate", "%GeneralSkeleton:RightIndexProximal", "%GeneralSkeleton:RightLittleDistal", "%GeneralSkeleton:RightLittleIntermediate", "%GeneralSkeleton:RightLittleProximal", "%GeneralSkeleton:RightLowerArm", "%GeneralSkeleton:RightLowerLeg", "%GeneralSkeleton:RightMiddleDistal", "%GeneralSkeleton:RightMiddleIntermediate", "%GeneralSkeleton:RightMiddleProximal", "%GeneralSkeleton:RightRingDistal", "%GeneralSkeleton:RightRingIntermediate", "%GeneralSkeleton:RightRingProximal", "%GeneralSkeleton:RightShoulder", "%GeneralSkeleton:RightThumbDistal", "%GeneralSkeleton:RightThumbMetacarpal", "%GeneralSkeleton:RightThumbProximal", "%GeneralSkeleton:RightUpperArm", "%GeneralSkeleton:RightUpperLeg", "%GeneralSkeleton:Spine", "%GeneralSkeleton:UpperChest"]
@@ -196,8 +199,13 @@ input_3/name = "dibonceng_1"
 input_3/auto_advance = false
 input_3/break_loop_at_end = false
 input_3/reset = true
+input_4/name = "meluncur"
+input_4/auto_advance = false
+input_4/break_loop_at_end = false
+input_4/reset = true
 
 [resource]
+graph_offset = Vector2(-312.656, 14.6263)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_f2bv3")
 nodes/Animation/position = Vector2(-371.429, 542.857)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_cmy7d")
@@ -230,6 +238,8 @@ nodes/lompat/node = SubResource("AnimationNodeAnimation_pj3ma")
 nodes/lompat/position = Vector2(-800, 285.714)
 nodes/melompat/node = SubResource("AnimationNodeOneShot_8svk4")
 nodes/melompat/position = Vector2(-600, 85.7143)
+nodes/meluncur_perosotan/node = SubResource("AnimationNodeAnimation_lod4u")
+nodes/meluncur_perosotan/position = Vector2(0, 1253.33)
 nodes/menyerang_berdiri/node = SubResource("AnimationNodeOneShot_bvgms")
 nodes/menyerang_berdiri/position = Vector2(171.429, 114.286)
 nodes/mode_menyerang_berdiri/node = SubResource("AnimationNodeTransition_ap2pd")
@@ -237,4 +247,4 @@ nodes/mode_menyerang_berdiri/position = Vector2(-57.1429, 371.429)
 nodes/output/position = Vector2(1013.33, 133.333)
 nodes/pose_duduk/node = SubResource("AnimationNodeTransition_125qw")
 nodes/pose_duduk/position = Vector2(320, 586.667)
-node_connections = [&"arah_pandangan_horizontal", 0, &"gestur", &"arah_pandangan_horizontal", 1, &"arah_x_pandangan", &"arah_pandangan_vertikal", 0, &"jongkok", &"arah_pandangan_vertikal", 1, &"arah_y_pandangan", &"gestur", 0, &"menyerang_berdiri", &"gestur", 1, &"pose_duduk", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat", &"menyerang_berdiri", 0, &"arah_pandangan_vertikal", &"menyerang_berdiri", 1, &"mode_menyerang_berdiri", &"mode_menyerang_berdiri", 0, &"Animation", &"mode_menyerang_berdiri", 1, &"Animation 2", &"output", 0, &"arah_pandangan_horizontal", &"pose_duduk", 0, &"duduk_di_kursi", &"pose_duduk", 1, &"duduk_di_mobil", &"pose_duduk", 2, &"duduk_di_sepeda", &"pose_duduk", 3, &"dibonceng_sepeda"]
+node_connections = [&"arah_pandangan_horizontal", 0, &"gestur", &"arah_pandangan_horizontal", 1, &"arah_x_pandangan", &"arah_pandangan_vertikal", 0, &"jongkok", &"arah_pandangan_vertikal", 1, &"arah_y_pandangan", &"gestur", 0, &"menyerang_berdiri", &"gestur", 1, &"pose_duduk", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat", &"menyerang_berdiri", 0, &"arah_pandangan_vertikal", &"menyerang_berdiri", 1, &"mode_menyerang_berdiri", &"mode_menyerang_berdiri", 0, &"Animation", &"mode_menyerang_berdiri", 1, &"Animation 2", &"output", 0, &"arah_pandangan_horizontal", &"pose_duduk", 0, &"duduk_di_kursi", &"pose_duduk", 1, &"duduk_di_mobil", &"pose_duduk", 2, &"duduk_di_sepeda", &"pose_duduk", 3, &"dibonceng_sepeda", &"pose_duduk", 4, &"meluncur_perosotan"]
