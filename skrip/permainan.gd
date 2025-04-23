@@ -37,7 +37,7 @@ class_name Permainan
 # 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
 # 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
 
-const versi = "Dreamline v0.4.4 22/04/25 Early Access"
+const versi = "Dreamline v0.4.4 23/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -112,6 +112,7 @@ var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 			tombol_aksi_2 = ikon
 		match ikon:
 			"berjalan":				$hud/bantuan_input/aksi2/teks.text = "%keluar_k"
+			"meluncur":				$hud/bantuan_input/aksi2/teks.text = "%meluncur"
 			"edit_objek":			$hud/bantuan_input/aksi2/teks.text = "%edit"
 			"angkat_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%angkat"
 			"jatuhkan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
@@ -125,6 +126,12 @@ var tombol_aksi_3 : StringName = "lompat" :
 			get_node("kontrol_sentuh/lompat/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			get_node("kontrol_sentuh/lompat/tombol_sentuh").set("texture_pressed", load("res://ui/tombol/%s_tekan.svg" % [ikon]))
 			tombol_aksi_3 = ikon
+var tombol_aksi_4 : StringName = "berlari" :
+	set(ikon):
+		if ikon != tombol_aksi_4:
+			get_node("kontrol_sentuh/lari/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			get_node("kontrol_sentuh/lari/tombol_sentuh").set("texture_pressed", load("res://ui/tombol/%s_tekan.svg" % [ikon]))
+			tombol_aksi_4 = ikon
 var bantuan_aksi_1 : bool = false :
 	set(visibilitas):
 		$hud/bantuan_input/aksi1.visible = visibilitas
@@ -406,7 +413,7 @@ func _process(delta : float) -> void:
 	if $hud/daftar_pemain.visible:
 		$hud/daftar_pemain/panel/informasi_realtime/informasi_mode_koneksi.text = info_mode_koneksi
 		$hud/daftar_pemain/panel/informasi_realtime/informasi_sinyal.text = str(ENetPacketPeer.PeerStatistic.PEER_ROUND_TRIP_TIME) + " ms"
-		#$hud/daftar_pemain/panel/informasi_realtime/informasi_jumlah_pemain.text = str() 
+		#$hud/daftar_pemain/panel/informasi_realtime/informasi_jumlah_pemain.text = str()
 	if $performa.visible:
 		var info_jumlah_sudut := "0"
 		var info_jumlah_entitas := 0
