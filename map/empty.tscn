@@ -3,10 +3,11 @@
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
 [ext_resource type="PackedScene" uid="uid://df2034e3s77u4" path="res://skena/objek/placeholder_objek.tscn" id="3_2k3jx"]
-[ext_resource type="Script" uid="uid://bpipyr8548i57" path="res://skrip/objek/platform_bergerak.gd" id="3_am07k"]
 [ext_resource type="PackedScene" uid="uid://fbtpsokjfoin" path="res://skena/entitas/npc_jamur.scn" id="4_bfkg2"]
 [ext_resource type="PackedScene" uid="uid://51cj87m200qe" path="res://skena/entitas/dialog_informasi.scn" id="5_6a03b"]
 [ext_resource type="Resource" uid="uid://5csua1r85wtw" path="res://ui/dialog/test.dialogue" id="6_am07k"]
+[ext_resource type="PackedScene" uid="uid://btfh3nq4bweai" path="res://skena/objek/perosotan.scn" id="8_knm7h"]
+[ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="9_rmo13"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_kxi72"]
 vertices = PackedVector3Array(-43.5, 0, -49.5, -49.5, 0, -49.5, -49.5, 0, -43.5, -49.5, 0, 43.25, -49.5, 0, 49.5, -43.5, 0, 49.5, 49.5, 0, -43.5, 49.5, 0, -49.5, 43.25, 0, -49.5, 43.25, 0, 49.5, 49.5, 0, 49.5, 49.5, 0, 43.25, -37.25, 0, -49.5, -43.5, 0, -49.5, -49.5, 0, -43.5, -49.5, 0, -37.25, -49.5, 0, 43.25, -43.5, 0, 49.5, -37.25, 0, 49.5, -49.5, 0, 37, 49.5, 0, -37.25, 49.5, 0, -43.5, 43.25, 0, -49.5, 37, 0, -49.5, 37, 0, 49.5, 43.25, 0, 49.5, 49.5, 0, 43.25, 49.5, 0, 37, 49.5, 0, 12.25, 49.5, 0, 6, -2, 0, -2.5, 6, 0, 49.5, 12.25, 0, 49.5, 49.5, 0, 0, 49.5, 0, -6.25, -2, 0, -2.5, -18.75, 0, -49.5, -49.5, 0, -18.75, -49.5, 0, -12.5, -4.25, 0, -4.25, -12.5, 0, -49.5, -2, 0, -2.5, 0, 0, 49.5, 6, 0, 49.5, -31, 0, -49.5, -37.25, 0, -49.5, -49.5, 0, -37.25, -49.5, 0, -31, -49.5, 0, 37, -37.25, 0, 49.5, -31, 0, 49.5, -49.5, 0, 30.75, 49.5, 0, -31, 49.5, 0, -37.25, 37, 0, -49.5, 30.75, 0, -49.5, 30.75, 0, 49.5, 37, 0, 49.5, 49.5, 0, 37, 49.5, 0, 30.75, -6.25, 0, -49.5, -12.5, 0, -49.5, -4.25, 0, -4.25, -2.25, 0, -4.5, 0, 0, -49.5, -6.25, 0, -49.5, -2.25, 0, -4.5, -2, 0, -2.5, -6.25, 0, 49.5, 0, 0, 49.5, 6, 0, -49.5, 0, 0, -49.5, -2.25, 0, -4.5, -49.5, 0, 24.75, -49.5, 0, 30.75, -31, 0, 49.5, -24.75, 0, 49.5, 49.5, 0, -31, 30.75, 0, -49.5, 24.75, 0, -49.5, 49.5, 0, -24.75, -24.75, 0, -49.5, -31, 0, -49.5, -49.5, 0, -31, -49.5, 0, -24.75, 24.75, 0, 49.5, 30.75, 0, 49.5, 49.5, 0, 30.75, 49.5, 0, 24.75, 49.5, 0, 6, 49.5, 0, 0, -2, 0, -2.5, -2, 0, -2.5, -4, 0, -2.25, -49.5, 0, 12.25, -49.5, 0, 18.5, -12.5, 0, 49.5, -6.25, 0, 49.5, -4, 0, -2.25, -49.5, 0, 6, -49.5, 0, 12.25, 12.25, 0, -49.5, 6, 0, -49.5, -2.25, 0, -4.5, -49.5, 0, 24.75, -24.75, 0, 49.5, -18.75, 0, 49.5, 49.5, 0, -18.75, 49.5, 0, -24.75, 24.75, 0, -49.5, -18.75, 0, -49.5, -24.75, 0, -49.5, -49.5, 0, -24.75, -49.5, 0, -18.75, 18.5, 0, 49.5, 24.75, 0, 49.5, 49.5, 0, 24.75, 49.5, 0, 18.5, 12.25, 0, 49.5, 18.5, 0, 49.5, 49.5, 0, 18.5, 49.5, 0, 12.25, -49.5, 0, 18.5, -49.5, 0, 24.75, -18.75, 0, 49.5, -12.5, 0, 49.5, 49.5, 0, -18.75, 24.75, 0, -49.5, 18.5, 0, -49.5, 49.5, 0, -12.5, 12.25, 0, -49.5, -2.25, 0, -4.5, -2, 0, -2.5, 49.5, 0, -6.25, 49.5, 0, -12.5, 18.5, 0, -49.5, -4.25, 0, -4.25, -49.5, 0, -6.25, -49.5, 0, 0, -4, 0, -2.25, -4.25, 0, -4.25, -49.5, 0, 0, -49.5, 0, 6, -49.5, 0, -12.5, -49.5, 0, -6.25, -4.25, 0, -4.25)
@@ -73,9 +74,6 @@ _data = {
 &"gerakan": SubResource("Animation_am07k")
 }
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_6a03b"]
-size = Vector3(1, 0.05, 1)
-
 [node name="lingkungan" type="Node3D"]
 script = ExtResource("1_h3x2o")
 
@@ -102,7 +100,7 @@ shape = SubResource("BoxShape3D_gcxvj")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="area_navigasi/penghalang"]
 mesh = SubResource("BoxMesh_fkvxr")
 
-[node name="platform" type="StaticBody3D" parent="area_navigasi"]
+[node name="platform" type="AnimatableBody3D" parent="area_navigasi"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.01246, 0.206436, -4.35096)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="area_navigasi/platform"]
@@ -117,16 +115,6 @@ libraries = {
 &"": SubResource("AnimationLibrary_rmo13")
 }
 autoplay = "gerakan"
-
-[node name="platform_bergerak" type="Area3D" parent="area_navigasi/platform"]
-collision_layer = 66
-collision_mask = 66
-monitorable = false
-script = ExtResource("3_am07k")
-
-[node name="area" type="CollisionShape3D" parent="area_navigasi/platform/platform_bergerak"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("BoxShape3D_6a03b")
 
 [node name="posisi_spawn" type="Marker3D" parent="."]
 transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0, 0, 0)
@@ -144,5 +132,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.27171, 0.910764, -2.82737)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.73078, -0.0625, -0.983183)
 data_dialog = ExtResource("6_am07k")
 
-[connection signal="body_entered" from="area_navigasi/platform/platform_bergerak" to="area_navigasi/platform/platform_bergerak" method="_ketika_body_entered"]
-[connection signal="body_exited" from="area_navigasi/platform/platform_bergerak" to="area_navigasi/platform/platform_bergerak" method="_ketika_body_exited"]
+[node name="perosotan" parent="." instance=ExtResource("8_knm7h")]
+transform = Transform3D(-0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, -0.642788, -5.1, -0.2, 0)
+
+[node name="ayunan" parent="." instance=ExtResource("9_rmo13")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -0.45, -3.75)

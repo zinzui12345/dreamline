@@ -3,39 +3,43 @@ extends Control
 class_name Permainan
 
 ## ChangeLog ##
-# 07 Jul 2023 | 0.1.1 - Implementasi LAN Server berbasis Cross-Play
-# 04 Agu 2023 | 0.1.2 - Implementasi Timeline
-# 09 Agu 2023 | 0.1.3 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
-# 11 Agu 2023 | 0.1.4 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
-# 14 Agu 2023 | 0.1.5 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
-# 15 Agu 2023 | 0.1.6 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
-# 06 Sep 2023 | 0.1.7 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
-# 18 Sep 2023 | 0.1.8 - Implementasi shader karakter menggunakan MToon
-# 21 Sep 2023 | 0.1.9 - Perbaikan karakter dan penempatan posisi kamera First Person
-# 23 Sep 2023 | 0.2.0 - Penambahan entity posisi spawn pemain
-# 25 Sep 2023 | 0.2.1 - Penambahan Text Chat
-# 09 Okt 2023 | 0.2.2 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
-# 10 Okt 2023 | 0.2.3 - Penambahan senjata Bola salju raksasa
-# 12 Okt 2023 | 0.2.4 - Tombol Sentuh Fleksibel
-# 14 Okt 2023 | 0.2.5 - Penambahan Mode Edit Objek
-# 21 Okt 2023 | 0.2.6 - Mode Edit Objek telah berhasil di-implementasikan
-# 31 Okt 2023 | 0.2.7 - Perbaikan kesalahan kontrol sentuh
-# 08 Nov 2023 | 0.2.8 - Implementasi Koneksi Publik menggunakan UPnP
-# 17 Nov 2023 | 0.2.9 - Implementasi Proyektil
-# 27 Nov 2023 | 0.3.0 - Penambahan kemampuan penghindaran npc terhadap musuhnya
-# 10 Des 2023 | 0.3.1 - Perbaikan ragdoll karakter
-# 19 Des 2023 | 0.3.2 - Tampilan bar nyawa npc_ai
-# 04 Jan 2024 | 0.3.3 - Implementasi GPU Instancing pada Vegetasi Terrain
-# 14 Jan 2024 | 0.3.4 - Penambahan Editor Kode
-# 04 Feb 2024 | 0.3.5 - Penerapan pemutar ulang Timeline
-# 14 Apr 2024 | 0.3.7 - Implementasi Object Pooling pada entitas
-# 18 Apr 2024 | 0.3.8 - Penambahan Dialog Informasi
-# 04 Mei 2024 | 0.3.9 - Implementasi Object Pooling pada objek
-# 04 Jun 2024 | 0.4.0 - Penambahan Editor Blok Kode
-# 04 Jul 2024 | 0.4.1 - Demo Uji Performa
-# 25 Jul 2024 | 0.4.2 - Penambahan Objek Pintu
-# 04 Agu 2024 | 0.4.3 - Penambahan Efek cahaya pandangan
-# 14 Okt 2024 | 0.4.4 - Penambahan senjata Granat
+# 07 Jul 2023 | 0.0.8 - Implementasi LAN Server berbasis Cross-Play
+# 04 Agu 2023 | 0.0.9 - Implementasi Timeline
+# 09 Agu 2023 | 0.1.0 - Voice Chat telah berhasil di-implementasikan : Metode optimasi yang digunakan adalah metode kompresi ZSTD
+# 11 Agu 2023 | 0.1.1 - Penerapan notifikasi PankuConsole dan tampilan durasi timeline
+# 14 Agu 2023 | 0.1.2 - Implementasi Terrain : Metode optimasi menggunakan Frustum Culling dan Object Culling
+# 15 Agu 2023 | 0.1.3 - Implementasi Vegetasi Terrain : Metode optimasi menggunakan RenderingServer / Low Level Rendering
+# 06 Sep 2023 | 0.1.4 - Perubahan animasi karakter dan penerapan Animation Retargeting pada karakter
+# 18 Sep 2023 | 0.1.5 - Implementasi shader karakter menggunakan MToon
+# 21 Sep 2023 | 0.1.6 - Perbaikan karakter dan penempatan posisi kamera First Person
+# 23 Sep 2023 | 0.1.7 - Penambahan entity posisi spawn pemain
+# 25 Sep 2023 | 0.1.8 - Penambahan Text Chat
+# 09 Okt 2023 | 0.1.9 - Mode kamera kendaraan dan kontrol menggunakan arah pandangan
+# 10 Okt 2023 | 0.2.0 - Penambahan senjata Bola salju raksasa
+# 12 Okt 2023 | 0.2.1 - Tombol Sentuh Fleksibel
+# 14 Okt 2023 | 0.2.2 - Penambahan Mode Edit Objek
+# 21 Okt 2023 | 0.2.3 - Mode Edit Objek telah berhasil di-implementasikan
+# 31 Okt 2023 | 0.2.4 - Perbaikan kesalahan kontrol sentuh
+# 08 Nov 2023 | 0.2.5 - Implementasi Koneksi Publik menggunakan UPnP
+# 17 Nov 2023 | 0.2.6 - Implementasi Proyektil
+# 27 Nov 2023 | 0.2.7 - Penambahan kemampuan penghindaran npc terhadap musuhnya
+# 10 Des 2023 | 0.2.8 - Perbaikan ragdoll karakter
+# 19 Des 2023 | 0.2.9 - Tampilan bar nyawa npc_ai
+# 04 Jan 2024 | 0.3.0 - Implementasi GPU Instancing pada Vegetasi Terrain
+# 14 Jan 2024 | 0.3.1 - Penambahan Editor Kode
+# 04 Feb 2024 | 0.3.2 - Penerapan pemutar ulang Timeline
+# 14 Apr 2024 | 0.3.3 - Implementasi Object Pooling pada entitas
+# 18 Apr 2024 | 0.3.4 - Penambahan Dialog Informasi
+# 04 Mei 2024 | 0.3.5 - Implementasi Object Pooling pada objek
+# 04 Jun 2024 | 0.3.6 - Penambahan Editor Blok Kode
+# 04 Jul 2024 | 0.3.7 - Demo Uji Performa
+# 25 Jul 2024 | 0.3.8 - Penambahan Objek Pintu
+# 04 Agu 2024 | 0.3.9 - Penambahan Efek cahaya pandangan
+# 14 Okt 2024 | 0.4.0 - Penambahan senjata Granat
+# 19 Apr 2025 | 0.4.1 - Penambahan senjata Gas elpiji 3kg
+# 20 Apr 2025 | 0.4.2 - Penambahan Editor Entitas
+# 21 Apr 2025 | 0.4.3 - Browser Timeline
+# 23 Apr 2025 | 0.4.4 - Penambahan Objek Perosotan
 
 const versi = "Dreamline v0.4.4 23/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
@@ -113,6 +117,7 @@ var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 		match ikon:
 			"berjalan":				$hud/bantuan_input/aksi2/teks.text = "%keluar_k"
 			"meluncur":				$hud/bantuan_input/aksi2/teks.text = "%meluncur"
+			"mengayun":				$hud/bantuan_input/aksi2/teks.text = "%mengayun"
 			"edit_objek":			$hud/bantuan_input/aksi2/teks.text = "%edit"
 			"angkat_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%angkat"
 			"jatuhkan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
