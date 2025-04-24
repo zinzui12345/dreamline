@@ -54,7 +54,7 @@ func _process(delta : float) -> void:
 	# sinkronkan perubahan kondisi
 	if id_proses == client.id_koneksi:
 		# buat variabel pembanding
-		var perubahan_kondisi = []
+		var perubahan_kondisi : Array = []
 		var sinkron_kondisi : Array = get("sinkron_kondisi")
 		
 		# cek apakah kondisi sebelumnya telah tersimpan
@@ -72,13 +72,17 @@ func _process(delta : float) -> void:
 			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
 			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		
+		# 24/04/25 :: buat array kondisi kustom
+		var daftar_kondisi_kustom : Array = []
 		# cek kondisi properti kustom
 		for p in sinkron_kondisi.size():
 			# cek apakah kondisi sebelumnya telah tersimpan
 			if cek_kondisi.get(sinkron_kondisi[p][0]) == null:	cek_kondisi[sinkron_kondisi[p][0]] = sinkron_kondisi[p][1]
 			
 			# cek apakah kondisi berubah
-			if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	perubahan_kondisi.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
+			if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	daftar_kondisi_kustom.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
+		# 24/04/25 :: sinkronkan kondisi kustom yang berubah
+		if daftar_kondisi_kustom.size() > 0:	perubahan_kondisi.append(["kondisi", daftar_kondisi_kustom])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
 		if perubahan_kondisi.size() > 0 and (is_instance_valid(server.peer) or is_instance_valid(client.peer)):
