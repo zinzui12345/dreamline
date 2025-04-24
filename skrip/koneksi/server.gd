@@ -1058,6 +1058,7 @@ func _pemain_terputus(id_pemain):
 					"skala":	Vector3(1, 1, 1), # asumsikan skala pemain tidak pernah berubah
 					"kondisi":	{
 						"arah_gerakan": 	Vector2(-pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].x, pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].z / 2),
+						"arah_x_pandangan": pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"].x,
 						"arah_y_pandangan": pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"].y,
 						"gestur":			pemain[id_sesi_pemain]["kondisi"]["mode_gestur"],
 						"pose_duduk":		pemain[id_sesi_pemain]["kondisi"]["pose_duduk"],
@@ -1112,9 +1113,15 @@ func _pemain_terputus(id_pemain):
 			# - cek apakah frame sebelumnya telah tersimpan di pool
 			if !pool_entitas[nama_entitas].has("cek_frame"):
 				pool_entitas[nama_entitas]["cek_frame"] = 0
-			# - jika frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
-			if timeline.has(pool_entitas[nama_entitas]["cek_frame"]) and timeline[pool_entitas[nama_entitas]["cek_frame"]].has(nama_entitas) and timeline[pool_entitas[nama_entitas]["cek_frame"]][nama_entitas] == timeline[frame_sekarang][nama_entitas]:
-				timeline[pool_entitas[nama_entitas]["cek_frame"]].erase(nama_entitas)
+			# - cek apakah frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
+			if timeline.has(pool_entitas[nama_entitas]["cek_frame"]) and timeline[pool_entitas[nama_entitas]["cek_frame"]].has(nama_entitas):
+				var frame_tetap : int = 0
+				if timeline[pool_entitas[nama_entitas]["cek_frame"]][nama_entitas]["properti"] == timeline[frame_sekarang][nama_entitas]["properti"]:
+					frame_tetap += 1
+				if timeline[pool_entitas[nama_entitas]["cek_frame"]][nama_entitas] == timeline[frame_sekarang][nama_entitas]:
+					frame_tetap += 1
+				if frame_tetap == 2:
+					timeline[pool_entitas[nama_entitas]["cek_frame"]].erase(nama_entitas)
 			# - set frame sekarang untuk di-cek pada frame selanjutnya
 			pool_entitas[nama_entitas]["cek_frame"] = frame_sekarang
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
