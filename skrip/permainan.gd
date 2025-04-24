@@ -41,7 +41,7 @@ class_name Permainan
 # 21 Apr 2025 | 0.4.3 - Browser Timeline
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Perosotan
 
-const versi = "Dreamline v0.4.4 23/04/25 Early Access"
+const versi = "Dreamline v0.4.4 24/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -756,6 +756,26 @@ func _muat_map(file_map : StringName) -> void:
 									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
 									skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
+									# buat track animasi properti kustom
+									server.timeline.trek[entitas_]["properti"] = Dictionary()
+									for indeks_properti in data_frame.properti:
+										# buat track animasi
+										server.timeline.trek[entitas_]["properti"][indeks_properti[0]] = skenario.add_track(Animation.TYPE_VALUE)
+										# atur track dan nilai animasi
+										skenario.track_set_path(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], "entitas/"+str(entitas_)+":"+indeks_properti[0])
+										if indeks_properti[0].begins_with("id_"):
+											# atur track animasi
+											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.INTERPOLATION_NEAREST)
+											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.UPDATE_DISCRETE)
+											# atur nilai default animasi
+											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], 0.0, -1)
+											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
+										else:
+											# atur track animasi
+											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.INTERPOLATION_CUBIC)
+											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.UPDATE_DISCRETE)
+											# atur nilai default animasi
+											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], 0.0, indeks_properti[1])
 							elif data_frame.tipe == "sinkron":
 								if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas_) != null:
 									if server.timeline.entitas[entitas_] == "pemain":
@@ -775,12 +795,15 @@ func _muat_map(file_map : StringName) -> void:
 											skenario.track_set_path(server.timeline.trek[entitas_]["arah_gerakan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_gerakan/blend_position")
 											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["arah_gerakan"], Animation.INTERPOLATION_CUBIC)
 											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["arah_gerakan"], Animation.UPDATE_DISCRETE)
+										if server.timeline.trek[entitas_].get("arah_x_pandangan") == null:
+											server.timeline.trek[entitas_]["arah_x_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
+											skenario.track_set_path(server.timeline.trek[entitas_]["arah_x_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_x_pandangan/blend_position")
 										if server.timeline.trek[entitas_].get("arah_y_pandangan") == null:
 											server.timeline.trek[entitas_]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
 											skenario.track_set_path(server.timeline.trek[entitas_]["arah_y_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_y_pandangan/blend_position")
 										if server.timeline.trek[entitas_].get("gestur") == null:
 											server.timeline.trek[entitas_]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+"/pose:parameters/gestur/transition_request")
+											skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+":gestur")
 											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["gestur"], Animation.INTERPOLATION_CUBIC)
 											skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"], 0.0, "berdiri")
 										if server.timeline.trek[entitas_].get("pose_duduk") == null:
@@ -814,6 +837,7 @@ func _muat_map(file_map : StringName) -> void:
 										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"],				waktu, data_frame.rotasi)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["skala"],				waktu, data_frame.skala)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_gerakan"],		waktu, data_frame.kondisi.arah_gerakan)
+										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_x_pandangan"],	waktu, data_frame.kondisi.arah_x_pandangan)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_y_pandangan"],	waktu, data_frame.kondisi.arah_y_pandangan)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"],				waktu, data_frame.kondisi.gestur)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"],			waktu, data_frame.kondisi.pose_duduk)
@@ -853,6 +877,8 @@ func _muat_map(file_map : StringName) -> void:
 									elif server.timeline.entitas[entitas_] == "entitas":
 										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
+										for indeks_properti in data_frame.properti:
+											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
 										skenario.length = waktu
 							elif data_frame.tipe == "hapus" and server.timeline.entitas.has(entitas_):
 								# hapus entitas
