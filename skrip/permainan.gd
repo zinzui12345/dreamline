@@ -41,7 +41,7 @@ class_name Permainan
 # 21 Apr 2025 | 0.4.3 - Browser Timeline
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Perosotan
 
-const versi = "Dreamline v0.4.4 24/04/25 Early Access"
+const versi = "Dreamline v0.4.4 25/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -366,6 +366,7 @@ func _process(delta : float) -> void:
 			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
 		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda): _tampilkan_daftar_pemain()
+		if Input.is_action_just_pressed("ui_accept") and pesan: _kirim_pesan()
 		if Input.is_action_just_pressed("tampilkan_pesan") and !jeda: _tampilkan_input_pesan()
 		if Input.is_action_just_pressed("ui_text_completion_accept") and pesan: _kirim_pesan()
 		
@@ -1268,13 +1269,6 @@ func putuskan_server(paksa : bool = false) -> void:
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		
-		PerenderEfekGarisCahaya.atur_proses_render(false)
-		_sembunyikan_antarmuka_permainan()
-		
-		# INFO : (9) tampilkan kembali menu utama
-		$menu_jeda/menu/animasi.play("sembunyikan")
-		$menu_utama/animasi.play("tampilkan")
-		
 		get_node("%karakter").add_child(karakter_cewek.instantiate())
 		get_node("%karakter/lulu").model["alis"] 		= data["alis"]
 		get_node("%karakter/lulu").model["garis_mata"] 	= data["garis_mata"]
@@ -1315,9 +1309,15 @@ func putuskan_server(paksa : bool = false) -> void:
 		
 		koneksi = MODE_KONEKSI.CLIENT
 		karakter = null
+		
 		dunia.set_process(false)
 		dunia.hapus_map()
 		dunia.hapus_instance_pemain()
+		
+		# 25/04/25 :: tunggu hingga pemain dihapus
+		while dunia.get_node("pemain").get_child_count() > 0: await get_tree().create_timer(0.1).timeout
+		
+		PerenderEfekGarisCahaya.atur_proses_render(false)
 		
 		# hapus daftar pemain
 		for d_pemain in $hud/daftar_pemain/panel/gulir/baris.get_children(): d_pemain.queue_free()
@@ -1329,6 +1329,10 @@ func putuskan_server(paksa : bool = false) -> void:
 		if get_node_or_null("pengamat") != null:
 			$pengamat.queue_free()
 		
+		# INFO : (9) tampilkan kembali menu utama
+		_sembunyikan_antarmuka_permainan()
+		$menu_jeda/menu/animasi.play("sembunyikan")
+		$menu_utama/animasi.play("tampilkan")
 		$latar.tampilkan()
 		_mainkan_musik_latar()
 func alamat_ip() -> String:
@@ -1488,10 +1492,16 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	$hud/bantuan_input/aksi2.visible = false
 	#$hud/kompas.set_physics_process(false)
 	#$hud/kompas.parent = null
+	tombol_aksi_1 = "lempar_sesuatu"
+	tombol_aksi_2 = "angkat_sesuatu"
+	tombol_aksi_3 = "lompat"
+	tombol_aksi_4 = "berlari"
 	$hud.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/menu.visible = true
+	$kontrol_sentuh/lompat.visible = true
+	$kontrol_sentuh/jongkok.visible = true
 	$kontrol_sentuh/kontrol_kendaraan.visible = false
 	$daftar_objek/tutup/TouchScreenButton.visible = false
 	if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
