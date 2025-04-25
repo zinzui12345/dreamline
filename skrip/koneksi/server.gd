@@ -1084,7 +1084,7 @@ func _pemain_terputus(id_pemain):
 	if t_entitas != null:
 		client.rpc_id(id_pemain, "dapatkan_posisi_entitas", nama_entitas, t_entitas.global_transform.origin, t_entitas.rotation_degrees)
 	else:
-		client.rpc_id(id_pemain, "dapatkan_posisi_entitas", nama_entitas, entitas[nama_entitas]["posisi"], entitas[nama_entitas]["rotasi"])
+		client.rpc_id(id_pemain, "dapatkan_posisi_entitas", nama_entitas, pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"])
 @rpc("any_peer") func _sesuaikan_kondisi_entitas(id_pengatur : int, nama_entitas : String, kondisi_entitas : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas[nama_entitas]["id_proses"] == id_pengatur:
 		for p in kondisi_entitas.size():
@@ -1132,6 +1132,8 @@ func _pemain_terputus(id_pemain):
 			if id_pemain_target != 0 and id_pemain_target != id_pengatur:
 				if cek_visibilitas_pool_entitas.has(id_pemain_target) and cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":
 					sinkronkan_kondisi_entitas(id_pemain_target, nama_entitas, kondisi_entitas)
+	else:
+		push_error("[Galat] tidak dapat menyesuaikan kondisi entitias dari peer %s. kesalahan akses!" % str(id_pengatur))
 @rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:
 		for p in properti_objek.size():
@@ -1333,6 +1335,11 @@ func _pemain_terputus(id_pemain):
 			for p in kondisi_entitas.size():
 				if dunia.get_node("entitas").get_node(nama_entitas).get(kondisi_entitas[p][0]) != null:
 					dunia.get_node("entitas").get_node(nama_entitas).set(kondisi_entitas[p][0], kondisi_entitas[p][1])
+				# 25/04/25 :: set kondisi properti kustom
+				if kondisi_entitas[p][0] == "kondisi":
+					for p2 in kondisi_entitas[p][1].size():
+						if dunia.get_node("entitas").get_node(nama_entitas).get(kondisi_entitas[p][1][p2][0]) != null:
+							dunia.get_node("entitas").get_node(nama_entitas).set(kondisi_entitas[p][1][p2][0], kondisi_entitas[p][1][p2][1])
 @rpc("authority") func _sinkronkan_kondisi_objek(nama_objek : String, kondisi_objek : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("objek").get_node_or_null(nama_objek) != null:
