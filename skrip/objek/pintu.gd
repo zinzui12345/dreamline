@@ -63,5 +63,11 @@ func tutup() -> void:
 		)
 		set("terbuka", false)
 
+func fungsikan():
+	if !terbuka:
+		buka()
+	else:
+		tutup()
+
 static func get_custom_class() -> String:
 	return "pintu"

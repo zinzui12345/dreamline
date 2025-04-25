@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 class_name Karakter
 
-# TODO : floor_constant_speed = true, kecuali ketika menaiki tangga 
+# TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
 var arah_gerakan : Vector3 :				# ini arah gerakan
@@ -423,10 +423,9 @@ func _input(event : InputEvent) -> void:
 						server.permainan.pasang_objek = posisi_target
 						server.permainan._tampilkan_daftar_objek()
 					_:
-						if objek_target.is_in_group("dapat_diedit") and objek_target.has_node("kode_ubahan"):
-							if objek_target.id_pengubah < 1 and objek_target.has_method("fungsikan"):
-								#objek_target.call("fungsikan", multiplayer.get_unique_id())
-								objek_target.call("fungsikan")
+						if objek_target is objek and objek_target.id_pengubah < 1 and objek_target.has_method("fungsikan"):
+							#objek_target.call("fungsikan", multiplayer.get_unique_id())
+							objek_target.call("fungsikan")
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
 							var arah_dorongan := Vector3(0, 0, 5)
@@ -609,7 +608,7 @@ func _physics_process(delta : float) -> void:
 			server.permainan.set("tombol_aksi_1", "tendang_sesuatu")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.bantuan_aksi_1 = true
-		elif objek_target.is_in_group("dapat_diedit") and objek_target.has_method("fungsikan"):
+		elif objek_target.has_method("fungsikan"):
 			server.permainan.set("tombol_aksi_1", "gunakan_objek")
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.bantuan_aksi_1 = true
