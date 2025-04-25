@@ -113,6 +113,7 @@ func atur_mode(nilai : int) -> void:
 	tween_pandangan_2a.play()
 	tween_pandangan_3a.play()
 	tween_pandangan_3b.play()
+	await get_tree().create_timer(0.25).timeout
 	if !ubah: mode_kontrol = nilai; return
 	if _karakter.kontrol:	$kamera/transisi.visible = true
 	else:					$kamera/transisi.visible = false
