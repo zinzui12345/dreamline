@@ -6677,10 +6677,10 @@ metadata/_edit_lock_ = true
 [node name="panel" type="Panel" parent="buat_server"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 1.0
+anchor_top = -1.0
 anchor_right = 1.0
-anchor_bottom = 2.0
 offset_bottom = -0.200012
+grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ard0c")
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
@@ -6701,7 +6701,6 @@ vertical_alignment = 1
 metadata/_edit_lock_ = true
 
 [node name="batal" type="Button" parent="buat_server/panel"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -6727,7 +6726,6 @@ alignment = 0
 metadata/_edit_lock_ = true
 
 [node name="mulai" type="Button" parent="buat_server/panel"]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -6983,7 +6981,7 @@ anchor_right = 0.001
 anchor_bottom = 0.536
 offset_left = 31.208
 offset_top = -28.032
-offset_right = 223.209
+offset_right = 207.208
 offset_bottom = 27.968
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -7002,13 +7000,13 @@ metadata/_edit_use_anchors_ = true
 layout_direction = 2
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.96
+anchor_left = 1.0
 anchor_top = 0.536
 anchor_right = 1.0
 anchor_bottom = 0.536
-offset_left = -504.322
+offset_left = -568.004
 offset_top = -28.032
-offset_right = -280.001
+offset_right = -280.004
 offset_bottom = 27.968
 grow_horizontal = 2
 grow_vertical = 2

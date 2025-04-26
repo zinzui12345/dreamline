@@ -41,7 +41,7 @@ class_name Permainan
 # 21 Apr 2025 | 0.4.3 - Browser Timeline
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Perosotan
 
-const versi = "Dreamline v0.4.4 25/04/25 Early Access"
+const versi = "Dreamline v0.4.4 26/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -366,9 +366,8 @@ func _process(delta : float) -> void:
 			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
 		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda): _tampilkan_daftar_pemain()
-		if Input.is_action_just_pressed("ui_accept") and pesan: _kirim_pesan()
+		if Input.is_action_just_pressed("kirim_pesan") and pesan: _kirim_pesan()
 		if Input.is_action_just_pressed("tampilkan_pesan") and !jeda: _tampilkan_input_pesan()
-		if Input.is_action_just_pressed("ui_text_completion_accept") and pesan: _kirim_pesan()
 		
 		if Input.is_action_just_released("berbicara"): _berbicara(false)
 		if Input.is_action_just_released("daftar_pemain") and $hud/daftar_pemain/panel.anchor_left > -1: _sembunyikan_daftar_pemain()
@@ -1060,11 +1059,10 @@ func _kirim_suara() -> void:
 					server.rpc_id(
 						dunia.get_node("pemain").get_child(p).id_pemain,
 						"_terima_suara_pemain",
-						client.id_koneksi,
 						client.data_suara,
 						tmp_ukuran_buffer_suara
 					)
-			#server._terima_suara_pemain(client.id_koneksi, client.data_suara, tmp_ukuran_buffer_suara) # loopback
+			#server._terima_suara_pemain(client.data_suara, tmp_ukuran_buffer_suara) # loopback
 		effect.set_recording_active(true)
 		print("kirim suara...")
 func _kirim_pesan() -> void:
