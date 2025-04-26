@@ -239,9 +239,7 @@ func _kemudikan(id):
 					$arah_pengamat_vr/arah_putar.rotation_degrees.y = -arah_putar
 		
 		# ubah pemroses pada server
-		var tmp_kondisi = [["id_proses", id], ["id_pengemudi", id]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", id], ["kondisi", [["id_pengemudi", id]]]])
 	
 	# atur id_pengemudi dan id_proses
 	id_pengemudi = id
@@ -272,9 +270,8 @@ func _lepas(id):
 			$arah_pengamat_vr/arah_putar.rotation_degrees.y = 0
 		
 		# reset pemroses pada server
-		var tmp_kondisi = [["id_proses", -1], ["id_pengemudi", -1]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", -1], ["kondisi", [["id_pengemudi", -1]]]])
+	
 	# atur ulang id_pengemudi dan id_proses
 	id_pengemudi = -1
 	id_proses = -1
@@ -283,7 +280,7 @@ func _atur_audio_mesin(delta : float):
 		if !$AudioAkselerasiMesin.playing:
 			$AudioAkselerasiMesin.playing = true
 		elif $AudioAkselerasiMesin.volume_db < 1:
-			$AudioAkselerasiMesin.volume_db = lerp($AudioAkselerasiMesin.volume_db, 1.0, 1.25 * delta)
+			$AudioAkselerasiMesin.volume_db = lerpf($AudioAkselerasiMesin.volume_db, clamp(self.engine_force / (kecepatan_maksimal / (16 - kecepatan_laju)), 0.1, 1.0), 1.25 * delta)
 		if $AudioPeringatan.playing: $AudioPeringatan.playing = false
 		$AudioAkselerasiMesin.pitch_scale = lerpf($AudioAkselerasiMesin.pitch_scale, clamp(kecepatan_laju / 7, 0.7, 2.7), 1.25 * delta)
 	elif self.engine_force < 0 and kecepatan_laju < 0:
@@ -312,9 +309,9 @@ func _atur_audio_mesin(delta : float):
 			if $roda_belakang_kiri/AudioRem.playing: $roda_belakang_kiri/AudioRem.stop()
 			if $roda_belakang_kanan/AudioRem.playing: $roda_belakang_kanan/AudioRem.stop()
 			rem = false
-		$roda_depan/AudioRem.pitch_scale = clamp(abs(kecepatan_laju/10), 0.6, 1)
-		$roda_belakang_kiri/AudioRem.pitch_scale = clamp(abs(kecepatan_laju/10), 0.8, 1.05)
-		$roda_belakang_kanan/AudioRem.pitch_scale = clamp(abs(kecepatan_laju/10), 0.8, 1.05)
+		$roda_depan/AudioRem.pitch_scale = clamp(abs(self.engine_force/10), 0.6, 1)
+		$roda_belakang_kiri/AudioRem.pitch_scale = clamp(abs(self.engine_force/10), 0.8, 1.05)
+		$roda_belakang_kanan/AudioRem.pitch_scale = clamp(abs(self.engine_force/10), 0.8, 1.05)
 	elif rem == true:
 		if $roda_depan/AudioRem.playing: $roda_depan/AudioRem.stop()
 		if $roda_belakang_kiri/AudioRem.playing: $roda_belakang_kiri/AudioRem.stop()

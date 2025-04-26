@@ -1128,12 +1128,14 @@ func _pemain_terputus(id_pemain):
 		for idx_pemain in pemain.keys():
 			# dapatkan id pemain target
 			var id_pemain_target = pemain[idx_pemain]["id_client"]
-			# pastikan pemain valid dan pemain bukan pengatur
-			if id_pemain_target != 0 and id_pemain_target != id_pengatur:
+			# dapatkan id penyinkron
+			var id_penyinkron = multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() > 0 else id_pengatur
+			# pastikan pemain valid dan pemain bukan yang menyinkronkan kondisi
+			if id_pemain_target != 0 and id_pemain_target != id_penyinkron:
 				if cek_visibilitas_pool_entitas.has(id_pemain_target) and cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":
 					sinkronkan_kondisi_entitas(id_pemain_target, nama_entitas, kondisi_entitas)
 	else:
-		push_error("[Galat] tidak dapat menyesuaikan kondisi entitias dari peer %s. kesalahan akses!" % str(id_pengatur))
+		push_error("[Galat] tidak dapat menyesuaikan kondisi entitias peer %s dari peer %s. kesalahan akses!" % [str(pool_entitas[nama_entitas]["id_proses"]), str(id_pengatur)])
 @rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:
 		for p in properti_objek.size():
