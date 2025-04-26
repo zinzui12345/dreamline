@@ -31,7 +31,6 @@ var id_pengguna_1 : int = -1:
 			
 				# nonaktifkan fisik dengan pengguna
 				$ayunan/fisik_ayunan_1.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
-				$ayunan/fisik_ayunan_1/bentuk_fisik_pemain.disabled = false
 		else:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_1)) != null:
 				# atur ulang pose pengguna
@@ -45,7 +44,6 @@ var id_pengguna_1 : int = -1:
 				
 				# aktifkan fisik dengan pengguna
 				$ayunan/fisik_ayunan_1.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_1)))
-				$ayunan/fisik_ayunan_1/bentuk_fisik_pemain.disabled = true
 		id_pengguna_1 = id
 var id_pengguna_2 : int = -1:
 	set(id):
@@ -66,21 +64,19 @@ var id_pengguna_2 : int = -1:
 			
 				# nonaktifkan fisik dengan pengguna
 				$ayunan/fisik_ayunan_2.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
-				$ayunan/fisik_ayunan_2/bentuk_fisik_pemain.disabled = false
 		else:
-			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_1)) != null:
+			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_2)) != null:
 				# atur ulang pose pengguna
-				dunia.get_node("pemain/"+str(id_pengguna_1)).set("gestur", "berdiri")
+				dunia.get_node("pemain/"+str(id_pengguna_2)).set("gestur", "berdiri")
 				
 				# nonaktifkan IK tangan pengguna
-				#dunia.get_node("pemain/"+str(id_pengguna_1)+"/%tangan_kanan").set_target_node("")
-				#dunia.get_node("pemain/"+str(id_pengguna_1)+"/%tangan_kanan").stop()
-				#dunia.get_node("pemain/"+str(id_pengguna_1)+"/%tangan_kiri").set_target_node("")
-				#dunia.get_node("pemain/"+str(id_pengguna_1)+"/%tangan_kiri").stop()
+				#dunia.get_node("pemain/"+str(id_pengguna_2)+"/%tangan_kanan").set_target_node("")
+				#dunia.get_node("pemain/"+str(id_pengguna_2)+"/%tangan_kanan").stop()
+				#dunia.get_node("pemain/"+str(id_pengguna_2)+"/%tangan_kiri").set_target_node("")
+				#dunia.get_node("pemain/"+str(id_pengguna_2)+"/%tangan_kiri").stop()
 				
 				# aktifkan fisik dengan pengguna
 				$ayunan/fisik_ayunan_2.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_2)))
-				$ayunan/fisik_ayunan_2/bentuk_fisik_pemain.disabled = true
 		id_pengguna_2 = id
 var arah_ayunan_1 : int = 0:
 	set(arah):
@@ -100,13 +96,13 @@ var arah_ayunan_2 : int = 0:
 		arah_ayunan_2 = arah
 var rotasi_ayunan_1 : Vector3 = Vector3.ZERO:
 	set(putaran):
-		if (id_pengguna_1 != client.id_koneksi and id_pengguna_1 != -1) or id_proses != client.id_koneksi:
+		if (id_pengguna_1 != client.id_koneksi and id_pengguna_2 != client.id_koneksi) and id_proses != client.id_koneksi:
 			$ayunan/fisik_ayunan_1.rotation = putaran
 		$ayunan/model_ayunan_1.rotation = putaran
 		rotasi_ayunan_1 = putaran
 var rotasi_ayunan_2 : Vector3 = Vector3.ZERO:
 	set(putaran):
-		if (id_pengguna_2 != client.id_koneksi and id_pengguna_2 != -1) or id_proses != client.id_koneksi:
+		if (id_pengguna_1 != client.id_koneksi and id_pengguna_2 != client.id_koneksi) and id_proses != client.id_koneksi:
 			$ayunan/fisik_ayunan_2.rotation = putaran
 		$ayunan/model_ayunan_2.rotation = putaran
 		rotasi_ayunan_2 = putaran
@@ -145,14 +141,26 @@ func _process(_waktu_delta : float) -> void:
 			## 12/10/24 :: putar arah XROrigin menyesuaikan arah kendaraan
 			#server.permainan.pengamat_vr.global_rotation = $arah_pengamat_vr/arah_putar/arah_pandangan.global_rotation
 	
-	if (id_proses == client.id_koneksi and id_pengguna_1 == -1) or (id_pengguna_1 == client.id_koneksi and !server.mode_replay):
-		set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
-	if (id_proses == client.id_koneksi and id_pengguna_2 == -1) or (id_pengguna_2 == client.id_koneksi and !server.mode_replay):
-		set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
-	
 	# sinkronkan perubahan kondisi
-	if id_proses == client.id_koneksi or id_pengguna_1 == client.id_koneksi or id_pengguna_2 == client.id_koneksi:
-		_sinkronkan_perubahan_kondisi()
+	if !server.mode_replay:
+		if id_pengguna_1 == client.id_koneksi:
+			set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
+			if id_pengguna_2 == -1 and id_proses == client.id_koneksi:
+				set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
+				sinkronkan_perubahan_kondisi()
+			else:
+				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation]]]])
+		elif id_pengguna_2 == client.id_koneksi:
+			set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
+			if id_pengguna_1 == -1 and id_proses == client.id_koneksi:
+				set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
+				sinkronkan_perubahan_kondisi()
+			else:
+				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation]]]])
+		elif (id_pengguna_1 == -1 and id_pengguna_2 == -1) and id_proses == client.id_koneksi:
+			set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
+			set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
+			sinkronkan_perubahan_kondisi()
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengguna_1 == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengguna_1)).kontrol:
 		if Input.is_action_just_pressed("berlari"):
@@ -226,9 +234,7 @@ func _naiki_ayunan_1(id):
 					#$arah_pengamat_vr/arah_putar.rotation_degrees.y = -arah_putar
 		
 		# ubah pemroses pada server
-		var tmp_kondisi = [["id_proses", id], ["id_pengguna_1", id], ["arah_ayunan_1", arah_ayunan_1]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", id], ["kondisi", [["id_pengguna_1", id], ["arah_ayunan_1", arah_ayunan_1]]]])
 	
 	# atur id_pengguna_1 dan id_proses
 	id_pengguna_1 = id
@@ -270,9 +276,7 @@ func _naiki_ayunan_2(id):
 					#$arah_pengamat_vr/arah_putar.rotation_degrees.y = -arah_putar
 		
 		# ubah pemroses pada server
-		var tmp_kondisi = [["id_proses", id], ["id_pengguna_2", id], ["arah_ayunan_2", arah_ayunan_2]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", id], ["kondisi", [["id_pengguna_2", id], ["arah_ayunan_2", arah_ayunan_2]]]])
 	
 	# atur id_pengguna_2 dan id_proses
 	id_pengguna_2 = id
@@ -301,12 +305,11 @@ func _turun_dari_ayunan_1(id):
 			#$arah_pengamat_vr/arah_putar.rotation_degrees.y = 0
 		
 		# reset pemroses pada server
-		var tmp_kondisi = [["id_proses", id_pengguna_2], ["id_pengguna_1", -1]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", id_pengguna_2], ["kondisi", [["id_pengguna_1", -1]]]])
+	
 	# atur ulang id_pengguna_1 dan id_proses
 	id_pengguna_1 = -1
-	id_proses = -1
+	id_proses = id_pengguna_2
 func _turun_dari_ayunan_2(id):
 	# atur pengguna
 	if id == client.id_koneksi:
@@ -330,9 +333,8 @@ func _turun_dari_ayunan_2(id):
 			#$arah_pengamat_vr/arah_putar.rotation_degrees.y = 0
 		
 		# reset pemroses pada server
-		var tmp_kondisi = [["id_proses", id_pengguna_1], ["id_pengguna_2", -1]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", id_pengguna_1], ["kondisi", [["id_pengguna_2", -1]]]])
+	
 	# atur ulang id_pengguna_2 dan id_proses
 	id_pengguna_2 = -1
-	id_proses = -1
+	id_proses = id_pengguna_1
