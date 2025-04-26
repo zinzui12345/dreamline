@@ -1,6 +1,6 @@
 extends entitas
 
-const sinkron_kondisi = []
+const sinkron_kondisi = [ ["warna_1", Color("7be720")], [ "id_pengangkat", -1 ], [ "id_pelempar", -1 ] ]
 const jalur_instance = "res://skena/entitas/gas_elpiji_3kg.scn"
 const radius_ledakan : int = 10
 
@@ -73,27 +73,26 @@ var transformasi_angkat : Dictionary = {
 	}
 }
 
-func _ready(): call_deferred("_setup")
-func _setup():
-	if get_parent().get_path() != dunia.get_node("entitas").get_path():
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
-			server._tambahkan_entitas(
-				"res://skena/entitas/gas_elpiji_3kg.scn",
-				global_transform.origin,
-				rotation,
-				[
-					[ "id_pengangkat", -1 ],
-					[ "id_pelempar", -1 ]
-				]
-			)
-		queue_free()
-	else:
-		timer_ledakan = Timer.new()
-		timer_ledakan.name = "timer_ledakan"
-		add_child(timer_ledakan)
-		timer_ledakan.one_shot = true
-		timer_ledakan.wait_time = 3
-		timer_ledakan.connect("timeout", _ketika_meledak)
+var mat1 : StandardMaterial3D
+var warna_1 : Color = Color("7be720"):
+	set(ubah_warna):
+		if mat1 != null: mat1.albedo_color = ubah_warna
+		warna_1 = ubah_warna
+
+var efek_cahaya : GlowBorderEffectObject
+
+func mulai() -> void:
+	mat1 = $model/tabung.get_surface_override_material(0).duplicate()
+	warna_1 = warna_1
+	efek_cahaya = $model
+	$model/tabung.set_surface_override_material(0, mat1)
+	$model/tabung_lod1.set_surface_override_material(0, mat1)
+	timer_ledakan = Timer.new()
+	timer_ledakan.name = "timer_ledakan"
+	add_child(timer_ledakan)
+	timer_ledakan.one_shot = true
+	timer_ledakan.wait_time = 3
+	timer_ledakan.connect("timeout", _ketika_meledak)
 
 func proses(_waktu_delta : float) -> void:
 	if !is_instance_valid(server.permainan): set_process(false); return
@@ -183,9 +182,7 @@ func _angkat(id):
 		server.permainan.bantuan_aksi_2 = true
 		
 		# ubah pemroses pada server
-		var tmp_kondisi = [["id_proses", id], ["id_pengangkat", id]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", id], ["kondisi", [["id_pengangkat", id]]]])
 	# atur id_pengangkat dan id_proses
 	id_pengangkat = id
 	id_pelempar = -1
@@ -207,9 +204,7 @@ func _lepas(id):
 		server.permainan.bantuan_aksi_2 = false
 		
 		# reset pemroses pada server
-		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", -1], ["kondisi", [["id_pengangkat", -1], ["id_pelempar", -1]]]])
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		set("contact_monitor", false)
 		set("max_contacts_reported", 0)
@@ -242,9 +237,7 @@ func _lempar(_pelempar):
 		server.permainan.bantuan_aksi_2 = false
 		
 		# reset pemroses pada server
-		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1], ["id_pelempar", _pelempar]]
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
+		sinkronkan_perubahan_kondisi([["id_proses", -1], ["kondisi", [["id_pengangkat", -1], ["id_pelempar", _pelempar]]]])
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		set("contact_monitor", false)
 		set("max_contacts_reported", 0)
