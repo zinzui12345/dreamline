@@ -108,6 +108,10 @@ var rotasi_ayunan_2 : Vector3 = Vector3.ZERO:
 		rotasi_ayunan_2 = putaran
 
 func mulai() -> void:
+	id_pengguna_1 = id_pengguna_1
+	id_pengguna_2 = id_pengguna_2
+	arah_ayunan_1 = arah_ayunan_1
+	arah_ayunan_2 = arah_ayunan_2
 	rotasi_ayunan_1 = rotasi_ayunan_1
 	rotasi_ayunan_2 = rotasi_ayunan_2
 	set("wilayah_render", $bentuk.get_aabb())
@@ -144,23 +148,29 @@ func _process(_waktu_delta : float) -> void:
 	# sinkronkan perubahan kondisi
 	if !server.mode_replay:
 		if id_pengguna_1 == client.id_koneksi:
-			set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
+			rotasi_ayunan_1 = $ayunan/fisik_ayunan_1.rotation
 			if id_pengguna_2 == -1 and id_proses == client.id_koneksi:
-				set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
+				rotasi_ayunan_2 = $ayunan/fisik_ayunan_2.rotation
 				sinkronkan_perubahan_kondisi()
 			else:
 				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation]]]])
 		elif id_pengguna_2 == client.id_koneksi:
-			set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
+			rotasi_ayunan_2 = $ayunan/fisik_ayunan_2.rotation
 			if id_pengguna_1 == -1 and id_proses == client.id_koneksi:
-				set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
+				rotasi_ayunan_1 = $ayunan/fisik_ayunan_1.rotation
 				sinkronkan_perubahan_kondisi()
 			else:
 				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation]]]])
-		elif (id_pengguna_1 == -1 and id_pengguna_2 == -1) and id_proses == client.id_koneksi:
-			set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
-			set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
-			sinkronkan_perubahan_kondisi()
+		elif id_proses == client.id_koneksi:
+			if id_pengguna_1 == -1:
+				rotasi_ayunan_1 = $ayunan/fisik_ayunan_1.rotation
+				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation]]]])
+			if id_pengguna_2 == -1:
+				rotasi_ayunan_2 = $ayunan/fisik_ayunan_2.rotation
+				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation]]]])
+		else:
+			Panku.notify("error")
+			push_error("[Galat] Kesalahan kondisi")
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengguna_1 == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengguna_1)).kontrol:
 		if Input.is_action_just_pressed("berlari"):
