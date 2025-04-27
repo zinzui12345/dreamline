@@ -666,6 +666,24 @@ func _pemain_terputus(id_pemain):
 				# hentikan loop
 				break
 	
+	# 27/04/25 :: loop pool_entitas kemudian reset id_proses pada entitas yang id_proses == id_pemain
+	# loop array pool_entitas
+	if !pool_entitas.is_empty():
+		var indeks_pool_entitas = pool_entitas.keys()
+		for i_pool_entitas in indeks_pool_entitas.size():
+			# dapatkan entitas
+			var nama_entitas = indeks_pool_entitas[i_pool_entitas]
+			var entitas_ = pool_entitas[nama_entitas]
+			# cek id pemroses entitas, apakah sama dengan id pemain yang terputus
+			if entitas_.id_proses == id_pemain:
+				# FIXME : hapus id kustom misalnya id_pengguna_1
+				# rpc atur ulang id_proses di semua peer
+				sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
+				# atur ulang id_proses
+				pool_entitas[nama_entitas]["id_proses"] = -1
+				# hentikan loop
+				break
+	
 	print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
 	pemain_terhubung -= 1
 	siarkan_server()
@@ -1090,12 +1108,13 @@ func _pemain_terputus(id_pemain):
 		for p in kondisi_entitas.size():
 			if kondisi_entitas[p][0] == "position":		pool_entitas[nama_entitas]["posisi"] = kondisi_entitas[p][1]
 			elif kondisi_entitas[p][0] == "rotation":	pool_entitas[nama_entitas]["rotasi"] = kondisi_entitas[p][1]
+			elif kondisi_entitas[p][0] == "kondisi":
+				for k in kondisi_entitas[p][1].size():
+					for kp in pool_entitas[nama_entitas]["kondisi"].size():
+						if pool_entitas[nama_entitas]["kondisi"][kp - 1][0] == kondisi_entitas[p][1][k - 1][0]:
+							pool_entitas[nama_entitas]["kondisi"][kp - 1][1] = kondisi_entitas[p][1][k - 1][1]
 			elif pool_entitas[nama_entitas].get(kondisi_entitas[p][0]) != null:
 				pool_entitas[nama_entitas][kondisi_entitas[p][0]] = kondisi_entitas[p][1]
-			else:
-				for k in pool_entitas[nama_entitas]["kondisi"].size():
-					if pool_entitas[nama_entitas]["kondisi"][k][0] == kondisi_entitas[p][0]:
-						pool_entitas[nama_entitas]["kondisi"][k][1] = kondisi_entitas[p][1]
 		# Timeline : sinkronkan entitas (rekam)
 		if not mode_replay:
 			# dapatkan waktu frame saat ini
@@ -1107,23 +1126,33 @@ func _pemain_terputus(id_pemain):
 				"tipe": 		"sinkron",
 				"posisi":		pool_entitas[nama_entitas]["posisi"],
 				"rotasi":		pool_entitas[nama_entitas]["rotasi"],
-				"properti":		pool_entitas[nama_entitas]["kondisi"],
+				"properti":		pool_entitas[nama_entitas]["kondisi"]
 			}
 			# optimasi
 			# - cek apakah frame sebelumnya telah tersimpan di pool
 			if !pool_entitas[nama_entitas].has("cek_frame"):
-				pool_entitas[nama_entitas]["cek_frame"] = 0
-			# - cek apakah frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
-			if timeline.has(pool_entitas[nama_entitas]["cek_frame"]) and timeline[pool_entitas[nama_entitas]["cek_frame"]].has(nama_entitas):
-				var frame_tetap : int = 0
-				if timeline[pool_entitas[nama_entitas]["cek_frame"]][nama_entitas]["properti"] == timeline[frame_sekarang][nama_entitas]["properti"]:
-					frame_tetap += 1
-				if timeline[pool_entitas[nama_entitas]["cek_frame"]][nama_entitas] == timeline[frame_sekarang][nama_entitas]:
-					frame_tetap += 1
-				if frame_tetap == 2:
-					timeline[pool_entitas[nama_entitas]["cek_frame"]].erase(nama_entitas)
-			# - set frame sekarang untuk di-cek pada frame selanjutnya
-			pool_entitas[nama_entitas]["cek_frame"] = frame_sekarang
+				pool_entitas[nama_entitas]["cek_frame"] = []
+			# - bandingkan frame saat ini dengan frame sebelumnya
+			elif pool_entitas[nama_entitas]["cek_frame"].size() > 0 and (timeline.has(pool_entitas[nama_entitas]["cek_frame"][0]) and timeline[pool_entitas[nama_entitas]["cek_frame"][0]].has(nama_entitas)):
+				# - set frame sekarang untuk di-cek pada frame selanjutnya
+				pool_entitas[nama_entitas]["cek_frame"].append(frame_sekarang)
+				# - jika frame saat ini sama dengan 3 frame sebelumnya, hapus frame sebelumnya
+				if pool_entitas[nama_entitas]["cek_frame"].size() >= 3:
+					var tiga_frame_terakhir = pool_entitas[nama_entitas]["cek_frame"].slice(-3)
+					if !timeline[tiga_frame_terakhir[0]].has(nama_entitas): pass
+					elif !timeline[tiga_frame_terakhir[1]].has(nama_entitas): pass
+					elif !timeline[tiga_frame_terakhir[2]].has(nama_entitas): pass
+					elif timeline[tiga_frame_terakhir[0]][nama_entitas] == timeline[tiga_frame_terakhir[1]][nama_entitas] and timeline[tiga_frame_terakhir[1]][nama_entitas] == timeline[tiga_frame_terakhir[2]][nama_entitas]:
+						timeline[tiga_frame_terakhir[1]].erase(nama_entitas)
+				# - cek properti jika terdapat properti yang tidak berubah, hapus properti tersebut pada frame sebelumnya
+				if pool_entitas[nama_entitas]["cek_frame"].size() >= 3:
+					var tiga_frame_terakhir = pool_entitas[nama_entitas]["cek_frame"].slice(-3)
+					for p in timeline[frame_sekarang][nama_entitas]["properti"].size():
+						if !timeline[tiga_frame_terakhir[0]].has(nama_entitas): continue
+						if !timeline[tiga_frame_terakhir[1]].has(nama_entitas): continue
+						if !timeline[tiga_frame_terakhir[2]].has(nama_entitas): continue
+						if timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1] == timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1] and timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1] == timeline[tiga_frame_terakhir[2]][nama_entitas]["properti"][p - 1]:
+							timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1][1] = null
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for idx_pemain in pemain.keys():
 			# dapatkan id pemain target

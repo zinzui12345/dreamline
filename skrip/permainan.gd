@@ -41,7 +41,7 @@ class_name Permainan
 # 21 Apr 2025 | 0.4.3 - Browser Timeline
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Perosotan
 
-const versi = "Dreamline v0.4.4 26/04/25 Early Access"
+const versi = "Dreamline v0.4.4 27/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -878,7 +878,8 @@ func _muat_map(file_map : StringName) -> void:
 										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
 										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
 										for indeks_properti in data_frame.properti:
-											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
+											if indeks_properti[1] != null:
+												skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
 										skenario.length = waktu
 							elif data_frame.tipe == "hapus" and server.timeline.entitas.has(entitas_):
 								# hapus entitas
@@ -2710,6 +2711,13 @@ func hasilkanKarakterAcak(jumlah: int) -> String:
 		var indeks_acak = randi_range(0, length - 1)
 		karakter_acak += set_karakter[indeks_acak]
 	return karakter_acak
+func bandingkanArray(array1: Array, array2: Array) -> bool:
+	if array1.size() != array2.size():
+		return false
+	for i in range(array1.size()):
+		if array1[i] != array2[i]:
+			return false
+	return true
 func aturPemilikNode(node : Node, node_pemilik : Node) -> void:
 	node.owner = node_pemilik
 	for node_internal in node.get_children():
