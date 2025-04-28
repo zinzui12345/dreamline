@@ -18,7 +18,6 @@ var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
 var mode_replay : bool = false
-var file_replay = "user://rekaman.dreamline_replay"
 var mode_uji_performa : bool = false
 var jumlah_entitas : int = 0
 var jumlah_objek : int = 0
@@ -37,6 +36,8 @@ var b_file_timeline : FileAccess
 
 const jarak_render_karakter = 50
 const jarak_render_entitas = 50
+const direktori_cache_replay = "user://timeline_part"
+const file_replay = "user://rekaman.dreamline_replay"
 
 # .: Timeline :.
 # frame : Int
@@ -133,9 +134,9 @@ func _process(_delta : float) -> void:
 					# - hapus timeline["data"], sisakan data frame
 					timeline.erase("data")
 					# - kalau direktori bagian belum ada, buat
-					if !DirAccess.dir_exists_absolute("user://timeline_part"):
-						DirAccess.make_dir_absolute("user://timeline_part")
-					b_file_timeline = FileAccess.open("user://timeline_part/"+b_nama_file_timeline, FileAccess.WRITE)
+					if !DirAccess.dir_exists_absolute(direktori_cache_replay):
+						DirAccess.make_dir_absolute(direktori_cache_replay)
+					b_file_timeline = FileAccess.open(direktori_cache_replay+"/"+b_nama_file_timeline, FileAccess.WRITE)
 					# - jangan langsung stor, hapus dulu frame yang kosong!
 					b_indeks_timeline = timeline.keys()
 					for frame : int in b_indeks_timeline.size(): 
@@ -383,15 +384,15 @@ func putuskan() -> void:
 	for i in timeline["data"]["urutan"] - 1:
 		var nama_file_timeline = "timeline_%s-%s-%s_%s.timelinepart" % [map, nama, timeline["data"]["id"], str(i+1)]
 		# > buka nama_file_timeline lalu set ke tmp_frame
-		if FileAccess.file_exists("user://timeline_part/"+nama_file_timeline): # cegah error jika seandainya file corrupt
-			var file = FileAccess.open("user://timeline_part/"+nama_file_timeline, FileAccess.READ_WRITE)
+		if FileAccess.file_exists(direktori_cache_replay+"/"+nama_file_timeline): # cegah error jika seandainya file corrupt
+			var file = FileAccess.open(direktori_cache_replay+"/"+nama_file_timeline, FileAccess.READ_WRITE)
 			var tmp_frame = file.get_var()
 			# > merge tmp_frame ke timeline
 			timeline.merge(tmp_frame, true)
 			# > tutup file nama_file_timeline
 			file.close()
 			# > hapus file nama_file_timeline
-			DirAccess.remove_absolute("user://timeline_part/"+nama_file_timeline)
+			DirAccess.remove_absolute(direktori_cache_replay+"/"+nama_file_timeline)
 	# - pindahkan kembali (merge) frame terakhir ke timeline
 	timeline.merge(b_data_frame, true)
 	# - hapus id dari timeline["data"]
@@ -1246,7 +1247,7 @@ func _pemain_terputus(id_pemain):
 		for p in cek_visibilitas_pool_entitas:
 			if cek_visibilitas_pool_entitas[p].has(nama_objek_dihapus):
 				cek_visibilitas_pool_entitas[p].erase(nama_objek_dihapus)
-		#Panku.notify("menghapus objek : "+str(nama_objek_dihapus))
+		print("%s => objek [%s] dihapus" % [permainan.detikKeMenit(Time.get_ticks_msec()), nama_objek_dihapus])
 		# Timeline : hapus objek
 		var frame_sekarang = timeline["data"]["frame"]
 		if not timeline.has(frame_sekarang): timeline[frame_sekarang] = {}
