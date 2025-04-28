@@ -125,7 +125,7 @@ func _process(_delta : float) -> void:
 		if not mode_replay:
 			# atur frame timeline
 			if dunia.process_mode != PROCESS_MODE_DISABLED and timeline.has("data"):
-				if timeline.size() > 700:
+				if timeline.size() > 400:
 					b_cek_data_timeline = timeline["data"]
 					# hasilkan nama_file
 					b_nama_file_timeline = "timeline_%s-%s-%s_%s.timelinepart" % [map, nama, timeline["data"]["id"], timeline["data"]["urutan"]]
@@ -455,7 +455,7 @@ func spawn_pool_pemain(id_pemain : int, id_spawn_pemain : int, data : Dictionary
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if id_pemain == 1: _spawn_visibilitas_pemain(id_spawn_pemain, data)
 		else: rpc_id(id_pemain, "_spawn_visibilitas_pemain", id_spawn_pemain, data)
-		print("%s => spawn pool pemain [%s] pada pemain %s" % [Time.get_ticks_msec(), str(id_spawn_pemain), str(id_pemain)])
+		print("%s => spawn pool pemain [%s] pada pemain %s" % [permainan.detikKeMenit(Time.get_ticks_msec()), str(id_spawn_pemain), str(id_pemain)])
 func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas, id_pemroses_entitas, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("spawn pool entitas [%s] pada pemain %s" % [str(jalur_instance_entitas), str(id_pemain)])
@@ -502,7 +502,7 @@ func hapus_pool_pemain(id_pemain, id_hapus_pemain):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if id_pemain == 1: _hapus_visibilitas_pemain(id_hapus_pemain)
 		else: rpc_id(id_pemain, "_hapus_visibilitas_pemain", id_hapus_pemain)
-		print("%s => menghapus pool pemain [%s] pada pemain %s" % [Time.get_ticks_msec(), str(id_hapus_pemain), str(id_pemain)])
+		print("%s => menghapus pool pemain [%s] pada pemain %s" % [permainan.detikKeMenit(Time.get_ticks_msec()), str(id_hapus_pemain), str(id_pemain)])
 func hapus_pool_entitas(id_pemain, nama_entitas : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("menghapus pool entitas [%s] pada pemain %s" % [nama_entitas, str(id_pemain)])
@@ -610,7 +610,7 @@ func _pemain_bergabung(id_pemain):
 		posisi,
 		rotasi
 	)
-	print("%s => pemain [%s] telah bergabung" % [Time.get_ticks_msec(), id_pemain])
+	print("%s => pemain [%s] telah bergabung" % [permainan.detikKeMenit(Time.get_ticks_msec()), id_pemain])
 	pemain_terhubung += 1
 	siarkan_server()
 func _pemain_terputus(id_pemain):
@@ -676,15 +676,20 @@ func _pemain_terputus(id_pemain):
 			var entitas_ = pool_entitas[nama_entitas]
 			# cek id pemroses entitas, apakah sama dengan id pemain yang terputus
 			if entitas_.id_proses == id_pemain:
-				# FIXME : hapus id kustom misalnya id_pengguna_1
 				# rpc atur ulang id_proses di semua peer
 				sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
 				# atur ulang id_proses
 				pool_entitas[nama_entitas]["id_proses"] = -1
-				# hentikan loop
-				break
+			# atur ulang id kustom misalnya id_pengguna_1
+			for indeks_properti in entitas_.kondisi.size():
+				if entitas_.kondisi[indeks_properti - 1][0].begins_with("id_") and entitas_.kondisi[indeks_properti - 1][1] == id_pemain:
+					# rpc atur ulang id kustom di semua peer
+					sinkronkan_kondisi_entitas(-1, nama_entitas, [["kondisi", [[entitas_.kondisi[indeks_properti - 1][0], -1]]]])
+					# atur ulang id kustom
+					pool_entitas[nama_entitas]["kondisi"][indeks_properti - 1][1] = -1
+					print("%s => mengatur properti [%s] pada entitas [%s] dari [%s] menjadi: %s" % [permainan.detikKeMenit(Time.get_ticks_msec()), entitas_.kondisi[indeks_properti - 1][0], nama_entitas, id_pemain, str(pool_entitas[nama_entitas]["kondisi"][indeks_properti - 1][1])])
 	
-	print("%s => pemain [%s] telah terputus" % [Time.get_ticks_msec(), id_pemain])
+	print("%s => pemain [%s] telah terputus" % [permainan.detikKeMenit(Time.get_ticks_msec()), id_pemain])
 	pemain_terhubung -= 1
 	siarkan_server()
 
@@ -767,7 +772,7 @@ func _pemain_terputus(id_pemain):
 		# tambahkan ke daftar pemain
 		permainan._tambahkan_pemain(id_pemain, data_pemain)
 		client.rpc("tambah_pemain", id_pemain, data_pemain)
-		print("%s => tambah pemain [%s] ke dunia" % [Time.get_ticks_msec(), id_pemain])
+		print("%s => tambah pemain [%s] ke dunia" % [permainan.detikKeMenit(Time.get_ticks_msec()), id_pemain])
 @rpc("any_peer") func _terima_suara_pemain(id_pemain : int, data_suara : PackedByteArray, ukuran_buffer : int):
 	print("pemain [%s] berbicara (%s)" % [str(id_pemain), str(ukuran_buffer)])
 	# dekompresi dan simpan data suara ke array yang kemudian dimainkan pada thread
@@ -1152,13 +1157,16 @@ func _pemain_terputus(id_pemain):
 						if !timeline[tiga_frame_terakhir[1]].has(nama_entitas): continue
 						if !timeline[tiga_frame_terakhir[2]].has(nama_entitas): continue
 						if timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1] == timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1] and timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1] == timeline[tiga_frame_terakhir[2]][nama_entitas]["properti"][p - 1]:
-							timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1][1] = null
+							# 28/04/25 :: jangan hapus nilai Vector karena tipe datanya tidak dapat dibandingkan
+							if timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1][1] is Vector3 and timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1][1] is not Vector3i: pass
+							# hapus properti yang tidak berubah
+							else: timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1][1] = null
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for idx_pemain in pemain.keys():
 			# dapatkan id pemain target
 			var id_pemain_target = pemain[idx_pemain]["id_client"]
 			# dapatkan id penyinkron
-			var id_penyinkron = multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() > 0 else id_pengatur
+			var id_penyinkron = multiplayer.get_remote_sender_id() if multiplayer.get_remote_sender_id() != 0 else 1
 			# pastikan pemain valid dan pemain bukan yang menyinkronkan kondisi
 			if id_pemain_target != 0 and id_pemain_target != id_penyinkron:
 				if cek_visibilitas_pool_entitas.has(id_pemain_target) and cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":

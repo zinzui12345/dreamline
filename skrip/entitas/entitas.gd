@@ -30,6 +30,11 @@ func _setup() -> void:
 	else:
 		if get("abaikan_occlusion_culling") != null and get("abaikan_occlusion_culling") == true:
 			dunia.raycast_occlusion_culling.add_exception(self)
+		for p in get("sinkron_kondisi").size():
+			if cek_kondisi.get(get("sinkron_kondisi")[p - 1][0]) == null:
+				cek_kondisi[get("sinkron_kondisi")[p - 1][0]] = get("sinkron_kondisi")[p - 1][1]
+			if get(get("sinkron_kondisi")[p - 1][0]) != null:
+				set(get("sinkron_kondisi")[p - 1][0], get(get("sinkron_kondisi")[p - 1][0]))
 		posisi_awal = global_position
 		rotasi_awal = global_rotation
 		mulai()
@@ -60,13 +65,20 @@ func sinkronkan_perubahan_kondisi(perubahan_kondisi : Array = []) -> void:
 		# cek kondisi properti kustom
 		for p in sinkron_kondisi.size():
 			# cek apakah kondisi sebelumnya telah tersimpan
-			if cek_kondisi.get(sinkron_kondisi[p][0]) == null:	cek_kondisi[sinkron_kondisi[p][0]] = sinkron_kondisi[p][1]
+			if cek_kondisi.get(sinkron_kondisi[p - 1][0]) == null:	cek_kondisi[sinkron_kondisi[p - 1][0]] = sinkron_kondisi[p - 1][1]
 			
 			# cek apakah kondisi berubah
-			if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	daftar_kondisi_kustom.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
+			if cek_kondisi[sinkron_kondisi[p - 1][0]] != get(sinkron_kondisi[p - 1][0]):	daftar_kondisi_kustom.append([sinkron_kondisi[p - 1][0], get(sinkron_kondisi[p - 1][0])])
 		# 24/04/25 :: sinkronkan kondisi kustom yang berubah
 		if daftar_kondisi_kustom.size() > 0:	perubahan_kondisi.append(["kondisi", daftar_kondisi_kustom])
-	
+	# 27/04/25 :: cek kondisi perubahan_kondisi
+	else:
+		for k in perubahan_kondisi:
+			if k[0] == "kondisi":
+				for p in k[1].size():
+					# cek apakah kondisi sebelumnya telah tersimpan
+					if cek_kondisi.get(k[1][p - 1][0]) == null:	cek_kondisi[k[1][p - 1][0]] = k[1][p - 1][1]
+		
 	# jika kondisi berubah, maka sinkronkan perubahan ke server
 	if perubahan_kondisi.size() > 0 and (is_instance_valid(server.peer) or is_instance_valid(client.peer)):
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
