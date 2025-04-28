@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://omgsy3uhb8v7"]
+[gd_scene load_steps=10 format=3 uid="uid://omgsy3uhb8v7"]
 
 [ext_resource type="Texture2D" uid="uid://ceqdtjbuhdo3h" path="res://ui/ikon/ikon_map_showcase.svg" id="1_vgsmr"]
+[ext_resource type="Texture2D" uid="uid://bespnn02lkeed" path="res://ui/ikon/ikon_os_linux.svg" id="2_gcxae"]
 [ext_resource type="FontFile" uid="uid://h5iny2xu510v" path="res://ui/fonta/Seven Segment.ttf" id="3"]
 [ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="6"]
 
@@ -56,21 +57,22 @@ func atur(alamat_ip, sys, nama, map, jumlah_pemain, maks_pemain):
 	#        print(\"Web\")
 		_: print(sys)
 	
-	#if load(\"res://ui/pilih_map/\"+nama_map+\".png\") != null:
-	#	$ikon.texture = load(\"res://ui/pilih_map/\"+nama_map+\".png\")
-	#else:
-	#	print_debug(\"tidak ada gambar untuk map : \"+nama_map)
+	if ResourceLoader.exists(\"res://ui/ikon/ikon_map_\"+map+\".png\"):
+		$ikon.texture = load(\"res://ui/ikon/ikon_map_\"+map+\".png\")
+	else:
+		$ikon.texture = load(\"res://ui/ikon/ikon_map_showcase.svg\")
+		push_error(\"tidak ada ikon untuk map : \"+map)
 "
 
 [node name="server" type="Button"]
-custom_minimum_size = Vector2(0, 112)
+custom_minimum_size = Vector2(0, 128)
 anchors_preset = -1
-anchor_top = 0.093
+anchor_top = 0.107
 anchor_right = 0.781
-anchor_bottom = 0.093
-offset_top = -55.8
+anchor_bottom = 0.107
+offset_top = -64.2
 offset_right = 0.255981
-offset_bottom = 56.2
+offset_bottom = 63.8
 theme_override_styles/focus = SubResource("StyleBoxFlat_5upea")
 theme_override_styles/hover = SubResource("StyleBoxFlat_1biyv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_avyfo")
@@ -80,46 +82,47 @@ button_mask = 3
 script = SubResource("GDScript_oopv7")
 
 [node name="ikon" type="Sprite2D" parent="."]
-position = Vector2(56, 56)
+position = Vector2(64, 64)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("1_vgsmr")
 region_rect = Rect2(50, 100, 200, 200)
 
 [node name="ikon_os" type="Sprite2D" parent="."]
-position = Vector2(133, 9)
-centered = false
+position = Vector2(152, 40)
+texture = ExtResource("2_gcxae")
 region_rect = Rect2(0, 0, 48, 48)
 
 [node name="nama" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.598
-anchor_right = 0.17
-anchor_bottom = 0.598
-offset_left = 136.0
-offset_top = -66.976
-offset_right = 385.0
-offset_bottom = 0.0239944
+anchor_top = 0.301
+anchor_bottom = 0.301
+offset_left = 184.0
+offset_top = -30.528
+offset_right = 640.0
+offset_bottom = 30.472
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("6")
-theme_override_font_sizes/font_size = 48
-text = "ArchLinux Server"
+theme_override_font_sizes/font_size = 44
+text = "Hoshizora - Snail's House"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="nama_map" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.527
-anchor_right = 0.17
-anchor_bottom = 0.527
+anchor_top = 0.75
+anchor_bottom = 0.75
 offset_left = 136.0
-offset_top = -0.0240021
-offset_right = 384.0
-offset_bottom = 49.976
+offset_top = -24.0
+offset_right = 640.0
+offset_bottom = 24.0
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.129412, 0.121569, 0.2, 1)
-theme_override_font_sizes/font_size = 36
-text = "pulau"
+theme_override_font_sizes/font_size = 34
+text = "28/04/2025"
 vertical_alignment = 1
 
 [node name="pemain" type="Label" parent="."]
