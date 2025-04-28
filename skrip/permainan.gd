@@ -41,7 +41,7 @@ class_name Permainan
 # 21 Apr 2025 | 0.4.3 - Browser Timeline
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Perosotan
 
-const versi = "Dreamline v0.4.4 27/04/25 Early Access"
+const versi = "Dreamline v0.4.4 28/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -975,7 +975,7 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 			
 			# terapkan kondisi
 			pemain.position = data_pemain["posisi"]
-			pemain.rotation = data_pemain["rotasi"]
+			pemain.rotation_degrees.y = rad_to_deg(data_pemain["rotasi"].y)
 			pemain.posisi_awal = pemain.global_position
 			pemain.rotasi_awal = pemain.rotation
 			
@@ -1078,6 +1078,7 @@ func _edit_objek(jalur : String) -> void:
 	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
 	if edit_objek is objek:		edit_objek.set_process(true)
 	elif edit_objek is npc_ai:	edit_objek.set_process(true)
+	elif edit_objek is entitas:	pass
 	else: edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
