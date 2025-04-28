@@ -1,4 +1,4 @@
-[gd_scene load_steps=137 format=4 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=138 format=4 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_uaaqg"]
 [ext_resource type="Script" uid="uid://bmm5flmnbh45f" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bfrbndvi106iv" path="res://model/bangunan/interior_mercusuar.scn" id="7_jv2ni"]
 [ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_pantai.scn" id="7_mxxfs"]
 [ext_resource type="PackedScene" uid="uid://b3kf5nao5w8gx" path="res://skena/objek/pintu_1.scn" id="10_jta6o"]
+[ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="11_2grqi"]
 [ext_resource type="PackedScene" uid="uid://cp8dhj1vcicak" path="res://skena/objek/patung_moai.scn" id="11_18if7"]
 [ext_resource type="PackedScene" uid="uid://btfh3nq4bweai" path="res://skena/objek/perosotan.scn" id="11_qwpge"]
 [ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="12_wljsp"]
@@ -13002,6 +13003,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49, 13.95, 255)
 
 [node name="kincir_angin" parent="." instance=ExtResource("13_ws6jm")]
 transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, 208.001, 11.3031, -22.0856)
+
+[node name="ayunan" parent="." instance=ExtResource("11_2grqi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -168.37, 2.73107, 12.0536)
 
 [node name="perosotan" parent="." instance=ExtResource("11_qwpge")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -165.826, 3.01818, 13.0283)
