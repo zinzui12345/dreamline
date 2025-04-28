@@ -391,6 +391,10 @@ func _atur_kendali(nilai : bool) -> void:
 func _atur_penarget(nilai : bool) -> void:
 	penarget.enabled = nilai
 	if nilai == false: menarget = false
+func _atur_fisik(nilai : bool) -> void:
+	for node_komponen in get_children():
+		if node_komponen is CollisionShape3D:
+			node_komponen.disabled = !nilai
 
 func _input(event : InputEvent) -> void:
 	# kendalikan interaksi dengan input
