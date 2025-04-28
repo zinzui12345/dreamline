@@ -30,7 +30,10 @@ var id_pengguna_1 : int = -1:
 					#dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
 			
 				# nonaktifkan fisik dengan pengguna
-				$ayunan/fisik_ayunan_1.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+				if id == client.id_koneksi:
+					$ayunan/fisik_ayunan_1.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+				else:
+					dunia.get_node("pemain/"+str(id))._atur_fisik(false)
 		else:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_1)) != null:
 				# atur ulang pose pengguna
@@ -43,7 +46,10 @@ var id_pengguna_1 : int = -1:
 				#dunia.get_node("pemain/"+str(id_pengguna_1)+"/%tangan_kiri").stop()
 				
 				# aktifkan fisik dengan pengguna
-				$ayunan/fisik_ayunan_1.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_1)))
+				if id_pengguna_1 == client.id_koneksi:
+					$ayunan/fisik_ayunan_1.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_1)))
+				else:
+					dunia.get_node("pemain/"+str(id_pengguna_1))._atur_fisik(true)
 		id_pengguna_1 = id
 var id_pengguna_2 : int = -1:
 	set(id):
@@ -63,7 +69,10 @@ var id_pengguna_2 : int = -1:
 					#dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
 			
 				# nonaktifkan fisik dengan pengguna
-				$ayunan/fisik_ayunan_2.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+				if id == client.id_koneksi:
+					$ayunan/fisik_ayunan_2.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+				else:
+					dunia.get_node("pemain/"+str(id))._atur_fisik(false)
 		else:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_2)) != null:
 				# atur ulang pose pengguna
@@ -76,7 +85,10 @@ var id_pengguna_2 : int = -1:
 				#dunia.get_node("pemain/"+str(id_pengguna_2)+"/%tangan_kiri").stop()
 				
 				# aktifkan fisik dengan pengguna
-				$ayunan/fisik_ayunan_2.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_2)))
+				if id_pengguna_2 == client.id_koneksi:
+					$ayunan/fisik_ayunan_2.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_2)))
+				else:
+					dunia.get_node("pemain/"+str(id_pengguna_2))._atur_fisik(false)
 		id_pengguna_2 = id
 var arah_ayunan_1 : int = 0:
 	set(arah):
@@ -148,29 +160,23 @@ func _process(_waktu_delta : float) -> void:
 	# sinkronkan perubahan kondisi
 	if !server.mode_replay:
 		if id_pengguna_1 == client.id_koneksi:
-			rotasi_ayunan_1 = $ayunan/fisik_ayunan_1.rotation
+			set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
 			if id_pengguna_2 == -1 and id_proses == client.id_koneksi:
-				rotasi_ayunan_2 = $ayunan/fisik_ayunan_2.rotation
+				set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
 				sinkronkan_perubahan_kondisi()
 			else:
 				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation]]]])
 		elif id_pengguna_2 == client.id_koneksi:
-			rotasi_ayunan_2 = $ayunan/fisik_ayunan_2.rotation
+			set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
 			if id_pengguna_1 == -1 and id_proses == client.id_koneksi:
-				rotasi_ayunan_1 = $ayunan/fisik_ayunan_1.rotation
+				set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
 				sinkronkan_perubahan_kondisi()
 			else:
 				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation]]]])
-		elif id_proses == client.id_koneksi:
-			if id_pengguna_1 == -1:
-				rotasi_ayunan_1 = $ayunan/fisik_ayunan_1.rotation
-				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation]]]])
-			if id_pengguna_2 == -1:
-				rotasi_ayunan_2 = $ayunan/fisik_ayunan_2.rotation
-				sinkronkan_perubahan_kondisi([["kondisi", [["rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation]]]])
-		else:
-			Panku.notify("error")
-			push_error("[Galat] Kesalahan kondisi")
+		elif (id_pengguna_1 == -1 and id_pengguna_2 == -1) and id_proses == client.id_koneksi:
+			set("rotasi_ayunan_1", $ayunan/fisik_ayunan_1.rotation)
+			set("rotasi_ayunan_2", $ayunan/fisik_ayunan_2.rotation)
+			sinkronkan_perubahan_kondisi()
 func _input(_event): # lepas walaupun tidak di-fokus
 	if id_pengguna_1 == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengguna_1)).kontrol:
 		if Input.is_action_just_pressed("berlari"):
