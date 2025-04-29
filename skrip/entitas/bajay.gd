@@ -144,7 +144,7 @@ func proses(waktu_delta : float) -> void:
 			# 12/10/24 :: putar arah XROrigin menyesuaikan arah kendaraan
 			server.permainan.pengamat_vr.global_rotation = $arah_pengamat_vr/arah_putar/arah_pandangan.global_rotation
 	
-	if id_pengemudi == multiplayer.get_unique_id():
+	if id_pengemudi == client.id_koneksi:
 		if arah_kemudi.y > 0:	set("engine_force", kekuatan_mesin * arah_kemudi.y)
 		elif arah_kemudi.y < 0:	set("engine_force", kecepatan_mundur * arah_kemudi.y)
 		else:					set("engine_force", arah_kemudi.y)
@@ -157,15 +157,16 @@ func proses(waktu_delta : float) -> void:
 			arah_belok = 0
 		
 		self.steering = move_toward(self.steering, arah_belok, 1.5 * waktu_delta)
-		$setir/rotasi_stir.rotation_degrees.y = self.steering * 110
 	if id_pengemudi != -1:
 		_atur_audio_mesin(waktu_delta)
 		percepatan = kecepatan_laju
 	else:
 		# 16/04/25 : hentikan laju
 		self.brake = 2.0
+	
+	$setir/rotasi_stir.rotation_degrees.y = self.steering * 110
 func _input(_event): # lepas walaupun tidak di-fokus
-	if id_pengemudi == multiplayer.get_unique_id() and dunia.get_node("pemain/"+str(id_pengemudi)).kontrol:
+	if id_pengemudi == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengemudi)).kontrol:
 		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
 			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
 			else: klakson = true
@@ -195,7 +196,7 @@ func hapus(): # ketika tampilan dihapus
 	visible = false
 	#Panku.notify("oh yeah") # FIXME : material_casts_shadows: Parameter "material" is null.
 	if id_pengemudi != -1 and dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
-		if id_pengemudi == multiplayer.get_unique_id():
+		if id_pengemudi == client.id_koneksi:
 			dunia.get_node("pemain/"+str(id_pengemudi)).global_position = posisi_awal
 			dunia.get_node("pemain/"+str(id_pengemudi)).rotation = rotasi_awal
 		else:
