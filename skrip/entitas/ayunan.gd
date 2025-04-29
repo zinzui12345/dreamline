@@ -34,6 +34,7 @@ var id_pengguna_1 : int = -1:
 					$ayunan/fisik_ayunan_1.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
 				else:
 					dunia.get_node("pemain/"+str(id))._atur_fisik(false)
+				$bidang_raycast_1/batas_raycast_1.disabled = true
 		else:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_1)) != null:
 				# atur ulang pose pengguna
@@ -50,6 +51,7 @@ var id_pengguna_1 : int = -1:
 					$ayunan/fisik_ayunan_1.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_1)))
 				else:
 					dunia.get_node("pemain/"+str(id_pengguna_1))._atur_fisik(true)
+				$bidang_raycast_1/batas_raycast_1.disabled = false
 		id_pengguna_1 = id
 var id_pengguna_2 : int = -1:
 	set(id):
@@ -73,6 +75,7 @@ var id_pengguna_2 : int = -1:
 					$ayunan/fisik_ayunan_2.call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
 				else:
 					dunia.get_node("pemain/"+str(id))._atur_fisik(false)
+				$bidang_raycast_2/batas_raycast_2.disabled = true
 		else:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengguna_2)) != null:
 				# atur ulang pose pengguna
@@ -88,7 +91,8 @@ var id_pengguna_2 : int = -1:
 				if id_pengguna_2 == client.id_koneksi:
 					$ayunan/fisik_ayunan_2.call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengguna_2)))
 				else:
-					dunia.get_node("pemain/"+str(id_pengguna_2))._atur_fisik(false)
+					dunia.get_node("pemain/"+str(id_pengguna_2))._atur_fisik(true)
+				$bidang_raycast_2/batas_raycast_2.disabled = false
 		id_pengguna_2 = id
 var arah_ayunan_1 : int = 0:
 	set(arah):
