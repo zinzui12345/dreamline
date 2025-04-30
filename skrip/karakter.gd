@@ -478,10 +478,16 @@ func _input(event : InputEvent) -> void:
 						 objek_target.get_parent().has_method("gunakan"):
 							server.edit_objek(objek_target.get_parent().name, true)
 					_:
-						if objek_target.has_method("gunakan"): objek_target.gunakan(multiplayer.get_unique_id())
-						elif objek_target.name == "bidang_raycast" and \
-						 objek_target.get_parent().has_method("gunakan"):
-							objek_target.get_parent().gunakan(multiplayer.get_unique_id())
+						if objek_target.has_method("gunakan"):
+							if objek_target is entitas and objek_target.id_proses == -1:
+								server.permainan._tampilkan_popup_informasi_("-1")
+							else:
+								objek_target.gunakan(multiplayer.get_unique_id())
+						elif objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan"):
+							if objek_target is entitas and objek_target.id_proses == -1:
+								server.permainan._tampilkan_popup_informasi_("-1")
+							else:
+								objek_target.get_parent().gunakan(multiplayer.get_unique_id())
 			else:
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
