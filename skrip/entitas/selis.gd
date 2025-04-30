@@ -4,27 +4,22 @@ extends entitas
 const jalur_instance = "res://skena/entitas/selis.tscn"
 const sinkron_kondisi = []
 
-@export var warna_1 = Color.BLACK :
-	set(warna_baru):
-		if get_node("%besi_rangka").get_surface_override_material(0) == null:
-			var mtl_baru = StandardMaterial3D.new()
-			get_node("%besi_rangka").set_surface_override_material(0, mtl_baru)
-			get_node("%stir").set_surface_override_material(0, mtl_baru)
-			get_node("%rangka_depan").set_surface_override_material(0, mtl_baru)
-			get_node("%rangka_belakang").set_surface_override_material(0, mtl_baru)
-		var tmp_mtl = get_node("%besi_rangka").get_surface_override_material(0)
-		tmp_mtl.albedo_color = warna_baru
-		warna_1 = warna_baru
-@export var warna_2 = Color.DARK_TURQUOISE :
-	set(warna_baru):
-		if get_node("%lampu_depan").get_surface_override_material(0) == null:
-			var mtl_baru = StandardMaterial3D.new()
-			get_node("%lampu_depan").set_surface_override_material(0, mtl_baru)
-			get_node("%spakbor_depan").set_surface_override_material(0, mtl_baru)
-			get_node("%spakbor_belakang").set_surface_override_material(0, mtl_baru)
-		var tmp_mtl = get_node("%lampu_depan").get_surface_override_material(0)
-		tmp_mtl.albedo_color = warna_baru
-		warna_2 = warna_baru
+var mat1 : StandardMaterial3D
+var mat2 : StandardMaterial3D
+var mat3 : StandardMaterial3D
+var warna_1 = Color.BLACK :
+	set(ubah_warna):
+		if mat1 != null: mat1.albedo_color = ubah_warna
+		warna_1 = ubah_warna
+var warna_2 = Color.DARK_TURQUOISE :
+	set(ubah_warna):
+		if mat2 != null: mat2.albedo_color = ubah_warna
+		warna_2 = ubah_warna
+var warna_3 = Color(0.176, 0.176, 0.176) :
+	set(ubah_warna):
+		if mat3 != null: mat3.albedo_color = ubah_warna
+		warna_3 = ubah_warna
+
 @export var kursi = {
 	"pengemudi": -1,
 	"penumpang": [-1]
@@ -39,6 +34,37 @@ var kecepatan_laju : Vector3
 var gerakan_pandangan : Vector2 # input
 
 @onready var torsi_kemiringan = $roda_belakang.wheel_roll_influence
+
+func mulai() -> void:
+	mat1 = $model/rangka.get_surface_override_material(0).duplicate()
+	$model/rangka.set_surface_override_material(0, mat1)
+	$model/rangka_lod1.set_surface_override_material(0, mat1)
+	$model/rangka_lod2.set_surface_override_material(0, mat1)
+	$setir/rotasi_stir/model/stir.set_surface_override_material(0, mat1)
+	$setir/rotasi_stir/model/stir_lod1.set_surface_override_material(0, mat1)
+	$setir/rotasi_stir/model/stir_lod2.set_surface_override_material(0, mat1)
+	$model_roda_depan/translasi_model/rangka_depan.set_surface_override_material(0, mat1)
+	$model_roda_depan/translasi_model/rangka_depan_lod1.set_surface_override_material(0, mat1)
+	$model_roda_belakang/translasi_model/rangka_belakang.set_surface_override_material(0, mat1)
+	$model_roda_belakang/translasi_model/rangka_belakang_lod1.set_surface_override_material(0, mat1)
+	warna_1 = warna_1
+	mat2 = $setir/rotasi_stir/model/lampu_depan.get_surface_override_material(0).duplicate()
+	$setir/rotasi_stir/model/lampu_depan.set_surface_override_material(0, mat2)
+	$setir/rotasi_stir/model/lampu_depan_lod1.set_surface_override_material(0, mat2)
+	$setir/rotasi_stir/model/lampu_depan_lod2.set_surface_override_material(0, mat2)
+	$model_roda_depan/translasi_model/spakbor_depan.set_surface_override_material(0, mat2)
+	$model_roda_depan/translasi_model/spakbor_depan_lod1.set_surface_override_material(0, mat2)
+	$model_roda_belakang/translasi_model/spakbor_belakang.set_surface_override_material(0, mat2)
+	$model_roda_belakang/translasi_model/spakbor_belakang_lod1.set_surface_override_material(0, mat2)
+	warna_2 = warna_2
+	mat3 = $model/jok.get_surface_override_material(0).duplicate()
+	$model/jok.set_surface_override_material(0, mat3)
+	$model/jok_lod1.set_surface_override_material(0, mat3)
+	$model/jok_lod2.set_surface_override_material(0, mat3)
+	$setir/rotasi_stir/model/handle.set_surface_override_material(0, mat3)
+	$setir/rotasi_stir/model/handle_lod1.set_surface_override_material(0, mat3)
+	$setir/rotasi_stir/model/handle_lod2.set_surface_override_material(0, mat3)
+	warna_3 = warna_3
 
 func _physics_process(delta):
 	if client.id_koneksi == multiplayer.get_unique_id():
