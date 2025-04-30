@@ -33,13 +33,13 @@ var id_pengemudi = -1:
 				if dunia.get_node_or_null("pemain/"+str(id)+"/%tangan_kiri") != null and is_inside_tree():
 					dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
 					dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
-			
-			# aktifkan audio
-			$AudioMesin.play()
-			$AudioAkselerasiMesin.volume_db = -30
-			
-			# nonaktifkan fisik dengan pengemudi
-			call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+				
+				# aktifkan audio
+				$AudioMesin.play()
+				$AudioAkselerasiMesin.volume_db = -30
+				
+				# nonaktifkan fisik dengan pengemudi
+				call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
 		else:
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 				# atur ulang pose pengemudi
@@ -50,7 +50,7 @@ var id_pengemudi = -1:
 				dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
 				dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
 				dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
-				
+			
 				# nonaktifkan audio
 				#$AudioMesin.stream.set_clip_auto_advance(1, AudioStreamInteractive.AUTO_ADVANCE_ENABLED) # ini belum bisa, jadi pake $AudioHentikanMesin
 				$AudioHentikanMesin.play()
@@ -188,7 +188,8 @@ func _input(_event): # lepas walaupun tidak di-fokus
 		else:									self.brake = 0
 
 func fokus():
-	server.permainan.set("tombol_aksi_2", "kemudikan_sesuatu")
+	if id_pengemudi == -1 :
+		server.permainan.set("tombol_aksi_2", "kemudikan_sesuatu")
 func gunakan(id_pemain):
 	if id_pengemudi == id_pemain:					server.gunakan_entitas(name, "_lepas")
 	elif id_pengemudi == -1: 						server.gunakan_entitas(name, "_kemudikan")
