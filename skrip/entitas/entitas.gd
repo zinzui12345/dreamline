@@ -2,6 +2,9 @@
 extends CollisionObject3D
 class_name entitas
 
+# Catatan:
+# 30/04/25 ==> jangan deklarasi variabel @onready var karena bisa menunda eksekusi kode dan mengakibatkan id_proses bernilai -1 di client
+
 var id_proses : int = -1:					# id peer/pemain yang memproses entitas ini
 	set(id):
 		atur_pemroses(id)
