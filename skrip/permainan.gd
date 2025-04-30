@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 29/04/25 Early Access"
+const versi = "Dreamline v0.4.4 30/04/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -119,6 +119,7 @@ var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 			"berjalan":				$hud/bantuan_input/aksi2/teks.text = "%keluar_k"
 			"meluncur":				$hud/bantuan_input/aksi2/teks.text = "%meluncur"
 			"mengayun":				$hud/bantuan_input/aksi2/teks.text = "%masuki_k"
+			"naik_sepeda":			$hud/bantuan_input/aksi2/teks.text = "%kendarai"
 			"edit_objek":			$hud/bantuan_input/aksi2/teks.text = "%edit"
 			"angkat_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%angkat"
 			"jatuhkan_sesuatu":		$hud/bantuan_input/aksi2/teks.text = "%jatuhkan"
@@ -2489,7 +2490,7 @@ func _ketika_mengatur_mode_kontrol_kendaraan(aktif : bool) -> void:
 		$kontrol_sentuh/kontrol_gerakan/analog.visible = false
 		$"kontrol_sentuh/kontrol_gerakan/d-pad".visible = false
 		$kontrol_sentuh/jongkok.visible = false
-		if karakter.pose_duduk == "mengemudi":
+		if karakter.pose_duduk == "mengemudi" or karakter.pose_duduk == "mengendara":
 			$kontrol_sentuh/kontrol_kendaraan.visible = true
 		else:
 			$kontrol_sentuh/lompat.visible = false
