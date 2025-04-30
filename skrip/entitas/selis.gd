@@ -1,8 +1,19 @@
 # 29/09/23
 extends entitas
 
-const jalur_instance = "res://skena/entitas/selis.tscn"
-const sinkron_kondisi = []
+const sinkron_kondisi = [
+	["warna_1", Color.BLACK],
+	["warna_2", Color("0dfff3")],
+	["warna_3", Color(0.176, 0.176, 0.176)],
+	["id_pengendara", -1],
+	["id_penumpang", -1],
+	["steering", 0.0],
+	["engine_force", 0.0],
+	["linear_velocity", Vector3.ZERO],
+	["klakson", false]
+]
+const jalur_instance = "res://skena/entitas/selis.scn"
+const abaikan_occlusion_culling = true
 
 var mat1 : StandardMaterial3D
 var mat2 : StandardMaterial3D
@@ -20,22 +31,57 @@ var warna_3 = Color(0.176, 0.176, 0.176) :
 		if mat3 != null: mat3.albedo_color = ubah_warna
 		warna_3 = ubah_warna
 
-@export var kursi = {
-	"pengemudi": -1,
-	"penumpang": [-1]
-}
-
+var id_pengendara = -1:
+	set(id):
+		if id != -1:
+			if dunia.get_node_or_null("pemain/"+str(id)) != null:
+				dunia.get_node("pemain/"+str(id)).set("pose_duduk", "mengendara")
+				dunia.get_node("pemain/"+str(id)).set("gestur", "duduk")
+				dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").set_target_node($setir/rotasi_stir/pos_tangan_kanan.get_path())
+				dunia.get_node("pemain/"+str(id)+"/%tangan_kanan").start()
+				dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
+				dunia.get_node("pemain/"+str(id)+"/%tangan_kiri").start()
+				call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+		else:
+			if dunia.get_node_or_null("pemain/"+str(id_pengendara)) != null:
+				dunia.get_node("pemain/"+str(id_pengendara)).set("gestur", "berdiri")
+				dunia.get_node("pemain/"+str(id_pengendara)).rotation.x = 0
+				dunia.get_node("pemain/"+str(id_pengendara)).rotation.z = 0
+				dunia.get_node("pemain/"+str(id_pengendara)+"/%tangan_kanan").set_target_node("")
+				dunia.get_node("pemain/"+str(id_pengendara)+"/%tangan_kanan").stop()
+				dunia.get_node("pemain/"+str(id_pengendara)+"/%tangan_kiri").set_target_node("")
+				dunia.get_node("pemain/"+str(id_pengendara)+"/%tangan_kiri").stop()
+				call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_pengendara)))
+		id_pengendara = id
+var id_penumpang = -1:
+	set(id):
+		if id != -1:
+			if dunia.get_node_or_null("pemain/"+str(id)) != null:
+				dunia.get_node("pemain/"+str(id)).set("pose_duduk", "dibonceng_1")
+				dunia.get_node("pemain/"+str(id)).set("gestur", "duduk")
+				call("add_collision_exception_with", dunia.get_node("pemain/"+str(id)))
+		else:
+			if dunia.get_node_or_null("pemain/"+str(id_penumpang)) != null:
+				dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "berdiri")
+				dunia.get_node("pemain/"+str(id_penumpang)).rotation.x = 0
+				dunia.get_node("pemain/"+str(id_penumpang)).rotation.z = 0
+				call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_penumpang)))
+		id_penumpang = id
 var arah_stir : Vector2
 var arah_belok : float
 var batas_putaran_stir = 0.5	# persentase sudut
 var kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
 var kecepatan_mundur = 10
 var kecepatan_laju : Vector3
-var gerakan_pandangan : Vector2 # input
-
-@onready var torsi_kemiringan = $roda_belakang.wheel_roll_influence
+var klakson : bool :
+	set(bunyi):
+		if bunyi:	$AudioKlakson.play()
+		else:		$AudioKlakson.stop()
+		klakson = bunyi
+var torsi_kemiringan : float
 
 func mulai() -> void:
+	torsi_kemiringan = $roda_belakang.wheel_roll_influence
 	mat1 = $model/rangka.get_surface_override_material(0).duplicate()
 	$model/rangka.set_surface_override_material(0, mat1)
 	$model/rangka_lod1.set_surface_override_material(0, mat1)
@@ -65,11 +111,30 @@ func mulai() -> void:
 	$setir/rotasi_stir/model/handle_lod1.set_surface_override_material(0, mat3)
 	$setir/rotasi_stir/model/handle_lod2.set_surface_override_material(0, mat3)
 	warna_3 = warna_3
+	id_pengendara = id_pengendara
+	id_penumpang = id_penumpang
 
-func _physics_process(delta):
-	if client.id_koneksi == multiplayer.get_unique_id():
-		if kursi["pengemudi"] != -1 and is_instance_valid(dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
-			gerakan_pandangan = dunia.get_node("pemain/"+str(kursi["pengemudi"])).arah_pandangan
+func proses(waktu_delta : float) -> void:
+	if id_pengendara != -1:
+		if dunia.get_node_or_null("pemain/"+str(id_pengendara)) != null:
+			dunia.get_node("pemain/"+str(id_pengendara)).global_position = global_position
+			dunia.get_node("pemain/"+str(id_pengendara)).rotation = rotation
+	if id_penumpang != -1:
+		if dunia.get_node_or_null("pemain/"+str(id_penumpang)) != null:
+			dunia.get_node("pemain/"+str(id_penumpang)).global_position = global_position
+			dunia.get_node("pemain/"+str(id_penumpang)).rotation = rotation
+	
+	if id_pengendara == client.id_koneksi and dunia.get_node_or_null("pemain/"+str(id_pengendara)) != null:
+		if Input.is_action_pressed("maju"): 	arah_stir.y = Input.get_action_strength("maju")
+		elif Input.is_action_pressed("mundur"): arah_stir.y = -Input.get_action_strength("mundur")
+		else: arah_stir.y = 0
+		
+		if Input.is_action_pressed("kiri"): 	arah_stir.x = 1;	set("axis_lock_angular_z", false)
+		elif Input.is_action_pressed("kanan"):	arah_stir.x = -1;	set("axis_lock_angular_z", false)
+		else: arah_stir.x = 0;				  if rotation.z == 0:	set("axis_lock_angular_z", true)
+		
+		if Input.is_action_pressed("lompat"):	set("brake", Input.get_action_strength("lompat"))
+		else: set("brake", 0)
 		
 		if arah_stir.y > 0:	  	set("engine_force", kecepatan_maju * arah_stir.y)
 		elif arah_stir.y < 0:	set("engine_force", kecepatan_mundur * arah_stir.y)
@@ -82,125 +147,138 @@ func _physics_process(delta):
 			$roda_depan.wheel_roll_influence	= torsi_kemiringan
 			$roda_belakang.wheel_roll_influence = torsi_kemiringan
 		else:
-			if arah_stir.y != 0 and rotation.z != 0:
-				rotation.z = lerp(rotation.z, 0.0, 2.0 * delta)
+			#if arah_stir.y != 0 and rotation.z != 0:
+				#rotation.z = lerp(rotation.z, 0.0, 2.0 * waktu_delta)
 			arah_belok = 0
 			$roda_depan.wheel_roll_influence = 0
 			$roda_belakang.wheel_roll_influence = 0
 		
-		set("steering", move_toward(get("steering"), arah_belok, 1.5 * delta))
-		$setir/rotasi_stir.rotation_degrees.y = get("steering") * 50
-		
-	if kursi["pengemudi"] != -1:
-		if is_instance_valid(dunia.get_node("pemain/"+str(kursi["pengemudi"]))):
-			if dunia.get_node("pemain/"+str(kursi["pengemudi"]))._ragdoll:
-				if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-					server._gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
-				else: print_debug("ini bukan server")
-			else:
-				dunia.get_node("pemain/"+str(kursi["pengemudi"])).global_position = global_position
-				dunia.get_node("pemain/"+str(kursi["pengemudi"])).rotation = rotation
-		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			server._gunakan_entitas(name, kursi["pengemudi"], "_berhenti_mengemudi")
-	if kursi["penumpang"][0] != -1:
-		if is_instance_valid(dunia.get_node("pemain/"+str(kursi["penumpang"][0]))):
-			dunia.get_node("pemain/"+str(kursi["penumpang"][0])).global_position = global_position
-			dunia.get_node("pemain/"+str(kursi["penumpang"][0])).rotation = rotation
-		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			server._gunakan_entitas(name, kursi["penumpang"][0], "_berhenti_menumpang")
+		set("steering", move_toward(get("steering"), arah_belok, 1.5 * waktu_delta))
+	
+	# sesuaikan arah stir
+	$setir/rotasi_stir.rotation_degrees.y = get("steering") * 50
+	$model_roda_depan/translasi_model.rotation_degrees.y = $setir/rotasi_stir.rotation_degrees.y
+	
+	#  sesuaikan translasi shockbreaker
+	$model_roda_depan/translasi_model.position.y = clampf($roda_depan.position.y, -0.1, 0.11)
+	$model_roda_belakang/translasi_model.position.y = clampf($roda_belakang.position.y, -0.07, 0.03)
 
-func _process(_delta):
-	if client.id_koneksi == kursi["pengemudi"]:
-		if Input.is_action_pressed("maju"): 	arah_stir.y = 1
-		elif Input.is_action_pressed("mundur"): arah_stir.y = -1
-		else: arah_stir.y = 0
-		
-		if Input.is_action_pressed("berlari"):
-			if Input.is_action_pressed("kiri"): 	arah_stir.x = 1;	set("axis_lock_angular_z", false)
-			elif Input.is_action_pressed("kanan"):	arah_stir.x = -1;	set("axis_lock_angular_z", false)
-			else: arah_stir.x = 0;				  if rotation.z == 0:	set("axis_lock_angular_z", true)
-		else:
-			if gerakan_pandangan.x <= -1 or gerakan_pandangan.x >= 1:
-				arah_stir.x = clamp(-gerakan_pandangan.x, -1, 1);		set("axis_lock_angular_z", false)
-			else: arah_stir.x = 0;				  if rotation.z == 0:	set("axis_lock_angular_z", true)
-		
-		if Input.is_action_pressed("lompat"):	set("brake", Input.get_action_strength("lompat"))
-		elif Input.is_action_pressed("jongkok"):set("brake", Input.get_action_strength("jongkok"))
-		else: set("brake", 0)
+func _input(event: InputEvent) -> void:
+	if id_pengendara == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengendara)).kontrol:
+		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
+			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			else: klakson = true
+		if Input.is_action_just_released("aksi1") or Input.is_action_just_released("aksi1_sentuh"):
+			if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_released("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
+			else: klakson = false
+		if Input.is_action_just_pressed("aksi2"):
+			await get_tree().create_timer(0.1).timeout
+			server.gunakan_entitas(name, "_berhenti_mengemudi")
+	
+	if id_penumpang == client.id_koneksi and dunia.get_node("pemain/"+str(id_penumpang)).kontrol:
+		if Input.is_action_just_pressed("aksi2"):
+			await get_tree().create_timer(0.1).timeout
+			server.gunakan_entitas(name, "_berhenti_menumpang")
 
-func fokus():
-	if kursi["pengemudi"] == multiplayer.get_unique_id() or kursi["penumpang"][0] == multiplayer.get_unique_id():
-		server.permainan.set("tombol_aksi_2", "berjalan")
-	else:
+func fokus() -> void:
+	if id_pengendara == -1 or id_penumpang == -1:
 		server.permainan.set("tombol_aksi_2", "naik_sepeda")
-func gunakan(id_pemain):
-	if kursi["pengemudi"] == id_pemain:		# pengemudi turun
+func gunakan(id_pemain) -> void:
+	if id_pengendara == id_pemain:		# pengemudi turun
 		server.gunakan_entitas(name, "_berhenti_mengemudi")
-		server.permainan.get_node("kontrol_sentuh/lompat").set("texture_normal", load("res://ui/tombol/lompat.svg"))
-		server.permainan.set("tombol_aksi_3", "berlari")
-	elif kursi["penumpang"][0] == id_pemain:# penumpang turun
+	elif id_penumpang == id_pemain:		# penumpang turun
 		server.gunakan_entitas(name, "_berhenti_menumpang")
-		server.permainan.set("tombol_aksi_3", "berlari")
-	elif kursi["pengemudi"] == -1:			# naik sebagai pengemudi
+	elif id_pengendara == -1:			# naik sebagai pengemudi
 		server.gunakan_entitas(name, "_kemudikan")
-		server.permainan.get_node("kontrol_sentuh/lompat").set("texture_normal", load("res://ui/tombol/rem.svg"))
-		server.permainan.set("tombol_aksi_3", "atur_pandangan")
-	elif kursi["penumpang"][0] == -1:		# naik sebagai penumpang
+	elif id_penumpang == -1:			# naik sebagai penumpang
 		server.gunakan_entitas(name, "_menumpang")
-		server.permainan.set("tombol_aksi_3", "atur_pandangan")
 
-func _kemudikan(id_pengemudi):
-	#dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = true
-	dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, false)
-	dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "duduk")
-	dunia.get_node("pemain/"+str(id_pengemudi)).set("pose_duduk", "mengendara")
-	dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").set_target_node($setir/rotasi_stir/pos_tangan_kanan.get_path())
-	dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").start()
-	dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node($setir/rotasi_stir/pos_tangan_kiri.get_path())
-	dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").start()
+func _kemudikan(id) -> void:
+	if id == client.id_koneksi:
+		dunia.raycast_occlusion_culling.add_exception(self)
+		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
+		
+		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
+		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
+		
+		server.permainan.set("tombol_aksi_1", "klakson_kendaraan")
+		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+		server.permainan.set("tombol_aksi_2", "berjalan")
+		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+		server.permainan.bantuan_aksi_2 = true
+		server.permainan.set("tombol_aksi_3", "rem")
+		server.permainan.set("tombol_aksi_4", "atur_pandangan")
+		
+		# ubah pemroses pada server
+		sinkronkan_perubahan_kondisi([["id_proses", id], ["kondisi", [["id_pengendara", id]]]])
+	
 	set("brake", 0)
-	kursi["pengemudi"] = id_pengemudi
-	#$sinkronisasi_server.set_multiplayer_authority(id_pengemudi)
-	#if kursi["penumpang"][0] != -1: dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority(client.id_koneksi)
-	if client.id_koneksi == multiplayer.get_unique_id():
-		server.permainan.get_node("mode_bermain").visible = false
-		dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").atur_mode(2)
-		#dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = self
-func _berhenti_mengemudi(id_pengemudi):
+	
+	# atur id_pengendara dan id_proses
+	id_pengendara = id
+	id_proses = id
+func _berhenti_mengemudi(id) -> void:
 	arah_stir = Vector2.ZERO
 	set("brake", 0.25)
-	if is_instance_valid(dunia.get_node("pemain/"+str(id_pengemudi))):
-		dunia.get_node("pemain/"+str(id_pengemudi)).set("gestur", "berdiri")
-		#dunia.get_node("pemain/"+str(id_pengemudi)+"/fisik").disabled = false
-		dunia.get_node("pemain/"+str(id_pengemudi)).set_collision_layer_value(2, true)
-		dunia.get_node("pemain/"+str(id_pengemudi)).rotation.x = 0
-		dunia.get_node("pemain/"+str(id_pengemudi)).rotation.z = 0
-		dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").set_target_node("")
-		dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kanan").stop()
-		dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").set_target_node("")
-		dunia.get_node("pemain/"+str(id_pengemudi)+"/%tangan_kiri").stop()
-	kursi["pengemudi"] = -1
-	if client.id_koneksi == multiplayer.get_unique_id():
-		dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").atur_mode(1)
-		#dunia.get_node("pemain/"+str(id_pengemudi)+"/PlayerInput").kendaraan = null
-		server.permainan.get_node("mode_bermain").visible = true
-	#$sinkronisasi_server.set_multiplayer_authority(1) 
-	#if kursi["penumpang"][0] != -1: dunia.get_node("pemain/"+str(kursi["penumpang"][0])+"/PlayerInput").set_multiplayer_authority(1)
-func _menumpang(id_penumpang):
-	dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, false)
-	dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "duduk")
-	dunia.get_node("pemain/"+str(id_penumpang)).set("pose_duduk", "dibonceng_1")
-	#dunia.get_node("pemain/"+str(id_penumpang)+"/PlayerInput").set_multiplayer_authority(client.id_koneksi)
-	if id_penumpang == multiplayer.get_unique_id():
-		dunia.get_node("pemain/"+str(id_penumpang)+"/pengamat").atur_mode(2)
-	kursi["penumpang"][0] = id_penumpang
-func _berhenti_menumpang(id_penumpang):
-	if is_instance_valid(dunia.get_node("pemain/"+str(id_penumpang))):
-		dunia.get_node("pemain/"+str(id_penumpang)).set("gestur", "berdiri")
-		dunia.get_node("pemain/"+str(id_penumpang)).set_collision_layer_value(2, true)
-		dunia.get_node("pemain/"+str(id_penumpang)).rotation.x = 0
-		dunia.get_node("pemain/"+str(id_penumpang)).rotation.z = 0
-		#dunia.get_node("pemain/"+str(id_penumpang)+"/PlayerInput").set_multiplayer_authority(id_penumpang)
-	if id_penumpang == multiplayer.get_unique_id():
-		dunia.get_node("pemain/"+str(id_penumpang)+"/pengamat").atur_mode(1)
-	kursi["penumpang"][0] = -1
+	
+	if id == client.id_koneksi:
+		dunia.raycast_occlusion_culling.remove_exception(self)
+		dunia.raycast_occlusion_culling.remove_exception(dunia.get_node("pemain/"+str(id)))
+		
+		dunia.get_node("pemain/"+str(id)).rotation.x = 0
+		dunia.get_node("pemain/"+str(id)).rotation.z = 0
+		
+		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
+		dunia.get_node("pemain/"+str(id)).move_and_slide()
+		
+		server.permainan.set("tombol_aksi_3", "lompat")
+		server.permainan.set("tombol_aksi_4", "berlari")
+		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
+		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
+		server.permainan.bantuan_aksi_1 = false
+		server.permainan.bantuan_aksi_2 = false
+		
+		# reset pemroses pada server
+		sinkronkan_perubahan_kondisi([["id_proses", id_penumpang], ["kondisi", [["id_pengendara", -1]]]])
+	
+	# atur ulang id_pengendara dan id_proses
+	id_pengendara = -1
+	id_proses = id_penumpang
+func _menumpang(id) -> void:
+	if id == client.id_koneksi:
+		dunia.raycast_occlusion_culling.add_exception(self)
+		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
+		
+		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
+		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
+		server.permainan.set("tombol_aksi_2", "berjalan")
+		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+		server.permainan.bantuan_aksi_2 = true
+		server.permainan.set("tombol_aksi_4", "atur_pandangan")
+		
+		sinkronkan_perubahan_kondisi([["kondisi", [["id_penumpang", id]]]])
+	
+	# atur id_penumpang
+	id_penumpang = id
+func _berhenti_menumpang(id) -> void:
+	if id == client.id_koneksi:
+		dunia.raycast_occlusion_culling.remove_exception(self)
+		dunia.raycast_occlusion_culling.remove_exception(dunia.get_node("pemain/"+str(id)))
+		
+		dunia.get_node("pemain/"+str(id)).rotation.x = 0
+		dunia.get_node("pemain/"+str(id)).rotation.z = 0
+		
+		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
+		dunia.get_node("pemain/"+str(id)).move_and_slide()
+		
+		server.permainan.set("tombol_aksi_4", "berlari")
+		sinkronkan_perubahan_kondisi([["kondisi", [["id_penumpang", -1]]]])
+	
+	# atur id_penumpang
+	id_penumpang = -1
