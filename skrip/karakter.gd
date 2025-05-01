@@ -415,8 +415,8 @@ func _input(event : InputEvent) -> void:
 		if Input.is_action_just_pressed("mode_pandangan"): $pengamat.ubah_mode()
 		
 		# mode interaksi
-		if Input.is_action_just_pressed("debug"):	server.permainan.pilih_mode_bermain()
-		if Input.is_action_just_pressed("debug2"):	server.permainan.pilih_mode_edit()
+		if Input.is_action_just_pressed("mode_bermain"):	server.permainan.pilih_mode_bermain()
+		if Input.is_action_just_pressed("mode_edit"):		server.permainan.pilih_mode_edit()
 		
 		# aksi
 		if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
