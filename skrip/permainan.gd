@@ -2741,6 +2741,20 @@ func aturPemilikNode(node : Node, node_pemilik : Node) -> void:
 	node.owner = node_pemilik
 	for node_internal in node.get_children():
 		aturPemilikNode(node_internal, node_pemilik)
+func interpolasi(nilai_input : float, input_min : float, input_max : float, output_min : float, output_max : float) -> float:
+	# 01/05/25 :: interpolasi nilai berdasarkan rentang tertentu
+	# Ini berfungsi untuk kalkulasi nilai berdasarkan rentang input dan output
+	# misalnya nilai_input = 2.5, input_min = 0.0, input_max = 5.0, dan output_min = 0.0, output_max = 10.0
+	# maka nilai_output adalah 5.0
+	
+	# Pastikan input value ada di range yang benar
+	nilai_input = clamp(nilai_input, input_min, input_max)
+
+	# Lakukan interpolasi linear
+	var persentase = (nilai_input - input_min) / (input_max - input_min)
+	var nilai_output = output_min + persentase * (output_max - output_min)
+
+	return nilai_output
 func interpolasiPosisi(titik : Array, t : float) -> Vector3:
 	# 20/04/25 :: interpolasi beberapa titik berdasarkan rentang posisi (t)
 	
