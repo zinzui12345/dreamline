@@ -34,7 +34,7 @@ var b_indeks_timeline : Array
 var b_nama_file_timeline : String
 var b_file_timeline : FileAccess
 
-const jarak_render_karakter = 50
+const jarak_render_karakter = 60 # harus melebihi jarak render entitas supaya kendaraan berfungsi normal
 const jarak_render_entitas = 50
 const direktori_cache_replay = "user://timeline_part"
 const file_replay = "user://rekaman.dreamline_replay"

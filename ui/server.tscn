@@ -49,13 +49,15 @@ func atur(alamat_ip, sys, nama, map, jumlah_pemain, maks_pemain):
 			$ikon_os.texture = load(\"res://ui/ikon/ikon_os_windows.svg\")
 		\"Windows\":
 			$ikon_os.texture = load(\"res://ui/ikon/ikon_os_windows-11.svg\")
+		\"Steam Runtime\", \"Steam Runtime 2\", \"Steam Runtime 2 (soldier)\":
+			$ikon_os.texture = load(\"res://ui/ikon/ikon_os_steam.svg\")
 	#    \"macOS\":
 	#        print(\"macOS\")
 	#    \"iOS\":
 	#        print(\"iOS\")
 	#    \"Web\":
 	#        print(\"Web\")
-		_: print(sys)
+		_: server.permainan._tampilkan_popup_informasi_(sys)
 	
 	if ResourceLoader.exists(\"res://ui/ikon/ikon_map_\"+map+\".png\"):
 		$ikon.texture = load(\"res://ui/ikon/ikon_map_\"+map+\".png\")
