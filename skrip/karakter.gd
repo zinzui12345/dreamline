@@ -600,6 +600,11 @@ func _physics_process(delta : float) -> void:
 		
 		posisi_target = penarget.get_collision_point()
 		objek_target = penarget.get_collider()
+		if peran != Permainan.PERAN_KARAKTER.Arsitek:
+			server.permainan.atur_tampilan_kursor(true)
+			server.permainan.atur_warna_kursor(Color.WHITE)
+		else:
+			server.permainan.atur_tampilan_kursor(false)
 		if peran == Permainan.PERAN_KARAKTER.Arsitek:
 			# atur posisi pointer
 			if !dunia.get_node("kursor_objek").visible:
@@ -626,6 +631,7 @@ func _physics_process(delta : float) -> void:
 				%pandangan.aktifkan_efek()
 				PerenderEfekGarisCahaya.atur_proses_render(true)
 				objek_target.efek_cahaya.glow_border_effect = true
+				server.permainan.atur_warna_kursor(objek_target.efek_cahaya.glow_color)
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 			server.permainan.bantuan_aksi_1 = false
@@ -645,10 +651,12 @@ func _physics_process(delta : float) -> void:
 					%pandangan.aktifkan_efek()
 					PerenderEfekGarisCahaya.atur_proses_render(true)
 					objek_target.efek_cahaya.glow_border_effect = true
+					server.permainan.atur_warna_kursor(objek_target.efek_cahaya.glow_color)
 				elif objek_target.get_parent().get("efek_cahaya") != null:
 					%pandangan.aktifkan_efek()
 					PerenderEfekGarisCahaya.atur_proses_render(true)
 					objek_target.get_parent().efek_cahaya.glow_border_effect = true
+					server.permainan.atur_warna_kursor(objek_target.get_parent().efek_cahaya.glow_color)
 				if objek_target.has_method("fokus"): objek_target.fokus()
 				if objek_target.get_parent().has_method("gunakan"): objek_target.get_parent().fokus()
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
@@ -676,6 +684,7 @@ func _physics_process(delta : float) -> void:
 			PerenderEfekGarisCahaya.atur_proses_render(false)
 			objek_target.get_parent().efek_cahaya.glow_border_effect = false
 		objek_target = null
+		server.permainan.atur_tampilan_kursor(false)
 		server.permainan.get_node("hud/info_posisi").text = ""
 		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false

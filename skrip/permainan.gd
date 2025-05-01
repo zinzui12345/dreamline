@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 30/04/25 Early Access"
+const versi = "Dreamline v0.4.4 01/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -208,6 +208,7 @@ func _ready() -> void:
 	var loader = await load("res://skena/loader.scn").instantiate()
 	get_tree().get_root().call_deferred("add_child", loader)
 	$hud.visible = false
+	$hud/titik_fokus.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/aksi_1.visible = false
@@ -1509,6 +1510,7 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	tombol_aksi_3 = "lompat"
 	tombol_aksi_4 = "berlari"
 	$hud.visible = false
+	$hud/titik_fokus.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/menu.visible = true
@@ -2279,6 +2281,10 @@ func tutup_dialog(_file_dialog : Resource) -> void:
 		if Input.is_action_pressed("lompat"): Input.action_release("lompat")
 		karakter._atur_kendali(true)
 		karakter._atur_penarget(true)
+func atur_tampilan_kursor(tampil : bool) -> void:
+	$hud/titik_fokus.visible = tampil
+func atur_warna_kursor(warna : Color) -> void:
+	$hud/titik_fokus/TitikKursor.modulate = warna
 
 # karakter
 func _ketika_mengubah_nama_karakter(nama): data["nama"] = nama

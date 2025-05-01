@@ -1,4 +1,4 @@
-[gd_scene load_steps=351 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=353 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -56,6 +56,8 @@
 [ext_resource type="Texture2D" uid="uid://dwwsncx7t4g2a" path="res://ui/ikon/ikon_tombol_pesan.svg" id="18_m6a3h"]
 [ext_resource type="Texture2D" uid="uid://dbngqyysbphw6" path="res://ui/ikon/ikon_tab_rambut.svg" id="20_x7tnp"]
 [ext_resource type="Texture2D" uid="uid://bkbtjgpe4ucul" path="res://ui/spinner_menghubungkan.svg" id="21_lgrqm"]
+[ext_resource type="Texture2D" uid="uid://diem4x46fdpca" path="res://ui/titik_kursor.svg" id="21_q6cyv"]
+[ext_resource type="Texture2D" uid="uid://boa2yvoffpd41" path="res://ui/garis_kursor.svg" id="22_pfpc7"]
 [ext_resource type="Texture2D" uid="uid://ccv44e1c3lqii" path="res://ui/ikon/ikon_tab_baju.svg" id="22_xronm"]
 [ext_resource type="Texture2D" uid="uid://bv30icjt11rtb" path="res://ui/tombol/berlari_tekan.svg" id="23_28me6"]
 [ext_resource type="Texture2D" uid="uid://b25pr88ub8p26" path="res://ui/tombol/lempar_sesuatu.svg" id="23_p8sf0"]
@@ -5074,7 +5076,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_lock_ = true
 
 [node name="pesan" type="Control" parent="hud"]
 layout_mode = 1
@@ -6047,6 +6048,24 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_lock_ = true
 
+[node name="titik_fokus" type="Control" parent="hud"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitikKursor" type="Sprite2D" parent="hud/titik_fokus"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("21_q6cyv")
+
+[node name="GarisKursor" type="Sprite2D" parent="hud/titik_fokus"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("22_pfpc7")
+
 [node name="latar" parent="." instance=ExtResource("2_o8pgj")]
 visible = false
 modulate = Color(1, 1, 1, 0)
@@ -6071,7 +6090,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-metadata/_edit_lock_ = true
 
 [node name="kontrol_pandangan" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -6201,12 +6219,15 @@ visibility_mode = 1
 [node name="mic" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.460938
-anchor_top = 0.786667
-anchor_right = 0.539125
+anchor_left = 0.5
+anchor_top = 0.92
+anchor_right = 0.5
 anchor_bottom = 0.92
-offset_right = -0.064003
-offset_bottom = -3.05176e-05
+offset_left = -40.0
+offset_top = -80.0
+offset_right = 40.0
+grow_horizontal = 2
+grow_vertical = 0
 toggle_mode = true
 texture_normal = ExtResource("6_2op7y")
 texture_pressed = ExtResource("6_beubk")
