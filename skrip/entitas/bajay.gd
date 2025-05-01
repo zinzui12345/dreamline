@@ -223,6 +223,7 @@ func _kemudikan(id):
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		server.permainan.bantuan_aksi_2 = true
 		server.permainan.set("tombol_aksi_3", "rem")
+		server.permainan.set("tombol_aksi_4", "atur_pandangan")
 		
 		# atur arah pemain pada mode VR
 		if server.permainan.mode_vr and server.permainan.pengamat_vr != null:
@@ -261,6 +262,7 @@ func _lepas(id):
 		dunia.get_node("pemain/"+str(id)).move_and_slide()
 		
 		server.permainan.set("tombol_aksi_3", "lompat")
+		server.permainan.set("tombol_aksi_4", "berlari")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
 		server.permainan.bantuan_aksi_1 = false
