@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://ihafed1x1w4f"]
+[gd_scene load_steps=18 format=3 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
-[ext_resource type="PackedScene" uid="uid://fbtpsokjfoin" path="res://skena/entitas/npc_jamur.scn" id="4_bfkg2"]
+[ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/rulu/rulu.scn" id="3_6a03b"]
+[ext_resource type="PackedScene" uid="uid://bi7w0776kr73y" path="res://skena/entitas/selis.scn" id="5_b2m5m"]
 [ext_resource type="PackedScene" uid="uid://btfh3nq4bweai" path="res://skena/objek/perosotan.scn" id="8_knm7h"]
 [ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="9_rmo13"]
 
@@ -25,6 +26,24 @@ orientation = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oj1l1"]
 size = Vector3(100, 1, 100)
+
+[sub_resource type="GDScript" id="GDScript_6a03b"]
+resource_name = "uji_ragdoll"
+script/source = "extends StaticBody3D
+
+var pos_awal_ragdoll : Vector3
+
+func _ready() -> void:
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		pos_awal_ragdoll = $lulu.global_position
+func _input(event: InputEvent) -> void:
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		if Input.is_action_just_pressed(\"debug\"):
+			$lulu._ragdoll = true
+		if Input.is_action_just_pressed(\"debug2\"):
+			$lulu._ragdoll = false
+			$lulu.global_position = pos_awal_ragdoll
+"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gcxvj"]
 
@@ -90,12 +109,16 @@ shape = SubResource("BoxShape3D_oj1l1")
 
 [node name="penghalang" type="StaticBody3D" parent="area_navigasi"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.00756, 0, -3.34998)
+script = SubResource("GDScript_6a03b")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="area_navigasi/penghalang"]
 shape = SubResource("BoxShape3D_gcxvj")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="area_navigasi/penghalang"]
 mesh = SubResource("BoxMesh_fkvxr")
+
+[node name="lulu" parent="area_navigasi/penghalang" instance=ExtResource("3_6a03b")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.499949, 0)
 
 [node name="platform" type="AnimatableBody3D" parent="area_navigasi"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.01246, 0.206436, -4.35096)
@@ -119,11 +142,11 @@ transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107
 [node name="batas_bawah" type="Marker3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7, 0)
 
-[node name="npc_jamur" parent="." instance=ExtResource("4_bfkg2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.27171, 0.910764, -2.82737)
-
 [node name="perosotan" parent="." instance=ExtResource("8_knm7h")]
 transform = Transform3D(-0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, -0.642788, -5.1, -0.2, 0)
 
 [node name="ayunan" parent="." instance=ExtResource("9_rmo13")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -0.45, -3.75)
+
+[node name="selis" parent="." instance=ExtResource("5_b2m5m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.69857, -0.240179, -1.99701)

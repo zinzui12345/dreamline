@@ -69,9 +69,6 @@ var id_penumpang = -1:
 		id_penumpang = id
 var arah_stir : Vector2
 var arah_belok : float
-var batas_putaran_stir = 0.5	# persentase sudut
-var kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
-var kecepatan_mundur = 10
 var kecepatan_laju : Vector3
 var klakson : bool :
 	set(bunyi):
@@ -79,6 +76,12 @@ var klakson : bool :
 		else:		$AudioKlakson.stop()
 		klakson = bunyi
 var torsi_kemiringan : float
+
+const kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
+const kecepatan_mundur = 10
+const batas_putaran_stir = 0.5		# persentase sudut
+const pusat_massa_seimbang = -0.25	# posisi pusat gravitasi (y) ketika dikendarai agar tidak terjatuh ke samping
+const pusat_massa_netral = -0.15	# posisi pusat gravitasi (y) pada saat diparkir
 
 func mulai() -> void:
 	torsi_kemiringan = $roda_belakang.wheel_roll_influence
@@ -142,10 +145,14 @@ func proses(waktu_delta : float) -> void:
 		
 		kecepatan_laju = get("linear_velocity") * transform.basis
 		
+		# 01/05/25 :: kalau kecepatan_laju x 0 ~ 0.25 sesuaikan center_mass.y
+		var kecepatan_belok : float = server.permainan.interpolasi(absf(kecepatan_laju.z), 0.0, 20.0, 0.0, 1.0)
+		set_indexed("center_of_mass:y", server.permainan.interpolasi(absf(kecepatan_laju.x) * kecepatan_belok, 0.0, 0.25, pusat_massa_seimbang, pusat_massa_netral))
+		
 		if arah_stir.x != 0:
 			arah_belok = arah_stir.x * batas_putaran_stir
-			$roda_depan.wheel_roll_influence	= torsi_kemiringan
-			$roda_belakang.wheel_roll_influence = torsi_kemiringan
+			$roda_depan.wheel_roll_influence	= torsi_kemiringan * abs(arah_stir.x) * kecepatan_belok
+			$roda_belakang.wheel_roll_influence = torsi_kemiringan * abs(arah_stir.x) * kecepatan_belok
 		else:
 			#if arah_stir.y != 0 and rotation.z != 0:
 				#rotation.z = lerp(rotation.z, 0.0, 2.0 * waktu_delta)
