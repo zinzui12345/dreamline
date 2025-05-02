@@ -600,7 +600,7 @@ func _physics_process(delta : float) -> void:
 		
 		posisi_target = penarget.get_collision_point()
 		objek_target = penarget.get_collider()
-		if peran != Permainan.PERAN_KARAKTER.Arsitek:
+		if peran != Permainan.PERAN_KARAKTER.Arsitek and $pengamat.mode_kontrol == 1:
 			server.permainan.atur_tampilan_kursor(true)
 			server.permainan.atur_warna_kursor(Color.WHITE)
 		else:
