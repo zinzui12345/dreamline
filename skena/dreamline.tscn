@@ -574,6 +574,8 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd4q"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o8yee"]
 bg_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 6
@@ -748,10 +750,6 @@ bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unh21"]
 bg_color = Color(0.168627, 0.168627, 0.168627, 1)
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uwd4q"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6awjb"]
-
 [sub_resource type="Animation" id="Animation_0lfi1"]
 resource_name = "sembunyikan"
 length = 0.4
@@ -806,7 +804,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("panel_2:visible")
+tracks/4/path = NodePath("../panel_perdekat_objek:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -818,7 +816,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("panel_2:mouse_filter")
+tracks/5/path = NodePath("../panel_perdekat_objek:mouse_filter")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -882,7 +880,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("panel_2:visible")
+tracks/4/path = NodePath("../panel_perdekat_objek:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -894,7 +892,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("panel_2:mouse_filter")
+tracks/5/path = NodePath("../panel_perdekat_objek:mouse_filter")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -909,6 +907,8 @@ _data = {
 &"sembunyikan": SubResource("Animation_0lfi1"),
 &"tampilkan": SubResource("Animation_dtpav")
 }
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6awjb"]
 
 [sub_resource type="Animation" id="Animation_tc33y"]
 resource_name = "tampilkan"
@@ -5306,12 +5306,12 @@ layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.028
 anchor_top = 0.267
-anchor_right = 0.972554
-anchor_bottom = 0.306333
+anchor_right = 0.972
+anchor_bottom = 0.267
 offset_left = -0.0640144
 offset_top = -0.199478
-offset_right = -0.0960884
-offset_bottom = 0.200577
+offset_right = 0.0634155
+offset_bottom = 23.8003
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
@@ -5488,13 +5488,32 @@ vertical_alignment = 1
 
 [node name="daftar_properti_objek" type="Control" parent="hud"]
 layout_mode = 1
-anchor_left = 0.71875
+anchor_left = 0.999938
 anchor_right = 0.999938
 anchor_bottom = 1.00033
+offset_left = -287.937
 offset_right = 0.0639992
 offset_bottom = -0.200001
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
+
+[node name="DragPad" type="Panel" parent="hud/daftar_properti_objek"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -2.33378
+anchor_bottom = 1.0
+offset_left = 0.129333
+offset_right = -0.000488281
+offset_bottom = 0.00201416
+grow_horizontal = 0
+mouse_default_cursor_shape = 13
+theme_override_styles/panel = SubResource("StyleBoxEmpty_uwd4q")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="Touchpad" parent="hud/daftar_properti_objek/DragPad" instance=ExtResource("14_tax0q")]
+analogName = "arah_pandangan_objek"
 
 [node name="panel" type="Panel" parent="hud/daftar_properti_objek"]
 layout_mode = 1
@@ -5502,36 +5521,47 @@ anchors_preset = -1
 anchor_left = 1.0
 anchor_right = 2.0
 anchor_bottom = 1.0
+offset_right = -0.000488281
 grow_horizontal = 0
 grow_vertical = 2
+pivot_offset = Vector2(288, 0)
 theme_override_styles/panel = SubResource("StyleBoxFlat_60lyf")
-metadata/_edit_lock_ = true
 
-[node name="panel_jalur" type="Panel" parent="hud/daftar_properti_objek/panel"]
+[node name="kontainer" type="VBoxContainer" parent="hud/daftar_properti_objek/panel"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.138555
+anchor_left = 0.111
 anchor_top = 0.013
-anchor_right = 0.944778
-anchor_bottom = 0.067
-offset_left = 0.0959587
+anchor_right = 0.972
+anchor_bottom = 0.987
+offset_left = 0.0319977
 offset_top = 0.200026
-offset_right = -0.0964966
-offset_bottom = -0.199867
+offset_right = 0.0639954
+offset_bottom = -0.198059
+metadata/_edit_lock_ = true
+
+[node name="jalur_objek" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="panel_jalur" type="Panel" parent="hud/daftar_properti_objek/panel/kontainer/jalur_objek"]
+custom_minimum_size = Vector2(232, 32)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_o8yee")
-metadata/_edit_lock_ = true
 
-[node name="jalur" type="Label" parent="hud/daftar_properti_objek/panel"]
+[node name="jalur" type="Label" parent="hud/daftar_properti_objek/panel/kontainer/jalur_objek"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.139
-anchor_top = 0.013
-anchor_right = 0.944
-anchor_bottom = 0.067
-offset_left = -0.0320702
-offset_top = 0.200026
-offset_right = 0.127533
-offset_bottom = -0.199867
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("StyleBoxFlat_o8yee")
@@ -5540,17 +5570,29 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
 text_overrun_behavior = 3
+
+[node name="pemisah_1" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
 metadata/_edit_lock_ = true
 
-[node name="pilih_tab_posisi" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="tab_transformasi" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="pilih_tab_posisi" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/tab_transformasi"]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.135415
-anchor_top = 0.106667
-anchor_right = 0.357859
-anchor_bottom = 0.213001
-offset_right = -0.0640135
-offset_bottom = 0.200026
+anchor_left = 0.161
+anchor_top = 0.5
+anchor_right = 0.161
+anchor_bottom = 0.5
+offset_left = -31.9285
+offset_top = -32.0
+offset_right = 32.0715
+offset_bottom = 32.0
 theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 theme_override_styles/hover = SubResource("StyleBoxFlat_mhy42")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
@@ -5560,17 +5602,21 @@ button_pressed = true
 action_mode = 0
 icon = ExtResource("6_eofx6")
 icon_alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="pilih_tab_rotasi" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="pilih_tab_rotasi" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/tab_transformasi"]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.430554
-anchor_top = 0.106667
-anchor_right = 0.652998
-anchor_bottom = 0.213001
-offset_right = -0.0640135
-offset_bottom = 0.200026
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 theme_override_styles/hover = SubResource("StyleBoxFlat_i4v6x")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
@@ -5579,17 +5625,19 @@ toggle_mode = true
 action_mode = 0
 icon = ExtResource("7_o72dh")
 icon_alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="pilih_tab_skala" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="pilih_tab_skala" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/tab_transformasi"]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.725692
-anchor_top = 0.106667
-anchor_right = 0.948136
-anchor_bottom = 0.213001
-offset_right = -0.0640135
-offset_bottom = 0.200026
+anchor_left = 0.839
+anchor_top = 0.5
+anchor_right = 0.839
+anchor_bottom = 0.5
+offset_left = -32.0725
+offset_top = -32.0
+offset_right = 31.9275
+offset_bottom = 32.0
 theme_override_styles/focus = SubResource("StyleBoxFlat_jji8h")
 theme_override_styles/hover = SubResource("StyleBoxFlat_vdwij")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vvgc6")
@@ -5598,31 +5646,44 @@ toggle_mode = true
 action_mode = 0
 icon = ExtResource("8_uxrq1")
 icon_alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="translasi_x" type="SpinBox" parent="hud/daftar_properti_objek/panel"]
+[node name="pemisah_2" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="transformasi_x" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="translasi_x" type="SpinBox" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_x"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.135415
-anchor_top = 0.280001
-anchor_right = 0.551665
-anchor_bottom = 0.349667
-offset_right = 0.119736
-offset_bottom = 0.200745
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = -21.5
+offset_right = 129.0
+offset_bottom = 21.5
+grow_vertical = 2
 theme = SubResource("Theme_su67x")
 step = 0.1
 alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="kurangi_translasi_x" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="kurangi_translasi_x" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_x"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.562499
-anchor_top = 0.280001
-anchor_right = 0.708
-anchor_bottom = 0.349667
-offset_right = 0.0956573
-offset_bottom = 0.200729
+anchor_left = 0.585
+anchor_top = 0.5
+anchor_right = 0.585
+anchor_bottom = 0.5
+offset_left = -25.0805
+offset_top = -25.0
+offset_right = 24.9195
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -5632,17 +5693,20 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
 theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "-"
-metadata/_edit_use_anchors_ = true
 
-[node name="tambah_translasi_x" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="tambah_translasi_x" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_x"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.756941
-anchor_top = 0.280001
-anchor_right = 0.902442
-anchor_bottom = 0.349667
-offset_right = 0.0956573
-offset_bottom = 0.200729
+anchor_left = 0.843
+anchor_top = 0.5
+anchor_right = 0.843
+anchor_bottom = 0.5
+offset_left = -25.0645
+offset_top = -25.0
+offset_right = 24.9355
+offset_bottom = 25.0
+grow_horizontal = 0
+grow_vertical = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -5652,31 +5716,44 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_sopqa")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_77cd8")
 theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "+"
-metadata/_edit_use_anchors_ = true
 
-[node name="translasi_y" type="SpinBox" parent="hud/daftar_properti_objek/panel"]
+[node name="pemisah_3" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="transformasi_y" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="translasi_y" type="SpinBox" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_y"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.135415
-anchor_top = 0.395002
-anchor_right = 0.551665
-anchor_bottom = 0.464668
-offset_right = 0.119736
-offset_bottom = 0.200745
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = -21.5
+offset_right = 129.0
+offset_bottom = 21.5
+grow_vertical = 2
 theme = SubResource("Theme_wpahf")
 step = 0.1
 alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="kurangi_translasi_y" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="kurangi_translasi_y" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_y"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.562499
-anchor_top = 0.395002
-anchor_right = 0.708
-anchor_bottom = 0.464668
-offset_right = 0.0956573
-offset_bottom = 0.200729
+anchor_left = 0.585
+anchor_top = 0.5
+anchor_right = 0.585
+anchor_bottom = 0.5
+offset_left = -25.08
+offset_top = -25.0
+offset_right = 24.92
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -5686,17 +5763,18 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_la51y")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_02p8k")
 theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "-"
-metadata/_edit_use_anchors_ = true
 
-[node name="tambah_translasi_y" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="tambah_translasi_y" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_y"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.756941
-anchor_top = 0.395002
-anchor_right = 0.902442
-anchor_bottom = 0.464668
-offset_right = 0.0956573
-offset_bottom = 0.200729
+anchor_left = 0.843
+anchor_top = 0.5
+anchor_right = 0.843
+anchor_bottom = 0.5
+offset_left = -25.064
+offset_top = -25.0
+offset_right = 24.936
+offset_bottom = 25.0
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -5708,29 +5786,41 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
-[node name="translasi_z" type="SpinBox" parent="hud/daftar_properti_objek/panel"]
+[node name="pemisah_4" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="transformasi_z" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="translasi_z" type="SpinBox" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_z"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.135415
-anchor_top = 0.508335
-anchor_right = 0.551665
-anchor_bottom = 0.578002
-offset_right = 0.119736
-offset_bottom = 0.200745
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = -21.5
+offset_right = 129.0
+offset_bottom = 21.5
+grow_vertical = 2
 theme = SubResource("Theme_dqa7m")
 step = 0.1
 alignment = 1
-metadata/_edit_use_anchors_ = true
 
-[node name="kurangi_translasi_z" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="kurangi_translasi_z" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_z"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.562499
-anchor_top = 0.508335
-anchor_right = 0.708
-anchor_bottom = 0.578001
-offset_right = 0.0956573
-offset_bottom = 0.200729
+anchor_left = 0.585
+anchor_top = 0.5
+anchor_right = 0.585
+anchor_bottom = 0.5
+offset_left = -25.08
+offset_top = -25.0
+offset_right = 24.92
+offset_bottom = 25.0
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -5742,15 +5832,17 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "-"
 metadata/_edit_use_anchors_ = true
 
-[node name="tambah_translasi_z" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="tambah_translasi_z" type="Button" parent="hud/daftar_properti_objek/panel/kontainer/transformasi_z"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.756941
+anchor_left = 0.843
 anchor_top = 0.508335
-anchor_right = 0.902442
-anchor_bottom = 0.578001
-offset_right = 0.0956573
-offset_bottom = 0.200729
+anchor_right = 0.843
+anchor_bottom = 0.508335
+offset_left = -25.064
+offset_top = -25.4167
+offset_right = 24.936
+offset_bottom = 24.5833
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
@@ -5762,53 +5854,58 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_pwfet")
 text = "+"
 metadata/_edit_use_anchors_ = true
 
-[node name="properti_kustom" type="ScrollContainer" parent="hud/daftar_properti_objek/panel"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.111111
-anchor_top = 0.640002
-anchor_right = 0.972221
-anchor_bottom = 0.853336
-grow_horizontal = 2
+[node name="pemisah_5" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="properti_kustom" type="ScrollContainer" parent="hud/daftar_properti_objek/panel/kontainer"]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_yy6xj")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
-[node name="baris" type="VBoxContainer" parent="hud/daftar_properti_objek/panel/properti_kustom"]
+[node name="baris" type="VBoxContainer" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom"]
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
 
-[node name="id" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("14_t6ric")]
+[node name="id" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris" instance=ExtResource("14_t6ric")]
 layout_mode = 2
 
-[node name="warna_1" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+[node name="warna_1" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
-[node name="warna_2" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+[node name="warna_2" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
-[node name="warna_3" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+[node name="warna_3" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
-[node name="warna_4" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+[node name="warna_4" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
-[node name="warna_5" parent="hud/daftar_properti_objek/panel/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
+[node name="warna_5" parent="hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris" instance=ExtResource("10_p7nt1")]
 layout_mode = 2
 
-[node name="edit_skrip" type="Button" parent="hud/daftar_properti_objek/panel"]
+[node name="pemisah_6" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
 visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.111111
-anchor_top = 0.880003
-anchor_right = 0.972221
-anchor_bottom = 0.95167
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="edit_skrip" type="Button" parent="hud/daftar_properti_objek/panel/kontainer"]
+visible = false
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_styles/focus = SubResource("StyleBoxFlat_508ro")
 text = "%edit_skrip"
 icon = ExtResource("65_y0rvh")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="tutup" type="Button" parent="hud/daftar_properti_objek/panel"]
 layout_mode = 1
@@ -5824,35 +5921,24 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_unh21")
 text = ">
 "
 
-[node name="DragPad" type="Panel" parent="hud/daftar_properti_objek"]
+[node name="animasi" type="AnimationPlayer" parent="hud/daftar_properti_objek"]
+libraries = {
+&"": SubResource("AnimationLibrary_u8o78")
+}
+
+[node name="panel_perdekat_objek" type="Panel" parent="hud"]
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -2.33378
-anchor_bottom = 1.0
-offset_left = 0.129333
-offset_right = -0.000488281
-offset_bottom = 0.00201416
-grow_horizontal = 0
-mouse_default_cursor_shape = 13
-theme_override_styles/panel = SubResource("StyleBoxEmpty_uwd4q")
-metadata/_edit_use_anchors_ = true
-
-[node name="Touchpad" parent="hud/daftar_properti_objek/DragPad" instance=ExtResource("14_tax0q")]
-analogName = "arah_pandangan_objek"
-
-[node name="panel_2" type="Panel" parent="hud/daftar_properti_objek"]
-visible = false
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -2.55555
-anchor_right = -2.33333
+anchor_right = 0.0625
 anchor_bottom = 1.0
 grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6awjb")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
-[node name="perdekat_objek" type="VSlider" parent="hud/daftar_properti_objek/panel_2"]
+[node name="perdekat_objek" type="VSlider" parent="hud/panel_perdekat_objek"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -5867,11 +5953,6 @@ pivot_offset = Vector2(16, 252)
 min_value = -50.0
 max_value = 0.5
 value = -50.0
-
-[node name="animasi" type="AnimationPlayer" parent="hud/daftar_properti_objek"]
-libraries = {
-&"": SubResource("AnimationLibrary_u8o78")
-}
 
 [node name="frekuensi_mic" type="Control" parent="hud"]
 visible = false
@@ -9662,24 +9743,30 @@ bus = &"Suara Pemain"
 
 [connection signal="pressed" from="hud/pesan/layout_input_pesan/kirim_pesan" to="." method="_kirim_pesan"]
 [connection signal="pressed" from="hud/pesan/tutup" to="." method="_tampilkan_input_pesan"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_posisi" to="." method="_pilih_tab_posisi_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_rotasi" to="." method="_pilih_tab_rotasi_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/pilih_tab_skala" to="." method="_pilih_tab_skala_objek"]
-[connection signal="value_changed" from="hud/daftar_properti_objek/panel/translasi_x" to="." method="_ketika_translasi_x_objek_diubah"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/kurangi_translasi_x" to="." method="_kurang_translasi_x_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/tambah_translasi_x" to="." method="_tambah_translasi_x_objek"]
-[connection signal="value_changed" from="hud/daftar_properti_objek/panel/translasi_y" to="." method="_ketika_translasi_y_objek_diubah"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/kurangi_translasi_y" to="." method="_kurang_translasi_y_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/tambah_translasi_y" to="." method="_tambah_translasi_y_objek"]
-[connection signal="value_changed" from="hud/daftar_properti_objek/panel/translasi_z" to="." method="_ketika_translasi_z_objek_diubah"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/kurangi_translasi_z" to="." method="_kurang_translasi_z_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/tambah_translasi_z" to="." method="_tambah_translasi_z_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/edit_skrip" to="." method="_ketika_mengubah_kode_objek"]
-[connection signal="pressed" from="hud/daftar_properti_objek/panel/tutup" to="." method="berhenti_mengedit_objek"]
 [connection signal="touch_move" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
 [connection signal="touch_start" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_mulai_mengontrol_arah_pandangan"]
 [connection signal="touch_stop" from="hud/daftar_properti_objek/DragPad/Touchpad" to="." method="_ketika_berhenti_mengontrol_arah_pandangan"]
-[connection signal="value_changed" from="hud/daftar_properti_objek/panel_2/perdekat_objek" to="." method="_ketika_mengubah_jarak_pandangan_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_posisi" to="." method="_pilih_tab_posisi_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_rotasi" to="." method="_pilih_tab_rotasi_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala" to="." method="_pilih_tab_skala_objek"]
+[connection signal="value_changed" from="hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x" to="." method="_ketika_translasi_x_objek_diubah"]
+[connection signal="button_down" from="hud/daftar_properti_objek/panel/kontainer/transformasi_x/kurangi_translasi_x" to="." method="_tekan_tombol_kurang_translasi_x_objek"]
+[connection signal="button_up" from="hud/daftar_properti_objek/panel/kontainer/transformasi_x/kurangi_translasi_x" to="." method="_lepas_tombol_kurang_translasi_x_objek"]
+[connection signal="button_down" from="hud/daftar_properti_objek/panel/kontainer/transformasi_x/tambah_translasi_x" to="." method="_tekan_tombol_tambah_translasi_x_objek"]
+[connection signal="button_up" from="hud/daftar_properti_objek/panel/kontainer/transformasi_x/tambah_translasi_x" to="." method="_lepas_tombol_tambah_translasi_x_objek"]
+[connection signal="value_changed" from="hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y" to="." method="_ketika_translasi_y_objek_diubah"]
+[connection signal="button_down" from="hud/daftar_properti_objek/panel/kontainer/transformasi_y/kurangi_translasi_y" to="." method="_tekan_tombol_kurang_translasi_y_objek"]
+[connection signal="button_up" from="hud/daftar_properti_objek/panel/kontainer/transformasi_y/kurangi_translasi_y" to="." method="_lepas_tombol_kurang_translasi_y_objek"]
+[connection signal="button_down" from="hud/daftar_properti_objek/panel/kontainer/transformasi_y/tambah_translasi_y" to="." method="_tekan_tombol_tambah_translasi_y_objek"]
+[connection signal="button_up" from="hud/daftar_properti_objek/panel/kontainer/transformasi_y/tambah_translasi_y" to="." method="_lepas_tombol_tambah_translasi_y_objek"]
+[connection signal="value_changed" from="hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z" to="." method="_ketika_translasi_z_objek_diubah"]
+[connection signal="button_down" from="hud/daftar_properti_objek/panel/kontainer/transformasi_z/kurangi_translasi_z" to="." method="_tekan_tombol_kurang_translasi_z_objek"]
+[connection signal="button_up" from="hud/daftar_properti_objek/panel/kontainer/transformasi_z/kurangi_translasi_z" to="." method="_lepas_tombol_kurang_translasi_z_objek"]
+[connection signal="button_down" from="hud/daftar_properti_objek/panel/kontainer/transformasi_z/tambah_translasi_z" to="." method="_tekan_tombol_tambah_translasi_z_objek"]
+[connection signal="button_up" from="hud/daftar_properti_objek/panel/kontainer/transformasi_z/tambah_translasi_z" to="." method="_lepas_tombol_tambah_translasi_z_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/kontainer/edit_skrip" to="." method="_ketika_mengubah_kode_objek"]
+[connection signal="pressed" from="hud/daftar_properti_objek/panel/tutup" to="." method="berhenti_mengedit_objek"]
+[connection signal="value_changed" from="hud/panel_perdekat_objek/perdekat_objek" to="." method="_ketika_mengubah_jarak_pandangan_objek"]
 [connection signal="pressed" from="hud/timeline/mainkan" to="." method="_mainkan_replay"]
 [connection signal="pressed" from="hud/timeline/ke pemain" to="." method="_arahkan_pengamat_ke_aktor_replay"]
 [connection signal="touch_move" from="kontrol_sentuh/kontrol_pandangan/Touchpad" to="." method="_ketika_mengontrol_arah_pandangan"]
