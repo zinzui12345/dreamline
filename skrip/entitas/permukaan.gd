@@ -85,6 +85,7 @@ var total_bunga_nektar = 0
 
 var shader_air : MeshInstance3D
 var bentuk_air : MeshInstance3D
+var bunyi_air : AudioStreamPlayer3D
 var fisik : StaticBody3D
 
 func _enter_tree():
@@ -105,6 +106,7 @@ func _ready():
 			shader_air = get_node("air/shader_air")
 		if get_node_or_null("air") != null and get_node_or_null("air/air_laut") != null:
 			bentuk_air = get_node("air/air_laut")
+			bunyi_air = get_node("air/air_laut/bunyi_air")
 func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
@@ -120,8 +122,30 @@ func _process(_delta):
 				)
 			)
 		if bentuk_air != null:
-			bentuk_air.global_position.x = pengamat.global_position.x
-			bentuk_air.global_position.z = pengamat.global_position.z
+			var posisi_air_laut : float = bentuk_air.global_position.y
+			var posisi_pengamat : float = pengamat.global_position.y
+			if abs(posisi_air_laut - posisi_pengamat) < 50:
+				if !bentuk_air.visible:
+					bentuk_air.visible = true
+					bentuk_air.get_node("gelombang_air").play("ombak")
+				if !bunyi_air.playing:
+					bunyi_air.stream = load("res://audio/alam/ombak laut/ombak_%s.ogg" % str(server.permainan.hasilkanAngkaAcak(1, 6)))
+					bunyi_air.play()
+				bentuk_air.global_position.x = pengamat.global_position.x
+				bentuk_air.global_position.z = pengamat.global_position.z
+				if bentuk_air.visible:
+					var offset_gelombang : Vector3 = get_node("air").get_surface_override_material(0).get("uv1_offset")
+					bentuk_air.get_surface_override_material(0).set(
+						"uv1_offset",
+						Vector2(
+							offset_gelombang.x + bentuk_air.position.x * 0.2,
+							offset_gelombang.z + bentuk_air.position.z * 0.2
+						)
+					)
+			elif bentuk_air.visible:
+				bunyi_air.stop()
+				bentuk_air.get_node("gelombang_air").stop()
+				bentuk_air.visible = false
 func _exit_tree():
 	if Engine.is_editor_hint():
 		if $tanah.get_node_or_null("placeholder_permukaan") != null:
