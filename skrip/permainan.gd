@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 02/05/25 Early Access"
+const versi = "Dreamline v0.4.4 03/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -2774,6 +2774,9 @@ func detikKeMenit(detik: int) -> String:
 		detik_terformat = "0" + detik_terformat
 
 	return menit_terformat + ":" + detik_terformat
+func hasilkanAngkaAcak(dari : int, hingga : int) -> int:
+	randomize()
+	return randi_range(dari, hingga)
 func hasilkanKarakterAcak(jumlah: int) -> String:
 	var set_karakter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 	var length = set_karakter.length()
