@@ -1,4 +1,4 @@
-[gd_scene load_steps=353 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=358 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -88,9 +88,11 @@
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english_kecil.svg" id="63_r5flb"]
 [ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia_kecil.svg" id="64_gnps4"]
+[ext_resource type="AudioStream" uid="uid://yyxehldmlkww" path="res://audio/antarmuka/pilih_2.ogg" id="64_suhfv"]
 [ext_resource type="Texture2D" uid="uid://b68vyh4ydqyy8" path="res://ui/ikon/ikon_bug.svg" id="65_y0rvh"]
 [ext_resource type="Texture2D" uid="uid://rbbpim0jwhdx" path="res://ui/ikon/ikon_lampu.svg" id="66_j76b2"]
 [ext_resource type="Texture2D" uid="uid://b5frug6id5d0s" path="res://ui/ikon/ikon_analog.svg" id="67_5s073"]
+[ext_resource type="AudioStream" uid="uid://drxd3qfbhrvn0" path="res://audio/antarmuka/pilih_3.ogg" id="67_eoc6n"]
 [ext_resource type="Texture2D" uid="uid://bowie8rndsrl3" path="res://ui/ikon/ikon_d-pad.svg" id="68_a41ut"]
 [ext_resource type="PackedScene" uid="uid://d2k86ht18kg0d" path="res://ui/blok kode/panel_kode.tscn" id="72_fg215"]
 [ext_resource type="Script" uid="uid://dpxfqane0ylo6" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
@@ -99,7 +101,10 @@
 [ext_resource type="AudioStream" uid="uid://b1r1pmos6ks5i" path="res://audio/antarmuka/pilih.ogg" id="76_m8wn8"]
 [ext_resource type="PackedScene" uid="uid://bq37yla8ya707" path="res://ui/editor kode/main_panel.tscn" id="81_d4drg"]
 [ext_resource type="AudioStream" uid="uid://c10n6ngyca04u" path="res://audio/antarmuka/panel informasi.ogg" id="87_0yo5j"]
-[ext_resource type="AudioStream" uid="uid://b7h55clqef6w4" path="res://audio/antarmuka/panel konfirmasi.wav" id="90_ur733"]
+[ext_resource type="AudioStream" uid="uid://ksto1fe5w6fn" path="res://audio/antarmuka/batal.ogg" id="89_56kiw"]
+[ext_resource type="AudioStream" uid="uid://cjjfpn0fs62ds" path="res://audio/antarmuka/notifikasi.ogg" id="101_lxhay"]
+[ext_resource type="AudioStream" uid="uid://2jcsppbbt46m" path="res://audio/antarmuka/konfirmasi.ogg" id="103_yk2rs"]
+[ext_resource type="AudioStream" uid="uid://h0n88tfkx5yb" path="res://audio/antarmuka/panel konfirmasi.ogg" id="105_m37tq"]
 
 [sub_resource type="Animation" id="Animation_6qw4d"]
 resource_name = "sembunyikan"
@@ -6779,8 +6784,9 @@ metadata/_edit_lock_ = true
 [node name="panel" type="Panel" parent="buat_server"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = -1.0
+anchor_top = 1.0
 anchor_right = 1.0
+anchor_bottom = 1.0
 offset_bottom = -0.200012
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ard0c")
@@ -6803,6 +6809,7 @@ vertical_alignment = 1
 metadata/_edit_lock_ = true
 
 [node name="batal" type="Button" parent="buat_server/panel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -6828,6 +6835,7 @@ alignment = 0
 metadata/_edit_lock_ = true
 
 [node name="mulai" type="Button" parent="buat_server/panel"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -7038,6 +7046,9 @@ libraries = {
 &"": SubResource("AnimationLibrary_n8cdl"),
 &"animasi_panel": SubResource("AnimationLibrary_5l0ga")
 }
+
+[node name="bunyi_pilih_2" type="AudioStreamPlayer" parent="buat_server"]
+stream = ExtResource("64_suhfv")
 
 [node name="daftar_server" type="Control" parent="."]
 visible = false
@@ -7264,6 +7275,9 @@ libraries = {
 &"": SubResource("AnimationLibrary_d37ht"),
 &"animasi_panel": ExtResource("11_4hn36")
 }
+
+[node name="bunyi_pilih_3" type="AudioStreamPlayer" parent="daftar_server"]
+stream = ExtResource("67_eoc6n")
 
 [node name="karakter" type="Control" parent="."]
 visible = false
@@ -8294,6 +8308,9 @@ libraries = {
 [node name="bunyi_pilih" type="AudioStreamPlayer" parent="menu_utama"]
 stream = ExtResource("76_m8wn8")
 
+[node name="bunyi_batal" type="AudioStreamPlayer" parent="menu_utama"]
+stream = ExtResource("89_56kiw")
+
 [node name="pemutar_musik" type="Panel" parent="."]
 visible = false
 layout_mode = 1
@@ -9231,7 +9248,7 @@ libraries = {
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_informasi"]
-stream = ExtResource("87_0yo5j")
+stream = ExtResource("101_lxhay")
 
 [node name="popup_konfirmasi" type="Control" parent="."]
 visible = false
@@ -9357,7 +9374,7 @@ libraries = {
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi"]
-stream = ExtResource("90_ur733")
+stream = ExtResource("103_yk2rs")
 
 [node name="informasi" type="Control" parent="."]
 visible = false
@@ -9680,7 +9697,7 @@ libraries = {
 }
 
 [node name="efek_bunyi" type="AudioStreamPlayer" parent="popup_konfirmasi_peringatan"]
-stream = ExtResource("90_ur733")
+stream = ExtResource("105_m37tq")
 
 [node name="dialog_buka_rekaman" type="FileDialog" parent="."]
 auto_translate_mode = 1

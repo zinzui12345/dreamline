@@ -1270,6 +1270,7 @@ func mulai_server(headless : bool = false, nama : StringName = "") -> void:
 	koneksi = MODE_KONEKSI.SERVER
 	server.headless = headless
 	tampilkan_info_koneksi()
+	$buat_server/bunyi_pilih_2.play()
 	var nama_server : StringName = &"localhost"
 	if nama != "":
 		nama_server = nama
@@ -1282,6 +1283,7 @@ func gabung_server() -> void:
 	koneksi = MODE_KONEKSI.CLIENT
 	var ip : String = $daftar_server/panel/panel_input/input_ip.text
 	var port : int = 10567
+	$daftar_server/bunyi_pilih_3.play()
 	if _posisi_tab_koneksi == "LAN":
 		if not ip.is_valid_ip_address():
 			if ip == "": 	_tampilkan_popup_informasi("%ipkosong",   $daftar_server/panel/panel_input/input_ip)
@@ -1598,6 +1600,7 @@ func _tampilkan_konfigurasi_server() -> void:
 func _tambah_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value += $buat_server/panel/panel_input/jumlah_pemain.step
 func _kurang_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
 func _sembunyikan_konfigurasi_server() -> void:
+	$menu_utama/bunyi_batal.play()
 	$buat_server/animasi.play("animasi_panel/sembunyikan")
 	await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
 	$menu_utama/menu/Panel/buat_server.grab_focus()
@@ -1619,6 +1622,7 @@ func _tampilkan_daftar_server() -> void:
 			await get_tree().create_timer($daftar_server/animasi.current_animation_length).timeout
 		$daftar_server/panel/panel_input/batal.grab_focus()
 func _sembunyikan_daftar_server() -> void:
+	$menu_utama/bunyi_batal.play()
 	client.hentikan_pencarian_server()
 	_reset_daftar_server_lan()
 	$daftar_server/animasi.play("animasi_panel/sembunyikan")
@@ -1687,6 +1691,7 @@ func _tampilkan_setelan_karakter() -> void:
 		$karakter/panel/batal.grab_focus()
 		AudioServer.set_bus_effect_enabled(1, 2, true)
 func _sembunyikan_setelan_karakter() -> void:
+	$menu_utama/bunyi_batal.play()
 	AudioServer.set_bus_effect_enabled(1, 2, false)
 	_pilih_tab_personalitas_karakter()
 	$karakter/animasi.play("animasi_panel/sembunyikan")
@@ -2425,6 +2430,7 @@ func _ketika_mengubah_warna_sepatu_karakter(warna):
 	get_node("%karakter/reno").atur_warna()
 func _ketika_menyimpan_data_karakter():
 	var file = FileAccess.open(Konfigurasi.data_pemain, FileAccess.WRITE)
+	$menu_utama/bunyi_pilih.play()
 	file.store_var(data)
 	file.close()
 	Panku.notify("%simpan_karakter")
