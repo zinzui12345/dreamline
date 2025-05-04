@@ -124,11 +124,15 @@ func _process(_delta):
 		if bentuk_air != null:
 			var posisi_air_laut : float = bentuk_air.global_position.y
 			var posisi_pengamat : float = pengamat.global_position.y
-			if abs(posisi_air_laut - posisi_pengamat) < 50:
+			var jarak_pengamat : float = abs(posisi_air_laut - posisi_pengamat)
+			if jarak_pengamat < 50:
 				if !bentuk_air.visible:
 					bentuk_air.visible = true
 					bentuk_air.get_node("gelombang_air").play("ombak")
-				if !bunyi_air.playing:
+				if bentuk_air.get_node("cek_visibilitas").is_colliding() and jarak_pengamat > 1:
+					if bunyi_air.playing:
+						bunyi_air.stop()
+				elif !bunyi_air.playing:
 					bunyi_air.stream = load("res://audio/alam/ombak laut/ombak_%s.ogg" % str(server.permainan.hasilkanAngkaAcak(1, 6)))
 					bunyi_air.play()
 				bentuk_air.global_position.x = pengamat.global_position.x
@@ -401,6 +405,7 @@ func slice_terrain(gambar_noise, material):
 			print("menambahkan bentuk potongan")
 			instance_bagian_potongan.name = "permukaan_" + nama_potongan
 			instance_bagian_potongan.add_child(new_instance, true)
+			instance_bagian_potongan.set_collision_layer_value(8, true)
 			new_instance.set_owner(instance_bagian_potongan)
 			
 			# INFO : buat fisik chunk
