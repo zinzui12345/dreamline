@@ -214,7 +214,7 @@ func _kemudikan(id) -> void:
 		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 		server.permainan.bantuan_aksi_2 = true
-		server.permainan.set("tombol_aksi_3", "rem")
+		server.permainan.set("tombol_aksi_3", "rem_sepeda")
 		server.permainan.set("tombol_aksi_4", "atur_pandangan")
 		
 		# ubah pemroses pada server
