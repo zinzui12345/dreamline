@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 03/05/25 Early Access"
+const versi = "Dreamline v0.4.4 04/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1981,30 +1981,84 @@ func _ketika_translasi_x_objek_diubah(nilai : float) -> void:
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_posisi.button_pressed:
 				edit_objek.set_indexed("global_transform:origin:x", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.global_transform.origin.y
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.global_transform.origin.z
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_rotasi.button_pressed:
 				edit_objek.set_indexed("rotation_degrees:x", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.rotation_degrees.y
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.rotation_degrees.z
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:x", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.skala.y
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.skala.z
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 func _ketika_translasi_y_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable:
 		if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_posisi.button_pressed:
 				edit_objek.set_indexed("global_transform:origin:y", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.global_transform.origin.x
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.global_transform.origin.z
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_rotasi.button_pressed:
 				edit_objek.set_indexed("rotation_degrees:y", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.rotation_degrees.x
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.rotation_degrees.z
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:y", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.skala.x
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.skala.z
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 func _ketika_translasi_z_objek_diubah(nilai : float) -> void:
 	if $hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable:
 		if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 			await get_tree().create_timer(0.05).timeout
 			if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_posisi.button_pressed:
 				edit_objek.set_indexed("global_transform:origin:z", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.global_transform.origin.x
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.global_transform.origin.y
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_rotasi.button_pressed:
 				edit_objek.set_indexed("rotation_degrees:z", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.rotation_degrees.x
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.rotation_degrees.y
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:z", nilai)
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.skala.x
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.skala.y
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+				$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
 func _ketika_mengubah_kode_objek() -> void:
 	if edit_objek != null and edit_objek.get_node_or_null("kode_ubahan") != null:
 		# 31/07/24 :: jangan lanjutkan jika kode kosong
