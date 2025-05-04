@@ -246,7 +246,7 @@ func _setup() -> void:
 	$setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.selected = Konfigurasi.mode_kontrol_gerak
 	$setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled = false
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = false
-	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.value = Konfigurasi.sensitivitasPandangan
+	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.value = Konfigurasi.sensitivitas_pandangan
 	$setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable = true
 	# INFO : (2) non-aktifkan proses untuk placeholder karakter
 	get_node("%karakter/lulu").set_process(false)
@@ -341,7 +341,7 @@ func _setup() -> void:
 func _process(delta : float) -> void:
 	# tampilan karakter di setelan karakter
 	if $karakter.visible:
-		_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitasPandangan * 2) * delta
+		_rotasi_tampilan_karakter = Vector3(0, _arah_gestur_tampilan_karakter.x, 0) * (Konfigurasi.sensitivitas_pandangan * 2) * delta
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y < -360:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y += 360
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/pengamat.rotation_degrees.y > 360:
@@ -392,7 +392,7 @@ func _process(delta : float) -> void:
 		# kontrol rotasi pandangan ketika mengedit objek
 		if get_node_or_null("pengamat") != null and !server.mode_replay and !server.mode_uji_performa:
 			if $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
-				_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * Konfigurasi.sensitivitasPandangan * delta
+				_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * Konfigurasi.sensitivitas_pandangan * delta
 				if _arah_gestur_tampilan_objek != _gerakan_gestur_tampilan_objek:
 					$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
 					$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
@@ -2206,10 +2206,10 @@ func _tampilkan_setelan_permainan() -> void:
 		"render_objek_interaktif":	Konfigurasi.render_objek_interaktif,
 		"jarak_render": 			Konfigurasi.jarak_render,
 		"mode_kontrol_gerak": 		Konfigurasi.mode_kontrol_gerak,
-		"sensitivitasPandangan": 	Konfigurasi.sensitivitasPandangan
+		"sensitivitasPandangan": 	Konfigurasi.sensitivitas_pandangan
 	}
 	$setelan/panel/gulir/tab_setelan/setelan_performa/info_jarak_render/nilai_jarak_render.text = str(Konfigurasi.jarak_render)+"m"
-	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(Konfigurasi.sensitivitasPandangan)
+	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(Konfigurasi.sensitivitas_pandangan)
 	$setelan/animasi.play("tampilkan")
 func _sembunyikan_setelan_permainan() -> void:
 	$setelan/animasi.play_backwards("tampilkan")
@@ -2619,7 +2619,7 @@ func _ketika_mengatur_mode_kontrol_kendaraan(aktif : bool) -> void:
 		_ketika_mengatur_mode_kontrol_gerak(Konfigurasi.mode_kontrol_gerak)
 func _ketika_mengatur_sensitivitas_pandangan(nilai : float) -> void:
 	if $setelan/panel/gulir/tab_setelan/setelan_input/sensitivitas_gestur.editable:
-		Konfigurasi.sensitivitasPandangan = nilai
+		Konfigurasi.sensitivitas_pandangan = nilai
 	$setelan/panel/gulir/tab_setelan/setelan_input/info_sensitivitas_gestur/nilai_sensitivitas_gestur.text = str(nilai)
 
 # blok kode

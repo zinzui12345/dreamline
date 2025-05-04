@@ -126,6 +126,7 @@ var menyerang : bool = false :
 						$pose.set("parameters/menyerang_berdiri/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			menyerang = serang
 var jongkok : bool = false
+var zoom : bool = false
 #var _interval_timeline : float	= 0.05
 #var _delay_timeline : float 	= _interval_timeline
 #var _frame_timeline_sb : int	= 0			# frame sebelumnya
@@ -583,6 +584,22 @@ func _physics_process(delta : float) -> void:
 					tween.tween_property(self, "gestur_jongkok", 0, 0.6)
 					jongkok = false
 					tween.play()
+		
+		# zoom
+		if Input.is_action_just_pressed("fokus_pandangan"):
+			if ($pengamat.mode_kontrol == 1 or $pengamat.mode_kontrol == 2) and !zoom:
+				var tween : Tween = get_tree().create_tween()
+				tween.tween_property($pengamat.get_node("%pandangan"), "fov", Konfigurasi.sudut_pandangan / 2, 0.3)
+				zoom = true
+				tween.play()
+		if Input.is_action_just_released("fokus_pandangan"):
+			if ($pengamat.mode_kontrol == 1 or $pengamat.mode_kontrol == 2) and zoom:
+				var tween : Tween = get_tree().create_tween()
+				tween.tween_property($pengamat.get_node("%pandangan"), "fov", Konfigurasi.sudut_pandangan, 0.3)
+				zoom = false
+				tween.play()
+			elif zoom:
+				zoom = false
 	
 	# fungsi raycast
 	menarget = penarget.is_colliding()
@@ -600,7 +617,7 @@ func _physics_process(delta : float) -> void:
 		
 		posisi_target = penarget.get_collision_point()
 		objek_target = penarget.get_collider()
-		if peran != Permainan.PERAN_KARAKTER.Arsitek and $pengamat.mode_kontrol == 1:
+		if peran != Permainan.PERAN_KARAKTER.Arsitek and !zoom and $pengamat.mode_kontrol == 1:
 			server.permainan.atur_tampilan_kursor(true)
 			server.permainan.atur_warna_kursor(Color.WHITE)
 		else:

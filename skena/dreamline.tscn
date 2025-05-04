@@ -1,4 +1,4 @@
-[gd_scene load_steps=358 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=360 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -80,7 +80,9 @@
 [ext_resource type="Texture2D" uid="uid://bl85yneama7uw" path="res://ui/tombol/kanan_kendaraan_tekan.svg" id="32_x2mh6"]
 [ext_resource type="Texture2D" uid="uid://c8iqwuvxq6vc" path="res://ui/tombol/tutup_panel_objek_tekan.svg" id="33_ovk4l"]
 [ext_resource type="Texture2D" uid="uid://cbnvmqs55vac0" path="res://ui/ikon/ikon_tombol_daftar_pemain.svg" id="36_fyuuk"]
+[ext_resource type="Texture2D" uid="uid://bo35pkxm7lo04" path="res://ui/tombol/perdekat_pandangan.svg" id="38_56kiw"]
 [ext_resource type="Texture2D" uid="uid://bqctardb5bo54" path="res://ui/ikon/ikon_entitas_bola_pantai.png" id="39_jspvy"]
+[ext_resource type="Texture2D" uid="uid://bltmr4xixh1wi" path="res://ui/tombol/perdekat_pandangan_tekan.svg" id="39_lxhay"]
 [ext_resource type="AudioStream" uid="uid://c0hcoitga5s5g" path="res://audio/antarmuka/buat objek.ogg" id="40_yw8vn"]
 [ext_resource type="Texture2D" uid="uid://xluyqwb0nns0" path="res://ui/ikon/ikon_entitas_bajay.png" id="42_krisr"]
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
@@ -5081,6 +5083,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="pesan" type="Control" parent="hud"]
 layout_mode = 1
@@ -6176,6 +6179,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+metadata/_edit_lock_ = true
 
 [node name="kontrol_pandangan" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
@@ -6336,6 +6340,22 @@ texture_pressed = ExtResource("23_28me6")
 shape = SubResource("CircleShape2D_2jlpn")
 action = "berlari"
 
+[node name="zoom" type="Control" parent="kontrol_sentuh"]
+layout_mode = 1
+anchor_left = 0.140625
+anchor_top = 0.293333
+anchor_right = 0.23828
+anchor_bottom = 0.460333
+offset_right = 0.000259399
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/zoom"]
+texture_normal = ExtResource("38_56kiw")
+texture_pressed = ExtResource("39_lxhay")
+shape = SubResource("CircleShape2D_2jlpn")
+action = "fokus_pandangan"
+
 [node name="lompat" type="Control" parent="kontrol_sentuh"]
 layout_mode = 1
 anchor_left = 0.878907
@@ -6393,9 +6413,9 @@ shape = SubResource("CircleShape2D_28tvu")
 [node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.768555
+anchor_left = 0.761719
 anchor_top = 0.293333
-anchor_right = 0.866211
+anchor_right = 0.859375
 anchor_bottom = 0.460333
 action_mode = 0
 texture_normal = ExtResource("17_2rhvy")

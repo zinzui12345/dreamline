@@ -15,6 +15,7 @@ func _ready() -> void:
 	if get_parent() is Karakter:
 		_karakter = get_parent();
 		get_node("%pandangan").set("far", Konfigurasi.jarak_render);
+		get_node("%pandangan").set("fov", Konfigurasi.sudut_pandangan);
 		posisiAwalVertikalPandangan = position.y
 		$kamera/transisi.modulate = Color(1, 1, 1, 0)
 	else: _karakter = $posisi_mata
@@ -22,7 +23,7 @@ func _ready() -> void:
 func _process(delta : float) -> void:
 	if kontrol:
 		if _karakter.get("_input_arah_pandangan") != null: gerakan = _karakter._input_arah_pandangan
-		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitasPandangan * delta
+		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitas_pandangan * delta
 		
 		if gerakan != _gerakan:
 			match mode_kontrol:
@@ -97,6 +98,7 @@ func aktifkan(nilai := true, vr := false) -> void:
 	else:		_karakter.get_node("nama").visible = true
 
 func atur_mode(nilai : int) -> void:
+	get_node("%pandangan").set("fov", Konfigurasi.sudut_pandangan); # reset zoom
 	if mode_kontrol == 2: mode_kontrol = 1
 	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2 # naik kendaraan / mulai duduk
 	var ubah : bool = (mode_kontrol != nilai)
@@ -113,7 +115,6 @@ func atur_mode(nilai : int) -> void:
 	tween_pandangan_2a.play()
 	tween_pandangan_3a.play()
 	tween_pandangan_3b.play()
-	await get_tree().create_timer(0.25).timeout
 	if !ubah: mode_kontrol = nilai; return
 	if _karakter.kontrol:	$kamera/transisi.visible = true
 	else:					$kamera/transisi.visible = false

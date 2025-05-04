@@ -9,7 +9,8 @@ var bahasa : int = 0 :
 	set(pilih):
 		TranslationServer.set_locale(kode_bahasa[pilih])
 		bahasa = pilih
-var sensitivitasPandangan : float = 25.0
+var sensitivitas_pandangan : float = 25.0
+var sudut_pandangan : int = 75
 var mode_layar_penuh : bool = false :
 	set(nilai):
 		if nilai:
@@ -59,7 +60,7 @@ func muat() -> void:
 		
 		if data.get("mode_kontrol_gerak") != null:			mode_kontrol_gerak = data["mode_kontrol_gerak"]
 		if data.get("skala_kontrol_gerak") != null:			skala_kontrol_gerak = data["skala_kontrol_gerak"]
-		if data.get("sensitivitas_pandangan") != null:		sensitivitasPandangan = data["sensitivitas_pandangan"]
+		if data.get("sensitivitas_pandangan") != null:		sensitivitas_pandangan = data["sensitivitas_pandangan"]
 		
 		if data.get("render_pencahayaan") != null:			render_pencahayaan = data["render_pencahayaan"]
 		if data.get("render_objek_interaktif") != null:		render_objek_interaktif = data["render_objek_interaktif"]
@@ -77,7 +78,7 @@ func simpan() -> void:
 		
 		"mode_kontrol_gerak"		: mode_kontrol_gerak,
 		"skala_kontrol_gerak"		: skala_kontrol_gerak,
-		"sensitivitas_pandangan"	: sensitivitasPandangan,
+		"sensitivitas_pandangan"	: sensitivitas_pandangan,
 		
 		"render_pencahayaan"		: render_pencahayaan,
 		"render_objek_interaktif"	: render_objek_interaktif,
