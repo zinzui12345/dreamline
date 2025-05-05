@@ -810,19 +810,6 @@ func _physics_process(delta : float) -> void:
 	# jangan fungsikan kendali kalo animasi gak aktif
 	if $pose.active: velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
 	_menabrak = move_and_slide()
-func _process(_delta : float) -> void:
-	# atur posisi pengamat
-	if _ragdoll:
-		$pengamat.global_position.x = get_node("%pinggang").global_position.x
-		$pengamat.global_position.y = get_node("%pinggang").global_position.y
-		$pengamat.global_position.z = get_node("%pinggang").global_position.z
-	else:
-		$pengamat/kamera.position.x = 0
-		$pengamat.position.y 		= get_node("%mata_kiri").position.y
-		$pengamat/kamera.position.z = get_node("%mata_kiri").position.z
-		$fisik_kepala.rotation		= get_node("%mata_kiri").rotation
-		$fisik_kepala.position.y	= get_node("%mata_kiri").position.y
-		$fisik_kepala.position.z	= get_node("%mata_kiri").position.z
 
 func _ketika_ditabrak(node : CollisionObject3D) -> void:
 	var percepatan : Vector3 = node.get_linear_velocity()

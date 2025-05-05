@@ -207,6 +207,7 @@ func _kemudikan(id) -> void:
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_z_kustom = 0.25
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		
 		server.permainan.set("tombol_aksi_1", "klakson_kendaraan")
@@ -238,6 +239,7 @@ func _berhenti_mengemudi(id) -> void:
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_z_kustom()
 		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
 		dunia.get_node("pemain/"+str(id)).move_and_slide()
 		

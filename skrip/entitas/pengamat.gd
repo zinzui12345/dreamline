@@ -2,6 +2,7 @@ extends Node3D
 
 @export var kontrol : bool = false
 @export var mode_kontrol : int = 3
+@export var posisi_z_kustom : float = 0.15	# posisi z untuk kendaraan | hanya digunakan pada mode_kontrol 2 | bisa diatur ulang dengan atur_ulang_posisi_z_kustom()
 var gerakan : Vector2
 var _gerakan : Vector2
 var rotasi : Vector3
@@ -48,7 +49,7 @@ func _process(delta : float) -> void:
 							_karakter.arah_pandangan.y = arah_pandangan
 				2:
 					get_node("%pandangan").rotation_degrees.x -= rotasi.x
-					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -38, putaranMaxVertikalPandangan)
+					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -45, putaranMaxVertikalPandangan)
 					get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
 					if _karakter.gestur == "berdiri" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
 						_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
@@ -62,6 +63,8 @@ func _process(delta : float) -> void:
 					gerakan = Vector2.ZERO
 					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
 					if _karakter.get("arah_pandangan") != null:
+						if get_node("%pandangan").position.z != posisi_z_kustom:
+							get_node("%pandangan").position.z = posisi_z_kustom
 						if $kamera/rotasi_vertikal.rotation_degrees.y > 0:
 							_karakter.arah_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
 						elif $kamera/rotasi_vertikal.rotation_degrees.y < 0:
@@ -85,6 +88,19 @@ func _process(delta : float) -> void:
 					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
 					if _karakter.get("arah_pandangan") != null: _karakter.arah_pandangan = Vector2.ZERO # TODO : arah x
 			_gerakan = gerakan
+	
+	# atur posisi pengamat
+	if _karakter._ragdoll:
+		global_position.x = _karakter.get_node("%pinggang").global_position.x
+		global_position.y = _karakter.get_node("%pinggang").global_position.y
+		global_position.z = _karakter.get_node("%pinggang").global_position.z
+	else:
+		$kamera.position.x = 0
+		position.y 		= get_node("%mata_kiri").position.y
+		$kamera.position.z = get_node("%mata_kiri").position.z
+		_karakter.get_node("fisik_kepala").rotation		= _karakter.get_node("%mata_kiri").rotation
+		_karakter.get_node("fisik_kepala").position.y	= _karakter.get_node("%mata_kiri").position.y
+		_karakter.get_node("fisik_kepala").position.z	= _karakter.get_node("%mata_kiri").position.z
 
 func aktifkan(nilai := true, vr := false) -> void:
 	if vr:	pass
@@ -99,6 +115,7 @@ func aktifkan(nilai := true, vr := false) -> void:
 
 func atur_mode(nilai : int) -> void:
 	get_node("%pandangan").set("fov", Konfigurasi.sudut_pandangan); # reset zoom
+	var transisi : bool = false if (nilai == 2 and mode_kontrol == 1) or (nilai == 1 and mode_kontrol == 2) else true
 	if mode_kontrol == 2: mode_kontrol = 1
 	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2 # naik kendaraan / mulai duduk
 	var ubah : bool = (mode_kontrol != nilai)
@@ -116,16 +133,19 @@ func atur_mode(nilai : int) -> void:
 	tween_pandangan_3a.play()
 	tween_pandangan_3b.play()
 	if !ubah: mode_kontrol = nilai; return
-	if _karakter.kontrol:	$kamera/transisi.visible = true
-	else:					$kamera/transisi.visible = false
-	match nilai:
-		1:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 1); $animasi.play("pandangan_utama")
-		2:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 2); $animasi.play("pandangan_utama")
-		3:	$animasi.play("pandangan_belakang") # TODO : Clipped Camera
+	if transisi:
+		if _karakter.kontrol:	$kamera/transisi.visible = true
+		else:					$kamera/transisi.visible = false
+		match nilai:
+			1:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 1); $animasi.play("pandangan_utama")
+			2:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 2); $animasi.play("pandangan_utama")
+			3:	$animasi.play("pandangan_belakang") # TODO : Clipped Camera
 func ubah_mode() -> void:
 	match mode_kontrol:
 		1: atur_mode(3)
 		3: atur_mode(1)
+func atur_ulang_posisi_z_kustom() -> void:
+	posisi_z_kustom = 0.15
 
 func fungsikan(nilai : bool) -> void:
 	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	#ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)#; Panku.notify("set : false = hasil : "+str(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")))
