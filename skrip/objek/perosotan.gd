@@ -24,11 +24,11 @@ func ketika_pemain_mulai_meluncur(pemain) -> void:
 	if pemain is Karakter and pemain == dunia.get_node("pemain/"+str(client.id_koneksi)):
 		pemain.pose_duduk = "meluncur"
 		pemain.gestur = "duduk"
-		pemain.get_node("pengamat").atur_mode(2)
+		pemain.get_node("pengamat").atur_mode_kendaraan(true)
 func ketika_pemain_berhenti_meluncur(pemain) -> void:
 	if pemain is Karakter and pemain == dunia.get_node("pemain/"+str(client.id_koneksi)):
 		pemain.gestur = "berdiri"
 		pemain.pose_duduk = "normal"
-		pemain.get_node("pengamat").atur_mode(1)
+		pemain.get_node("pengamat").atur_mode_kendaraan(false)
 		$area_luncur.set_deferred("monitoring", false)
 		server.permainan.set("tombol_aksi_4", "berlari")

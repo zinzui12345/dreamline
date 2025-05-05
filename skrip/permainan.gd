@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 04/05/25 Early Access"
+const versi = "Dreamline v0.4.4 05/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1150,8 +1150,8 @@ func _edit_objek(jalur : String) -> void:
 	else: edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
+	_mode_pandangan_sblm_edit_objek = karakter.get_node("pengamat").mode_kontrol
 	if karakter.get_node("pengamat").mode_kontrol != 3:
-		_mode_pandangan_sblm_edit_objek = karakter.get_node("pengamat").mode_kontrol
 		await get_tree().create_timer(0.1).timeout # kadang eksekusi terlalu cepat sehingga _mode_pandangan_sblm_edit_objek ter-set setelah mode pandangan diubah, alhasil _mode_pandangan_sblm_edit_objek nilainya menjadi 0
 		karakter.get_node("pengamat").atur_mode(3)
 	karakter._atur_penarget(false)

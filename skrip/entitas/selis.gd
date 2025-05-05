@@ -82,6 +82,7 @@ const kecepatan_mundur = 10
 const batas_putaran_stir = 0.5		# persentase sudut
 const pusat_massa_seimbang = -0.25	# posisi pusat gravitasi (y) ketika dikendarai agar tidak terjatuh ke samping
 const pusat_massa_netral = -0.15	# posisi pusat gravitasi (y) pada saat diparkir
+const posisi_kamera_pandangan_belakang = 2.5
 
 func mulai() -> void:
 	torsi_kemiringan = $roda_belakang.wheel_roll_influence
@@ -206,8 +207,9 @@ func _kemudikan(id) -> void:
 		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_z_kustom = 0.25
+		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_pandangan_belakang = posisi_kamera_pandangan_belakang
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(true)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		
 		server.permainan.set("tombol_aksi_1", "klakson_kendaraan")
@@ -238,8 +240,9 @@ func _berhenti_mengemudi(id) -> void:
 		dunia.get_node("pemain/"+str(id)).rotation.z = 0
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(false)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_z_kustom()
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
 		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
 		dunia.get_node("pemain/"+str(id)).move_and_slide()
 		
@@ -262,7 +265,8 @@ func _menumpang(id) -> void:
 		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_pandangan_belakang = posisi_kamera_pandangan_belakang
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(true)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
@@ -282,7 +286,8 @@ func _berhenti_menumpang(id) -> void:
 		dunia.get_node("pemain/"+str(id)).rotation.z = 0
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(false)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
 		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
 		dunia.get_node("pemain/"+str(id)).move_and_slide()
 		

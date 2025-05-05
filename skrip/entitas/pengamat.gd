@@ -2,10 +2,20 @@ extends Node3D
 
 @export var kontrol : bool = false
 @export var mode_kontrol : int = 3
-@export var posisi_z_kustom : float = 0.15	# posisi z untuk kendaraan | hanya digunakan pada mode_kontrol 2 | bisa diatur ulang dengan atur_ulang_posisi_z_kustom()
+@export var mode_kendaraan : bool = false
+@export var posisi_z_kustom : float = 0.15		# posisi z untuk mode kendaraan | hanya digunakan pada mode_kontrol 2 | dapat diatur ulang dengan atur_ulang_posisi_z_kustom()
+
 var gerakan : Vector2
 var _gerakan : Vector2
 var rotasi : Vector3
+var fokus_pandangan_belakang : Node3D			# node yang difokus pada mode_kontrol 3 | hanya digunakan pada mode kendaraan
+var posisi_pandangan_belakang : float = 1.25:	# jarak posisi pandangan z pada mode_kontrol 3 | harus diatur sebelum memanggil atur_mode_kendaraan() | dapat diatur ulang dengan atur_ulang_posisi_pandangan_belakang()
+	set(nilai):
+		if mode_kontrol == 3:
+			var tween_pandangan_belakang : Tween = get_tree().create_tween()
+			tween_pandangan_belakang.tween_property($kamera/rotasi_vertikal/pandangan, "position:z", -nilai, 0.2)
+			tween_pandangan_belakang.play()
+		posisi_pandangan_belakang = nilai
 var putaranMinVertikalPandangan : float = -85.0
 var putaranMaxVertikalPandangan : float = 90.0
 var posisiAwalVertikalPandangan : float
@@ -91,9 +101,9 @@ func _process(delta : float) -> void:
 	
 	# atur posisi pengamat
 	if _karakter._ragdoll:
-		global_position.x = _karakter.get_node("%pinggang").global_position.x
-		global_position.y = _karakter.get_node("%pinggang").global_position.y
-		global_position.z = _karakter.get_node("%pinggang").global_position.z
+		global_position = _karakter.get_node("%pinggang").global_position
+	elif mode_kendaraan and fokus_pandangan_belakang != null:
+		global_position = fokus_pandangan_belakang.global_position
 	else:
 		$kamera.position.x = 0
 		position.y 		= get_node("%mata_kiri").position.y
@@ -139,13 +149,27 @@ func atur_mode(nilai : int) -> void:
 		match nilai:
 			1:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 1); $animasi.play("pandangan_utama")
 			2:	$animasi.get_animation("pandangan_utama").track_set_key_value(2, 2, 2); $animasi.play("pandangan_utama")
-			3:	$animasi.play("pandangan_belakang") # TODO : Clipped Camera
+			3:
+				$animasi.get_animation("pandangan_utama").track_set_key_value(0, 0,		Vector3(0, 0, -posisi_pandangan_belakang));
+				$animasi.get_animation("pandangan_belakang").track_set_key_value(0, 1,	Vector3(0, 0, -posisi_pandangan_belakang));
+				$animasi.play("pandangan_belakang") # TODO : Clipped Camera
 func ubah_mode() -> void:
-	match mode_kontrol:
-		1: atur_mode(3)
-		3: atur_mode(1)
+	if mode_kendaraan:
+		match mode_kontrol:
+			2: atur_mode(3)
+			3: atur_mode(2)
+	else:
+		match mode_kontrol:
+			1: atur_mode(3)
+			3: atur_mode(1)
+func atur_mode_kendaraan(mode : bool) -> void:
+	if mode and mode_kontrol == 1:		atur_mode(2)
+	elif !mode and mode_kontrol == 2:	atur_mode(1)
+	mode_kendaraan = mode
 func atur_ulang_posisi_z_kustom() -> void:
 	posisi_z_kustom = 0.15
+func atur_ulang_posisi_pandangan_belakang() -> void:
+	posisi_pandangan_belakang = 1.25
 
 func fungsikan(nilai : bool) -> void:
 	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	#ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)#; Panku.notify("set : false = hasil : "+str(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")))

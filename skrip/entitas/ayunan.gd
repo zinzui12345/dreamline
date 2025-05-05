@@ -224,7 +224,7 @@ func _naiki_ayunan_1(id):
 		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(true)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
@@ -266,7 +266,7 @@ func _naiki_ayunan_2(id):
 		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(2)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(true)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.set("tombol_aksi_2", "berjalan")
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
@@ -312,7 +312,7 @@ func _turun_dari_ayunan_1(id):
 		dunia.get_node("pemain/"+str(id)).rotation.z = 0
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(false)
 		
 		server.permainan.set("tombol_aksi_4", "berlari")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
@@ -340,7 +340,7 @@ func _turun_dari_ayunan_2(id):
 		dunia.get_node("pemain/"+str(id)).rotation.z = 0
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
-		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode(1)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(false)
 		
 		server.permainan.set("tombol_aksi_4", "berlari")
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
