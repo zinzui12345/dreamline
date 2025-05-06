@@ -111,7 +111,7 @@ var mode_menyerang : StringName = "a"		# ini mode serangan misalnya: a / b
 var melompat : bool = false : 
 	set(lompat):
 		if get_node_or_null("pose") != null:
-			if lompat and !jongkok:
+			if lompat and !jongkok and gestur == "berdiri":
 				$pose.set("parameters/melompat/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 			melompat = lompat
 var menyerang : bool = false : 
