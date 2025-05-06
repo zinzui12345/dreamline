@@ -77,9 +77,9 @@ var klakson : bool :
 		klakson = bunyi
 var torsi_kemiringan : float
 
-const kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
-const kecepatan_mundur = 10
-const batas_putaran_stir = 0.5		# persentase sudut
+const kecepatan_maju = 80			# daya Watt * 10 atau m/s^2 (Newton)
+const kecepatan_mundur = 20
+const batas_putaran_stir = 0.65		# persentase sudut
 const pusat_massa_seimbang = -0.25	# posisi pusat gravitasi (y) ketika dikendarai agar tidak terjatuh ke samping
 const pusat_massa_netral = -0.15	# posisi pusat gravitasi (y) pada saat diparkir
 const posisi_kamera_pandangan_belakang = 2.5
@@ -93,8 +93,8 @@ func mulai() -> void:
 	$setir/rotasi_stir/model/stir.set_surface_override_material(0, mat1)
 	$setir/rotasi_stir/model/stir_lod1.set_surface_override_material(0, mat1)
 	$setir/rotasi_stir/model/stir_lod2.set_surface_override_material(0, mat1)
-	$model_roda_depan/translasi_model/rangka_depan.set_surface_override_material(0, mat1)
-	$model_roda_depan/translasi_model/rangka_depan_lod1.set_surface_override_material(0, mat1)
+	$setir/rotasi_stir/model/pos_roda_depan/translasi_model/rangka_depan.set_surface_override_material(0, mat1)
+	$setir/rotasi_stir/model/pos_roda_depan/translasi_model/rangka_depan_lod1.set_surface_override_material(0, mat1)
 	$model_roda_belakang/translasi_model/rangka_belakang.set_surface_override_material(0, mat1)
 	$model_roda_belakang/translasi_model/rangka_belakang_lod1.set_surface_override_material(0, mat1)
 	warna_1 = warna_1
@@ -102,8 +102,8 @@ func mulai() -> void:
 	$setir/rotasi_stir/model/lampu_depan.set_surface_override_material(0, mat2)
 	$setir/rotasi_stir/model/lampu_depan_lod1.set_surface_override_material(0, mat2)
 	$setir/rotasi_stir/model/lampu_depan_lod2.set_surface_override_material(0, mat2)
-	$model_roda_depan/translasi_model/spakbor_depan.set_surface_override_material(0, mat2)
-	$model_roda_depan/translasi_model/spakbor_depan_lod1.set_surface_override_material(0, mat2)
+	$setir/rotasi_stir/model/pos_roda_depan/translasi_model/spakbor_depan.set_surface_override_material(0, mat2)
+	$setir/rotasi_stir/model/pos_roda_depan/translasi_model/spakbor_depan_lod1.set_surface_override_material(0, mat2)
 	$model_roda_belakang/translasi_model/spakbor_belakang.set_surface_override_material(0, mat2)
 	$model_roda_belakang/translasi_model/spakbor_belakang_lod1.set_surface_override_material(0, mat2)
 	warna_2 = warna_2
@@ -152,11 +152,9 @@ func proses(waktu_delta : float) -> void:
 		
 		if arah_stir.x != 0:
 			arah_belok = arah_stir.x * batas_putaran_stir
-			$roda_depan.wheel_roll_influence	= torsi_kemiringan * abs(arah_stir.x) * kecepatan_belok
-			$roda_belakang.wheel_roll_influence = torsi_kemiringan * abs(arah_stir.x) * kecepatan_belok
+			#$roda_depan.wheel_roll_influence	= torsi_kemiringan * abs(arah_stir.x) * kecepatan_belok
+			#$roda_belakang.wheel_roll_influence = torsi_kemiringan * abs(arah_stir.x) * kecepatan_belok
 		else:
-			#if arah_stir.y != 0 and rotation.z != 0:
-				#rotation.z = lerp(rotation.z, 0.0, 2.0 * waktu_delta)
 			arah_belok = 0
 			$roda_depan.wheel_roll_influence = 0
 			$roda_belakang.wheel_roll_influence = 0
@@ -165,10 +163,9 @@ func proses(waktu_delta : float) -> void:
 	
 	# sesuaikan arah stir
 	$setir/rotasi_stir.rotation_degrees.y = get("steering") * 50
-	$model_roda_depan/translasi_model.rotation_degrees.y = $setir/rotasi_stir.rotation_degrees.y
 	
 	#  sesuaikan translasi shockbreaker
-	$model_roda_depan/translasi_model.position.y = clampf($roda_depan.position.y, -0.1, 0.11)
+	$setir/rotasi_stir/model/pos_roda_depan/translasi_model.position.y = clampf($roda_depan.position.y, -0.1, 0.11)
 	$model_roda_belakang/translasi_model.position.y = clampf($roda_belakang.position.y, -0.07, 0.03)
 
 func _input(event: InputEvent) -> void:
@@ -208,6 +205,7 @@ func _kemudikan(id) -> void:
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_z_kustom = 0.25
+		dunia.get_node("pemain/"+str(id)+"/pengamat").fokus_pandangan_belakang = $posisi_pandangan_belakang
 		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_pandangan_belakang = posisi_kamera_pandangan_belakang
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(true)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
@@ -243,6 +241,7 @@ func _berhenti_mengemudi(id) -> void:
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(false)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_z_kustom()
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
+		dunia.get_node("pemain/"+str(id)+"/pengamat").fokus_pandangan_belakang = null
 		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
 		dunia.get_node("pemain/"+str(id)).move_and_slide()
 		
@@ -265,6 +264,7 @@ func _menumpang(id) -> void:
 		dunia.raycast_occlusion_culling.add_exception(dunia.get_node("pemain/"+str(id)))
 		
 		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
+		dunia.get_node("pemain/"+str(id)+"/pengamat").fokus_pandangan_belakang = $posisi_pandangan_belakang
 		dunia.get_node("pemain/"+str(id)+"/pengamat").posisi_pandangan_belakang = posisi_kamera_pandangan_belakang
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(true)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
@@ -288,6 +288,7 @@ func _berhenti_menumpang(id) -> void:
 		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_mode_kendaraan(false)
 		dunia.get_node("pemain/"+str(id)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
+		dunia.get_node("pemain/"+str(id)+"/pengamat").fokus_pandangan_belakang = null
 		dunia.get_node("pemain/"+str(id)).velocity = self.linear_velocity
 		dunia.get_node("pemain/"+str(id)).move_and_slide()
 		
