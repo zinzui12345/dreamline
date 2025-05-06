@@ -102,12 +102,12 @@ func _process(delta : float) -> void:
 	# atur posisi pengamat
 	if _karakter._ragdoll:
 		global_position = _karakter.get_node("%pinggang").global_position
-	elif mode_kendaraan and fokus_pandangan_belakang != null:
-		global_position = fokus_pandangan_belakang.global_position
+	elif mode_kendaraan and fokus_pandangan_belakang != null and mode_kontrol == 3:
+		position = fokus_pandangan_belakang.position
 	else:
 		$kamera.position.x = 0
-		position.y 		= get_node("%mata_kiri").position.y
-		$kamera.position.z = get_node("%mata_kiri").position.z
+		position.y 			= get_node("%mata_kiri").position.y
+		$kamera.position.z	= get_node("%mata_kiri").position.z
 		_karakter.get_node("fisik_kepala").rotation		= _karakter.get_node("%mata_kiri").rotation
 		_karakter.get_node("fisik_kepala").position.y	= _karakter.get_node("%mata_kiri").position.y
 		_karakter.get_node("fisik_kepala").position.z	= _karakter.get_node("%mata_kiri").position.z
