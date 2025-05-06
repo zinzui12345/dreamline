@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 05/05/25 Early Access"
+const versi = "Dreamline v0.4.4 06/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1582,6 +1582,7 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	if $dialog.get_node_or_null("ExampleBalloon") != null: $dialog.get_node("ExampleBalloon").queue_free()
 	jeda = false
 func _tampilkan_pemutar_musik() -> void:
+	$menu_utama/bunyi_pilih.play()
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	else: $pemutar_musik/animasi.play("tampilkan")
 func _tampilkan_konfigurasi_server() -> void:
@@ -1595,7 +1596,7 @@ func _tampilkan_konfigurasi_server() -> void:
 			$karakter/animasi.play("tampilkan_buat_server")
 		else:
 			$buat_server/animasi.play("animasi_panel/tampilkan")
-		$menu_utama/bunyi_pilih.play()
+		$menu_utama/bunyi_oke.play()
 		$buat_server/panel/batal.grab_focus()
 func _tambah_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value += $buat_server/panel/panel_input/jumlah_pemain.step
 func _kurang_jumlah_pemain_server() -> void:	$buat_server/panel/panel_input/jumlah_pemain.value -= $buat_server/panel/panel_input/jumlah_pemain.step
@@ -1609,7 +1610,7 @@ func _tampilkan_daftar_server() -> void:
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 		client.cari_server()
-		$menu_utama/bunyi_pilih.play()
+		$menu_utama/bunyi_oke.play()
 		if $buat_server.visible:
 			$buat_server/animasi.play("tampilkan_daftar_server")
 			await get_tree().create_timer($buat_server/animasi.current_animation_length).timeout
@@ -1660,7 +1661,7 @@ func _tampilkan_setelan_karakter() -> void:
 	if $karakter.visible: _sembunyikan_setelan_karakter()
 	else:
 		if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
-		$menu_utama/bunyi_pilih.play()
+		$menu_utama/bunyi_oke.play()
 		$karakter/panel/tampilan/SubViewportContainer/SubViewport/lantai/CollisionShape3D.disabled = false
 		if $karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible == false:
 			$karakter/panel/tampilan/SubViewportContainer/SubViewport/karakter.visible = true
@@ -2102,6 +2103,7 @@ func _tampilkan_popup_informasi(teks_informasi : String, fokus_setelah : Control
 	$popup_informasi/panel/tutup.grab_focus()
 func _tampilkan_popup_informasi_(teks_informasi : String) -> void: _tampilkan_popup_informasi(teks_informasi, $menu_jeda/menu/kontrol/Panel/lanjutkan)
 func _tutup_popup_informasi() -> void:
+	$menu_utama/bunyi_pilih.play()
 	$popup_informasi/animasi.play("tutup")
 	await get_tree().create_timer($popup_informasi/animasi.current_animation_length).timeout
 	$popup_informasi/panel/teks.text = ""+str(randf())
@@ -2113,10 +2115,12 @@ func _tampilkan_popup_konfirmasi(tombol_penampil : Button, fungsi : Callable, te
 	$popup_konfirmasi/animasi.play("tampilkan")
 	$popup_konfirmasi/panel/batal.grab_focus()
 func _ketika_konfirmasi_popup_konfirmasi() -> void:
+	$menu_utama/bunyi_oke.play()
 	$popup_konfirmasi/animasi.play_backwards("tampilkan")
 	$popup_konfirmasi.fungsi.call()
 	$popup_konfirmasi.penampil.grab_focus()
 func _tutup_popup_konfirmasi() -> void:
+	$menu_utama/bunyi_batal.play()
 	$popup_konfirmasi/animasi.play("tutup")
 	$popup_konfirmasi.penampil.grab_focus()
 func _tampilkan_popup_konfirmasi_peringatan(tombol_penampil : Button, fungsi : Callable, teks : String) -> void:
@@ -2196,6 +2200,7 @@ func _hapus_daftar_pemain(id_pemain : int) -> void:
 		$hud/daftar_pemain/panel/gulir/baris.remove_child(tmp_daftar)
 		tmp_daftar.queue_free()
 func _tampilkan_setelan_permainan() -> void:
+	$menu_utama/bunyi_pilih.play()
 	if $pemutar_musik.visible: $pemutar_musik/animasi.play("sembunyikan")
 	#Panku.gd_exprenv.execute("setelan.buka_setelan_permainan()") # HACK : eksekusi kode di konsol
 	_konfigurasi_awal = {
@@ -2256,17 +2261,23 @@ func _sembunyikan_pesan() -> void:
 	if !pesan:
 		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
-func _ketika_menekan_tombol_daftar_pemain():
+func _ketika_menekan_tombol_daftar_pemain() -> void:
 	$kontrol_sentuh/daftar_pemain.release_focus()
 	if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
 	else:							_tampilkan_daftar_pemain()
-func _tampilkan_daftar_pemain():
+func _ketika_menekan_tombol_ubah_mode_pandangan() -> void:
+	$kontrol_sentuh/mode_pandangan.release_focus()
+	if is_instance_valid(karakter):
+		$menu_utama/bunyi_pilih.play()
+		karakter.get_node("pengamat").ubah_mode()
+func _tampilkan_daftar_pemain() -> void:
 	$mode_bermain.visible = false
 	$hud/daftar_pemain/animasi.play("tampilkan")
-func _sembunyikan_daftar_pemain():
+func _sembunyikan_daftar_pemain() -> void:
 	$mode_bermain.visible = true
 	$hud/daftar_pemain/animasi.play_backwards("tampilkan")
 func _tampilkan_panel_informasi() -> void:
+	$menu_utama/bunyi_pilih.play()
 	if $pemutar_musik.visible:
 		$pemutar_musik/animasi.play("sembunyikan")
 		await get_tree().create_timer($pemutar_musik/animasi.current_animation_length).timeout
@@ -2288,6 +2299,7 @@ func _tampilkan_panel_informasi() -> void:
 	$informasi/animasi.play("tampilkan")
 	$informasi/panel/oke.grab_focus()
 func _sembunyikan_panel_informasi() -> void:
+	$menu_utama/bunyi_oke.play()
 	$informasi/animasi.play("tutup")
 	$menu_utama/animasi.play("tampilkan")
 	await get_tree().create_timer($menu_utama/animasi.current_animation_length).timeout
@@ -2490,7 +2502,7 @@ func _ketika_menyimpan_data_karakter():
 	Panku.notify("%simpan_karakter")
 
 # menu
-func _jeda():
+func _jeda() -> void:
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
 		if get_node_or_null("pengamat") != null and !server.mode_replay \
@@ -2508,7 +2520,8 @@ func _jeda():
 		$menu_jeda/menu/animasi.play("tampilkan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.grab_focus()
 		jeda = true
-func _lanjutkan():
+func _lanjutkan() -> void:
+	$menu_utama/bunyi_oke.play()
 	if $setelan.visible: _sembunyikan_setelan_permainan()
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if is_instance_valid(edit_objek): pass
@@ -2522,7 +2535,9 @@ func _lanjutkan():
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.release_focus()
 		jeda = false
-func _kembali():
+func _statistik() -> void:
+	$menu_utama/bunyi_pilih.play()
+func _kembali() -> void:
 	if $popup_informasi.visible:
 		_tutup_popup_informasi()
 	elif $popup_konfirmasi.visible:
@@ -2546,9 +2561,11 @@ func _kembali():
 		_sembunyikan_panel_informasi()
 	elif !is_instance_valid(karakter):
 		_keluar()
-func _putuskan():
+func _putuskan() -> void:
+	$menu_utama/bunyi_pilih.play()
 	putuskan_server()
-func _keluar():
+func _keluar() -> void:
+	$menu_utama/bunyi_pilih.play()
 	_tampilkan_popup_konfirmasi($menu_utama/keluar, Callable(get_tree(), "quit"), "%keluar%")
 
 # konfigurasi

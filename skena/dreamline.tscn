@@ -1,4 +1,4 @@
-[gd_scene load_steps=360 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=362 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -88,6 +88,7 @@
 [ext_resource type="Texture2D" uid="uid://bs2hfqp34hl6b" path="res://ui/ikon/ikon_tombol_mulai.svg" id="43_p021k"]
 [ext_resource type="Texture2D" uid="uid://by0ehaty0xo3r" path="res://ui/ikon/ikon_entitas_gas_melon.png" id="49_52iuq"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
+[ext_resource type="Texture2D" uid="uid://tv7vc1pbc4i1" path="res://ui/ikon/ikon_tombol_mode_pandangan.svg" id="50_lxhay"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english_kecil.svg" id="63_r5flb"]
 [ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia_kecil.svg" id="64_gnps4"]
 [ext_resource type="AudioStream" uid="uid://yyxehldmlkww" path="res://audio/antarmuka/pilih_2.ogg" id="64_suhfv"]
@@ -104,6 +105,7 @@
 [ext_resource type="PackedScene" uid="uid://bq37yla8ya707" path="res://ui/editor kode/main_panel.tscn" id="81_d4drg"]
 [ext_resource type="AudioStream" uid="uid://c10n6ngyca04u" path="res://audio/antarmuka/panel informasi.ogg" id="87_0yo5j"]
 [ext_resource type="AudioStream" uid="uid://ksto1fe5w6fn" path="res://audio/antarmuka/batal.ogg" id="89_56kiw"]
+[ext_resource type="AudioStream" uid="uid://cgqu7mlyaqonv" path="res://audio/antarmuka/oke.wav" id="91_yk2rs"]
 [ext_resource type="AudioStream" uid="uid://cjjfpn0fs62ds" path="res://audio/antarmuka/notifikasi.ogg" id="101_lxhay"]
 [ext_resource type="AudioStream" uid="uid://2jcsppbbt46m" path="res://audio/antarmuka/konfirmasi.ogg" id="103_yk2rs"]
 [ext_resource type="AudioStream" uid="uid://h0n88tfkx5yb" path="res://audio/antarmuka/panel konfirmasi.ogg" id="105_m37tq"]
@@ -6484,13 +6486,30 @@ icon = ExtResource("36_fyuuk")
 icon_alignment = 1
 metadata/_edit_lock_ = true
 
+[node name="mode_pandangan" type="Button" parent="kontrol_sentuh"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 176.0
+offset_top = 18.0
+offset_right = 236.0
+offset_bottom = 76.0
+grow_horizontal = 0
+theme_override_styles/focus = SubResource("StyleBoxFlat_m033d")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ildd4")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hbrqx")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ovj3w")
+button_mask = 5
+icon = ExtResource("50_lxhay")
+icon_alignment = 1
+metadata/_edit_lock_ = true
+
 [node name="mode_bermain" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 1
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 144.0
-offset_bottom = 72.0
+offset_left = 20.0
+offset_top = 20.5
+offset_right = 148.0
+offset_bottom = 76.5
 theme_override_constants/separation = 0
 alignment = 1
 metadata/_edit_lock_ = true
@@ -8325,6 +8344,9 @@ libraries = {
 &"": SubResource("AnimationLibrary_wcqo5")
 }
 
+[node name="bunyi_oke" type="AudioStreamPlayer" parent="menu_utama"]
+stream = ExtResource("91_yk2rs")
+
 [node name="bunyi_pilih" type="AudioStreamPlayer" parent="menu_utama"]
 stream = ExtResource("76_m8wn8")
 
@@ -9820,11 +9842,13 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]
 [connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
 [connection signal="pressed" from="kontrol_sentuh/daftar_pemain" to="." method="_ketika_menekan_tombol_daftar_pemain"]
+[connection signal="pressed" from="kontrol_sentuh/mode_pandangan" to="." method="_ketika_menekan_tombol_ubah_mode_pandangan"]
 [connection signal="button_down" from="mode_bermain/main" to="." method="pilih_mode_bermain"]
 [connection signal="button_down" from="mode_bermain/edit" to="." method="pilih_mode_edit"]
 [connection signal="pressed" from="daftar_objek/Panel/tutup" to="." method="_tutup_daftar_objek"]
 [connection signal="pressed" from="daftar_objek/tutup" to="." method="_tutup_daftar_objek"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/lanjutkan" to="." method="_lanjutkan"]
+[connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/statistik" to="." method="_statistik"]
 [connection signal="pressed" from="menu_jeda/menu/kontrol/Panel/putuskan" to="." method="_putuskan"]
 [connection signal="pressed" from="menu_jeda/setelan" to="." method="_tampilkan_setelan_permainan"]
 [connection signal="pressed" from="buat_server/panel/batal" to="." method="_sembunyikan_konfigurasi_server"]
