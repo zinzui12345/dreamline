@@ -1610,6 +1610,12 @@ surface_material_override/1 = SubResource("StandardMaterial3D_ibcjm")
 surface_material_override/8 = SubResource("StandardMaterial3D_sspfm")
 surface_material_override/9 = SubResource("StandardMaterial3D_iyuje")
 
+[node name="titik_fokus" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="posisi_pandangan_belakang" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)
+
 [node name="AudioMesin" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.355, -0.65)
 stream = SubResource("AudioStreamInteractive_7iql2")
