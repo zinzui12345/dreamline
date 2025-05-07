@@ -82,7 +82,7 @@ const kecepatan_mundur = 20
 const batas_putaran_stir = 0.65		# persentase sudut
 const pusat_massa_seimbang = -0.25	# posisi pusat gravitasi (y) ketika dikendarai agar tidak terjatuh ke samping
 const pusat_massa_netral = -0.15	# posisi pusat gravitasi (y) pada saat diparkir
-const posisi_kamera_pandangan_belakang = 2.5
+const posisi_kamera_pandangan_belakang = 3.0
 
 func mulai() -> void:
 	torsi_kemiringan = $roda_belakang.wheel_roll_influence
