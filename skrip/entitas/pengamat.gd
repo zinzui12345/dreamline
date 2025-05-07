@@ -9,7 +9,7 @@ var gerakan : Vector2
 var _gerakan : Vector2
 var rotasi : Vector3
 var fokus_pandangan_belakang : Node3D			# node yang difokus pada mode_kontrol 3 | hanya digunakan pada mode kendaraan
-var posisi_pandangan_belakang : float = 1.25:	# jarak posisi pandangan z pada mode_kontrol 3 | harus diatur sebelum memanggil atur_mode_kendaraan() | dapat diatur ulang dengan atur_ulang_posisi_pandangan_belakang()
+var posisi_pandangan_belakang : float = 1.5:	# jarak posisi pandangan z pada mode_kontrol 3 | harus diatur sebelum memanggil atur_mode_kendaraan() | dapat diatur ulang dengan atur_ulang_posisi_pandangan_belakang()
 	set(nilai):
 		if mode_kontrol == 3:
 			var tween_pandangan_belakang : Tween = get_tree().create_tween()
@@ -35,6 +35,22 @@ func _process(delta : float) -> void:
 	if kontrol:
 		if _karakter.get("_input_arah_pandangan") != null: gerakan = _karakter._input_arah_pandangan
 		rotasi = Vector3(gerakan.y, gerakan.x, 0) * Konfigurasi.sensitivitas_pandangan * delta
+		
+		if gerakan == Vector2.ZERO:
+			if _karakter.gestur == "duduk" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
+				if mode_kendaraan:
+					if mode_kontrol == 2:
+						if _karakter.arah.z == 2:
+							# FIXME : bikin fungsi terus pake tween!
+							$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 10.0 * delta)
+						else:
+							$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 5.0 * delta)
+					elif mode_kontrol == 3:
+						if _karakter.arah.z == 2:
+							# FIXME : bikin fungsi terus pake tween!
+							rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 10.0 * delta)
+						else:
+							$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 0.5 * delta)
 		
 		if gerakan != _gerakan:
 			match mode_kontrol:
@@ -65,8 +81,6 @@ func _process(delta : float) -> void:
 						_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
 						$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
 						_karakter.rotation_degrees.y -= rotasi.y
-					elif _karakter.arah.z == 2:
-						$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.005 * delta)
 					else:
 						$kamera/rotasi_vertikal.rotation_degrees.y -= rotasi.y
 						$kamera/rotasi_vertikal.rotation_degrees.y = clamp($kamera/rotasi_vertikal.rotation_degrees.y, -70, 70)
@@ -85,7 +99,7 @@ func _process(delta : float) -> void:
 					$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
 					$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
 					get_node("%target").rotation_degrees.x = 0
-					if (_karakter.arah.x != 0 or (_karakter.arah.z != 0 and _karakter.is_on_floor())) and _karakter.get_node("pose").active:
+					if (_karakter.arah.x != 0 or (_karakter.arah.z != 0 and _karakter.is_on_floor())) and _karakter.gestur == "berdiri":
 						_karakter.rotation.y = lerp_angle(_karakter.rotation.y, global_rotation.y, 0.4)
 						rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 0.4)
 						_karakter.rotation_degrees.y -= rotasi.y
@@ -128,6 +142,9 @@ func atur_mode(nilai : int) -> void:
 	var transisi : bool = false if (nilai == 2 and mode_kontrol == 1) or (nilai == 1 and mode_kontrol == 2) else true
 	if mode_kontrol == 2: mode_kontrol = 1
 	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2 # naik kendaraan / mulai duduk
+	# 07/05/25 :: sembunyikan tombol zoom pada mode pandangan 3
+	if nilai == 3:	server.permainan._sembunyikan_tombol_zoom()
+	else:			server.permainan._tampilkan_tombol_zoom()
 	var ubah : bool = (mode_kontrol != nilai)
 	mode_kontrol = 0 # nonaktifkan kontrol
 	var tween_pandangan_1a : Tween = get_tree().create_tween()
@@ -169,7 +186,7 @@ func atur_mode_kendaraan(mode : bool) -> void:
 func atur_ulang_posisi_z_kustom() -> void:
 	posisi_z_kustom = 0.15
 func atur_ulang_posisi_pandangan_belakang() -> void:
-	posisi_pandangan_belakang = 1.25
+	posisi_pandangan_belakang = 1.5
 
 func fungsikan(nilai : bool) -> void:
 	if nilai: 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED;	#ProjectSettings.set_setting("input_devices/pointing/emulate_mouse_from_touch", false)#; Panku.notify("set : false = hasil : "+str(ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")))
