@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 06/05/25 Early Access"
+const versi = "Dreamline v0.4.4 07/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -375,12 +375,6 @@ func _process(delta : float) -> void:
 	
 	# input
 	if is_instance_valid(karakter): # ketika dalam permainan
-		if Input.is_action_just_pressed("ui_cancel"):
-			if pesan: _tampilkan_input_pesan()
-			elif $setelan.visible: _sembunyikan_setelan_permainan()
-			elif edit_objek != null: server.edit_objek(edit_objek.name, false)
-			elif !jeda: _jeda()
-			else: _lanjutkan()
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
 		if Input.is_action_just_pressed("daftar_pemain") and (edit_objek == null and !jeda): _tampilkan_daftar_pemain()
 		if Input.is_action_just_pressed("kirim_pesan") and pesan: _kirim_pesan()
@@ -406,7 +400,14 @@ func _process(delta : float) -> void:
 					else:
 						$pengamat/posisi_mata.fungsi_zoom = false
 	
-	if Input.is_action_just_pressed("ui_cancel"): _kembali()
+	if Input.is_action_just_pressed("ui_cancel"):
+		if is_instance_valid(karakter): # ketika dalam permainan
+			if pesan: _tampilkan_input_pesan()
+			elif $setelan.visible: _sembunyikan_setelan_permainan()
+			elif edit_objek != null: server.edit_objek(edit_objek.name, false)
+			elif !jeda: _jeda()
+			elif jeda: _lanjutkan()
+		else: _kembali()
 	if Input.is_action_just_pressed("modelayar_penuh"):
 		$setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.button_pressed = not $setelan/panel/gulir/tab_setelan/setelan_umum/layar_penuh.button_pressed
 		Panku.notify("modelayar_penuh : "+str(Konfigurasi.mode_layar_penuh))
@@ -507,14 +508,7 @@ func _process(delta : float) -> void:
 		]
 	$versi.text = versi+" | "+String.humanize_size(OS.get_static_memory_usage()+OS.get_static_memory_peak_usage())+" | "+str(Engine.get_frames_per_second())+" fps"
 func _notification(what : int) -> void:
-	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
-		if is_instance_valid(karakter): # ketika dalam permainan
-			if pesan: _tampilkan_input_pesan()
-			elif edit_objek != null: server.edit_objek(edit_objek.name, false)
-			elif !jeda: _jeda()
-			else: _lanjutkan()
-		else: _kembali()
-	elif what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
+	if what == NOTIFICATION_WM_ABOUT: _tampilkan_panel_informasi()
 	elif what == NOTIFICATION_WM_CLOSE_REQUEST: _keluar()
 	elif what == NOTIFICATION_CRASH: putuskan_server(true); print_debug("always fading~")
 	elif what == NOTIFICATION_FOCUS_EXIT: get_tree().paused = true
@@ -1135,12 +1129,12 @@ func _kirim_suara() -> void:
 		effect.set_recording_active(true)
 		print("kirim suara...")
 func _kirim_pesan() -> void:
-	if $hud/pesan/layout_input_pesan/input_pesan.text != "":
-		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(client.id_sesi, $hud/pesan/layout_input_pesan/input_pesan.text)
-		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_sesi, $hud/pesan/layout_input_pesan/input_pesan.text)
-		$hud/pesan/layout_input_pesan/input_pesan.text = ""
-	$hud/pesan/layout_input_pesan/input_pesan.release_focus()
-	$hud/pesan/layout_input_pesan/input_pesan.grab_focus()
+	if $pesan/layout_input_pesan/input_pesan.text != "":
+		if koneksi == MODE_KONEKSI.SERVER: server._terima_pesan_pemain(client.id_sesi, $pesan/layout_input_pesan/input_pesan.text)
+		else: server.rpc_id(1, "_terima_pesan_pemain", client.id_sesi, $pesan/layout_input_pesan/input_pesan.text)
+		$pesan/layout_input_pesan/input_pesan.text = ""
+	$pesan/layout_input_pesan/input_pesan.release_focus()
+	$pesan/layout_input_pesan/input_pesan.grab_focus()
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
 	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
@@ -1159,9 +1153,12 @@ func _edit_objek(jalur : String) -> void:
 	$kontrol_sentuh/chat.visible = false
 	$kontrol_sentuh/mic.visible = false
 	$kontrol_sentuh/lari.visible = false
+	$kontrol_sentuh/zoom.visible = false
 	$kontrol_sentuh/aksi_1.visible = false
 	$kontrol_sentuh/lompat.visible = false
 	$kontrol_sentuh/jongkok.visible = false
+	$kontrol_sentuh/daftar_pemain.visible = false
+	$kontrol_sentuh/mode_pandangan.visible = false
 	$kontrol_sentuh/kontrol_gerakan.visible = false
 	$kontrol_sentuh/kontrol_pandangan.visible = false
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
@@ -1249,8 +1246,11 @@ func _berhenti_mengedit_objek() -> void:
 	$kontrol_sentuh/mic.visible = true
 	$kontrol_sentuh/menu.visible = true
 	$kontrol_sentuh/lari.visible = true
+	$kontrol_sentuh/zoom.visible = true
 	$kontrol_sentuh/lompat.visible = true
 	$kontrol_sentuh/jongkok.visible = true
+	$kontrol_sentuh/daftar_pemain.visible = true
+	$kontrol_sentuh/mode_pandangan.visible = true
 	$kontrol_sentuh/kontrol_gerakan.visible = true
 	$kontrol_sentuh/kontrol_pandangan.visible = true
 	# 06/10/24 :: nonaktifkan proses sinkronisasi objek pada client
@@ -1556,7 +1556,9 @@ func _tampilkan_permainan() -> void:
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	_ketika_mengatur_mode_kontrol_gerak(Konfigurasi.mode_kontrol_gerak)
 	$kontrol_sentuh/chat.visible = true
+	$kontrol_sentuh/zoom.visible = true
 	$kontrol_sentuh/daftar_pemain.visible = true
+	$kontrol_sentuh/mode_pandangan.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
 func _sembunyikan_antarmuka_permainan() -> void:
 	if OS.get_distribution_name() == "Android":
@@ -1573,9 +1575,12 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	$hud/titik_fokus.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
-	$kontrol_sentuh/menu.visible = true
-	$kontrol_sentuh/lompat.visible = true
-	$kontrol_sentuh/jongkok.visible = true
+	$kontrol_sentuh/menu.visible = false
+	$kontrol_sentuh/zoom.visible = false
+	$kontrol_sentuh/lompat.visible = false
+	$kontrol_sentuh/jongkok.visible = false
+	$kontrol_sentuh/daftar_pemain.visible = false
+	$kontrol_sentuh/mode_pandangan.visible = false
 	$kontrol_sentuh/kontrol_kendaraan.visible = false
 	$daftar_objek/tutup/TouchScreenButton.visible = false
 	if $daftar_objek/Panel.anchor_top < 1: $daftar_objek/animasi.play("sembunyikan")
@@ -2228,29 +2233,35 @@ func _tampilkan_input_pesan() -> void:
 	$kontrol_sentuh/chat.release_focus()
 	if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
 	if pesan:
-		$hud/pesan/layout_input_pesan/input_pesan.release_focus()
-		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
-		$hud/pesan/animasi.play("sembunyikan")
+		$pesan/layout_input_pesan/input_pesan.release_focus()
+		$pesan/daftar_pesan/animasi.play("sembunyikan")
+		$pesan/animasi.play("sembunyikan")
 		if $daftar_objek/Panel.anchor_top < 1 or edit_objek != null: pass # jangan tangkap mouse ketika menutup input pesan pada saat membuat/mengedit objek
 		else:
+			$mode_bermain.visible = true
 			$kontrol_sentuh/mic.visible = true
 			$kontrol_sentuh/lari.visible = true
+			$kontrol_sentuh/zoom.visible = true
+			$kontrol_sentuh/mode_pandangan.visible = true
 			karakter._atur_kendali(true)
 		pesan = false
 	else:
-		$hud/pesan/daftar_pesan/animasi.play("tampilkan")
-		$hud/pesan/animasi.play("tampilkan")
-		$hud/pesan/layout_input_pesan/input_pesan.grab_focus()  
+		$pesan/daftar_pesan/animasi.play("tampilkan")
+		$pesan/animasi.play("tampilkan")
+		$pesan/layout_input_pesan/input_pesan.grab_focus()  
 		if $daftar_objek/Panel.anchor_top < 1 or edit_objek != null: pass # jangan ubah kendali pemain ketika membuka input pesan pada saat membuat/mengedit objek
 		else:
+			$mode_bermain.visible = false
 			$kontrol_sentuh/mic.visible = false
 			$kontrol_sentuh/lari.visible = false
+			$kontrol_sentuh/zoom.visible = false
+			$kontrol_sentuh/mode_pandangan.visible = false
 			karakter._atur_kendali(false)
 		pesan = true
 func _tampilkan_pesan(teks : String) -> void:
 	# TODO : rekam ke timeline
-	$hud/pesan/daftar_pesan/animasi.play("tampilkan")
-	$hud/pesan/daftar_pesan.append_text("\n"+teks)
+	$pesan/daftar_pesan/animasi.play("tampilkan")
+	$pesan/daftar_pesan.append_text("\n"+teks)
 	if !pesan:
 		# 15 karakter = 3 detik
 		# jadi 5 karakter = 1 detik
@@ -2259,7 +2270,7 @@ func _tampilkan_pesan(teks : String) -> void:
 		_timer_tampilkan_pesan.start()
 func _sembunyikan_pesan() -> void:
 	if !pesan:
-		$hud/pesan/daftar_pesan/animasi.play("sembunyikan")
+		$pesan/daftar_pesan/animasi.play("sembunyikan")
 		_timer_tampilkan_pesan.stop()
 func _ketika_menekan_tombol_daftar_pemain() -> void:
 	$kontrol_sentuh/daftar_pemain.release_focus()
@@ -2271,10 +2282,8 @@ func _ketika_menekan_tombol_ubah_mode_pandangan() -> void:
 		$menu_utama/bunyi_pilih.play()
 		karakter.get_node("pengamat").ubah_mode()
 func _tampilkan_daftar_pemain() -> void:
-	$mode_bermain.visible = false
 	$hud/daftar_pemain/animasi.play("tampilkan")
 func _sembunyikan_daftar_pemain() -> void:
-	$mode_bermain.visible = true
 	$hud/daftar_pemain/animasi.play_backwards("tampilkan")
 func _tampilkan_panel_informasi() -> void:
 	$menu_utama/bunyi_pilih.play()
@@ -2392,6 +2401,8 @@ func _ketika_memutar_audio(jalur_file_audio : String) -> void:
 func _ketika_menghentikan_audio() -> void:
 	if $editor_kode/pemutar_file_audio.playing:
 		$editor_kode/pemutar_file_audio.stop()
+func _tampilkan_tombol_zoom() -> void:		$kontrol_sentuh/zoom.show()
+func _sembunyikan_tombol_zoom() -> void:	$kontrol_sentuh/zoom.hide()
 func tampilkan_dialog(file_dialog : DialogueResource, id_dialog) -> void:
 	var penampil_dialog : Node = load("res://ui/dialog.tscn").instantiate()
 	$dialog.add_child(penampil_dialog)
@@ -2517,6 +2528,7 @@ func _jeda() -> void:
 		$kontrol_sentuh/menu.visible = false
 		$kontrol_sentuh/chat.visible = false
 		$kontrol_sentuh/daftar_pemain.visible = false
+		$kontrol_sentuh/mode_pandangan.visible = false
 		$menu_jeda/menu/animasi.play("tampilkan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.grab_focus()
 		jeda = true
@@ -2532,6 +2544,7 @@ func _lanjutkan() -> void:
 		$kontrol_sentuh/menu.visible = true
 		$kontrol_sentuh/chat.visible = true
 		$kontrol_sentuh/daftar_pemain.visible = true
+		$kontrol_sentuh/mode_pandangan.visible = true
 		$menu_jeda/menu/animasi.play("sembunyikan")
 		$menu_jeda/menu/kontrol/Panel/lanjutkan.release_focus()
 		jeda = false
