@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=30 format=4 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_uaaqg"]
 [ext_resource type="Script" uid="uid://bmm5flmnbh45f" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://b1bamjuxi2kyh" path="res://addons/road-generator/nodes/road_container.gd" id="15_2grqi"]
 [ext_resource type="Material" uid="uid://dlglj1qitupc3" path="res://addons/road-generator/resources/road_texture.material" id="16_ws6jm"]
 [ext_resource type="Script" uid="uid://d2147xps41dlu" path="res://addons/road-generator/nodes/road_point.gd" id="17_65xri"]
+[ext_resource type="PackedScene" uid="uid://bi7w0776kr73y" path="res://skena/entitas/selis.scn" id="17_ve7sj"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_nopol"]
 size = Vector2(1500, 1500)
@@ -32,8 +33,8 @@ normal_texture = ExtResource("4_ws6jm")
 uv1_scale = Vector3(100, 100, 100)
 proximity_fade_distance = 25.0
 distance_fade_mode = 1
-distance_fade_min_distance = 10.0
-distance_fade_max_distance = 50.0
+distance_fade_min_distance = 40.0
+distance_fade_max_distance = 90.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lhc3l"]
 
@@ -61,10 +62,9 @@ metadata/extras = {
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ws6jm"]
 transparency = 1
 albedo_color = Color(0, 0.235294, 0.470588, 0.501961)
-roughness = 0.1
+roughness = 0.16
 normal_enabled = true
 normal_texture = ExtResource("4_ws6jm")
-refraction_enabled = true
 refraction_texture_channel = 2
 uv1_scale = Vector3(25, 25, 25)
 distance_fade_min_distance = 10.0
@@ -9438,11 +9438,6 @@ vegetasi = [{
 "rotasi": Basis(0.99035, 0, -0.138591, 0, 1, 0, 0.138591, 0, 0.99035),
 "tipe": "pohon"
 }, {
-"model": 1,
-"posisi": Vector3(-81.0916, 11.6078, 178.402),
-"rotasi": Basis(0.96024, 0, 0.279177, 0, 1, 0, -0.279177, 0, 0.96024),
-"tipe": "pohon"
-}, {
 "model": 3,
 "posisi": Vector3(-56.1404, 10.0392, 178.402),
 "rotasi": Basis(-0.469658, 0, -0.882849, 0, 1, 0, 0.882849, 0, -0.469658),
@@ -10917,7 +10912,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_du3w3")
 [node name="air_laut" type="MeshInstance3D" parent="permukaan/air"]
 editor_description = "visibility_range_end = 25
 "
-transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 1, 500.743, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 0.6, 0, 0, 0, 2, 500.743, 0, 0)
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_2grqi")
 skeleton = NodePath("")
@@ -11014,10 +11009,10 @@ warna_1 = Color(1, 0, 0, 1)
 jarak_render = 50
 
 [node name="gedung penelitian" parent="." instance=ExtResource("10_65xri")]
-transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, -242.697, 9.402, 156.8)
+transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, -242.697, 9.702, 156.8)
 
 [node name="pintu_belakang_gedung_penelitian" parent="." instance=ExtResource("11_ojnhc")]
-transform = Transform3D(-0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, -0.766044, -253.143, 10.027, 170.096)
+transform = Transform3D(-0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, -0.766044, -253.143, 10.327, 170.096)
 
 [node name="patung_moai" parent="." instance=ExtResource("11_18if7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49, 13.95, 255)
@@ -11033,6 +11028,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -165.826, 3.01818, 13.0283)
 
 [node name="bajay" parent="." instance=ExtResource("12_wljsp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 297, 10, 115)
+
+[node name="selis" parent="." instance=ExtResource("17_ve7sj")]
+transform = Transform3D(0.493851, 0, 0.869547, 0, 1, 0, -0.869547, 0, 0.493851, -263.777, 10.0304, 162.708)
 
 [node name="jalan" type="Node3D" parent="."]
 script = ExtResource("14_gdyf4")
