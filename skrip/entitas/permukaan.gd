@@ -142,8 +142,8 @@ func _process(_delta):
 					bentuk_air.get_surface_override_material(0).set(
 						"uv1_offset",
 						Vector2(
-							offset_gelombang.x + bentuk_air.position.x * 0.2,
-							offset_gelombang.z + bentuk_air.position.z * 0.2
+							offset_gelombang.x + bentuk_air.position.x * 0.15,
+							offset_gelombang.z + bentuk_air.position.z * 0.15
 						)
 					)
 			elif bentuk_air.visible:
