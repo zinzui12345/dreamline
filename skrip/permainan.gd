@@ -1595,6 +1595,8 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	$kontrol_sentuh/menu.visible = false
 	$kontrol_sentuh/chat.visible = false
 	$kontrol_sentuh/zoom.visible = false
+	$kontrol_sentuh/aksi_1.visible = false
+	$kontrol_sentuh/aksi_2.visible = false
 	$kontrol_sentuh/lompat.visible = false
 	$kontrol_sentuh/jongkok.visible = false
 	$kontrol_sentuh/daftar_pemain.visible = false
@@ -2867,6 +2869,8 @@ func dapatkanPosisiObjek(cekobjek : Object) -> Vector3:
 		return cekobjek.global_position
 	else:
 		return Vector3.ZERO
+func dapatkanNilaiPersentase(jumlah_bagian : float, total_bagian : float) -> float:
+	return (jumlah_bagian / total_bagian) * 100
 func detikKeMenit(detik: int) -> String:
 	var menit = ceil(detik) / 60
 	var detik_tersisa = detik % 60
