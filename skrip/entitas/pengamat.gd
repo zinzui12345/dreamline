@@ -40,17 +40,9 @@ func _process(delta : float) -> void:
 			if _karakter.gestur == "duduk" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
 				if mode_kendaraan:
 					if mode_kontrol == 2:
-						if _karakter.arah.z == 2:
-							# FIXME : bikin fungsi terus pake tween!
-							$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 10.0 * delta)
-						else:
-							$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 5.0 * delta)
+						$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 5.0 * delta)
 					elif mode_kontrol == 3:
-						if _karakter.arah.z == 2:
-							# FIXME : bikin fungsi terus pake tween!
-							rotation.y = lerp_angle(deg_to_rad(rotation_degrees.y), deg_to_rad(0.0), 10.0 * delta)
-						else:
-							$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 0.5 * delta)
+						$kamera/rotasi_vertikal.rotation.y = lerp_angle(deg_to_rad($kamera/rotasi_vertikal.rotation_degrees.y), deg_to_rad(0.0), 0.5 * delta)
 		
 		if gerakan != _gerakan:
 			match mode_kontrol:
@@ -147,18 +139,7 @@ func atur_mode(nilai : int) -> void:
 	else:			server.permainan._tampilkan_tombol_zoom()
 	var ubah : bool = (mode_kontrol != nilai)
 	mode_kontrol = 0 # nonaktifkan kontrol
-	var tween_pandangan_1a : Tween = get_tree().create_tween()
-	var tween_pandangan_2a : Tween = get_tree().create_tween()
-	var tween_pandangan_3a : Tween = get_tree().create_tween()
-	var tween_pandangan_3b : Tween = get_tree().create_tween()
-	tween_pandangan_1a.tween_property($kamera/rotasi_vertikal/pandangan, "rotation_degrees:x", 0, 0.2)	# reset pandangan 1
-	tween_pandangan_2a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:y", 0, 0.2)			# reset pandangan 2
-	tween_pandangan_3a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:x", 0, 0.25)			# reset pandangan 3
-	tween_pandangan_3b.tween_property(self, "rotation_degrees:y", 0, 0.25)								# reset pandangan 3
-	tween_pandangan_1a.play()
-	tween_pandangan_2a.play()
-	tween_pandangan_3a.play()
-	tween_pandangan_3b.play()
+	atur_ulang_arah_pandangan()
 	if !ubah: mode_kontrol = nilai; return
 	if transisi:
 		if _karakter.kontrol:	$kamera/transisi.visible = true
@@ -183,6 +164,19 @@ func atur_mode_kendaraan(mode : bool) -> void:
 	if mode and mode_kontrol == 1:		atur_mode(2)
 	elif !mode and mode_kontrol == 2:	atur_mode(1)
 	mode_kendaraan = mode
+func atur_ulang_arah_pandangan() -> void:
+	var tween_pandangan_1a : Tween = get_tree().create_tween()
+	var tween_pandangan_2a : Tween = get_tree().create_tween()
+	var tween_pandangan_3a : Tween = get_tree().create_tween()
+	var tween_pandangan_3b : Tween = get_tree().create_tween()
+	tween_pandangan_1a.tween_property($kamera/rotasi_vertikal/pandangan, "rotation_degrees:x", 0, 0.2)	# reset pandangan 1
+	tween_pandangan_2a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:y", 0, 0.2)			# reset pandangan 2
+	tween_pandangan_3a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:x", 0, 0.25)			# reset pandangan 3
+	tween_pandangan_3b.tween_property(self, "rotation_degrees:y", 0, 0.25)								# reset pandangan 3
+	tween_pandangan_1a.play()
+	tween_pandangan_2a.play()
+	tween_pandangan_3a.play()
+	tween_pandangan_3b.play()
 func atur_ulang_posisi_z_kustom() -> void:
 	posisi_z_kustom = 0.15
 func atur_ulang_posisi_pandangan_belakang() -> void:
