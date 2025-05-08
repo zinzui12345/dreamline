@@ -179,11 +179,15 @@ func _input(event: InputEvent) -> void:
 		if Input.is_action_just_pressed("aksi2"):
 			await get_tree().create_timer(0.1).timeout
 			server.gunakan_entitas(name, "_berhenti_mengemudi")
+		if Input.is_action_just_pressed("berlari"):
+			dunia.get_node("pemain/"+str(id_pengendara)+"/pengamat").atur_ulang_arah_pandangan()
 	
 	if id_penumpang == client.id_koneksi and dunia.get_node("pemain/"+str(id_penumpang)).kontrol:
 		if Input.is_action_just_pressed("aksi2"):
 			await get_tree().create_timer(0.1).timeout
 			server.gunakan_entitas(name, "_berhenti_menumpang")
+		if Input.is_action_just_pressed("berlari"):
+			dunia.get_node("pemain/"+str(id_penumpang)+"/pengamat").atur_ulang_arah_pandangan()
 
 func fokus() -> void:
 	if id_pengendara == -1 or id_penumpang == -1:

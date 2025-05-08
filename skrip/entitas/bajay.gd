@@ -187,6 +187,9 @@ func _input(_event): # lepas walaupun tidak di-fokus
 		
 		if Input.is_action_pressed("lompat"):	self.brake = Input.get_action_strength("lompat") * 1.5
 		else:									self.brake = 0
+		
+		if Input.is_action_just_pressed("berlari"):
+			dunia.get_node("pemain/"+str(id_pengemudi)+"/pengamat").atur_ulang_arah_pandangan()
 
 func fokus():
 	if id_pengemudi == -1 :
