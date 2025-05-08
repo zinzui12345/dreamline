@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 07/05/25 Early Access"
+const versi = "Dreamline v0.4.4 08/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1140,7 +1140,14 @@ func _edit_objek(jalur : String) -> void:
 	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
 	if edit_objek is objek:		edit_objek.set_process(true)
 	elif edit_objek is npc_ai:	edit_objek.set_process(true)
-	elif edit_objek is entitas:	pass
+	elif edit_objek is entitas:
+		if edit_objek is VehicleBody3D:
+			edit_objek.axis_lock_linear_x = true
+			edit_objek.axis_lock_linear_y = true
+			edit_objek.axis_lock_linear_z = true
+		elif edit_objek is RigidBody3D:
+			edit_objek.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+			edit_objek.freeze = true
 	else: edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
@@ -1255,6 +1262,13 @@ func _berhenti_mengedit_objek() -> void:
 	$kontrol_sentuh/kontrol_pandangan.visible = true
 	# 06/10/24 :: nonaktifkan proses sinkronisasi objek pada client
 	if edit_objek is objek: edit_objek.set_process(false)
+	elif edit_objek is entitas:
+		if edit_objek is VehicleBody3D:
+			edit_objek.axis_lock_linear_x = false
+			edit_objek.axis_lock_linear_y = false
+			edit_objek.axis_lock_linear_z = false
+		elif edit_objek is RigidBody3D:
+			edit_objek.freeze = false
 	else: edit_objek.process_mode = Node.PROCESS_MODE_INHERIT
 	edit_objek = null
 	$pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
@@ -1555,8 +1569,11 @@ func _tampilkan_permainan() -> void:
 	$hud/efek_cahaya.modulate = Color(0, 0, 0, 0)
 	$kontrol_sentuh.visible = Konfigurasi.mode_kontrol_sentuh
 	_ketika_mengatur_mode_kontrol_gerak(Konfigurasi.mode_kontrol_gerak)
+	$kontrol_sentuh/menu.visible = true
 	$kontrol_sentuh/chat.visible = true
 	$kontrol_sentuh/zoom.visible = true
+	$kontrol_sentuh/lompat.visible = true
+	$kontrol_sentuh/jongkok.visible = true
 	$kontrol_sentuh/daftar_pemain.visible = true
 	$kontrol_sentuh/mode_pandangan.visible = true
 	$daftar_objek/tutup/TouchScreenButton.visible = Konfigurasi.mode_kontrol_sentuh
@@ -1576,6 +1593,7 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
 	$kontrol_sentuh/menu.visible = false
+	$kontrol_sentuh/chat.visible = false
 	$kontrol_sentuh/zoom.visible = false
 	$kontrol_sentuh/lompat.visible = false
 	$kontrol_sentuh/jongkok.visible = false
