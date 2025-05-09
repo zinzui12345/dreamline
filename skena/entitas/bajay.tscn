@@ -1411,7 +1411,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 shape = SubResource("ConvexPolygonShape3D_dic3f")
 
 [node name="fisik_pemain" type="AnimatableBody3D" parent="."]
-collision_layer = 320
+collision_layer = 64
 collision_mask = 0
 sync_to_physics = false
 
