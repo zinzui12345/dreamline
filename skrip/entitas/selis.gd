@@ -67,21 +67,22 @@ var id_penumpang = -1:
 				dunia.get_node("pemain/"+str(id_penumpang)).rotation.z = 0
 				call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id_penumpang)))
 		id_penumpang = id
-var arah_stir : Vector2
-var arah_belok : float
-var kecepatan_laju : Vector3
-var klakson : bool :
+@export var arah_stir : Vector2
+@export var arah_belok : float
+@export var kecepatan_laju : Vector3
+@export var klakson : bool :
 	set(bunyi):
 		if bunyi:	$AudioKlakson.play()
 		else:		$AudioKlakson.stop()
 		klakson = bunyi
 
-const kecepatan_maju = 60			# daya Watt * 10 atau m/s^2 (Newton)
+const kecepatan_maju = 40			# daya Watt * 10 atau m/s^2 (Newton)
 const kecepatan_mundur = 20
 const batas_putaran_stir = 0.65		# persentase sudut (radian) / 37.24 (degree)
 const pusat_massa_seimbang = -0.25	# posisi pusat gravitasi (y) ketika dikendarai agar tidak terjatuh ke samping
 const pusat_massa_netral = -0.15	# posisi pusat gravitasi (y) pada saat diparkir
 const posisi_kamera_pandangan_belakang = 3.0
+const ukuran_bunyi_maksimal_akselerasi = 2.5
 
 func mulai() -> void:
 	mat1 = $model/rangka.get_surface_override_material(0).duplicate()
@@ -135,7 +136,7 @@ func proses(waktu_delta : float) -> void:
 		elif Input.is_action_pressed("kanan"):	arah_stir.x = -Input.get_action_strength("kanan");	#set("axis_lock_angular_z", false)
 		else: arah_stir.x = 0;				  #if rotation.z == 0:	set("axis_lock_angular_z", true)
 		
-		if Input.is_action_pressed("lompat"): $roda_belakang.brake = Input.get_action_strength("lompat") * 15
+		if Input.is_action_pressed("lompat"): $roda_belakang.brake = Input.get_action_strength("lompat") * 7
 		else: $roda_belakang.brake = 0
 		
 		if arah_stir.y > 0:	  	set("engine_force", kecepatan_maju * arah_stir.y)
@@ -144,6 +145,18 @@ func proses(waktu_delta : float) -> void:
 		
 		kecepatan_laju = get("linear_velocity") * transform.basis
 		
+		# 09/05/25 :: sesuaikan audio akselerasi
+		if kecepatan_laju.z > 0:
+			if !$AudioAkselerasiMesin.playing: $AudioAkselerasiMesin.play()
+			if kecepatan_laju.z < 2.5 and $AudioAkselerasiMesin.get("parameters/switch_to_clip") != &"kecepatan 1":
+				$AudioAkselerasiMesin.set("parameters/switch_to_clip", &"kecepatan 1")
+			elif kecepatan_laju.z >= 2.5 and kecepatan_laju.z < 5.5 and $AudioAkselerasiMesin.get("parameters/switch_to_clip") != &"kecepatan 2":
+				$AudioAkselerasiMesin.set("parameters/switch_to_clip", &"kecepatan 2")
+			elif kecepatan_laju.z >= 5.5 and kecepatan_laju.z < 15.0 and $AudioAkselerasiMesin.get("parameters/switch_to_clip") != &"kecepatan 3":
+				$AudioAkselerasiMesin.set("parameters/switch_to_clip", &"kecepatan 3")
+			$AudioAkselerasiMesin.unit_size = server.permainan.interpolasi(kecepatan_laju.z, 0.0, 15.0, 0.5, ukuran_bunyi_maksimal_akselerasi)
+		elif $AudioAkselerasiMesin.playing: $AudioAkselerasiMesin.stop()
+		
 		# 01/05/25 :: kalau kecepatan_laju x 0 ~ 0.25 sesuaikan center_mass.y
 		var kecepatan_belok : float = server.permainan.interpolasi(absf(kecepatan_laju.z), 0.0, 20.0, 0.0, 1.0)
 		set_indexed("center_of_mass:y", server.permainan.interpolasi(absf(kecepatan_laju.x) * kecepatan_belok, 0.0, 0.25, pusat_massa_seimbang, pusat_massa_netral))
@@ -151,13 +164,14 @@ func proses(waktu_delta : float) -> void:
 		if arah_stir.x != 0:
 			arah_belok = arah_stir.x * batas_putaran_stir
 			var persentase_rotasi = server.permainan.dapatkanNilaiPersentase(abs(get("steering")), rad_to_deg(batas_putaran_stir))
-			var nilai_rotasi = clamp(persentase_rotasi, 0.1, 1.0)
-			$roda_depan.wheel_roll_influence	= nilai_rotasi
-			$roda_belakang.wheel_roll_influence = nilai_rotasi
+			var torsi_kemiringan : float = clamp(persentase_rotasi, 0.25, 1.0)
+			$roda_depan.wheel_roll_influence	= torsi_kemiringan
+			$roda_belakang.wheel_roll_influence = torsi_kemiringan
 		else:
 			arah_belok = 0
-			$roda_depan.wheel_roll_influence = 0.1
-			$roda_belakang.wheel_roll_influence = 0.1
+			var torsi_kemiringan : float = server.permainan.interpolasi(kecepatan_laju.z, 0.0, 5.0, 0.25, 1.0)
+			$roda_depan.wheel_roll_influence = torsi_kemiringan
+			$roda_belakang.wheel_roll_influence = torsi_kemiringan
 		
 		set("steering", move_toward(get("steering"), arah_belok, waktu_delta))
 	
