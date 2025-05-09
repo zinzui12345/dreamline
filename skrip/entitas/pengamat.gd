@@ -17,6 +17,7 @@ var posisi_pandangan_belakang : float = 1.5:	# jarak posisi pandangan z pada mod
 			tween_pandangan_belakang.play()
 		posisi_pandangan_belakang = nilai
 var putaranMinVertikalPandangan : float = -85.0
+var putaranMinVertikalPandanganKendaraan : float = -45.0
 var putaranMaxVertikalPandangan : float = 90.0
 var posisiAwalVertikalPandangan : float
 
@@ -43,9 +44,6 @@ func _process(delta : float) -> void:
 				# 08/05/25 :: jangan rotasi arah x dan z mode pandangan 3 ketika menaiki kendaraan 
 				elif mode_kontrol == 3:
 					rotation.y = lerp_angle(rotation.y, deg_to_rad(0.0), 0.5 * delta)
-			if mode_kontrol == 2 and get_node("%pandangan").position.z != posisi_z_kustom:
-				# TODO : hanya gunakan posisi kustom bila arah pandangan vertikal lebih dari 0.5
-				get_node("%pandangan").position.z = posisi_z_kustom
 			if mode_kontrol == 3:
 				global_rotation.x = lerp_angle(global_rotation.x, deg_to_rad(0.0), 7.5 * delta)
 				global_rotation.z = lerp_angle(global_rotation.z, deg_to_rad(0.0), 7.5 * delta)
@@ -73,7 +71,7 @@ func _process(delta : float) -> void:
 							_karakter.arah_pandangan.y = arah_pandangan
 				2:
 					get_node("%pandangan").rotation_degrees.x -= rotasi.x
-					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, -45, putaranMaxVertikalPandangan)
+					get_node("%pandangan").rotation_degrees.x = clamp(get_node("%pandangan").rotation_degrees.x, putaranMinVertikalPandanganKendaraan, putaranMaxVertikalPandangan)
 					get_node("%target").rotation_degrees.x = -get_node("%pandangan").rotation_degrees.x
 					if _karakter.gestur == "berdiri" and (_karakter.arah.x != 0 or _karakter.arah.z != 0):
 						_karakter.rotation.y = lerp_angle(_karakter.rotation.y, $kamera/rotasi_vertikal.global_rotation.y, 0.4)
@@ -85,12 +83,24 @@ func _process(delta : float) -> void:
 					gerakan = Vector2.ZERO
 					if _karakter.get("_input_arah_pandangan") != null: _karakter._input_arah_pandangan = Vector2.ZERO
 					if _karakter.get("arah_pandangan") != null:
+						# arah pandangan horizontal karakter y ==> (x)
 						if $kamera/rotasi_vertikal.rotation_degrees.y > 0:
 							_karakter.arah_pandangan.x = -$kamera/rotasi_vertikal.rotation_degrees.y / 70
 						elif $kamera/rotasi_vertikal.rotation_degrees.y < 0:
 							_karakter.arah_pandangan.x = $kamera/rotasi_vertikal.rotation_degrees.y / -70
 						else:
 							_karakter.arah_pandangan.x = 0
+						# arah pandangan vertikal karakter x ==> (y)
+						if get_node("%pandangan").rotation_degrees.x > 0:
+							var persentase_arah : float = -get_node("%pandangan").rotation_degrees.x / putaranMaxVertikalPandangan
+							_karakter.arah_pandangan.y = persentase_arah
+							get_node("%pandangan").position.z = posisi_z_kustom * absf(persentase_arah)
+						elif get_node("%pandangan").rotation_degrees.x < 0:
+							var persentase_arah : float = get_node("%pandangan").rotation_degrees.x / putaranMinVertikalPandanganKendaraan
+							_karakter.arah_pandangan.y = persentase_arah
+							get_node("%pandangan").position.z = posisi_z_kustom * persentase_arah
+						else:
+							_karakter.arah_pandangan.y = 0
 				3:
 					$kamera/rotasi_vertikal.rotation_degrees.x += rotasi.x
 					$kamera/rotasi_vertikal.rotation_degrees.x = clamp($kamera/rotasi_vertikal.rotation_degrees.x, -65, putaranMaxVertikalPandangan)
@@ -144,7 +154,6 @@ func atur_mode(nilai : int) -> void:
 	var ubah : bool = (mode_kontrol != nilai)
 	mode_kontrol = 0 # nonaktifkan kontrol
 	atur_ulang_arah_pandangan()
-	atur_ulang_arah_pandangan_kendaraan()
 	if !ubah: mode_kontrol = nilai; return
 	if transisi:
 		if _karakter.kontrol:	$kamera/transisi.visible = true
@@ -168,28 +177,34 @@ func ubah_mode() -> void:
 func atur_mode_kendaraan(mode : bool) -> void:
 	if mode and mode_kontrol == 1:		atur_mode(2)
 	elif !mode and mode_kontrol == 2:	atur_mode(1)
-	atur_ulang_arah_pandangan_kendaraan()
+	atur_ulang_arah_pandangan()
 	mode_kendaraan = mode
 func atur_ulang_arah_pandangan() -> void:
 	var tween_pandangan_1a : Tween = get_tree().create_tween()
 	var tween_pandangan_2a : Tween = get_tree().create_tween()
 	var tween_pandangan_3a : Tween = get_tree().create_tween()
 	var tween_pandangan_3b : Tween = get_tree().create_tween()
+	var tween_pandangan_3c : Tween = get_tree().create_tween()
+	var tween_pandangan_3d : Tween = get_tree().create_tween()
 	tween_pandangan_1a.tween_property($kamera/rotasi_vertikal/pandangan, "rotation_degrees:x", 0, 0.2)	# reset pandangan 1
 	tween_pandangan_2a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:y", 0, 0.2)			# reset pandangan 2
 	tween_pandangan_3a.tween_property($kamera/rotasi_vertikal, "rotation_degrees:x", 0, 0.25)			# reset pandangan 3
 	tween_pandangan_3b.tween_property(self, "rotation_degrees:y", 0, 0.25)								# reset pandangan 3
+	tween_pandangan_3c.tween_property(self, "rotation_degrees:x", 0, 0.2)								# reset pandangan 3 kendaraan
+	tween_pandangan_3d.tween_property(self, "rotation_degrees:z", 0, 0.2)								# reset pandangan 3 kendaraan
 	tween_pandangan_1a.play()
 	tween_pandangan_2a.play()
 	tween_pandangan_3a.play()
 	tween_pandangan_3b.play()
-func atur_ulang_arah_pandangan_kendaraan() -> void:
-	var tween_pandangan_3a : Tween = get_tree().create_tween()
-	var tween_pandangan_3b : Tween = get_tree().create_tween()
-	tween_pandangan_3a.tween_property(self, "rotation_degrees:x", 0, 0.2)								# reset pandangan 3
-	tween_pandangan_3b.tween_property(self, "rotation_degrees:z", 0, 0.2)								# reset pandangan 3
-	tween_pandangan_3a.play()
-	tween_pandangan_3b.play()
+	tween_pandangan_3c.play()
+	tween_pandangan_3d.play()
+	if mode_kontrol == 2:
+		var tween_pandangan_1b : Tween = get_tree().create_tween()
+		tween_pandangan_1b.tween_property($kamera/rotasi_vertikal/pandangan, "position:z", 0, 0.2)		# reset pandangan 2
+		tween_pandangan_1b.play()
+	if _karakter.get("arah_pandangan") != null:
+		_karakter.arah_pandangan.x = 0
+		_karakter.arah_pandangan.y = 0
 func atur_ulang_posisi_z_kustom() -> void:
 	posisi_z_kustom = 0.15
 func atur_ulang_posisi_pandangan_belakang() -> void:
