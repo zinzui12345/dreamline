@@ -45,12 +45,12 @@ script = SubResource("GDScript_hcnrk")
 
 [node name="pandangan" type="Camera3D" parent="kamera/rotasi_vertikal"]
 unique_name_in_owner = true
-transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -0.5, 0, -2)
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0, 0, -2)
 cull_mask = 1048573
 far = 400.0
 
 [node name="kursor_objek" parent="kamera/rotasi_vertikal/pandangan" instance=ExtResource("1_jin47")]
-transform = Transform3D(-1, 0, 1.50996e-07, 0, 1, 0, -1.50996e-07, 0, -1, -2.1, -1, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 
 [node name="target" type="RayCast3D" parent="kamera/rotasi_vertikal"]
 unique_name_in_owner = true

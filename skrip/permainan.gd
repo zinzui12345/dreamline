@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 08/05/25 Early Access"
+const versi = "Dreamline v0.4.4 09/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -384,21 +384,21 @@ func _process(delta : float) -> void:
 		if Input.is_action_just_released("daftar_pemain") and $hud/daftar_pemain/panel.anchor_left > -1: _sembunyikan_daftar_pemain()
 		
 		# kontrol rotasi pandangan ketika mengedit objek
-		if get_node_or_null("pengamat") != null and !server.mode_replay and !server.mode_uji_performa:
-			if $pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
+		if $hud/tampilan_objek/viewport_objek.get_node_or_null("pengamat") != null and !server.mode_replay and !server.mode_uji_performa:
+			if $hud/tampilan_objek/viewport_objek/pengamat/kamera/rotasi_vertikal/pandangan.current and $hud/daftar_properti_objek/DragPad.visible:
 				_rotasi_tampilan_objek = Vector3(_arah_gestur_tampilan_objek.y, _arah_gestur_tampilan_objek.x, 0) * Konfigurasi.sensitivitas_pandangan * delta
 				if _arah_gestur_tampilan_objek != _gerakan_gestur_tampilan_objek:
-					$pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
-					$pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
+					$hud/tampilan_objek/viewport_objek/pengamat/kamera/rotasi_vertikal.rotation_degrees.x += _rotasi_tampilan_objek.x
+					$hud/tampilan_objek/viewport_objek/pengamat/kamera.rotation_degrees.y -= _rotasi_tampilan_objek.y
 					_arah_gestur_tampilan_objek = Vector2.ZERO
 					_gerakan_gestur_tampilan_objek = _arah_gestur_tampilan_objek
 				
 				# kontrol zoom pengamat objek
 				if Input.is_action_just_pressed("perdekat_pandangan") or Input.is_action_just_pressed("perjauh_pandangan"):
 					if _touchpad_disentuh:
-						$pengamat/posisi_mata.fungsi_zoom = true
+						$hud/tampilan_objek/viewport_objek/pengamat/posisi_mata.fungsi_zoom = true
 					else:
-						$pengamat/posisi_mata.fungsi_zoom = false
+						$hud/tampilan_objek/viewport_objek/pengamat/posisi_mata.fungsi_zoom = false
 	
 	if Input.is_action_just_pressed("ui_cancel"):
 		if is_instance_valid(karakter): # ketika dalam permainan
@@ -684,7 +684,7 @@ func _muat_map(file_map : StringName) -> void:
 			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
 			call_deferred("_atur_persentase_memuat", 70)
 			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
-			call_deferred("add_child", pengamat_objek)
+			call_deferred("_tambahkan_pengamat_objek", pengamat_objek)
 			# tambahkan pemain
 			call_deferred("_tambahkan_pemain", 1, data)
 			server.pemain["admin"] = {
@@ -968,7 +968,7 @@ func _muat_map(file_map : StringName) -> void:
 			# tambah pengamat objek
 			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
 			call_deferred("_atur_persentase_memuat", 50)
-			call_deferred("add_child", pengamat_objek)
+			call_deferred("_tambahkan_pengamat_objek", pengamat_objek)
 			# cek depedensi map
 			if map.get("depedensi") != null:
 				call_deferred("_atur_teks_memuat", "%mengunduh_aset%")
@@ -1135,6 +1135,8 @@ func _kirim_pesan() -> void:
 		$pesan/layout_input_pesan/input_pesan.text = ""
 	$pesan/layout_input_pesan/input_pesan.release_focus()
 	$pesan/layout_input_pesan/input_pesan.grab_focus()
+func _tambahkan_pengamat_objek(pengamat_objek : Node3D):
+	$hud/tampilan_objek/viewport_objek.add_child(pengamat_objek)
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
 	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
@@ -1183,7 +1185,7 @@ func _edit_objek(jalur : String) -> void:
 	$hud/daftar_properti_objek/panel/kontainer/transformasi_y/kurangi_translasi_y.disabled = true
 	$hud/daftar_properti_objek/panel/kontainer/transformasi_z/kurangi_translasi_z.disabled = true
 	#$hud/panel_perdekat_objek/perdekat_objek.min_value = -Konfigurasi.jarak_render
-	$hud/panel_perdekat_objek/perdekat_objek.value = $pengamat.get_node("%pandangan").position.z
+	$hud/panel_perdekat_objek/perdekat_objek.value = $hud/tampilan_objek/viewport_objek/pengamat.get_node("%pandangan").position.z
 	$mode_bermain.visible = false
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "tutup_panel_objek"
@@ -1234,9 +1236,9 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_properti_objek/panel/kontainer/pemisah_6.visible = true
 	# 29/06/24 :: alihkan pengamat
 	await get_tree().create_timer(0.1).timeout
-	$pengamat.get_node("%pandangan").make_current()
-	$pengamat.set_process(true)
-	$pengamat.visible = true
+	$hud/tampilan_objek/viewport_objek/pengamat.get_node("%pandangan").make_current()
+	$hud/tampilan_objek/viewport_objek/pengamat.set_process(true)
+	$hud/tampilan_objek/viewport_objek/pengamat.visible = true
 func _berhenti_mengedit_objek() -> void:
 	$hud/daftar_properti_objek/animasi.play("sembunyikan")
 	$hud/daftar_properti_objek/panel/kontainer/properti_kustom.visible = false
@@ -1271,9 +1273,9 @@ func _berhenti_mengedit_objek() -> void:
 			edit_objek.freeze = false
 	else: edit_objek.process_mode = Node.PROCESS_MODE_INHERIT
 	edit_objek = null
-	$pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
-	$pengamat.set_process(false)
-	$pengamat.visible = false
+	$hud/tampilan_objek/viewport_objek/pengamat/kamera/rotasi_vertikal/pandangan.clear_current()
+	$hud/tampilan_objek/viewport_objek/pengamat.set_process(false)
+	$hud/tampilan_objek/viewport_objek/pengamat.visible = false
 	karakter._atur_kendali(true)
 	karakter.get_node("pengamat").atur_mode(_mode_pandangan_sblm_edit_objek)
 	karakter.get_node("pengamat").aktifkan(true)
@@ -1413,7 +1415,9 @@ func putuskan_server(paksa : bool = false) -> void:
 		for d_objek in %DaftarObjek.get_children(): d_objek.queue_free()
 		
 		# hapus pengamat objek
-		if get_node_or_null("pengamat") != null:
+		if $hud/tampilan_objek/viewport_objek.get_node_or_null("pengamat") != null:
+			$hud/tampilan_objek/viewport_objek/pengamat.queue_free()
+		elif get_node_or_null("pengamat") != null:
 			$pengamat.queue_free()
 		
 		# INFO : (9) tampilkan kembali menu utama
@@ -1661,6 +1665,7 @@ func _tambah_server_lan(ip : String, sys : String, nama : StringName, nama_map :
 	server_lan.button_group = client.pilih_server
 	$daftar_server/panel/daftar_lan/layout.add_child(server_lan)
 func _pilih_server_lan(ip : String) -> void:
+	$menu_utama/bunyi_pilih.play()
 	$daftar_server/panel/panel_input/input_ip.text = ip
 	$daftar_server/panel/panel_input/sambungkan.grab_focus()
 func _hapus_server_lan(ip : String) -> void:
@@ -2118,7 +2123,7 @@ func _ketika_mengganti_kode_objek(kode_pengganti : BlockCode) -> void:
 func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
-			$pengamat.get_node("%pandangan").position.z = jarak
+			$hud/tampilan_objek/viewport_objek/pengamat.get_node("%pandangan").position.z = jarak
 func _tampilkan_popup_informasi(teks_informasi : String, fokus_setelah : Control) -> void:
 	# 16/06/24 :: ketika dalam permainan
 	if is_instance_valid(karakter) and !jeda: _jeda()
@@ -2537,7 +2542,7 @@ func _jeda() -> void:
 	if is_instance_valid(karakter) and karakter.has_method("_atur_kendali"):
 		if $hud/daftar_pemain.visible:	_sembunyikan_daftar_pemain()
 		if get_node_or_null("pengamat") != null and !server.mode_replay \
-			and !server.mode_uji_performa and $pengamat/kamera/rotasi_vertikal/pandangan.current:
+			and !server.mode_uji_performa and $hud/tampilan_objek/viewport_objek/pengamat/kamera/rotasi_vertikal/pandangan.current:
 			pass
 		else:
 			if memasang_objek: _tutup_daftar_objek(true)
