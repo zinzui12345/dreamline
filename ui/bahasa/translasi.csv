@@ -142,6 +142,11 @@ INPUTHAPUS,hapus,delete
 %meluncur,Meluncur,Slide
 %masuki_k,Naiki,Enter
 %keluar_k,Turun,Exit
+%reset_posisi_objek%,Atur-ulang Posisi,Reset Position
+%reset_rotasi_objek%,Atur-ulang Rotasi,Reset Rotation
+%reset_skala_objek%,Atur-ulang Skala,Reset Scale
+%hapus_objek%,Hapus,Delete
+%gagal_menghapus_objek%,Tidak dapat menghapus objek,Failed while deleting object
 ,,
 # dialog,,
 login_akun,Masuk,Login
@@ -301,6 +306,7 @@ damage_serangan,damage_serangan,attack_damage
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?
 %putuskan_server,"Masih ada pemain yang terhubung, hentikan peladen?","There are players still connected, stop the server?"
+%konfirmasi_hapus_objek%,Hapus Objek ini?,Delete this Object?
 %lanjut,Lanjut,Next
 %lanjutkan%,Lanjutkan,Continue
 %login_guest%,Bermain tanpa Akun,Play without Account

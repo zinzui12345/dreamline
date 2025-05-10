@@ -329,6 +329,10 @@ func _setup() -> void:
 	# jangan render daftar objek
 	%DaftarObjek.visible = false
 	
+	# atur menu properti objek
+	var menu_properti_objek : PopupMenu = $hud/daftar_properti_objek/panel/kontainer/jalur_objek/menu.get_popup()
+	menu_properti_objek.connect("id_pressed", _ketika_memilih_menu_properti_objek)
+	
 	# INFO : (3) tampilkan menu utama
 	$latar.tampilkan()
 	await get_tree().create_timer(0.15).timeout
@@ -1153,6 +1157,8 @@ func _edit_objek(jalur : String) -> void:
 		elif edit_objek is RigidBody3D:
 			edit_objek.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 			edit_objek.freeze = true
+		if edit_objek.get("linear_velocity") != null:
+			edit_objek.set("linear_velocity", Vector3.ZERO)
 	else: edit_objek.process_mode = Node.PROCESS_MODE_DISABLED
 	karakter._atur_kendali(false)
 	karakter.get_node("pengamat").set("kontrol", true)
@@ -1193,11 +1199,14 @@ func _edit_objek(jalur : String) -> void:
 	_pilih_tab_posisi_objek()
 	tombol_aksi_2 = "tutup_panel_objek"
 	_touchpad_disentuh = false
-	# TODO : dapetin properti kustom objek; mis. kondisi
 	for p in $hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris.get_children(): p.visible = false
 	if edit_objek.has_meta("id_objek"):
 		$hud/daftar_properti_objek/panel/kontainer/properti_kustom.visible = true
 		$hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris/id.atur_nilai(edit_objek.get_meta("id_objek"))
+		$hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris/id.visible = true
+	elif edit_objek.has_meta("id_entitas"):
+		$hud/daftar_properti_objek/panel/kontainer/properti_kustom.visible = true
+		$hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris/id.atur_nilai(edit_objek.get_meta("id_entitas"))
 		$hud/daftar_properti_objek/panel/kontainer/properti_kustom/baris/id.visible = true
 	if edit_objek.get("warna_1") != null:
 		$hud/daftar_properti_objek/panel/kontainer/properti_kustom.visible = true
@@ -1233,10 +1242,18 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_properti_objek/panel/kontainer/transformasi_z/kurangi_translasi_z.disabled = false
 	if edit_objek.get("skala") != null:
 		$hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala.disabled = false
+		$hud/daftar_properti_objek/panel/kontainer/jalur_objek/menu.set("popup/item_2/disabled", false)
+	else:
+		$hud/daftar_properti_objek/panel/kontainer/jalur_objek/menu.set("popup/item_2/disabled", true)
 	# 06/06/24 :: cek apakah objek memiliki node skrip, kemudian aktifkan visibilitas tombol edit skrip
 	if edit_objek.get_node_or_null("kode_ubahan") != null and edit_objek.get_node("kode_ubahan") is BlockCode:
 		$hud/daftar_properti_objek/panel/kontainer/edit_skrip.visible = true
 		$hud/daftar_properti_objek/panel/kontainer/pemisah_6.visible = true
+	# 10/05/25 :: cek apakah objek bisa dihapus
+	if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
+		$hud/daftar_properti_objek/panel/kontainer/jalur_objek/menu.set("popup/item_4/disabled", false)
+	else:
+		$hud/daftar_properti_objek/panel/kontainer/jalur_objek/menu.set("popup/item_4/disabled", true)
 	# 29/06/24 :: alihkan pengamat
 	await get_tree().create_timer(0.1).timeout
 	$hud/tampilan_objek/viewport_objek/pengamat.get_node("%pandangan").make_current()
@@ -2360,6 +2377,75 @@ func _buka_log() -> void:
 	aa.open_window()
 func _tampilkan_konsol() -> void: Panku.toggle_console_action_just_pressed.emit()
 func lepaskan_kursor_mouse() -> void: Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+func _ketika_memilih_menu_properti_objek(indeks_menu : int) -> void:
+	# 10/05/25 :: sesuaikan aksi dengan id menu
+	# 0 => reset posisi objek
+	# 1 => reset rotasi objek
+	# 2 => reset skala objek
+	# 3 => -----pemisah-----
+	# 4 => hapus objek
+	if edit_objek != null:
+		if edit_objek is objek:
+			# If you choose to give your heart away, put it in my hands - I won't break it
+			# We both laughed like every other day - but I really meant what I sait to you
+			# I made it in time, I can't believe it
+			# The city was fast asleep - but we didn't care one bit at all
+			# Hey can we start where we left off?
+			# And build our castle again - So let's go - up on that hill where you feel the ocean breeze
+			# My hands are cold - from holding this soda can
+			# I wonder if you'd let me - hold on to yours
+			# All my life - I will reach out for you
+			pass
+		elif edit_objek is entitas:
+			await get_tree().create_timer(0.05).timeout
+			match indeks_menu:
+				0:
+					edit_objek.set_indexed("global_position", edit_objek.posisi_awal)#;	Panku.notify("My tears still reflect all the light we've gathered~")
+					if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_posisi.button_pressed:
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.global_position.x
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.global_position.y
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.global_position.z
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
+				1:
+					edit_objek.set_indexed("rotation_degrees", edit_objek.rotasi_awal)#;	Panku.notify("And now it's shining in my direction~")
+					if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_rotasi.button_pressed:
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.rotation_degrees.x
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.rotation_degrees.y
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.rotation_degrees.z
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
+				2:
+					edit_objek.set_indexed("skala", Vector3(1, 1, 1))
+					if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala.button_pressed:
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.skala.x
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.skala.y
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.skala.z
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+						$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
+				4:
+					if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
+						_tampilkan_popup_konfirmasi($menu_jeda/menu/kontrol/Panel/lanjutkan, _ketika_menghapus_objek_diedit, "%konfirmasi_hapus_objek%")
+		#Panku.notify("Aoi Shiori")
+	#Panku.notify(indeks_menu)
+func _ketika_menghapus_objek_diedit() -> void:
+	if edit_objek != null and !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
+		server.hapus_objek(edit_objek.get_path())
+		berhenti_mengedit_objek()
+	else:
+		_tampilkan_popup_informasi_("%gagal_menghapus_objek%")
 func berhenti_mengedit_objek() -> void:
 	if edit_objek != null:
 		server.edit_objek(edit_objek.name, false)

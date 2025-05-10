@@ -1,4 +1,4 @@
-[gd_scene load_steps=364 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=368 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -22,17 +22,21 @@
 [ext_resource type="Texture2D" uid="uid://b7tn5ukllv270" path="res://ui/ikon/ikon_tombol_kirim_pesan.svg" id="6_y0cdn"]
 [ext_resource type="Texture2D" uid="uid://bc0g7tkpje5k0" path="res://ui/ikon/ikon_tombol_server.svg" id="7_ayqde"]
 [ext_resource type="Texture2D" uid="uid://u5qa5utnccrr" path="res://ui/ikon/ikon_rotasi_objek.svg" id="7_o72dh"]
+[ext_resource type="Texture2D" uid="uid://dnwl4hy0jjhyk" path="res://ui/ikon/ikon_reset_posisi_objek.svg" id="8_co1nf"]
 [ext_resource type="Texture2D" uid="uid://7v57f8qv74uo" path="res://ui/ikon/ikon_tombol_menu.svg" id="8_gqe5w"]
 [ext_resource type="Texture2D" uid="uid://c2vmm8kdtdj7d" path="res://ui/ikon/ikon_skala_objek.svg" id="8_uxrq1"]
 [ext_resource type="Texture2D" uid="uid://c71wcsoc0kjtr" path="res://ui/ikon/ikon_tombol_join.svg" id="8_wsntl"]
 [ext_resource type="Texture2D" uid="uid://ck61g0gv6mq11" path="res://ui/ikon/ikon_tombol_karakter.svg" id="9_3dohi"]
 [ext_resource type="Texture2D" uid="uid://bwd7jvdcg76jk" path="res://ui/ikon/ikon_tombol_sambungkan.svg" id="9_qt3gh"]
+[ext_resource type="Texture2D" uid="uid://caltm2y515s1u" path="res://ui/ikon/ikon_reset_rotasi_objek.svg" id="9_u26rh"]
 [ext_resource type="Texture2D" uid="uid://diyodg6i58iu7" path="res://ui/ikon/ikon_tab_lan.svg" id="10_ggwxk"]
 [ext_resource type="Texture2D" uid="uid://crpre874tw4x0" path="res://ui/ikon/ikon_tombol_info.svg" id="10_gun25"]
 [ext_resource type="Texture2D" uid="uid://5vuyf64x150p" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_right_outline.svg" id="10_m25e0"]
 [ext_resource type="PackedScene" uid="uid://c6w1ecsxnrmni" path="res://ui/properti_warna.tscn" id="10_p7nt1"]
+[ext_resource type="Texture2D" uid="uid://dgbf6psbeafgy" path="res://ui/ikon/ikon_reset_skala_objek.svg" id="10_r7w88"]
 [ext_resource type="AnimationLibrary" uid="uid://c4gjvh5u16s1j" path="res://ui/animasi_panel.res" id="11_4hn36"]
 [ext_resource type="Texture2D" uid="uid://cd2xek1w7o182" path="res://ui/ikon/ikon_tab_internet.svg" id="11_662sn"]
+[ext_resource type="Texture2D" uid="uid://8utso1pf336v" path="res://ui/ikon/ikon_hapus_objek.svg" id="11_fn87a"]
 [ext_resource type="Texture2D" uid="uid://dfqc0jobjauax" path="res://ui/ikon/ikon_tombol_musik.svg" id="11_lbgy5"]
 [ext_resource type="Texture2D" uid="uid://b2j2r1e7relta" path="res://ui/ikon/ikon_tombol_simpan.svg" id="11_rwow7"]
 [ext_resource type="Texture2D" uid="uid://cewkaq0sv2sge" path="res://ui/ikon/ikon_tombol_keluar.svg" id="12_evk18"]
@@ -363,6 +367,45 @@ bg_color = Color(0.0893947, 0.0893948, 0.0893947, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unh21"]
 bg_color = Color(0.168627, 0.168627, 0.168627, 1)
 
+[sub_resource type="Animation" id="Animation_m37tq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../tampilan_objek:anchor_right")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("../tampilan_objek:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("../tampilan_objek:offset_right")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
 [sub_resource type="Animation" id="Animation_0lfi1"]
 resource_name = "sembunyikan"
 length = 0.4
@@ -585,45 +628,6 @@ tracks/8/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, -288.0]
-}
-
-[sub_resource type="Animation" id="Animation_m37tq"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../tampilan_objek:anchor_right")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("../tampilan_objek:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../tampilan_objek:offset_right")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_u8o78"]
@@ -5597,6 +5601,28 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 1
 text_overrun_behavior = 3
+
+[node name="menu" type="MenuButton" parent="hud/daftar_properti_objek/panel/kontainer/jalur_objek"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 17
+item_count = 5
+popup/item_0/text = "%reset_posisi_objek%"
+popup/item_0/icon = ExtResource("8_co1nf")
+popup/item_0/id = 0
+popup/item_1/text = "%reset_rotasi_objek%"
+popup/item_1/icon = ExtResource("9_u26rh")
+popup/item_1/id = 1
+popup/item_2/text = "%reset_skala_objek%"
+popup/item_2/icon = ExtResource("10_r7w88")
+popup/item_2/id = 2
+popup/item_3/id = 3
+popup/item_3/separator = true
+popup/item_4/text = "%hapus_objek%"
+popup/item_4/icon = ExtResource("11_fn87a")
+popup/item_4/id = 4
 
 [node name="pemisah_1" type="Control" parent="hud/daftar_properti_objek/panel/kontainer"]
 custom_minimum_size = Vector2(0, 8)

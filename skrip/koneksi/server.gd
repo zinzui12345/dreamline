@@ -1310,7 +1310,8 @@ func _pemain_terputus(id_pemain):
 			tmp_entitas.name = nama_entitas
 			tmp_entitas.id_proses = id_pemroses_entitas
 			for p in kondisi_entitas.size():
-				if tmp_entitas.get(kondisi_entitas[p][0]) != null: tmp_entitas.set(kondisi_entitas[p][0], kondisi_entitas[p][1])
+				if tmp_entitas.get(kondisi_entitas[p][0]) != null:	tmp_entitas.set(kondisi_entitas[p][0], kondisi_entitas[p][1])
+				elif kondisi_entitas[p][0] == "id_entitas":			tmp_entitas.set_meta("id_entitas", kondisi_entitas[p][1])
 				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+kondisi_entitas[p][0]+"]")
 			dunia.get_node("entitas").add_child(tmp_entitas, true)
 			tmp_entitas.global_transform.origin = posisi_entitas

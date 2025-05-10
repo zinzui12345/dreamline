@@ -72,6 +72,11 @@ func _setup() -> void:
 					"id_objek",
 					get_meta("id_objek")
 				])
+			else:
+				_sp_properti.append([
+					"id_objek",
+					name
+				])
 			if get("properti") != null:
 				for properti_kustom : Array in get("properti"):
 					_sp_properti.append([

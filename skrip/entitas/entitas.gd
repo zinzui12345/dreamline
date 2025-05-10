@@ -23,12 +23,21 @@ func _ready() -> void:
 func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
-			server._tambahkan_entitas(
-				get("jalur_instance"),
-				global_transform.origin,
-				rotation,
-				get("sinkron_kondisi").duplicate(true)
-			)
+			if get("sinkron_kondisi") != null:
+				var tmp_kondisi : Array = get("sinkron_kondisi").duplicate(true)
+				tmp_kondisi.append([
+					"id_entitas",
+					name
+				])
+				server._tambahkan_entitas(
+					get("jalur_instance"),
+					global_transform.origin,
+					rotation,
+					tmp_kondisi
+				)
+			else:
+				# TODO : tambahkan objek placeholder error
+				return
 		queue_free()
 	else:
 		if get("abaikan_occlusion_culling") != null and get("abaikan_occlusion_culling") == true:
@@ -57,11 +66,12 @@ func sinkronkan_perubahan_kondisi(perubahan_kondisi : Array = []) -> void:
 			# reset kondisi jika entitas jatuh ke void
 			perubahan_kondisi.append(["position", posisi_awal])
 			perubahan_kondisi.append(["rotation", rotasi_awal])
-			global_transform.origin = posisi_awal
-			rotation		 		= rotasi_awal
+			if get("linear_velocity") != null: set("linear_velocity", Vector3.ZERO)
+			global_position		= posisi_awal
+			rotation			= rotasi_awal
 		else:
-			if cek_kondisi["posisi"] != position:	perubahan_kondisi.append(["position", position])
-			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
+			if cek_kondisi["posisi"] != global_position:	perubahan_kondisi.append(["position", global_position])
+			if cek_kondisi["rotasi"] != rotation:			perubahan_kondisi.append(["rotation", rotation])
 		
 		# 24/04/25 :: buat array kondisi kustom
 		var daftar_kondisi_kustom : Array = []
@@ -90,7 +100,7 @@ func sinkronkan_perubahan_kondisi(perubahan_kondisi : Array = []) -> void:
 			server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, perubahan_kondisi)
 	
 	# simpan perubahan kondisi untuk di-cek lagi
-	cek_kondisi["posisi"] = position
+	cek_kondisi["posisi"] = global_position
 	cek_kondisi["rotasi"] = rotation
 	
 	# simpan perubahan kondisi properti kustom untuk di-cek lagi
