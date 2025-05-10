@@ -475,8 +475,7 @@ func _input(event : InputEvent) -> void:
 						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()	# FIXME : ini gak work karena kendali pemain == false!
 						elif objek_target.has_method("gunakan") or objek_target.is_in_group("dapat_diedit"):
 							server.edit_objek(objek_target.name, true)
-						elif objek_target.name == "bidang_raycast" and \
-						 objek_target.get_parent().has_method("gunakan"):
+						elif objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan"):
 							server.edit_objek(objek_target.get_parent().name, true)
 					_:
 						if objek_target.has_method("gunakan"):
@@ -629,7 +628,7 @@ func _physics_process(delta : float) -> void:
 			dunia.get_node("kursor_objek").global_transform.origin = posisi_target
 			# tampilkan tombol buat objek
 			server.permainan.set("tombol_aksi_1", "pasang_objek")
-			server.permainan.get_node("hud/info_posisi").text = "(%s, %s, %s)" % [ posisi_target.x, posisi_target.y, posisi_target.z ]
+			server.permainan.atur_informasi_posisi("(%s, %s, %s)" % [ posisi_target.x, posisi_target.y, posisi_target.z ])
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
 			server.permainan.bantuan_aksi_1 = true
 		elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and objek_target == penarget_serangan_a.get_collider():
@@ -655,14 +654,20 @@ func _physics_process(delta : float) -> void:
 		if peran == Permainan.PERAN_KARAKTER.Arsitek and objek_target.is_in_group("dapat_diedit"):
 			server.permainan.set("tombol_aksi_2", "edit_objek")
 			if objek_target.has_node("kode_ubahan"):
-				server.permainan.get_node("hud/info_posisi").text = objek_target.name + " <<"
+				server.permainan.atur_informasi_posisi(objek_target.name + " <<")
 			else:
-				server.permainan.get_node("hud/info_posisi").text = objek_target.name
+				server.permainan.atur_informasi_posisi(objek_target.name)
 			server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 			server.permainan.bantuan_aksi_2 = true
 		elif objek_target.has_method("gunakan") or (objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan")):
 			if peran == Permainan.PERAN_KARAKTER.Arsitek:
+				if objek_target.name.begins_with("bidang_raycast"): objek_target = objek_target.get_parent()
 				server.permainan.set("tombol_aksi_2", "edit_objek")
+				if objek_target.has_node("kode_ubahan"):
+					server.permainan.atur_informasi_posisi(objek_target.name + " <<")
+				else:
+					server.permainan.atur_informasi_posisi(objek_target.name)
+				server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
 			else:
 				if objek_target.get("efek_cahaya") != null:
 					%pandangan.aktifkan_efek()
@@ -702,7 +707,7 @@ func _physics_process(delta : float) -> void:
 			objek_target.get_parent().efek_cahaya.glow_border_effect = false
 		objek_target = null
 		server.permainan.atur_tampilan_kursor(false)
-		server.permainan.get_node("hud/info_posisi").text = ""
+		server.permainan.atur_informasi_posisi("")
 		if server.permainan.get_node("kontrol_sentuh/aksi_1").visible:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 			server.permainan.bantuan_aksi_1 = false

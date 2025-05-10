@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 09/05/25 Early Access"
+const versi = "Dreamline v0.4.4 10/05/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1139,6 +1139,9 @@ func _tambahkan_pengamat_objek(pengamat_objek : Node3D):
 	$hud/tampilan_objek/viewport_objek.add_child(pengamat_objek)
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
+	if edit_objek == null:
+		_tampilkan_popup_informasi_("null")
+		return
 	# 06/10/24 :: aktifkan proses sinkronisasi objek pada client
 	if edit_objek is objek:		edit_objek.set_process(true)
 	elif edit_objek is npc_ai:	edit_objek.set_process(true)
@@ -1593,6 +1596,7 @@ func _sembunyikan_antarmuka_permainan() -> void:
 	tombol_aksi_3 = "lompat"
 	tombol_aksi_4 = "berlari"
 	$hud.visible = false
+	$hud/info_posisi.visible = false
 	$hud/titik_fokus.visible = false
 	$mode_bermain.visible = false
 	$kontrol_sentuh.visible = false
@@ -2440,6 +2444,8 @@ func tutup_dialog(_file_dialog : Resource) -> void:
 		if Input.is_action_pressed("lompat"): Input.action_release("lompat")
 		karakter._atur_kendali(true)
 		karakter._atur_penarget(true)
+func atur_informasi_posisi(teks : String) -> void:
+	$hud/info_posisi.text = teks
 func atur_tampilan_kursor(tampil : bool) -> void:
 	$hud/titik_fokus.visible = tampil
 func atur_warna_kursor(warna : Color) -> void:
