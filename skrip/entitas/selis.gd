@@ -15,6 +15,7 @@ const sinkron_kondisi = [
 const jalur_instance = "res://skena/entitas/selis.scn"
 const abaikan_occlusion_culling = true
 
+var efek_cahaya : GlowBorderEffectObject
 var mat1 : StandardMaterial3D
 var mat2 : StandardMaterial3D
 var mat3 : StandardMaterial3D
@@ -85,6 +86,7 @@ const posisi_kamera_pandangan_belakang = 3.0
 const ukuran_bunyi_maksimal_akselerasi = 2.5
 
 func mulai() -> void:
+	efek_cahaya = $model
 	mat1 = $model/rangka.get_surface_override_material(0).duplicate()
 	$model/rangka.set_surface_override_material(0, mat1)
 	$model/rangka_lod1.set_surface_override_material(0, mat1)
