@@ -806,7 +806,7 @@ func _pemain_terputus(id_pemain):
 	# * Couple N - Dreamland  ~  Couple N - Love Trip *
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var id_pendorong = pemain[id_pemain_pendorong]["id_client"]
-		if cek_visibilitas_pemain[id_pendorong][id_pemain_didorong] == "spawn":
+		if cek_visibilitas_pemain.has(id_pendorong) and cek_visibilitas_pemain[id_pendorong].has(id_pemain_didorong) and cek_visibilitas_pemain[id_pendorong][id_pemain_didorong] == "spawn":
 			var indeks_pool_pemain = pemain.keys()
 			for i_pool_pemain in indeks_pool_pemain:
 				var id_didorong = pemain[i_pool_pemain]["id_client"]
@@ -1097,9 +1097,12 @@ func _pemain_terputus(id_pemain):
 				# - cek apakah frame sebelumnya telah tersimpan di pool
 				if !pemain[id_sesi_pemain].has("cek_frame"):
 					pemain[id_sesi_pemain]["cek_frame"] = 0
-				# - jika frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
-				if timeline.has(pemain[id_sesi_pemain]["cek_frame"]) and timeline[pemain[id_sesi_pemain]["cek_frame"]].has(id_pemain) and timeline[pemain[id_sesi_pemain]["cek_frame"]][id_pemain] == timeline[frame_sekarang][id_pemain]:
-					timeline[pemain[id_sesi_pemain]["cek_frame"]].erase(id_pemain)
+				if timeline.has(pemain[id_sesi_pemain]["cek_frame"]) and timeline[pemain[id_sesi_pemain]["cek_frame"]].has(id_pemain):
+					var data_frame_sebelumnya : String = JSON.stringify(timeline[pemain[id_sesi_pemain]["cek_frame"]][id_pemain], "", true, true)
+					var data_frame_saat_ini : String = JSON.stringify(timeline[frame_sekarang][id_pemain], "", true, true)
+					# - jika frame saat ini sama dengan frame sebelumnya, hapus frame sebelumnya
+					if data_frame_saat_ini == data_frame_sebelumnya:
+						timeline[pemain[id_sesi_pemain]["cek_frame"]].erase(id_pemain)
 				# - set frame sekarang untuk di-cek pada frame selanjutnya
 				pemain[id_sesi_pemain]["cek_frame"] = frame_sekarang
 @rpc("any_peer") func _sesuaikan_posisi_entitas(nama_entitas : String, id_pemain : int):
@@ -1138,30 +1141,27 @@ func _pemain_terputus(id_pemain):
 			# - cek apakah frame sebelumnya telah tersimpan di pool
 			if !pool_entitas[nama_entitas].has("cek_frame"):
 				pool_entitas[nama_entitas]["cek_frame"] = []
-			# - bandingkan frame saat ini dengan frame sebelumnya
-			elif pool_entitas[nama_entitas]["cek_frame"].size() > 0 and (timeline.has(pool_entitas[nama_entitas]["cek_frame"][0]) and timeline[pool_entitas[nama_entitas]["cek_frame"][0]].has(nama_entitas)):
-				# - set frame sekarang untuk di-cek pada frame selanjutnya
+			else:
+				# - set frame sekarang untuk di-cek pada frame saat ini dan frame selanjutnya
 				pool_entitas[nama_entitas]["cek_frame"].append(frame_sekarang)
-				# - jika frame saat ini sama dengan 3 frame sebelumnya, hapus frame sebelumnya
-				if pool_entitas[nama_entitas]["cek_frame"].size() >= 3:
-					var tiga_frame_terakhir = pool_entitas[nama_entitas]["cek_frame"].slice(-3)
-					if !timeline[tiga_frame_terakhir[0]].has(nama_entitas): pass
-					elif !timeline[tiga_frame_terakhir[1]].has(nama_entitas): pass
-					elif !timeline[tiga_frame_terakhir[2]].has(nama_entitas): pass
-					elif timeline[tiga_frame_terakhir[0]][nama_entitas] == timeline[tiga_frame_terakhir[1]][nama_entitas] and timeline[tiga_frame_terakhir[1]][nama_entitas] == timeline[tiga_frame_terakhir[2]][nama_entitas]:
-						timeline[tiga_frame_terakhir[1]].erase(nama_entitas)
-				# - cek properti jika terdapat properti yang tidak berubah, hapus properti tersebut pada frame sebelumnya
-				if pool_entitas[nama_entitas]["cek_frame"].size() >= 3:
-					var tiga_frame_terakhir = pool_entitas[nama_entitas]["cek_frame"].slice(-3)
-					for p in timeline[frame_sekarang][nama_entitas]["properti"].size():
-						if !timeline[tiga_frame_terakhir[0]].has(nama_entitas): continue
-						if !timeline[tiga_frame_terakhir[1]].has(nama_entitas): continue
-						if !timeline[tiga_frame_terakhir[2]].has(nama_entitas): continue
-						if timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1] == timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1] and timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1] == timeline[tiga_frame_terakhir[2]][nama_entitas]["properti"][p - 1]:
-							# 28/04/25 :: jangan hapus nilai Vector karena tipe datanya tidak dapat dibandingkan
-							if timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1][1] is Vector3 and timeline[tiga_frame_terakhir[0]][nama_entitas]["properti"][p - 1][1] is not Vector3i: pass
-							# hapus properti yang tidak berubah
-							else: timeline[tiga_frame_terakhir[1]][nama_entitas]["properti"][p - 1][1] = null
+				# - pastikan entitas tersimpan pada frame sebelumnya
+				if pool_entitas[nama_entitas]["cek_frame"].size() > 0 and (timeline.has(pool_entitas[nama_entitas]["cek_frame"][0]) and timeline[pool_entitas[nama_entitas]["cek_frame"][0]].has(nama_entitas)):
+					# - lakukan pemeriksaan -> jika frame saat ini sama dengan 3 frame sebelumnya, hapus frame sebelumnya
+					if pool_entitas[nama_entitas]["cek_frame"].size() >= 3:
+						# dapatkan nomor urut frame 3 frame terakhir
+						var tiga_frame_terakhir = pool_entitas[nama_entitas]["cek_frame"].slice(-3)
+						# lewati pemeriksaan jika entitas tidak tersimpan pada ketiga frame terakhir
+						if !timeline[tiga_frame_terakhir[0]].has(nama_entitas): pass
+						elif !timeline[tiga_frame_terakhir[1]].has(nama_entitas): pass
+						elif !timeline[tiga_frame_terakhir[2]].has(nama_entitas): pass
+						else:
+							# ubah data frame menjadi string untuk pengecekan yang akurat
+							var data_frame_1 : String = JSON.stringify(timeline[tiga_frame_terakhir[0]][nama_entitas], "", true, true)
+							var data_frame_2 : String = JSON.stringify(timeline[tiga_frame_terakhir[1]][nama_entitas], "", true, true)
+							var data_frame_3 : String = JSON.stringify(timeline[tiga_frame_terakhir[2]][nama_entitas], "", true, true)
+							# - bandingkan frame saat ini dengan frame sebelumnya
+							if data_frame_1 == data_frame_2 and data_frame_2 == data_frame_3:
+								timeline[tiga_frame_terakhir[1]].erase(nama_entitas)
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for idx_pemain in pemain.keys():
 			# dapatkan id pemain target
