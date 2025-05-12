@@ -525,6 +525,7 @@ func _physics_process(delta : float) -> void:
 						_transisi_reset_arah.play()
 					elif !_transisi_reset_arah.is_running():
 						_transisi_reset_arah = null
+			elif gestur == "duduk": arah.z = 0
 			else: arah.z = lerp(arah.z, 0.0, 0.5 * delta)
 		
 		# kiri / kanan
@@ -809,7 +810,11 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["arah_terserang"] = _percepatan_ragdoll
 	
 	# terapkan arah gerakan
-	if gestur == "duduk": arah.y = -(ProjectSettings.get_setting("physics/3d/default_gravity"))
+	if gestur == "duduk":
+		if pose_duduk == "meluncur":
+			arah.y = -(ProjectSettings.get_setting("physics/3d/default_gravity"))
+		elif arah.y != 0:
+			arah.y = 0
 	elif !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
 	elif is_on_floor() and arah.y < 0: arah.y = 0
 	# jangan fungsikan kendali kalo animasi gak aktif
