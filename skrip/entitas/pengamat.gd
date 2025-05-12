@@ -127,7 +127,7 @@ func _process(delta : float) -> void:
 	else:
 		$kamera.position.x = 0
 		position.y 			= get_node("%mata_kiri").position.y
-		$kamera.position.z	= get_node("%mata_kiri").position.z
+		$kamera.position.z	= get_node("%mata_kiri").position.z * 0.5
 		_karakter.get_node("fisik_kepala").rotation		= _karakter.get_node("%mata_kiri").rotation
 		_karakter.get_node("fisik_kepala").position.y	= _karakter.get_node("%mata_kiri").position.y
 		_karakter.get_node("fisik_kepala").position.z	= _karakter.get_node("%mata_kiri").position.z
