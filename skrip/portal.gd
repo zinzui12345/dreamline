@@ -75,6 +75,7 @@ func _ketika_objek_memasuki_portal_a(node_objek : Node3D) -> void:
 			for bentuk in model_karakter.get_children():
 				if bentuk is MeshInstance3D:
 					bentuk.set_layer_mask_value(2, true)
+					bentuk.set_layer_mask_value(3, false)
 					bentuk.set_skeleton_path(kerangka_karakter.get_path())
 				else:
 					bentuk.queue_free()
@@ -82,6 +83,37 @@ func _ketika_objek_memasuki_portal_a(node_objek : Node3D) -> void:
 			node_tampilan_portal_b[str(jalur_objek)] = node_objek.duplicate()
 			node_tampilan_portal_b[str(jalur_objek)].process_mode = Node.PROCESS_MODE_DISABLED
 		$portal_b/node_tampilan.add_child(node_tampilan_portal_b[str(jalur_objek)])
+func _ketika_objek_memasuki_portal_b(node_objek : Node3D) -> void:
+	var jalur_objek : NodePath = node_objek.get_path()
+	if !objek_dalam_portal_b.has(jalur_objek):
+		objek_dalam_portal_b.append(jalur_objek)
+	# buat node duplikat sebagai tampilan pada portal a
+	if !node_tampilan_portal_a.has(str(jalur_objek)):
+		# jika objek adalah karakter, buat node baru dengan kerangka duplikat
+		if node_objek is Karakter:
+			node_tampilan_portal_a[str(jalur_objek)] = Node3D.new()
+			node_tampilan_portal_a[str(jalur_objek)].process_mode = Node.PROCESS_MODE_ALWAYS
+			node_tampilan_portal_a[str(jalur_objek)].name = node_objek.name
+			var kerangka_karakter : Skeleton3D = node_objek.get_node("%GeneralSkeleton")
+			var model_karakter : Skeleton3D = kerangka_karakter.duplicate()
+			$portal_b/area_b/pos_objek.global_position = node_objek.global_position
+			$portal_b/area_b/pos_objek.global_rotation = node_objek.global_rotation
+			node_tampilan_portal_a[str(jalur_objek)].position = $portal_b/area_b/pos_objek.position
+			node_tampilan_portal_a[str(jalur_objek)].rotation = $portal_b/area_b/pos_objek.rotation
+			node_tampilan_portal_a[str(jalur_objek)].add_child(model_karakter)
+			#model_karakter.get_node("badan").rotation.x = 0
+			model_karakter.get_node("badan/badan_f").visible = false
+			for bentuk in model_karakter.get_children():
+				if bentuk is MeshInstance3D:
+					bentuk.set_layer_mask_value(2, true)
+					bentuk.set_layer_mask_value(3, false)
+					bentuk.set_skeleton_path(kerangka_karakter.get_path())
+				else:
+					bentuk.queue_free()
+		else:
+			node_tampilan_portal_a[str(jalur_objek)] = node_objek.duplicate()
+			node_tampilan_portal_a[str(jalur_objek)].process_mode = Node.PROCESS_MODE_DISABLED
+		$portal_a/node_tampilan.add_child(node_tampilan_portal_a[str(jalur_objek)])
 func _ketika_objek_keluar_dari_portal_a(node_objek : Node3D) -> void:
 	var jalur_objek : NodePath = node_objek.get_path()
 	if objek_dalam_portal_a.has(jalur_objek):
@@ -89,6 +121,13 @@ func _ketika_objek_keluar_dari_portal_a(node_objek : Node3D) -> void:
 	if node_tampilan_portal_b.has(str(jalur_objek)) and is_instance_valid(node_tampilan_portal_b[str(jalur_objek)]):
 		node_tampilan_portal_b[str(jalur_objek)].queue_free()
 		node_tampilan_portal_b.erase(str(jalur_objek))
+func _ketika_objek_keluar_dari_portal_b(node_objek : Node3D) -> void:
+	var jalur_objek : NodePath = node_objek.get_path()
+	if objek_dalam_portal_b.has(jalur_objek):
+		objek_dalam_portal_b.erase(jalur_objek)
+	if node_tampilan_portal_a.has(str(jalur_objek)) and is_instance_valid(node_tampilan_portal_a[str(jalur_objek)]):
+		node_tampilan_portal_a[str(jalur_objek)].queue_free()
+		node_tampilan_portal_a.erase(str(jalur_objek))
 
 func _process(delta: float) -> void:
 	# sesuaikan pengamat
@@ -148,6 +187,13 @@ func _physics_process(delta: float) -> void:
 	# cek posisi objek dalam portal a
 	for jalur_objek in objek_dalam_portal_a:
 		var objek_diteleportasi : Node3D
+		if !is_instance_valid(get_node(jalur_objek)):
+			if objek_dalam_portal_a.has(jalur_objek):
+				objek_dalam_portal_a.erase(jalur_objek)
+			if node_tampilan_portal_b.has(str(jalur_objek)) and is_instance_valid(node_tampilan_portal_b[str(jalur_objek)]):
+				node_tampilan_portal_b[str(jalur_objek)].queue_free()
+				node_tampilan_portal_b.erase(str(jalur_objek))
+			continue
 		# sesuaikan posisi dan rotasi lokal objek pada portal a
 		$portal_a/area_a/pos_objek.global_position = get_node(jalur_objek).global_position
 		$portal_a/area_a/pos_objek.global_rotation = get_node(jalur_objek).global_rotation
@@ -167,13 +213,13 @@ func _physics_process(delta: float) -> void:
 					.rotated(Vector3(1, 0, 1), arah_percepatan.z)
 				# Panku.notify("GlaDOS : speedy things come in, speedy things come out.")
 		# cek apakah objek adalah pemain dengan mode pandangan 1 -> teleportasi pemain ke portal b sebelum posisi pandangannya melewati portal a
-		elif get_node(jalur_objek) == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)) and dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat").mode_kontrol == 1:
-			# sesuaikan posisi lokal pengamat pada portal a
-			$portal_a/area_a/pos_objek.global_position = dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat/kamera").global_position
-			$portal_a/area_a/pos_objek.global_position.y = get_node(jalur_objek).global_position.y
-			# jika posisi pengamat pemain melewati portal a -> teleportasi pemain ke portal b
-			if $portal_a/area_a/pos_objek.position.z < $portal_a/tampilan_a/translasi_pengamat_a/pengamat_a.near + (abs(dunia.get_node("pemain/"+str(client.id_koneksi)).arah_pandangan.y) * 0.25): 
-				objek_diteleportasi = get_node(jalur_objek)
+		#elif get_node(jalur_objek) == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)) and dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat").mode_kontrol == 1:
+			## sesuaikan posisi lokal pengamat pada portal a
+			#$portal_a/area_a/pos_objek.global_position = dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat/kamera").global_position
+			#$portal_a/area_a/pos_objek.global_position.y = get_node(jalur_objek).global_position.y
+			## jika posisi pengamat pemain melewati portal a -> teleportasi pemain ke portal b
+			#if $portal_a/area_a/pos_objek.position.z < 0: 
+				#objek_diteleportasi = get_node(jalur_objek)
 		# teleportasikan objek ke portal b
 		if objek_diteleportasi != null:
 			# sesuaikan posisi objek berdasarkan posisi lokal pada portal b
@@ -187,3 +233,53 @@ func _physics_process(delta: float) -> void:
 			objek_diteleportasi.global_rotation = $portal_b/area_b/pos_objek.global_rotation
 			# hilangkan objek dari portal a
 			_ketika_objek_keluar_dari_portal_a(objek_diteleportasi)
+	
+	# cek posisi objek dalam portal b
+	for jalur_objek in objek_dalam_portal_b:
+		var objek_diteleportasi : Node3D
+		if !is_instance_valid(get_node(jalur_objek)):
+			if objek_dalam_portal_b.has(jalur_objek):
+				objek_dalam_portal_b.erase(jalur_objek)
+			if node_tampilan_portal_a.has(str(jalur_objek)) and is_instance_valid(node_tampilan_portal_a[str(jalur_objek)]):
+				node_tampilan_portal_a[str(jalur_objek)].queue_free()
+				node_tampilan_portal_a.erase(str(jalur_objek))
+			continue
+		# sesuaikan posisi dan rotasi lokal objek pada portal b
+		$portal_b/area_b/pos_objek.global_position = get_node(jalur_objek).global_position
+		$portal_b/area_b/pos_objek.global_rotation = get_node(jalur_objek).global_rotation
+		# sesuaikan posisi dan rotasi lokal tiruan objek pada portal a
+		if node_tampilan_portal_a.has(str(jalur_objek)) and is_instance_valid(node_tampilan_portal_a[str(jalur_objek)]):
+			node_tampilan_portal_a[str(jalur_objek)].position = $portal_b/area_b/pos_objek.position
+			node_tampilan_portal_a[str(jalur_objek)].rotation = $portal_b/area_b/pos_objek.rotation
+		# jika posisi objek melewati portal a -> teleportasi objek ke portal a
+		if $portal_b/area_b/pos_objek.position.z > 0:
+			objek_diteleportasi = get_node(jalur_objek)
+			# jika objek memiliki percepatan, putar percepatan menyesuaikan arah portal a
+			if objek_diteleportasi.get("linear_velocity") != null:
+				var arah_percepatan : Vector3 = $portal_a/arah.global_basis.get_euler() - $portal_b/arah.global_basis.get_euler()
+				objek_diteleportasi.linear_velocity = objek_diteleportasi.linear_velocity\
+					.rotated(Vector3(1, 0, 0), arah_percepatan.x)\
+					.rotated(Vector3(0, 1, 0), arah_percepatan.y)\
+					.rotated(Vector3(1, 0, 1), -arah_percepatan.z)
+				# Panku.notify("GlaDOS : speedy things come in, speedy things come out.")
+		# cek apakah objek adalah pemain dengan mode pandangan 1 -> teleportasi pemain ke portal a sebelum posisi pandangannya melewati portal b
+		#elif get_node(jalur_objek) == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)) and dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat").mode_kontrol == 1:
+			## sesuaikan posisi lokal pengamat pada portal b
+			#$portal_b/area_b/pos_objek.global_position = dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat/kamera").global_position
+			#$portal_b/area_b/pos_objek.global_position.y = get_node(jalur_objek).global_position.y
+			## jika posisi pengamat pemain melewati portal b -> teleportasi pemain ke portal a
+			#if $portal_b/area_b/pos_objek.position.z > 0: 
+				#objek_diteleportasi = get_node(jalur_objek)
+		# teleportasikan objek ke portal a
+		if objek_diteleportasi != null:
+			# sesuaikan posisi objek berdasarkan posisi lokal pada portal a
+			$portal_a/area_a/pos_objek.position.x = $portal_b/area_b/pos_objek.position.x
+			$portal_a/area_a/pos_objek.position.y = $portal_b/area_b/pos_objek.position.y
+			$portal_a/area_a/pos_objek.position.z = $portal_b/area_b/pos_objek.position.z
+			objek_diteleportasi.global_position = $portal_a/area_a/pos_objek.global_position
+			# sesuaikan arah objek dengan arah portal a
+			$portal_b/area_b/pos_objek.global_rotation = objek_diteleportasi.global_rotation
+			$portal_a/area_a/pos_objek.rotation = $portal_b/area_b/pos_objek.rotation
+			objek_diteleportasi.global_rotation = $portal_a/area_a/pos_objek.global_rotation
+			# hilangkan objek dari portal b
+			_ketika_objek_keluar_dari_portal_b(objek_diteleportasi)
