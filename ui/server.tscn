@@ -57,7 +57,7 @@ func atur(alamat_ip, sys, nama, map, jumlah_pemain, maks_pemain):
 	#        print(\"iOS\")
 	#    \"Web\":
 	#        print(\"Web\")
-		_: server.permainan._tampilkan_popup_informasi_(sys)
+		#_: server.permainan._tampilkan_popup_informasi_(sys)
 	
 	if ResourceLoader.exists(\"res://ui/ikon/ikon_map_\"+map+\".png\"):
 		$ikon.texture = load(\"res://ui/ikon/ikon_map_\"+map+\".png\")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://ihafed1x1w4f"]
+[gd_scene load_steps=29 format=4 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
@@ -93,21 +93,6 @@ _data = {
 &"gerakan": SubResource("Animation_am07k")
 }
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wm8ta"]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_tx6il"]
-_surfaces = [{
-"aabb": AABB(-0.5, -1, -0.5, 1, 2, 0.5),
-"format": 34896613377,
-"index_count": 30,
-"index_data": PackedByteArray("AAABAAIAAAADAAEAAgAEAAAABQABAAMAAgABAAUABQADAAYAAgAHAAQAAgAFAAcABwAGAAQABwAFAAYA"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("AAAAAP//AAAAAP//AAAAAAAAAAAAAAAAAAD/////AAD//wAA//8AAP////8AAAAA////////AAD//wAAAAAAAA==")
-}]
-blend_shape_mode = 0
-
 [sub_resource type="ArrayMesh" id="ArrayMesh_rmo13"]
 resource_name = "portal_Cube_001"
 _surfaces = [{
@@ -116,14 +101,12 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 30,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
-"material": SubResource("StandardMaterial3D_wm8ta"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 20,
 "vertex_data": PackedByteArray("AAAAAP//qioAAP//AACqKgAAAAAAAKoqAAD/////qioAAAAAAAD/P/////8AAP8///8AAAAA/z8AAP//AAD/P///AAAAAKoq////////qir//wAA//+qKv////8AAKoqAAAAAAAA/z///wAA////PwAAAAD///8///8AAAAA/z//////AAAAAAAA/////wAA////////AAAAAP//AAAAAKoqqiqqKqoqqiqqKqoqqir/////////////////////VNVU1VTVVNVU1VTVVNVU1f///3////9/////f////3//f/8//3//P/9//z//f/8/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_tx6il")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rmo13"]
 viewport_path = NodePath("portal/portal_b/tampilan_b")
@@ -148,14 +131,12 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 30,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
-"material": SubResource("StandardMaterial3D_wm8ta"),
 "primitive": 3,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 20,
 "vertex_data": PackedByteArray("AAAAAP//qioAAP//AACqKgAAAAAAAKoqAAD/////qioAAAAAAAD/P/////8AAP8///8AAAAA/z8AAP//AAD/P///AAAAAKoq////////qir//wAA//+qKv////8AAKoqAAAAAAAA/z///wAA////PwAAAAD///8///8AAAAA/z//////AAAAAAAA/////wAA////////AAAAAP//AAAAAKoqqiqqKqoqqiqqKqoqqir/////////////////////VNVU1VTVVNVU1VTVVNVU1f///3////9/////f////3//f/8//3//P/9//z//f/8/")
 }]
 blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_tx6il")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_jm2st"]
 viewport_path = NodePath("portal/portal_a/tampilan_a")
@@ -248,6 +229,7 @@ script = ExtResource("8_rmo13")
 [node name="portal_a" type="MeshInstance3D" parent="portal"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 layers = 8
+cast_shadow = 0
 mesh = SubResource("ArrayMesh_rmo13")
 surface_material_override/0 = SubResource("ShaderMaterial_jm2st")
 
@@ -301,6 +283,7 @@ process_mode = 4
 [node name="portal_b" type="MeshInstance3D" parent="portal"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.15835, 1, -0.89734)
 layers = 8
+cast_shadow = 0
 mesh = SubResource("ArrayMesh_jm2st")
 surface_material_override/0 = SubResource("ShaderMaterial_sdm88")
 

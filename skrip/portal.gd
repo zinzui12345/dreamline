@@ -75,7 +75,8 @@ func _ketika_objek_memasuki_portal_a(node_objek : Node3D) -> void:
 			for bentuk in model_karakter.get_children():
 				if bentuk is MeshInstance3D:
 					bentuk.set_layer_mask_value(2, true)
-					bentuk.set_layer_mask_value(3, false)
+					if node_objek.id_pemain == client.id_koneksi:
+						bentuk.set_layer_mask_value(3, false)
 					bentuk.set_skeleton_path(kerangka_karakter.get_path())
 				else:
 					bentuk.queue_free()
@@ -106,7 +107,8 @@ func _ketika_objek_memasuki_portal_b(node_objek : Node3D) -> void:
 			for bentuk in model_karakter.get_children():
 				if bentuk is MeshInstance3D:
 					bentuk.set_layer_mask_value(2, true)
-					bentuk.set_layer_mask_value(3, false)
+					if node_objek.id_pemain == client.id_koneksi:
+						bentuk.set_layer_mask_value(3, false)
 					bentuk.set_skeleton_path(kerangka_karakter.get_path())
 				else:
 					bentuk.queue_free()

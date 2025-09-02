@@ -683,7 +683,7 @@ func _pemain_terputus(id_pemain):
 				pool_entitas[nama_entitas]["id_proses"] = -1
 			# atur ulang id kustom misalnya id_pengguna_1
 			for indeks_properti in entitas_.kondisi.size():
-				if entitas_.kondisi[indeks_properti - 1][0].begins_with("id_") and entitas_.kondisi[indeks_properti - 1][1] == id_pemain:
+				if entitas_.kondisi[indeks_properti - 1][0].begins_with("id_") and int(entitas_.kondisi[indeks_properti - 1][1]) == id_pemain:
 					# rpc atur ulang id kustom di semua peer
 					sinkronkan_kondisi_entitas(-1, nama_entitas, [["kondisi", [[entitas_.kondisi[indeks_properti - 1][0], -1]]]])
 					# atur ulang id kustom
