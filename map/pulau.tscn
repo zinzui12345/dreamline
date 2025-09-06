@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=4 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=46 format=4 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_uaaqg"]
 [ext_resource type="Script" uid="uid://bmm5flmnbh45f" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
@@ -12,10 +12,13 @@
 [ext_resource type="PackedScene" uid="uid://b3kf5nao5w8gx" path="res://skena/objek/pintu_1.scn" id="10_jta6o"]
 [ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="11_2grqi"]
 [ext_resource type="PackedScene" uid="uid://cp8dhj1vcicak" path="res://skena/objek/patung_moai.scn" id="11_18if7"]
+[ext_resource type="Script" uid="uid://byemnaxwb0spk" path="res://skrip/portal.gd" id="11_ksago"]
 [ext_resource type="PackedScene" uid="uid://b8sq2nbbhqrw5" path="res://skena/objek/pintu_1_kode.scn" id="11_ojnhc"]
 [ext_resource type="PackedScene" uid="uid://btfh3nq4bweai" path="res://skena/objek/perosotan.scn" id="11_qwpge"]
+[ext_resource type="Shader" uid="uid://xvkhmy27r1ji" path="res://material/portal.gdshader" id="12_fxh77"]
 [ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="12_wljsp"]
 [ext_resource type="PackedScene" uid="uid://b3vj1355t6to5" path="res://skena/objek/kincir_angin.scn" id="13_ws6jm"]
+[ext_resource type="PackedScene" uid="uid://c7ounsuk7a4dh" path="res://model/bangunan/interior_gedung_penelitian.scn" id="14_fxh77"]
 [ext_resource type="Script" uid="uid://b586nuj20apyu" path="res://addons/road-generator/nodes/road_manager.gd" id="14_gdyf4"]
 [ext_resource type="Script" uid="uid://b1bamjuxi2kyh" path="res://addons/road-generator/nodes/road_container.gd" id="15_2grqi"]
 [ext_resource type="Material" uid="uid://dlglj1qitupc3" path="res://addons/road-generator/resources/road_texture.material" id="16_ws6jm"]
@@ -672,6 +675,111 @@ _data = {
 &"RESET": SubResource("Animation_ws6jm"),
 &"ombak": SubResource("Animation_2grqi")
 }
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6kdx"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_qdtgp"]
+_surfaces = [{
+"aabb": AABB(-0.6, -1.05, -2, 1.2, 2.1, 2),
+"format": 34896613377,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgAEAAAABQABAAMAAgABAAUABQADAAYAAgAHAAQAAgAFAAcABwAGAAQABwAFAAYA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAP//AABmJpjZAAAAAGYmZiYAAAAAAAD/////AAD//wAA//8AAJjZmNkAAAAA////////AACY2WYmAAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_uggdj"]
+resource_name = "gedung penelitian_Cube_003"
+_surfaces = [{
+"aabb": AABB(-0.6, -1.05, -2, 1.2, 2.1, 2),
+"attribute_data": PackedByteArray("/1////+f/7//X/+//5////9f/7//n/9//1//f/+f/7//X/9//5//P/9f/z//n/9//x//f/9f/z//H/8//1//f/+f/3//3/8//5//P//f/38="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_g6kdx"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("AAAAAP//vixmJpjZAAC+LGYmZiYAAL4sAAD/////vixmJmYmAAD/P5jZmNkAAP8/mNlmJgAA/z9mJpjZAAD/P5jZZiYAAL4s////////viz//wAA//++LJjZmNkAAL4sZiZmJgAAXUb//wAA//9dRgAAAAD//11GmNlmJgAAXUaY2ZjZAAAAAAAA/////wAA////////AABmJpjZAAAAAF4pXileKV4pXileKV4pXin/////////////////////oNag1qDWoNag1qDWoNag1v///3////9/////f////3//fwJF/38CRf9/AkX/fwJF")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_qdtgp")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jt6r7"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_h3xfi"]
+_surfaces = [{
+"aabb": AABB(-1.125, -1.05, -9.53674e-07, 2.25, 2.1, 2),
+"format": 34896613377,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAABAAMAAgAFAAAABQADAAAAAgAGAAUABAADAAcABgAEAAcABQAHAAMABgAHAAUA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("MjMyM///AAAAAP//AAAAAAAAAAAAAAAAMjPMzP//AAD/////AAAAAMvMMjP//wAA//8AAAAAAADLzMzM//8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_51wen"]
+resource_name = "gedung penelitian_Cube_004"
+_surfaces = [{
+"aabb": AABB(-1.125, -1.05, -9.53674e-07, 2.25, 2.1, 2),
+"attribute_data": PackedByteArray("/1////+f/7//X/+//5////9f/3//n/8//1//P/+f/3//X/8//58AAP9fAAD/n/8//x//f/9f/z//H/8//1//f/+f/3//3/8//5//P//f/38="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_jt6r7"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("MjMyM///SCUAAP//AABIJQAAAAAAAEglMjPMzP//SCX//wAAAABIJcvMzMz//0gly8wyM///SCX/////AABIJcvMMjP//wAAMjPMzP//AAAyMzIz//8AAMvMzMz//wAAAAAAAAAAkTfLzDIz//+RNzIzMjP//5E3//8AAAAAkTf/////AAAAADIzzMz//wAAy8zMzP//AAAAAP//AAAAALYtti22LbYtti22LbYtti1I0kjSSNJI0kjSSNJI0kjS/7//v/+//7//v/+//7//v////3////9/////f////39Zuf//Wbn//1m5//9Zuf//")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_h3xfi")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_gibio"]
+resource_name = "gedung penelitian_Cube_003"
+_surfaces = [{
+"aabb": AABB(-0.6, -1.05, -2, 1.2, 2.1, 2),
+"attribute_data": PackedByteArray("/1////+f/7//X/+//5////9f/7//n/9//1//f/+f/7//X/9//5//P/9f/z//n/9//x//f/9f/z//H/8//1//f/+f/3//3/8//5//P//f/38="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_g6kdx"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("AAAAAP//vixmJpjZAAC+LGYmZiYAAL4sAAD/////vixmJmYmAAD/P5jZmNkAAP8/mNlmJgAA/z9mJpjZAAD/P5jZZiYAAL4s////////viz//wAA//++LJjZmNkAAL4sZiZmJgAAXUb//wAA//9dRgAAAAD//11GmNlmJgAAXUaY2ZjZAAAAAAAA/////wAA////////AABmJpjZAAAAAF4pXileKV4pXileKV4pXin/////////////////////oNag1qDWoNag1qDWoNag1v///3////9/////f////3//fwJF/38CRf9/AkX/fwJF")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_qdtgp")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_fxh77"]
+viewport_path = NodePath("portal pintu belakang/portal_b/tampilan_b")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gibio"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("12_fxh77")
+shader_parameter/subviewport_tampilan = SubResource("ViewportTexture_fxh77")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_776u0"]
+size = Vector3(1, 2, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h8yjk"]
+size = Vector3(4, 4, 4)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_qapuc"]
+viewport_path = NodePath("portal pintu belakang/portal_a/tampilan_a")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_776u0"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("12_fxh77")
+shader_parameter/subviewport_tampilan = SubResource("ViewportTexture_qapuc")
 
 [node name="pulau" type="Node3D"]
 script = ExtResource("1_uaaqg")
@@ -11011,8 +11119,161 @@ jarak_render = 50
 [node name="gedung penelitian" parent="." instance=ExtResource("10_65xri")]
 transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, -242.697, 9.702, 156.8)
 
+[node name="gedung penelitian" type="Node3D" parent="gedung penelitian"]
+visible = false
+
+[node name="portal_belakang" type="MeshInstance3D" parent="gedung penelitian/gedung penelitian"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.495931, 1.64826, 16.8238)
+visible = false
+mesh = SubResource("ArrayMesh_uggdj")
+skeleton = NodePath("")
+
+[node name="portal_depan" type="MeshInstance3D" parent="gedung penelitian/gedung penelitian"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.67093, 1.64826, -12.8762)
+visible = false
+mesh = SubResource("ArrayMesh_51wen")
+skeleton = NodePath("")
+
 [node name="pintu_belakang_gedung_penelitian" parent="." instance=ExtResource("11_ojnhc")]
 transform = Transform3D(-0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, -0.766044, -253.143, 10.327, 170.096)
+
+[node name="interior gedung penelitian" parent="." instance=ExtResource("14_fxh77")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50000, 9.702, 0)
+
+[node name="gedung penelitian" type="Node3D" parent="interior gedung penelitian"]
+visible = false
+
+[node name="portal_belakang" type="MeshInstance3D" parent="interior gedung penelitian/gedung penelitian"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.495931, 1.64826, 16.8238)
+visible = false
+mesh = SubResource("ArrayMesh_uggdj")
+skeleton = NodePath("")
+
+[node name="portal_depan" type="MeshInstance3D" parent="interior gedung penelitian/gedung penelitian"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.67093, 1.64826, -12.8762)
+visible = false
+mesh = SubResource("ArrayMesh_51wen")
+skeleton = NodePath("")
+
+[node name="portal pintu belakang" type="Node3D" parent="."]
+editor_description = "portal b merupakan duplikat dari portal a 
+tetapi terdapat beberapa node portal b
+ yang diubah transformasinya yaitu 
+$arah,  $area_b, dan $node_tampilan  yang rotasi Y nya di set menjadi -180"
+transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, -242.697, 11.702, 156.8)
+script = ExtResource("11_ksago")
+
+[node name="portal_a" type="MeshInstance3D" parent="portal pintu belakang"]
+transform = Transform3D(1, 0, -2.98023e-08, 0, 1, 0, 2.98023e-08, 0, 1, 0.495934, -0.351744, 16.8239)
+layers = 8
+cast_shadow = 0
+mesh = SubResource("ArrayMesh_gibio")
+surface_material_override/0 = SubResource("ShaderMaterial_gibio")
+
+[node name="arah" type="Marker3D" parent="portal pintu belakang/portal_a"]
+
+[node name="translasi_pengamat_a" type="Marker3D" parent="portal pintu belakang/portal_a"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="pengamat_a" type="Camera3D" parent="portal pintu belakang/portal_a/translasi_pengamat_a"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.19209e-07, 0, 1)
+cull_mask = 1029
+
+[node name="tampilan_a" type="SubViewport" parent="portal pintu belakang/portal_a"]
+handle_input_locally = false
+anisotropic_filtering_level = 0
+gui_snap_controls_to_pixels = false
+positional_shadow_atlas_size = 0
+positional_shadow_atlas_16_bits = false
+positional_shadow_atlas_quad_0 = 0
+positional_shadow_atlas_quad_1 = 0
+positional_shadow_atlas_quad_2 = 0
+positional_shadow_atlas_quad_3 = 0
+
+[node name="pos_pengamat_a" type="Marker3D" parent="portal pintu belakang/portal_a"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="target_a" type="VisibleOnScreenNotifier3D" parent="portal pintu belakang/portal_a"]
+aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
+
+[node name="area_a" type="Area3D" parent="portal pintu belakang/portal_a"]
+collision_mask = 7
+monitorable = false
+
+[node name="wilayah" type="CollisionShape3D" parent="portal pintu belakang/portal_a/area_a"]
+shape = SubResource("BoxShape3D_776u0")
+
+[node name="pos_objek" type="Marker3D" parent="portal pintu belakang/portal_a/area_a"]
+
+[node name="area_render" type="Area3D" parent="portal pintu belakang/portal_a"]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="wilayah_render" type="CollisionShape3D" parent="portal pintu belakang/portal_a/area_render"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+shape = SubResource("BoxShape3D_h8yjk")
+
+[node name="node_tampilan" type="Node3D" parent="portal pintu belakang/portal_a"]
+process_mode = 4
+
+[node name="portal_b" type="MeshInstance3D" parent="portal pintu belakang"]
+transform = Transform3D(-0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, -0.766044, 38398.5, -0.352, -32403)
+layers = 8
+cast_shadow = 0
+mesh = SubResource("ArrayMesh_uggdj")
+surface_material_override/0 = SubResource("ShaderMaterial_776u0")
+
+[node name="arah" type="Marker3D" parent="portal pintu belakang/portal_b"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="translasi_pengamat_b" type="Marker3D" parent="portal pintu belakang/portal_b"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="pengamat_b" type="Camera3D" parent="portal pintu belakang/portal_b/translasi_pengamat_b"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.19209e-07, 0, 1)
+cull_mask = 1029
+size = 0.1
+
+[node name="tampilan_b" type="SubViewport" parent="portal pintu belakang/portal_b"]
+handle_input_locally = false
+anisotropic_filtering_level = 0
+gui_snap_controls_to_pixels = false
+positional_shadow_atlas_size = 0
+positional_shadow_atlas_16_bits = false
+positional_shadow_atlas_quad_0 = 0
+positional_shadow_atlas_quad_1 = 0
+positional_shadow_atlas_quad_2 = 0
+positional_shadow_atlas_quad_3 = 0
+
+[node name="pos_pengamat_b" type="Marker3D" parent="portal pintu belakang/portal_b"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="target_b" type="VisibleOnScreenNotifier3D" parent="portal pintu belakang/portal_b"]
+aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
+
+[node name="area_b" type="Area3D" parent="portal pintu belakang/portal_b"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+collision_mask = 7
+monitorable = false
+
+[node name="wilayah" type="CollisionShape3D" parent="portal pintu belakang/portal_b/area_b"]
+shape = SubResource("BoxShape3D_776u0")
+
+[node name="pos_objek" type="Marker3D" parent="portal pintu belakang/portal_b/area_b"]
+
+[node name="area_render" type="Area3D" parent="portal pintu belakang/portal_b"]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="wilayah_render" type="CollisionShape3D" parent="portal pintu belakang/portal_b/area_render"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+shape = SubResource("BoxShape3D_h8yjk")
+
+[node name="node_tampilan" type="Node3D" parent="portal pintu belakang/portal_b"]
+process_mode = 4
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="patung_moai" parent="." instance=ExtResource("11_18if7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49, 13.95, 255)

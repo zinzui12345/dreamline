@@ -13,12 +13,36 @@ var node_tampilan_portal_a : Dictionary
 var node_tampilan_portal_b : Dictionary
 
 func _ready() -> void:
+	var translasi_pengamat_a = $portal_a/translasi_pengamat_a
+	var translasi_pengamat_b = $portal_b/translasi_pengamat_b
+	var pos_translasi_pengamat_a = $portal_a/translasi_pengamat_a.global_transform
+	var pos_translasi_pengamat_b = $portal_b/translasi_pengamat_b.global_transform
+	$portal_a.remove_child(translasi_pengamat_a)
+	$portal_b.remove_child(translasi_pengamat_b)
+	$portal_a/tampilan_a.add_child(translasi_pengamat_a)
+	$portal_b/tampilan_b.add_child(translasi_pengamat_b)
+	translasi_pengamat_a.set_owner($portal_a/tampilan_a)
+	translasi_pengamat_b.set_owner($portal_b/tampilan_b)
+	translasi_pengamat_a.global_transform = pos_translasi_pengamat_a
+	translasi_pengamat_b.global_transform = pos_translasi_pengamat_b
 	$portal_a/tampilan_a.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	$portal_b/tampilan_b.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	var pencahayaan : Environment = dunia.get_node("pencahayaan").environment.duplicate()
 	pencahayaan.tonemap_mode = Environment.TONE_MAPPER_LINEAR
 	$portal_a/tampilan_a/translasi_pengamat_a/pengamat_a.environment = pencahayaan
 	$portal_b/tampilan_b/translasi_pengamat_b/pengamat_b.environment = pencahayaan
+	$portal_a/area_a.connect("body_entered", _ketika_objek_memasuki_portal_a)
+	$portal_b/area_b.connect("body_entered", _ketika_objek_memasuki_portal_b)
+	$portal_a/area_a.connect("body_exited", _ketika_objek_keluar_dari_portal_a)
+	$portal_b/area_b.connect("body_exited", _ketika_objek_keluar_dari_portal_b)
+	$portal_a/target_a.connect("screen_entered", _ketika_portal_a_terlihat)
+	$portal_b/target_b.connect("screen_entered", _ketika_portal_b_terlihat)
+	$portal_a/target_a.connect("screen_exited", _ketika_portal_a_tidak_terlihat)
+	$portal_b/target_b.connect("screen_exited", _ketika_portal_b_tidak_terlihat)
+	$portal_a/area_render.connect("body_entered", _ketika_pemain_memasuki_wilayah_portal_a)
+	$portal_b/area_render.connect("body_entered", _ketika_pemain_memasuki_wilayah_portal_b)
+	$portal_a/area_render.connect("body_exited", _ketika_pemain_meninggalkan_wilayah_portal_a)
+	$portal_b/area_render.connect("body_exited", _ketika_pemain_meninggalkan_wilayah_portal_b)
 	set_process(false)
 
 # atur mode render subviewport berdasarkan posisi pemain
@@ -214,14 +238,6 @@ func _physics_process(delta: float) -> void:
 					.rotated(Vector3(0, 1, 0), arah_percepatan.y)\
 					.rotated(Vector3(1, 0, 1), arah_percepatan.z)
 				# Panku.notify("GlaDOS : speedy things come in, speedy things come out.")
-		# cek apakah objek adalah pemain dengan mode pandangan 1 -> teleportasi pemain ke portal b sebelum posisi pandangannya melewati portal a
-		#elif get_node(jalur_objek) == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)) and dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat").mode_kontrol == 1:
-			## sesuaikan posisi lokal pengamat pada portal a
-			#$portal_a/area_a/pos_objek.global_position = dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat/kamera").global_position
-			#$portal_a/area_a/pos_objek.global_position.y = get_node(jalur_objek).global_position.y
-			## jika posisi pengamat pemain melewati portal a -> teleportasi pemain ke portal b
-			#if $portal_a/area_a/pos_objek.position.z < 0: 
-				#objek_diteleportasi = get_node(jalur_objek)
 		# teleportasikan objek ke portal b
 		if objek_diteleportasi != null:
 			# sesuaikan posisi objek berdasarkan posisi lokal pada portal b
@@ -264,14 +280,6 @@ func _physics_process(delta: float) -> void:
 					.rotated(Vector3(0, 1, 0), arah_percepatan.y)\
 					.rotated(Vector3(1, 0, 1), -arah_percepatan.z)
 				# Panku.notify("GlaDOS : speedy things come in, speedy things come out.")
-		# cek apakah objek adalah pemain dengan mode pandangan 1 -> teleportasi pemain ke portal a sebelum posisi pandangannya melewati portal b
-		#elif get_node(jalur_objek) == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)) and dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat").mode_kontrol == 1:
-			## sesuaikan posisi lokal pengamat pada portal b
-			#$portal_b/area_b/pos_objek.global_position = dunia.get_node("pemain/"+str(client.id_koneksi)+"/pengamat/kamera").global_position
-			#$portal_b/area_b/pos_objek.global_position.y = get_node(jalur_objek).global_position.y
-			## jika posisi pengamat pemain melewati portal b -> teleportasi pemain ke portal a
-			#if $portal_b/area_b/pos_objek.position.z > 0: 
-				#objek_diteleportasi = get_node(jalur_objek)
 		# teleportasikan objek ke portal a
 		if objek_diteleportasi != null:
 			# sesuaikan posisi objek berdasarkan posisi lokal pada portal a

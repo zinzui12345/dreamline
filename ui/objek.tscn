@@ -61,6 +61,18 @@ func pilih():
 						cek_tipe_objek.jarak_render,
 						cek_tipe_objek.properti.duplicate(true)
 					)
+			elif jalur_objek.ends_with(\"_debug.tscn\") or jalur_objek.ends_with(\"_debug.scn\"):
+				dunia.add_child(cek_tipe_objek)
+				cek_tipe_objek.global_position = server.permainan.pasang_objek
+			else:
+				# INFO :	hari ini 06 september 2025, kurasa hari yang sedikit spesial
+				#			aku bertemu lagi dengan driver Grab yang mengantarkanku ke kampus di hari ujian tutup tepat setahun lalu yaitu 06 september 2024
+				#			pada saat itu aku memesan Grab untuk ke kampus jam 06:30 pagi dan belum ada satupun driver yang online selain dia
+				#			dia bahkan mengantarku sampai ke dalam area kampus
+				#			waktu itu aku tak tidur semalaman akibat mengerjakan revisi, membuat presentasi, dan mencetak naskah skripsi sebanyak 6 rangkap :(
+				#			kemudian pada hari ini aku memesan Grab untuk pulang dan ternyata dia juga masih mengingat tentang kisahku tepat setahun yang lalu :)
+				print_debug(\"falling in a dream : 06/09/24 ~ 06/09/25\")
+				print_debug(jalur_objek)
 		else:
 			if cek_tipe_objek is entitas:
 				var tmp_kondisi_entitas : Array

@@ -1,4 +1,4 @@
-[gd_scene load_steps=368 format=3 uid="uid://ppsgdaff1jxu"]
+[gd_scene load_steps=369 format=3 uid="uid://ppsgdaff1jxu"]
 
 [ext_resource type="Script" uid="uid://ccy40bwj8oub0" path="res://skrip/permainan.gd" id="1_7ws0s"]
 [ext_resource type="PackedScene" uid="uid://cyxi85pr8q8yb" path="res://skena/latar.tscn" id="2_o8pgj"]
@@ -93,6 +93,7 @@
 [ext_resource type="Texture2D" uid="uid://by0ehaty0xo3r" path="res://ui/ikon/ikon_entitas_gas_melon.png" id="49_52iuq"]
 [ext_resource type="PackedScene" uid="uid://cyfty328y77pc" path="res://skena/tampilan_karakter.scn" id="49_gj3rl"]
 [ext_resource type="Texture2D" uid="uid://tv7vc1pbc4i1" path="res://ui/ikon/ikon_tombol_mode_pandangan.svg" id="50_lxhay"]
+[ext_resource type="Texture2D" uid="uid://75bqv3gn1owc" path="res://ui/ikon/ikon_entitas_bajay_debug.png" id="62_u26rh"]
 [ext_resource type="Texture2D" uid="uid://cwxsfh8qiffxb" path="res://ui/ikon/ikon_bahasa_english_kecil.svg" id="63_r5flb"]
 [ext_resource type="Texture2D" uid="uid://cfil0muh1yhay" path="res://ui/ikon/ikon_bahasa_indonesia_kecil.svg" id="64_gnps4"]
 [ext_resource type="AudioStream" uid="uid://yyxehldmlkww" path="res://audio/antarmuka/pilih_2.ogg" id="64_suhfv"]
@@ -6787,6 +6788,10 @@ grow_vertical = 2
 columns = 5
 metadata/_edit_use_anchors_ = true
 
+[node name="placeholder" parent="daftar_objek/Panel/DaftarObjek" instance=ExtResource("5_0d7jc")]
+layout_mode = 2
+metadata/jalur_objek = "res://skena/objek/placeholder_objek.tscn"
+
 [node name="bola_pantai" parent="daftar_objek/Panel/DaftarObjek" instance=ExtResource("5_0d7jc")]
 layout_mode = 2
 texture_normal = ExtResource("39_jspvy")
@@ -6801,6 +6806,11 @@ metadata/jalur_objek = "res://skena/entitas/gas_elpiji_3kg.scn"
 layout_mode = 2
 texture_normal = ExtResource("42_krisr")
 metadata/jalur_objek = "res://skena/entitas/bajay.tscn"
+
+[node name="bajay_debug" parent="daftar_objek/Panel/DaftarObjek" instance=ExtResource("5_0d7jc")]
+layout_mode = 2
+texture_normal = ExtResource("62_u26rh")
+metadata/jalur_objek = "res://skena/entitas/bajay_debug.tscn"
 
 [node name="tutup" type="Button" parent="daftar_objek/Panel"]
 layout_mode = 1

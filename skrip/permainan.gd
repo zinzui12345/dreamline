@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 11/05/25 Early Access"
+const versi = "Dreamline v0.4.4 06/09/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1578,6 +1578,11 @@ func _tampilkan_permainan() -> void:
 			"nama_aset_": "bajay",
 			"jalur_aset": "res://skena/entitas/bajay.tscn",
 			"jalur_ikon": "res://ui/ikon/ikon_entitas_bajay.png"
+		},
+		{
+			"nama_aset_": "bajay_debug",
+			"jalur_aset": "res://skena/entitas/bajay_debug.tscn",
+			"jalur_ikon": "res://ui/ikon/ikon_entitas_bajay_debug.png"
 		}
 	]
 	for entitas_internal in daftar_entitas_internal:

@@ -112,25 +112,49 @@ var efek_cahaya : GlowBorderEffectObject
 
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
 func mulai() -> void:
+	#for node_komponen in get_children():
+		#if node_komponen is MeshInstance3D:
+			#node_komponen.visible = false
+		#elif node_komponen.get_child_count() > 0:
+			#for sub_node_komponen in node_komponen.get_children():
+				#if sub_node_komponen is MeshInstance3D:
+					#sub_node_komponen.visible = false
+				#elif sub_node_komponen.get_child_count() > 0:
+					#for sub_sub_node_komponen in sub_node_komponen.get_children():
+						#if sub_sub_node_komponen is MeshInstance3D:
+							#sub_sub_node_komponen.visible = false
+						#elif sub_sub_node_komponen is GlowBorderEffectObject:
+							#sub_sub_node_komponen.visible = false
+	#await get_tree().create_timer(0.1).timeout
 	mat1 = $model/detail/efek_interaksi/bodi.get_surface_override_material(0).duplicate()
+	#await get_tree().create_timer(0.1).timeout
 	mat2 = $model/detail/efek_interaksi/bodi.get_surface_override_material(1).duplicate()
+	#await get_tree().create_timer(0.1).timeout
 	mat3 = $model/detail/efek_interaksi/bodi.get_surface_override_material(10).duplicate()
+	#await get_tree().create_timer(0.1).timeout
 	mat4 = $model/detail/efek_interaksi/bodi.get_surface_override_material(5).duplicate()
+	#await get_tree().create_timer(0.1).timeout
 	mat5 = $model/detail/efek_interaksi/bodi.get_surface_override_material(11).duplicate()
+	#await get_tree().create_timer(0.1).timeout
 	efek_cahaya = $model/detail/efek_interaksi
 	warna_1 = warna_1
 	warna_2 = warna_2
 	warna_3 = warna_3
 	warna_4 = warna_4
 	warna_5 = warna_5
+	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(0, mat1)
 	$model/lod1/bodi_lod1.set_surface_override_material(0, mat1)
+	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(1, mat2)
 	$model/lod1/bodi_lod1.set_surface_override_material(1, mat2)
+	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(10, mat3)
 	$model/lod1/bodi_lod1.set_surface_override_material(8, mat3)
+	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(5, mat4)
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(11, mat5)
+	#await get_tree().create_timer(0.1).timeout
 	$model/lod1/bodi_lod1.set_surface_override_material(9, mat5)
 	$model/detail/subreker_depan.set_surface_override_material(0, mat5)
 	$model/detail/subreker_depan_lod1.set_surface_override_material(0, mat5)
