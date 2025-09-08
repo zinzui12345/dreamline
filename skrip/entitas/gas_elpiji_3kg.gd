@@ -152,14 +152,14 @@ func _input(_event):
 	if id_pengangkat == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengangkat)).kontrol:
 		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_lepas")
 func _ketika_menabrak(node: Node):
-	if $fisik_ledakan.disable_mode == false:
-		var percepatan = (get("linear_velocity") * transform.basis).abs()
-		var damage = ceil((percepatan.y + percepatan.z) * 10)
-		#Panku.notify("kirru! : "+node.name+" <== " + str(damage))
-		if id_pelempar != -1 and node.has_method("_diserang"):
-			node.call("_diserang", dunia.get_node("pemain/"+str(id_pelempar)), damage)
+	#if $fisik_ledakan/area_ledak.disabled == false:
+	var percepatan = $fisik_ledakan/area_ledak.scale
+	var damage = ceil((percepatan.y + percepatan.z) * 10)
+	#Panku.notify("kirru! : "+node.name+" <== " + str(damage))
+	if id_pelempar != -1 and node.has_method("_diserang"):
+		node.call("_diserang", dunia.get_node("pemain/"+str(id_pelempar)), damage)
 func _ketika_meledak():
-	set("freeze", true)
+	#set("freeze", true)
 	$model.visible = false
 	$fisik_ledakan/AnimationPlayer.play("meledak")
 	#Panku.notify("explosion!!")
@@ -183,6 +183,9 @@ func _angkat(id):
 		
 		# ubah pemroses pada server
 		sinkronkan_perubahan_kondisi([["id_proses", id], ["kondisi", [["id_pengangkat", id]]]])
+	#if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+	set("contact_monitor", false)
+	set("max_contacts_reported", 0)
 	# atur id_pengangkat dan id_proses
 	id_pengangkat = id
 	id_pelempar = -1
@@ -205,9 +208,9 @@ func _lepas(id):
 		
 		# reset pemroses pada server
 		sinkronkan_perubahan_kondisi([["id_proses", -1], ["kondisi", [["id_pengangkat", -1], ["id_pelempar", -1]]]])
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		set("contact_monitor", false)
-		set("max_contacts_reported", 0)
+	#if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+	set("contact_monitor", false)
+	set("max_contacts_reported", 0)
 	# atur ulang id_pengangkat, id_pelempar dan id_proses
 	id_pengangkat = -1
 	id_pelempar = -1
@@ -238,9 +241,10 @@ func _lempar(_pelempar):
 		
 		# reset pemroses pada server
 		sinkronkan_perubahan_kondisi([["id_proses", -1], ["kondisi", [["id_pengangkat", -1], ["id_pelempar", _pelempar]]]])
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		set("contact_monitor", false)
-		set("max_contacts_reported", 0)
+		
+		#if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		set("contact_monitor", true)
+		set("max_contacts_reported", 3)
 	# atur ulang id_pengangkat, id_pelempar dan id_proses
 	id_pengangkat = -1
 	id_pelempar = _pelempar
