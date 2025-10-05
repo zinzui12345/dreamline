@@ -1576,13 +1576,8 @@ func _tampilkan_permainan() -> void:
 		},
 		{
 			"nama_aset_": "bajay",
-			"jalur_aset": "res://skena/entitas/bajay.tscn",
+			"jalur_aset": "res://skena/entitas/bajay.scn",
 			"jalur_ikon": "res://ui/ikon/ikon_entitas_bajay.png"
-		},
-		{
-			"nama_aset_": "bajay_debug",
-			"jalur_aset": "res://skena/entitas/bajay_debug.tscn",
-			"jalur_ikon": "res://ui/ikon/ikon_entitas_bajay_debug.png"
 		}
 	]
 	for entitas_internal in daftar_entitas_internal:

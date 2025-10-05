@@ -101,6 +101,8 @@ var _ragdoll : bool = false :
 var _percepatan_ragdoll : Vector3
 var _timer_ragdoll : Timer
 var _coba_reset_ragdoll : int = 0
+var _melihat_melalui_portal : bool
+var _posisi_target_portal : Vector3
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
 var penarget_serangan_b : RayCast3D
@@ -589,7 +591,7 @@ func _physics_process(delta : float) -> void:
 		if Input.is_action_just_pressed("fokus_pandangan"):
 			if ($pengamat.mode_kontrol == 1 or $pengamat.mode_kontrol == 2) and !zoom:
 				var tween : Tween = get_tree().create_tween()
-				tween.tween_property($pengamat.get_node("%pandangan"), "fov", Konfigurasi.sudut_pandangan / 2, 0.3)
+				tween.tween_property($pengamat.get_node("%pandangan"), "fov", Konfigurasi.sudut_pandangan * 0.5, 0.3)
 				zoom = true
 				tween.play()
 		if Input.is_action_just_released("fokus_pandangan"):
@@ -761,6 +763,10 @@ func _physics_process(delta : float) -> void:
 			cek_perubahan_kondisi["menyerang"] = false
 		if cek_perubahan_kondisi.get("mati") == null:
 			cek_perubahan_kondisi["mati"] = false
+		if cek_perubahan_kondisi.get("melihat_melalui_portal") == null:
+			cek_perubahan_kondisi["melihat_melalui_portal"] = false
+		if cek_perubahan_kondisi.get("posisi_target_portal") == null:
+			cek_perubahan_kondisi["posisi_target_portal"] = Vector3.ZERO
 		
 		# cek apakah kondisi berubah
 		if cek_perubahan_kondisi["posisi"] != position:
@@ -787,6 +793,10 @@ func _physics_process(delta : float) -> void:
 			perubahan_kondisi.append(["menyerang", menyerang])
 		if cek_perubahan_kondisi["mati"] != _ragdoll:
 			perubahan_kondisi.append(["mati", _ragdoll])
+		if cek_perubahan_kondisi["melihat_melalui_portal"] != _melihat_melalui_portal:
+			perubahan_kondisi.append(["melihat_melalui_portal", _melihat_melalui_portal])
+		if cek_perubahan_kondisi["posisi_target_portal"] != _posisi_target_portal:
+			perubahan_kondisi.append(["posisi_target_portal", _posisi_target_portal])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
 		if perubahan_kondisi.size() > 0 and (is_instance_valid(server.peer) or is_instance_valid(client.peer)):
@@ -808,6 +818,8 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["gestur_jongkok"] = gestur_jongkok
 		cek_perubahan_kondisi["mode_menyerang"] = mode_menyerang
 		cek_perubahan_kondisi["arah_terserang"] = _percepatan_ragdoll
+		cek_perubahan_kondisi["melihat_melalui_portal"] = _melihat_melalui_portal
+		cek_perubahan_kondisi["posisi_target_portal"] = _posisi_target_portal
 	
 	# terapkan arah gerakan
 	if gestur == "duduk":

@@ -110,6 +110,9 @@ var warna_5 : Color :
 
 var efek_cahaya : GlowBorderEffectObject
 
+var _tahap_render : int = 1
+const _jumlah_proses_render = 19
+
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
 func mulai() -> void:
 	#for node_komponen in get_children():
@@ -125,42 +128,76 @@ func mulai() -> void:
 							#sub_sub_node_komponen.visible = false
 						#elif sub_sub_node_komponen is GlowBorderEffectObject:
 							#sub_sub_node_komponen.visible = false
-	#await get_tree().create_timer(0.1).timeout
+	$model/detail/efek_interaksi.visible = false
+	$model/detail/efek_interaksi/bodi.visible = false
+	$model/lod1/bodi_lod1.visible = false
+	$model/detail/subreker_depan.visible = false
+	$model/detail/subreker_depan_lod1.visible = false
+	$roda_depan/roda_depan.visible = false
+	$roda_depan/roda_depan_lod1.visible = false
+	$roda_depan/roda_depan_lod2.visible = false
+	$roda_belakang_kiri/roda_belakang_kiri.visible = false
+	$roda_belakang_kiri/roda_belakang_kiri_lod1.visible = false
+	$roda_belakang_kiri/roda_belakang_kiri_lod2.visible = false
+	$roda_belakang_kanan/roda_belakang_kanan.visible = false
+	$roda_belakang_kanan/roda_belakang_kanan_lod1.visible = false
+	$roda_belakang_kanan/roda_belakang_kanan_lod2.visible = false
+	$setir/rotasi_stir/setir.visible = false
+	$setir/rotasi_stir/setir_lod1.visible = false
+	$model/detail/perseneling.visible = false
+	$model/detail/rotasi_roda_belakang.visible = false
+	$model/detail/spion.visible = false
 	mat1 = $model/detail/efek_interaksi/bodi.get_surface_override_material(0).duplicate()
-	#await get_tree().create_timer(0.1).timeout
 	mat2 = $model/detail/efek_interaksi/bodi.get_surface_override_material(1).duplicate()
-	#await get_tree().create_timer(0.1).timeout
 	mat3 = $model/detail/efek_interaksi/bodi.get_surface_override_material(10).duplicate()
-	#await get_tree().create_timer(0.1).timeout
 	mat4 = $model/detail/efek_interaksi/bodi.get_surface_override_material(5).duplicate()
-	#await get_tree().create_timer(0.1).timeout
 	mat5 = $model/detail/efek_interaksi/bodi.get_surface_override_material(11).duplicate()
-	#await get_tree().create_timer(0.1).timeout
 	efek_cahaya = $model/detail/efek_interaksi
 	warna_1 = warna_1
 	warna_2 = warna_2
 	warna_3 = warna_3
 	warna_4 = warna_4
 	warna_5 = warna_5
-	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(0, mat1)
 	$model/lod1/bodi_lod1.set_surface_override_material(0, mat1)
-	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(1, mat2)
 	$model/lod1/bodi_lod1.set_surface_override_material(1, mat2)
-	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(10, mat3)
 	$model/lod1/bodi_lod1.set_surface_override_material(8, mat3)
-	#await get_tree().create_timer(0.1).timeout
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(5, mat4)
 	$model/detail/efek_interaksi/bodi.set_surface_override_material(11, mat5)
-	#await get_tree().create_timer(0.1).timeout
 	$model/lod1/bodi_lod1.set_surface_override_material(9, mat5)
 	$model/detail/subreker_depan.set_surface_override_material(0, mat5)
 	$model/detail/subreker_depan_lod1.set_surface_override_material(0, mat5)
 	id_pengemudi = id_pengemudi
 # fungsi yang akan dipanggil setiap saat menggantikan _process(delta)
 func proses(waktu_delta : float) -> void:
+	if _tahap_render < _jumlah_proses_render + 1:
+		await RenderingServer.frame_post_draw
+		#await get_tree().create_timer(0.25).timeout
+		match _tahap_render:
+			1:	$model/detail/efek_interaksi.visible = true
+			2:	$model/detail/efek_interaksi/bodi.visible = true
+			3:	$model/lod1/bodi_lod1.visible = true
+			4:	$model/detail/subreker_depan.visible = true
+			5:	$model/detail/subreker_depan_lod1.visible = true
+			6:	$roda_depan/roda_depan.visible = true
+			7:	$roda_depan/roda_depan_lod1.visible = true
+			8:	$roda_depan/roda_depan_lod2.visible = true
+			9:	$roda_belakang_kiri/roda_belakang_kiri.visible = true
+			10:	$roda_belakang_kiri/roda_belakang_kiri_lod1.visible = true
+			11:	$roda_belakang_kiri/roda_belakang_kiri_lod2.visible = true
+			12:	$roda_belakang_kanan/roda_belakang_kanan.visible = true
+			13:	$roda_belakang_kanan/roda_belakang_kanan_lod1.visible = true
+			14:	$roda_belakang_kanan/roda_belakang_kanan_lod2.visible = true
+			15:	$setir/rotasi_stir/setir.visible = true
+			16:	$setir/rotasi_stir/setir_lod1.visible = true
+			17:	$model/detail/perseneling.visible = true
+			18:	$model/detail/rotasi_roda_belakang.visible = true
+			19:	$model/detail/spion.visible = true
+		#Panku.notify("render ke-%s pada waktu %s" % [str(_tahap_render), str(Time.get_ticks_msec())])
+		_tahap_render += 1
+	
 	if id_pengemudi != -1 and dunia.get_node("pemain").get_node_or_null(str(id_pengemudi)) != null:
 		dunia.get_node("pemain/"+str(id_pengemudi)).global_position = global_position
 		dunia.get_node("pemain/"+str(id_pengemudi)).rotation = rotation

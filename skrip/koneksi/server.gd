@@ -13,7 +13,7 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = &"empty" # &"pulau"
+var map : StringName = &"pulau"
 var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -214,8 +214,24 @@ func _process(_delta : float) -> void:
 								cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "hapus"
 							# jika jarak pemain lebih dari jarak render entitas
 							if jarak_pemain > jarak_render_entitas:
+								# lakukan sebaliknya jika entitas berada pada area disekitar portal yang dekat dengan pemain
+								if pemain[i_pool_pemain]["kondisi"].get("melihat_melalui_portal") != null \
+									and pemain[i_pool_pemain]["kondisi"]["melihat_melalui_portal"] == true \
+									and pemain[i_pool_pemain]["kondisi"]["posisi_target_portal"].distance_to(pool_entitas[nama_entitas]["posisi"]) < jarak_render_entitas:
+									# hanya spawn jika pool belum di-spawn
+									if cek_visibilitas_pool_entitas[id_pemain][nama_entitas] == "hapus":
+										# rpc spawn pool entitas
+										spawn_pool_entitas(id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+										# ubah visibilitas pool agar jangan rpc lagi
+										cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "spawn"
+									# cek jika id_proses belum diatur
+									if pool_entitas[nama_entitas]["id_proses"] == -1:
+										# rpc atur pemain sebagai pemroses entitas ke semua peer
+										sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", id_pemain]])
+										# atur id_proses dengan id_pemain
+										pool_entitas[nama_entitas]["id_proses"] = id_pemain
 								# pastikan pemain saat ini tidak mengubah entitas
-								if pool_entitas[nama_entitas]["id_pengubah"] != id_pemain:
+								elif pool_entitas[nama_entitas]["id_pengubah"] != id_pemain:
 									# cek jika id_proses telah diatur dan pemain saat ini adalah pemroses
 									if pool_entitas[nama_entitas]["id_proses"] != -1 and pool_entitas[nama_entitas]["id_proses"] == id_pemain:
 										# rpc atur -1 sebagai pemroses entitas ke semua peer
@@ -1054,6 +1070,8 @@ func _pemain_terputus(id_pemain):
 				elif kondisi_pemain[0] == "gestur_jongkok":	pemain[id_sesi_pemain]["kondisi"]["gestur_jongkok"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "mode_menyerang":	pemain[id_sesi_pemain]["kondisi"]["mode_menyerang"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "arah_terserang":	pemain[id_sesi_pemain]["kondisi"]["arah_terserang"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "melihat_melalui_portal":	pemain[id_sesi_pemain]["kondisi"]["melihat_melalui_portal"] = kondisi_pemain[1]
+				elif kondisi_pemain[0] == "posisi_target_portal":	pemain[id_sesi_pemain]["kondisi"]["posisi_target_portal"] = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "melompat":		r_melompat = kondisi_pemain[1]
 				elif kondisi_pemain[0] == "menyerang":		r_menyerang = kondisi_pemain[1]
 			# rpc sinkronkan kondisi id_pemain ke semua pemain yang spawn id_pemain

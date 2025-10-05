@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=4 uid="uid://ihafed1x1w4f"]
+[gd_scene load_steps=39 format=4 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
@@ -9,7 +9,8 @@
 [ext_resource type="Script" uid="uid://byemnaxwb0spk" path="res://skrip/portal.gd" id="8_rmo13"]
 [ext_resource type="Shader" uid="uid://xvkhmy27r1ji" path="res://material/portal.gdshader" id="9_jm2st"]
 [ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="9_rmo13"]
-[ext_resource type="Shader" uid="uid://cmgaaxyor4apg" path="res://material/clip.gdshader" id="11_sdm88"]
+[ext_resource type="Shader" uid="uid://23ill3pcva8n" path="res://material/stencil_mask/mask.gdshader" id="10_sdm88"]
+[ext_resource type="Shader" uid="uid://cmgaaxyor4apg" path="res://material/stencil_mask/geometry.gdshader" id="11_sdm88"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_kxi72"]
 vertices = PackedVector3Array(-43.5, 0, -49.5, -49.5, 0, -49.5, -49.5, 0, -43.5, -49.5, 0, 43.25, -49.5, 0, 49.5, -43.5, 0, 49.5, 49.5, 0, -43.5, 49.5, 0, -49.5, 43.25, 0, -49.5, 43.25, 0, 49.5, 49.5, 0, 49.5, 49.5, 0, 43.25, -37.25, 0, -49.5, -43.5, 0, -49.5, -49.5, 0, -43.5, -49.5, 0, -37.25, -49.5, 0, 43.25, -43.5, 0, 49.5, -37.25, 0, 49.5, -49.5, 0, 37, 49.5, 0, -37.25, 49.5, 0, -43.5, 43.25, 0, -49.5, 37, 0, -49.5, 37, 0, 49.5, 43.25, 0, 49.5, 49.5, 0, 43.25, 49.5, 0, 37, 49.5, 0, 12.25, 49.5, 0, 6, -2, 0, -2.5, 6, 0, 49.5, 12.25, 0, 49.5, 49.5, 0, 0, 49.5, 0, -6.25, -2, 0, -2.5, -18.75, 0, -49.5, -49.5, 0, -18.75, -49.5, 0, -12.5, -4.25, 0, -4.25, -12.5, 0, -49.5, -2, 0, -2.5, 0, 0, 49.5, 6, 0, 49.5, -31, 0, -49.5, -37.25, 0, -49.5, -49.5, 0, -37.25, -49.5, 0, -31, -49.5, 0, 37, -37.25, 0, 49.5, -31, 0, 49.5, -49.5, 0, 30.75, 49.5, 0, -31, 49.5, 0, -37.25, 37, 0, -49.5, 30.75, 0, -49.5, 30.75, 0, 49.5, 37, 0, 49.5, 49.5, 0, 37, 49.5, 0, 30.75, -6.25, 0, -49.5, -12.5, 0, -49.5, -4.25, 0, -4.25, -2.25, 0, -4.5, 0, 0, -49.5, -6.25, 0, -49.5, -2.25, 0, -4.5, -2, 0, -2.5, -6.25, 0, 49.5, 0, 0, 49.5, 6, 0, -49.5, 0, 0, -49.5, -2.25, 0, -4.5, -49.5, 0, 24.75, -49.5, 0, 30.75, -31, 0, 49.5, -24.75, 0, 49.5, 49.5, 0, -31, 30.75, 0, -49.5, 24.75, 0, -49.5, 49.5, 0, -24.75, -24.75, 0, -49.5, -31, 0, -49.5, -49.5, 0, -31, -49.5, 0, -24.75, 24.75, 0, 49.5, 30.75, 0, 49.5, 49.5, 0, 30.75, 49.5, 0, 24.75, 49.5, 0, 6, 49.5, 0, 0, -2, 0, -2.5, -2, 0, -2.5, -4, 0, -2.25, -49.5, 0, 12.25, -49.5, 0, 18.5, -12.5, 0, 49.5, -6.25, 0, 49.5, -4, 0, -2.25, -49.5, 0, 6, -49.5, 0, 12.25, 12.25, 0, -49.5, 6, 0, -49.5, -2.25, 0, -4.5, -49.5, 0, 24.75, -24.75, 0, 49.5, -18.75, 0, 49.5, 49.5, 0, -18.75, 49.5, 0, -24.75, 24.75, 0, -49.5, -18.75, 0, -49.5, -24.75, 0, -49.5, -49.5, 0, -24.75, -49.5, 0, -18.75, 18.5, 0, 49.5, 24.75, 0, 49.5, 49.5, 0, 24.75, 49.5, 0, 18.5, 12.25, 0, 49.5, 18.5, 0, 49.5, 49.5, 0, 18.5, 49.5, 0, 12.25, -49.5, 0, 18.5, -49.5, 0, 24.75, -18.75, 0, 49.5, -12.5, 0, 49.5, 49.5, 0, -18.75, 24.75, 0, -49.5, 18.5, 0, -49.5, 49.5, 0, -12.5, 12.25, 0, -49.5, -2.25, 0, -4.5, -2, 0, -2.5, 49.5, 0, -6.25, 49.5, 0, -12.5, 18.5, 0, -49.5, -4.25, 0, -4.25, -49.5, 0, -6.25, -49.5, 0, 0, -4, 0, -2.25, -4.25, 0, -4.25, -49.5, 0, 0, -49.5, 0, 6, -49.5, 0, -12.5, -49.5, 0, -6.25, -4.25, 0, -4.25)
@@ -166,16 +167,19 @@ render_priority = 0
 shader = ExtResource("9_jm2st")
 shader_parameter/subviewport_tampilan = SubResource("ViewportTexture_04e41")
 
-[sub_resource type="BoxMesh" id="BoxMesh_sdm88"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_04e41"]
-render_priority = 1
+render_priority = 0
 shader = ExtResource("11_sdm88")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jm2st"]
-transparency = 1
+shader_parameter/color = Color(0.8257405, 0.49508917, 0.06882692, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_04e41"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rui6e"]
+render_priority = -1
+shader = ExtResource("10_sdm88")
+shader_parameter/visibility = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_sdm88"]
 
 [node name="lingkungan" type="Node3D"]
 script = ExtResource("1_h3x2o")
@@ -490,15 +494,15 @@ shape = SubResource("BoxShape3D_jm2st")
 process_mode = 4
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.55701, 0.487169, -0.824383)
-mesh = SubResource("BoxMesh_sdm88")
-surface_material_override/0 = SubResource("ShaderMaterial_04e41")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+[node name="stencil_geometry" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.19668, 0, -0.616212)
-material_override = SubResource("StandardMaterial3D_jm2st")
+material_override = SubResource("ShaderMaterial_04e41")
 mesh = SubResource("BoxMesh_04e41")
+
+[node name="stencil_mask" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.55701, 0.487169, -0.824383)
+material_override = SubResource("ShaderMaterial_rui6e")
+mesh = SubResource("BoxMesh_sdm88")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
 use_collision = true

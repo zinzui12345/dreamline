@@ -206,6 +206,7 @@ input_4/reset = true
 
 [resource]
 graph_offset = Vector2(-312.656, 14.6263)
+nodes/output/position = Vector2(1013.33, 133.333)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_f2bv3")
 nodes/Animation/position = Vector2(-371.429, 542.857)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_cmy7d")
@@ -244,7 +245,6 @@ nodes/menyerang_berdiri/node = SubResource("AnimationNodeOneShot_bvgms")
 nodes/menyerang_berdiri/position = Vector2(171.429, 114.286)
 nodes/mode_menyerang_berdiri/node = SubResource("AnimationNodeTransition_ap2pd")
 nodes/mode_menyerang_berdiri/position = Vector2(-57.1429, 371.429)
-nodes/output/position = Vector2(1013.33, 133.333)
 nodes/pose_duduk/node = SubResource("AnimationNodeTransition_125qw")
 nodes/pose_duduk/position = Vector2(320, 586.667)
-node_connections = [&"arah_pandangan_horizontal", 0, &"gestur", &"arah_pandangan_horizontal", 1, &"arah_x_pandangan", &"arah_pandangan_vertikal", 0, &"jongkok", &"arah_pandangan_vertikal", 1, &"arah_y_pandangan", &"gestur", 0, &"menyerang_berdiri", &"gestur", 1, &"pose_duduk", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat", &"menyerang_berdiri", 0, &"arah_pandangan_vertikal", &"menyerang_berdiri", 1, &"mode_menyerang_berdiri", &"mode_menyerang_berdiri", 0, &"Animation", &"mode_menyerang_berdiri", 1, &"Animation 2", &"output", 0, &"arah_pandangan_horizontal", &"pose_duduk", 0, &"duduk_di_kursi", &"pose_duduk", 1, &"duduk_di_mobil", &"pose_duduk", 2, &"duduk_di_sepeda", &"pose_duduk", 3, &"dibonceng_sepeda", &"pose_duduk", 4, &"meluncur_perosotan"]
+node_connections = [&"output", 0, &"arah_pandangan_horizontal", &"arah_pandangan_horizontal", 0, &"gestur", &"arah_pandangan_horizontal", 1, &"arah_x_pandangan", &"arah_pandangan_vertikal", 0, &"jongkok", &"arah_pandangan_vertikal", 1, &"arah_y_pandangan", &"gestur", 0, &"menyerang_berdiri", &"gestur", 1, &"pose_duduk", &"jongkok", 0, &"melompat", &"jongkok", 1, &"arah_jongkok", &"melompat", 0, &"arah_gerakan", &"melompat", 1, &"lompat", &"menyerang_berdiri", 0, &"arah_pandangan_vertikal", &"menyerang_berdiri", 1, &"mode_menyerang_berdiri", &"mode_menyerang_berdiri", 0, &"Animation", &"mode_menyerang_berdiri", 1, &"Animation 2", &"pose_duduk", 0, &"duduk_di_kursi", &"pose_duduk", 1, &"duduk_di_mobil", &"pose_duduk", 2, &"duduk_di_sepeda", &"pose_duduk", 3, &"dibonceng_sepeda", &"pose_duduk", 4, &"meluncur_perosotan"]

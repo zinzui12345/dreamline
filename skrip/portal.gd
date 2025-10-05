@@ -49,15 +49,25 @@ func _ready() -> void:
 func _ketika_pemain_memasuki_wilayah_portal_a(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_b/tampilan_b.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
+		node_pemain._posisi_target_portal = $portal_b.global_position
+		node_pemain._melihat_melalui_portal = true
+		# Panku.notify("objek disekitar portal b dirender melalui portal a")
 func _ketika_pemain_meninggalkan_wilayah_portal_a(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_b/tampilan_b.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		if node_pemain._posisi_target_portal == $portal_b.global_position: node_pemain._melihat_melalui_portal = false
+		# Panku.notify("objek disekitar portal b tidak akan dirender")
 func _ketika_pemain_memasuki_wilayah_portal_b(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_a/tampilan_a.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
+		node_pemain._posisi_target_portal = $portal_a.global_position
+		node_pemain._melihat_melalui_portal = true
+		# Panku.notify("objek disekitar portal a dirender melalui portal b")
 func _ketika_pemain_meninggalkan_wilayah_portal_b(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_a/tampilan_a.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		if node_pemain._posisi_target_portal == $portal_a.global_position: node_pemain._melihat_melalui_portal = false
+		# Panku.notify("objek disekitar portal a tidak akan dirender")
 
 # atur proses render portal berdasarkan visibilitasnya
 func _ketika_portal_a_terlihat() -> void:
@@ -155,7 +165,7 @@ func _ketika_objek_keluar_dari_portal_b(node_objek : Node3D) -> void:
 		node_tampilan_portal_a[str(jalur_objek)].queue_free()
 		node_tampilan_portal_a.erase(str(jalur_objek))
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# sesuaikan pengamat
 	if pengamat != get_viewport().get_camera_3d():
 		pengamat = get_viewport().get_camera_3d()
@@ -209,7 +219,7 @@ func _process(delta: float) -> void:
 	posisi_terakhir_pengamat = pengamat.global_position
 	rotasi_terakhir_pengamat = pengamat.global_rotation
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# cek posisi objek dalam portal a
 	for jalur_objek in objek_dalam_portal_a:
 		var objek_diteleportasi : Node3D
