@@ -36,6 +36,8 @@ var b_file_timeline : FileAccess
 
 const jarak_render_karakter = 60 # harus melebihi jarak render entitas supaya kendaraan berfungsi normal
 const jarak_render_entitas = 50
+const jarak_render_karakter_melewati_portal = 9 # harus melebihi jarak render entitas supaya kendaraan berfungsi normal
+const jarak_render_entitas_melewati_portal = 7
 const direktori_cache_replay = "user://timeline_part"
 const file_replay = "user://rekaman.dreamline_replay"
 
@@ -177,8 +179,21 @@ func _process(_delta : float) -> void:
 								cek_visibilitas_pemain[id_pemain][id_pemain_target] = "hapus"
 							# jika jarak pemain target lebih dari jarak render karakter
 							if jarak_pemain > jarak_render_karakter:
+								# lakukan sebaliknya jika pemain tersebut berada pada area disekitar portal yang dekat dengan pemain yang melihatnya
+								if pemain[i_pool_pemain]["kondisi"].get("melihat_melalui_portal") != null \
+									and pemain[i_pool_pemain]["kondisi"]["melihat_melalui_portal"] == true \
+									and pemain[i_pool_pemain]["kondisi"]["posisi_target_portal"].distance_to(pemain[pemain_target]["posisi"]) < jarak_render_karakter_melewati_portal:
+									# hanya spawn jika pool belum di-spawn
+									if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "hapus" or cek_visibilitas_pemain[id_pemain][id_pemain_target] == "lihat":
+										# rpc spawn pool pemain
+										spawn_pool_pemain(id_pemain, id_pemain_target, data_pemain_target)
+										# ubah visibilitas pool agar jangan rpc lagi
+										cek_visibilitas_pemain[id_pemain][id_pemain_target] = "spawn"
+									# atur visibilitas pemain yang melihatnya pada pemain tersebut
+									if cek_visibilitas_pemain[id_pemain_target][id_pemain] == "hapus":
+										cek_visibilitas_pemain[id_pemain_target][id_pemain] = "lihat"
 								# hanya hapus jika pool telah di-spawn
-								if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn":
+								elif cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn":
 									# rpc hapus pool pemain
 									hapus_pool_pemain(id_pemain, id_pemain_target)
 									# ubah visibilitas pool agar jangan rpc lagi
@@ -186,7 +201,7 @@ func _process(_delta : float) -> void:
 							# jika jarak pemain kurang dari jarak render karakter
 							else:
 								# hanya spawn jika pool belum di-spawn
-								if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "hapus":
+								if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "hapus" or cek_visibilitas_pemain[id_pemain][id_pemain_target] == "lihat":
 									# rpc spawn pool pemain
 									spawn_pool_pemain(id_pemain, id_pemain_target, data_pemain_target)
 									# ubah visibilitas pool agar jangan rpc lagi
@@ -217,7 +232,7 @@ func _process(_delta : float) -> void:
 								# lakukan sebaliknya jika entitas berada pada area disekitar portal yang dekat dengan pemain
 								if pemain[i_pool_pemain]["kondisi"].get("melihat_melalui_portal") != null \
 									and pemain[i_pool_pemain]["kondisi"]["melihat_melalui_portal"] == true \
-									and pemain[i_pool_pemain]["kondisi"]["posisi_target_portal"].distance_to(pool_entitas[nama_entitas]["posisi"]) < jarak_render_entitas:
+									and pemain[i_pool_pemain]["kondisi"]["posisi_target_portal"].distance_to(pool_entitas[nama_entitas]["posisi"]) < jarak_render_entitas_melewati_portal:
 									# hanya spawn jika pool belum di-spawn
 									if cek_visibilitas_pool_entitas[id_pemain][nama_entitas] == "hapus":
 										# rpc spawn pool entitas
@@ -1077,7 +1092,7 @@ func _pemain_terputus(id_pemain):
 			# rpc sinkronkan kondisi id_pemain ke semua pemain yang spawn id_pemain
 			if cek_visibilitas_pemain.has(id_pemain):
 				for id_pemain_target in cek_visibilitas_pemain[id_pemain]:
-					if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn":
+					if cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn" or cek_visibilitas_pemain[id_pemain][id_pemain_target] == "lihat":
 						# rpc ke id_pemain_target
 						if id_pemain_target == 1:
 							_sinkronkan_kondisi_pemain(id_pemain, properti_kondisi)

@@ -14,7 +14,7 @@ const sinkron_kondisi = [
 	["linear_velocity", Vector3.ZERO],
 	["klakson", false]
 ]
-const jalur_instance = "res://skena/entitas/bajay.tscn"
+const jalur_instance = "res://skena/entitas/bajay.scn"
 const batas_putaran_stir = 0.5
 const posisi_kamera_pandangan_belakang = 4.0
 

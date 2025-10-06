@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://b8sq2nbbhqrw5" path="res://skena/objek/pintu_1_kode.scn" id="11_ojnhc"]
 [ext_resource type="PackedScene" uid="uid://btfh3nq4bweai" path="res://skena/objek/perosotan.scn" id="11_qwpge"]
 [ext_resource type="Shader" uid="uid://xvkhmy27r1ji" path="res://material/portal.gdshader" id="12_fxh77"]
-[ext_resource type="PackedScene" uid="uid://duhikxgofcvdn" path="res://skena/entitas/bajay.tscn" id="12_wljsp"]
+[ext_resource type="PackedScene" uid="uid://gol48xhh2g6i" path="res://skena/entitas/bajay.scn" id="12_wljsp"]
 [ext_resource type="PackedScene" uid="uid://b3vj1355t6to5" path="res://skena/objek/kincir_angin.scn" id="13_ws6jm"]
 [ext_resource type="PackedScene" uid="uid://c7ounsuk7a4dh" path="res://model/bangunan/interior_gedung_penelitian.scn" id="14_fxh77"]
 [ext_resource type="Script" uid="uid://b586nuj20apyu" path="res://addons/road-generator/nodes/road_manager.gd" id="14_gdyf4"]
@@ -11096,7 +11096,7 @@ debug_shape_custom_color = Color(0.323502, 0.222493, 0.164103, 1)
 [node name="tanah" type="Node3D" parent="permukaan"]
 
 [node name="posisi_spawn" type="Marker3D" parent="."]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 358, 5, 82)
+transform = Transform3D(0.707107, 0, 0.70710695, 0, 1, 0, -0.70710695, 0, 0.707107, -259.69693, 9.702, 167.79997)
 
 [node name="batas_bawah" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -45.05, 0)
