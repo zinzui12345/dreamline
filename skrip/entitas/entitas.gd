@@ -62,7 +62,7 @@ func sinkronkan_perubahan_kondisi(perubahan_kondisi : Array = []) -> void:
 	# 26/04/25 :: hanya cek kondisi pada pemroses jika properti perubahan_kondisi kosong
 	if id_proses == client.id_koneksi and perubahan_kondisi.size() == 0:
 		# cek apakah kondisi berubah
-		if global_position.y < server.permainan.batas_bawah:
+		if (global_position.y < server.permainan.batas_bawah and global_position.y > server.permainan.batas_bawah - 600) or global_position.y < -5050:
 			# reset kondisi jika entitas jatuh ke void
 			perubahan_kondisi.append(["position", posisi_awal])
 			perubahan_kondisi.append(["rotation", rotasi_awal])

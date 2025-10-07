@@ -11099,7 +11099,7 @@ debug_shape_custom_color = Color(0.323502, 0.222493, 0.164103, 1)
 transform = Transform3D(0.707107, 0, 0.70710695, 0, 1, 0, -0.70710695, 0, 0.707107, -259.69693, 9.702, 167.79997)
 
 [node name="batas_bawah" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -45.05, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
 
 [node name="bola" parent="." instance=ExtResource("7_mxxfs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.315, 5.229, 17.622)
@@ -11138,7 +11138,7 @@ skeleton = NodePath("")
 transform = Transform3D(-0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, -0.766044, -253.143, 10.327, 170.096)
 
 [node name="interior gedung penelitian" parent="." instance=ExtResource("14_fxh77")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50000, 9.702, 0)
+transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, -242.697, -5045, 156.8)
 
 [node name="gedung penelitian" type="Node3D" parent="interior gedung penelitian"]
 visible = false
@@ -11218,7 +11218,7 @@ shape = SubResource("BoxShape3D_h8yjk")
 process_mode = 4
 
 [node name="portal_b" type="MeshInstance3D" parent="portal pintu belakang"]
-transform = Transform3D(-0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, -0.766044, 38398.5, -0.352, -32403)
+transform = Transform3D(-0.9999998, 0, 2.0861626e-07, 0, 1, 0, -2.0861626e-07, 0, -0.9999998, 0.50782776, -5055.054, 16.77069)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_uggdj")

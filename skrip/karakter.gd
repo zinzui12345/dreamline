@@ -723,7 +723,7 @@ func _physics_process(delta : float) -> void:
 			dunia.get_node("bar_nyawa").visible = false
 	
 	# atur ulang posisi kalau terjatuh dari dunia
-	if global_position.y < server.permainan.batas_bawah:
+	if (global_position.y < server.permainan.batas_bawah and global_position.y > server.permainan.batas_bawah - 600) or global_position.y < -5050:
 		# 18/10/24 :: jangan respawn kalo menaiki objek
 		if gestur != "duduk":
 			global_transform.origin = posisi_awal

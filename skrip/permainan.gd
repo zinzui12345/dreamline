@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 06/09/25 Early Access"
+const versi = "Dreamline v0.4.4 07/10/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -71,7 +71,7 @@ var karakter : CharacterBody3D
 var map : Node3D = null
 var daftar_aset : Dictionary
 var permukaan					# Permukaan (Terrain)
-var batas_bawah : int = -4000	# batas area untuk re-spawn
+var batas_bawah : int = -4000	# batas area untuk re-spawn | margin batas sejauh 600 meter setelahnya | area sekitar -5000 hingga -5050 adalah interior
 var edit_objek : Node3D			# ref objek yang sedang di-edit
 var tambah_translasi_objek : Dictionary = { "x": false, "y": false, "z": false }
 var kurang_translasi_objek : Dictionary = { "x": false, "y": false, "z": false }
