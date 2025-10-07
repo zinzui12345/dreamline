@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=4 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=50 format=4 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_uaaqg"]
 [ext_resource type="Script" uid="uid://bmm5flmnbh45f" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
@@ -772,6 +772,38 @@ size = Vector3(1, 2, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_h8yjk"]
 size = Vector3(4, 4, 4)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1gv8n"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_mdj7g"]
+_surfaces = [{
+"aabb": AABB(-2.2497683, -1.0500002, -1.9550482e-07, 2.8497682, 2.1000001, 2.0000005),
+"format": 34896613377,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAgAEAAAABQABAAMAAgABAAUABQADAAYAAgAHAAQAAgAFAAcABwAGAAQABwAFAAYA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("//8AAAAAAADT75jZ/v8AANPvZib+/wAA/////wAAAAAAAAAAAAAAACsQmNn//wAAAAD//wAAAAArEGYm//8AAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_fxh77"]
+resource_name = "gedung penelitian_Cube_029"
+_surfaces = [{
+"aabb": AABB(-0.6000001, -1.0500002, -2.150002, 2.8497684, 2.1000001, 2.000003),
+"attribute_data": PackedByteArray("/1////+f/7//X/+//5////9f/7//n/9//1//f/+f/7//X/9//5//P/9f/z//n/9//x//f/9f/z//H/8//1//f/+f/3//3/8//5//P//f/38="),
+"format": 34896613399,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_1gv8n"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("AAAAAP//viwrEJjZAAC+LCsQZiYAAL4sAAD/////viwrEGYmAAD/P9PvmNkAAP8/0+9mJgAA/z8rEJjZAAD/P9PvZiYAAL4s//////7/viz//wAA/v++LNPvmNkAAL4sKxBmJgAAXUb//wAA/v9dRgAAAAD//11G0+9mJgAAXUbT75jZAAAAAAAA/////wAA//////7/AAArEJjZAAAAAF4pXileKV4pXileKV4pXin/////////////////////oNag1qDWoNag1qDWoNag1v7//3/+//9//v//f/7//3//fwJF/38CRf9/AkX/fwJF")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_mdj7g")
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_qapuc"]
 viewport_path = NodePath("portal pintu belakang/portal_a/tampilan_a")
 
@@ -780,6 +812,9 @@ resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("12_fxh77")
 shader_parameter/subviewport_tampilan = SubResource("ViewportTexture_qapuc")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fxh77"]
+size = Vector3(8, 4, 4)
 
 [node name="pulau" type="Node3D"]
 script = ExtResource("1_uaaqg")
@@ -11218,10 +11253,10 @@ shape = SubResource("BoxShape3D_h8yjk")
 process_mode = 4
 
 [node name="portal_b" type="MeshInstance3D" parent="portal pintu belakang"]
-transform = Transform3D(-0.9999998, 0, 2.0861626e-07, 0, 1, 0, -2.0861626e-07, 0, -0.9999998, 0.50782776, -5055.054, 16.77069)
+transform = Transform3D(-0.9999998, 0, 1.5099577e-07, 0, 1, 0, -1.5099577e-07, 0, -0.9999998, 0.50782776, -5055.054, 16.77069)
 layers = 8
 cast_shadow = 0
-mesh = SubResource("ArrayMesh_uggdj")
+mesh = SubResource("ArrayMesh_fxh77")
 surface_material_override/0 = SubResource("ShaderMaterial_776u0")
 
 [node name="arah" type="Marker3D" parent="portal pintu belakang/portal_b"]
@@ -11250,7 +11285,7 @@ positional_shadow_atlas_quad_3 = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
 [node name="target_b" type="VisibleOnScreenNotifier3D" parent="portal pintu belakang/portal_b"]
-aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
+aabb = AABB(-0.5, -1, 0, 2.8, 2, 0.05)
 
 [node name="area_b" type="Area3D" parent="portal pintu belakang/portal_b"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
@@ -11268,8 +11303,8 @@ collision_mask = 2
 monitorable = false
 
 [node name="wilayah_render" type="CollisionShape3D" parent="portal pintu belakang/portal_b/area_render"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
-shape = SubResource("BoxShape3D_h8yjk")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0, 2)
+shape = SubResource("BoxShape3D_fxh77")
 
 [node name="node_tampilan" type="Node3D" parent="portal pintu belakang/portal_b"]
 process_mode = 4
