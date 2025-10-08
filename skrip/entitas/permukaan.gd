@@ -315,11 +315,11 @@ func muat_terrain():
 			data.queue_free()
 			
 			if vegetasi.size() > 0:
-				var potongan_yang_memiliki_vegetasi = []
-				var total_spawner = {
-					"pencemaran": 0,
-					"bunga_nektar": 0
-				}
+				#var potongan_yang_memiliki_vegetasi = [] # Early concept : 12/2023
+				#var total_spawner = {
+					#"pencemaran": 0,
+					#"bunga_nektar": 0
+				#}
 				
 				print("menghasilkan vegetasi")
 				for v in vegetasi.size():

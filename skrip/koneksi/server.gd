@@ -29,6 +29,7 @@ var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "
 var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
 var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
 var cek_visibilitas_pool_karakter : Dictionary = {} # [id_pemain][nama_karakter] = "spawn" ? "hapus"
+var pool_pemuat_objek : Array
 var b_cek_data_timeline : Dictionary
 var b_indeks_timeline : Array
 var b_nama_file_timeline : String
@@ -347,7 +348,41 @@ func _process(_delta : float) -> void:
 									sinkronkan_kondisi_karakter(-1, nama_karakter, [["id_proses", id_pemain]])
 									# atur id_proses dengan id_pemain
 									pool_karakter[nama_karakter]["id_proses"] = id_pemain
-
+		
+		# pemuatan aset objek
+		if pool_pemuat_objek.size() > 0:
+			var muat_objek = pool_pemuat_objek[0]
+			if muat_objek.thread == null:
+				muat_objek.thread = ResourceLoader.load_threaded_request(muat_objek.jalur, "PackedScene", true)
+				if muat_objek.thread != OK:
+					push_error("objek [%s] tidak dapat dimuat!" % muat_objek.jalur)
+					pool_pemuat_objek.pop_front()
+				elif dunia.get_node("objek").get_node_or_null(muat_objek.nama) != null:
+					push_error("objek [%s] sudah ada di dunia, jadi tak perlu lagi dimuat!" % muat_objek.jalur)
+					pool_pemuat_objek.pop_front()
+			elif ResourceLoader.load_threaded_get_status(muat_objek.jalur) == ResourceLoader.THREAD_LOAD_LOADED:
+				var muat_skena_objek = ResourceLoader.load_threaded_get(muat_objek.jalur)
+				if muat_skena_objek:
+					var tmp_objek : Node3D = muat_skena_objek.instantiate()
+					var tmp_nama = tmp_objek.name
+					tmp_objek.name = muat_objek.nama
+					dunia.get_node("objek").add_child(tmp_objek, true)
+					for p in muat_objek.properti.properti_objek.size():
+						if tmp_objek.get(muat_objek.properti.properti_objek[p][0]) != null:
+							if muat_objek.properti.properti_objek[p][0] == "kode":
+								var compile_kode = permainan._compile_blok_kode(muat_objek.properti.properti_objek[p][1])
+								if compile_kode != null: tmp_objek.kode = compile_kode
+							else: tmp_objek.set(muat_objek.properti.properti_objek[p][0], muat_objek.properti.properti_objek[p][1])
+						elif muat_objek.properti.properti_objek[p][0] == "id_objek":
+							tmp_objek.set_meta("id_objek", muat_objek.properti.properti_objek[p][1])
+							#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [muat_objek.nama, muat_objek.properti.properti_objek[p][1]])
+						else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+muat_objek.properti.properti_objek[p][0]+"]")
+					tmp_objek.id_pengubah = muat_objek.properti.id_pengubah
+					tmp_objek.global_transform.origin = muat_objek.properti.posisi_objek
+					tmp_objek.rotation = muat_objek.properti.rotasi_objek
+				else:
+					push_error("aset [%s] bukan objek yang valid!" % muat_objek.jalur)
+				pool_pemuat_objek.pop_front()
 func buat_koneksi() -> void:
 	interface = MultiplayerAPI.create_default_interface()
 	peer = ENetMultiplayerPeer.new()
@@ -1351,24 +1386,35 @@ func _pemain_terputus(id_pemain):
 			tmp_entitas.rotation = rotasi_entitas
 @rpc("authority") func _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah : int, nama_objek : String, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array):
 	if permainan != null and dunia != null:
-		if dunia.get_node("objek").get_node_or_null(nama_objek) == null and load(jalur_instance_objek) != null:
-			var tmp_objek : Node3D = load(jalur_instance_objek).instantiate()
-			var tmp_nama = tmp_objek.name
-			tmp_objek.name = nama_objek
-			dunia.get_node("objek").add_child(tmp_objek, true)
-			for p in properti_objek.size():
-				if tmp_objek.get(properti_objek[p][0]) != null:
-					if properti_objek[p][0] == "kode":
-						var compile_kode = permainan._compile_blok_kode(properti_objek[p][1])
-						if compile_kode != null: tmp_objek.kode = compile_kode
-					else: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
-				elif properti_objek[p][0] == "id_objek":
-					tmp_objek.set_meta("id_objek", properti_objek[p][1])
-					#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [nama_objek, properti_objek[p][1]])
-				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
-			tmp_objek.id_pengubah = id_pengubah
-			tmp_objek.global_transform.origin = posisi_objek
-			tmp_objek.rotation = rotasi_objek
+		pool_pemuat_objek.push_back({
+			"nama"		: nama_objek,
+			"jalur"		: jalur_instance_objek,
+			"thread"	: null,
+			"properti"	: {
+				"id_pengubah"		: id_pengubah,
+				"posisi_objek"		: posisi_objek,
+				"rotasi_objek"		: rotasi_objek,
+				"properti_objek"	: properti_objek
+			}
+		})
+		#if dunia.get_node("objek").get_node_or_null(nama_objek) == null and load(jalur_instance_objek) != null:
+			#var tmp_objek : Node3D = load(jalur_instance_objek).instantiate()
+			#var tmp_nama = tmp_objek.name
+			#tmp_objek.name = nama_objek
+			#dunia.get_node("objek").add_child(tmp_objek, true)
+			#for p in properti_objek.size():
+				#if tmp_objek.get(properti_objek[p][0]) != null:
+					#if properti_objek[p][0] == "kode":
+						#var compile_kode = permainan._compile_blok_kode(properti_objek[p][1])
+						#if compile_kode != null: tmp_objek.kode = compile_kode
+					#else: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
+				#elif properti_objek[p][0] == "id_objek":
+					#tmp_objek.set_meta("id_objek", properti_objek[p][1])
+					##Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [nama_objek, properti_objek[p][1]])
+				#else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
+			#tmp_objek.id_pengubah = id_pengubah
+			#tmp_objek.global_transform.origin = posisi_objek
+			#tmp_objek.rotation = rotasi_objek
 @rpc("authority") func _spawn_visibilitas_karakter(jalur_instance_karakter, id_pengubah : int, nama_karakter : String, posisi_karakter : Vector3, rotasi_karakter : Vector3, kondisi_karakter : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("karakter").get_node_or_null(nama_karakter) == null and load(jalur_instance_karakter) != null:
