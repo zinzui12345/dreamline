@@ -83,6 +83,8 @@ var editor_kode
 var mode_vr : bool = false
 var pengamat_vr : XROrigin3D
 var thread := Thread.new()
+var jalur_map : String
+var memuat_map : bool
 var koneksi := MODE_KONEKSI.CLIENT
 var gunakan_frustum_culling : bool = true
 var gunakan_occlusion_culling : bool = true
@@ -380,6 +382,335 @@ func _process(delta : float) -> void:
 		var energy : float = clamp((60 + linear_to_db(magnitude)) / 60, 0, 1)
 		$hud/frekuensi_mic/posisi/persentasi.value = energy * 100
 	
+	# proses memuat map
+	if memuat_map and jalur_map != "":
+		if ResourceLoader.load_threaded_get_status(jalur_map) == ResourceLoader.THREAD_LOAD_LOADED:
+			var muat_skena_map = ResourceLoader.load_threaded_get(jalur_map)
+			if muat_skena_map:
+				map = muat_skena_map.instantiate()
+				map.name = "lingkungan"
+				if map.get_node_or_null("posisi_spawn") != null:
+					data["posisi"] = map.get_node("posisi_spawn").position
+					data["rotasi"] = map.get_node("posisi_spawn").rotation
+				if map.get_node_or_null("batas_bawah") != null:
+					batas_bawah = map.get_node("batas_bawah").position.y
+				_atur_persentase_memuat(60)
+				await get_tree().create_timer(0.5).timeout
+				dunia.add_child(map)
+				dunia.set_process(true)
+				if koneksi == MODE_KONEKSI.SERVER:
+					# INFO : (5a) buat server
+					server.buat_koneksi()
+					if not server.headless:
+						# tambah pengamat objek
+						var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
+						_atur_persentase_memuat(70)
+						_atur_teks_memuat("%memuat_pemain%")
+						_tambahkan_pengamat_objek(pengamat_objek)
+						# tambahkan pemain
+						_tambahkan_pemain(1, data)
+						server.pemain["admin"] = {
+							"id_client": 1,
+							"nama": 	data["nama"],
+							"posisi":	data["posisi"],
+							"rotasi":	data["rotasi"],
+							"model": {
+								"gender":		data["gender"],
+								"alis":			data["alis"],
+								"garis_mata":	data["garis_mata"],
+								"mata":			data["mata"],
+								"warna_mata":	data["warna_mata"],
+								"rambut":		data["rambut"],
+								"warna_rambut":	data["warna_rambut"],
+								"baju":			data["baju"],
+								"warna_baju":	data["warna_baju"],
+								"celana":		data["celana"],
+								"warna_celana":	data["warna_celana"],
+								"sepatu":		data["sepatu"],
+								"warna_sepatu":	data["warna_sepatu"]
+							},
+							"kondisi":		{
+								"arah_gerakan": 	Vector3.ZERO,
+								"arah_pandangan":	Vector2.ZERO,
+								"mode_gestur":		"berdiri",
+								"pose_duduk":		"normal",
+								"gestur_jongkok": 	0.0,
+								"mode_menyerang": 	"a"
+							}
+						}
+						server.pemain_terhubung = 1
+						client.id_sesi = "admin"
+					else:
+						_mulai_server_cli()
+					# 10/11/24 :: tambahkan objek
+					if map.get("objek_") != null:
+						for muat_objek in map.objek_:
+							if daftar_aset[map.objek_[muat_objek].id_aset].tipe == "objek":
+								server._tambahkan_objek(
+									daftar_aset[map.objek_[muat_objek].id_aset].sumber,
+									map.objek_[muat_objek].posisi,
+									map.objek_[muat_objek].rotasi,
+									daftar_aset[map.objek_[muat_objek].id_aset].setelan.jarak_render,
+									map.objek_[muat_objek].kondisi
+								)
+							# Panku.notify(map.objek_[muat_objek])
+				elif koneksi == MODE_KONEKSI.CLIENT:
+					if server.mode_replay:
+						# 13/09/24 :: buat koneksi virtual untuk mencegah kesalahan proses entitas
+						server.buat_koneksi_virtual()
+						# INFO : (5b3) muat data replay
+						# 04/02/24 :: ubah nilai properti menjadi keyframe animasi
+						koneksi = MODE_KONEKSI.SERVER
+						var indeks_frame : Array = server.timeline.keys() # berisi indeks seperti nomor frame, dll
+						var alur_waktu := AnimationPlayer.new()
+						var skenario := Animation.new()
+						var pengamat := Camera3D.new()
+						var _fungsi_pengamat : GDScript = load("res://skrip/objek/free_look_camera.gd")
+						alur_waktu.name = "alur_waktu"
+						dunia.add_child(alur_waktu)
+						pengamat.name = "pengamat"
+						pengamat.current = true
+						pengamat.set_script(_fungsi_pengamat)
+						add_child(pengamat)
+						for frame in indeks_frame:
+							if frame is int and server.timeline[frame] != {}:
+								var indeks_entitas : Array = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
+								var waktu : float = frame * 0.001 # konversi ke satuan milidetik (float)
+								for entitas_ in indeks_entitas:
+									if server.timeline[frame][entitas_] != {}:
+										var data_frame = server.timeline[frame][entitas_]
+										if data_frame.tipe == "spawn":
+											if data_frame.tipe_objek == "pemain":
+												server.timeline.trek[entitas_] = {}
+												server.timeline.entitas[entitas_] = "pemain"
+												call_deferred("_tambahkan_pemain", entitas_, data_frame.data)
+												# matikan visibilitas pemain hingga di-sinkron
+												server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
+												skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "pemain/"+str(entitas_)+":visible")
+												skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
+												skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
+												# matikan visibilitas daftar pemain hingga di-sinkron
+												server.timeline.trek[entitas_]["visibilitas_"] = skenario.add_track(Animation.TYPE_VALUE)
+												skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas_"], "../Dreamline/hud/daftar_pemain/panel/gulir/baris/"+str(entitas_)+":visible")
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], 0.0, false)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, true)
+											elif data_frame.tipe_objek == "objek":
+												server.timeline.trek[entitas_] = {}
+												server.timeline.entitas[entitas_] = "objek"
+												server.call_deferred("spawn_pool_objek", 1, entitas_, data_frame.sumber, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
+												# buat track animasi
+												server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
+												server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
+												server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
+												# atur track animasi
+												skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "objek/"+str(entitas_)+":visible")
+												skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "objek/"+str(entitas_)+":position")
+												skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "objek/"+str(entitas_)+":rotation")
+												skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
+												skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
+												skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["posisi"], Animation.INTERPOLATION_NEAREST)
+												#skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["posisi"], Animation.UPDATE_DISCRETE)
+												skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
+												skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
+												# atur nilai default animasi
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
+											elif data_frame.tipe_objek == "entitas":
+												server.timeline.trek[entitas_] = {}
+												server.timeline.entitas[entitas_] = "entitas"
+												server.call_deferred("spawn_pool_entitas", 1, entitas_, data_frame.sumber, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
+												# buat track animasi
+												server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
+												server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
+												server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
+												# atur track animasi
+												skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "entitas/"+str(entitas_)+":visible")
+												skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "entitas/"+str(entitas_)+":position")
+												skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "entitas/"+str(entitas_)+":rotation")
+												skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
+												skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
+												skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
+												skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
+												# atur nilai default animasi
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
+												skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
+												# buat track animasi properti kustom
+												server.timeline.trek[entitas_]["properti"] = Dictionary()
+												for indeks_properti in data_frame.properti:
+													# buat track animasi
+													server.timeline.trek[entitas_]["properti"][indeks_properti[0]] = skenario.add_track(Animation.TYPE_VALUE)
+													# atur track dan nilai animasi
+													skenario.track_set_path(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], "entitas/"+str(entitas_)+":"+indeks_properti[0])
+													if indeks_properti[0].begins_with("id_"):
+														# atur track animasi
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.INTERPOLATION_NEAREST)
+														skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.UPDATE_DISCRETE)
+														# atur nilai default animasi
+														skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], 0.0, -1)
+														skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
+													else:
+														# atur track animasi
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.INTERPOLATION_CUBIC)
+														skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.UPDATE_DISCRETE)
+														# atur nilai default animasi
+														skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], 0.0, indeks_properti[1])
+										elif data_frame.tipe == "sinkron":
+											if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas_) != null:
+												if server.timeline.entitas[entitas_] == "pemain":
+													if server.timeline.trek[entitas_].get("posisi") == null:
+														server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
+														skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "pemain/"+str(entitas_)+":position")
+													if server.timeline.trek[entitas_].get("rotasi") == null:
+														server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "pemain/"+str(entitas_)+":rotation_degrees")
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
+														skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
+													if server.timeline.trek[entitas_].get("skala") == null:
+														server.timeline.trek[entitas_]["skala"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["skala"], "pemain/"+str(entitas_)+":scale")
+													if server.timeline.trek[entitas_].get("arah_gerakan") == null:
+														server.timeline.trek[entitas_]["arah_gerakan"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["arah_gerakan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_gerakan/blend_position")
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["arah_gerakan"], Animation.INTERPOLATION_CUBIC)
+														skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["arah_gerakan"], Animation.UPDATE_DISCRETE)
+													if server.timeline.trek[entitas_].get("arah_x_pandangan") == null:
+														server.timeline.trek[entitas_]["arah_x_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["arah_x_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_x_pandangan/blend_position")
+													if server.timeline.trek[entitas_].get("arah_y_pandangan") == null:
+														server.timeline.trek[entitas_]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["arah_y_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_y_pandangan/blend_position")
+													if server.timeline.trek[entitas_].get("gestur") == null:
+														server.timeline.trek[entitas_]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+":gestur")
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["gestur"], Animation.INTERPOLATION_CUBIC)
+														skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"], 0.0, "berdiri")
+													if server.timeline.trek[entitas_].get("pose_duduk") == null:
+														server.timeline.trek[entitas_]["pose_duduk"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["pose_duduk"], "pemain/"+str(entitas_)+"/pose:parameters/pose_duduk/transition_request")
+														skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"], 0.0, "normal")
+													if server.timeline.trek[entitas_].get("gestur_jongkok") == null:
+														server.timeline.trek[entitas_]["gestur_jongkok"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["gestur_jongkok"], "pemain/"+str(entitas_)+":gestur_jongkok")
+													if server.timeline.trek[entitas_].get("lompat") == null:
+														server.timeline.trek[entitas_]["lompat?"] = false
+														server.timeline.trek[entitas_]["lompat"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["lompat"], "pemain/"+str(entitas_)+"/pose:parameters/melompat/request")
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["lompat"],	Animation.INTERPOLATION_NEAREST)
+														skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["lompat"],	Animation.UPDATE_DISCRETE)
+														skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],		0.0,	AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
+													if server.timeline.trek[entitas_].get("mode_menyerang_berdiri") == null:
+														server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] = ""
+														server.timeline.trek[entitas_]["mode_menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], "pemain/"+str(entitas_)+"/pose:parameters/mode_menyerang_berdiri/transition_request")
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], Animation.INTERPOLATION_CUBIC)
+														skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], 0.0, "mendorong")
+													if server.timeline.trek[entitas_].get("menyerang_berdiri") == null:
+														server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
+														server.timeline.trek[entitas_]["menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
+														skenario.track_set_path(server.timeline.trek[entitas_]["menyerang_berdiri"], "pemain/"+str(entitas_)+"/pose:parameters/menyerang_berdiri/request")
+														skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["menyerang_berdiri"],	Animation.INTERPOLATION_NEAREST)
+														skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["menyerang_berdiri"],	Animation.UPDATE_DISCRETE)
+														skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"],		0.0,	AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"],				waktu, data_frame.posisi)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"],				waktu, data_frame.rotasi)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["skala"],				waktu, data_frame.skala)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["arah_gerakan"],		waktu, data_frame.kondisi.arah_gerakan)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["arah_x_pandangan"],	waktu, data_frame.kondisi.arah_x_pandangan)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["arah_y_pandangan"],	waktu, data_frame.kondisi.arah_y_pandangan)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"],				waktu, data_frame.kondisi.gestur)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"],			waktu, data_frame.kondisi.pose_duduk)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["gestur_jongkok"],		waktu, data_frame.kondisi.gestur_jongkok)
+													if data_frame.kondisi.lompat and not server.timeline.trek[entitas_]["lompat?"]:
+														skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+														server.timeline.trek[entitas_]["lompat?"] = true
+													elif not data_frame.kondisi.lompat and server.timeline.trek[entitas_]["lompat?"]:
+														#skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
+														server.timeline.trek[entitas_]["lompat?"] = false
+													if data_frame.kondisi.menyerang:
+														match data_frame.kondisi.gestur:
+															"berdiri":
+																match data_frame.kondisi.mode_menyerang:
+																	"a":
+																		if server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] != "mendorong":
+																			skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], waktu, "mendorong")
+																			server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] = "mendorong"
+																	"b":
+																		if server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] != "menendang":
+																			skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], waktu, "menendang")
+																			server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] = "menendang"
+																if not server.timeline.trek[entitas_]["menyerang_berdiri?"]:
+																	skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+																	server.timeline.trek[entitas_]["menyerang_berdiri?"] = true
+													elif not data_frame.kondisi.menyerang:
+														match data_frame.kondisi.gestur:
+															"berdiri":
+																if server.timeline.trek[entitas_]["menyerang_berdiri?"]:
+																	#skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
+																	server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
+													skenario.length = waktu
+												elif server.timeline.entitas[entitas_] == "objek":
+													skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
+													skenario.length = waktu
+												elif server.timeline.entitas[entitas_] == "entitas":
+													skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
+													skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
+													for indeks_properti in data_frame.properti:
+														if indeks_properti[1] != null:
+															skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
+													skenario.length = waktu
+										elif data_frame.tipe == "hapus" and server.timeline.entitas.has(entitas_):
+											# hapus entitas
+											skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
+											# jika entitas adalah pemain, matikan visibilitas dari daftar pemain
+											if server.timeline.entitas[entitas_] == "pemain": skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, false)
+										else: Panku.notify("["+entitas_+"] : "+str(server.timeline.has(entitas_)))
+						var pustaka_animasi := AnimationLibrary.new()
+						pustaka_animasi.add_animation("skenario", skenario)
+						alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
+						# $root.dunia.get_node("alur_waktu").play("alur_waktu/skenario")
+						ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
+					elif server.mode_uji_performa:
+						# INFO : (5b4) tampilkan halaman uji performa
+						# 28/06/24 :: demo uji algoritma object culling
+						koneksi = MODE_KONEKSI.SERVER
+						server.mode_replay = true
+						server.set_process(true)
+						_tampilkan_permainan()
+						var pengamat : Control = load("res://skena/perf_test.tscn").instantiate()
+						pengamat.name = "pengamat"
+						add_child(pengamat)
+					else:
+						# tambah pengamat objek
+						var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
+						_atur_persentase_memuat(50)
+						_tambahkan_pengamat_objek(pengamat_objek)
+						# cek depedensi map
+						if map.get("depedensi") != null:
+							_atur_teks_memuat("%mengunduh_aset%")
+							for cek_id_aset in map.depedensi:
+								if daftar_aset.has(cek_id_aset): pass
+								else: server.rpc_id(1,"_kirim_aset", cek_id_aset, client.id_koneksi)
+						_atur_persentase_memuat(70)
+						_atur_teks_memuat("%memuat_pemain%")
+						# INFO : (5b1) kirim data pemain ke server
+						server.rpc("_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
+			else:
+				push_error("berkas map [%s] tidak valid!" % jalur_map)
+			memuat_map = false
+			jalur_map = ""
+		elif ResourceLoader.load_threaded_get_status(jalur_map) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			var progress : Array
+			ResourceLoader.load_threaded_get_status(jalur_map, progress)
+			if progress[0] >= 0:
+				_atur_persentase_memuat(int((progress[0] * 55) + 5))
+	
 	# input
 	if is_instance_valid(karakter): # ketika dalam permainan
 		if Input.is_action_pressed("berbicara") and !pesan: _berbicara(true)
@@ -661,332 +992,27 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 			_atur_teks_memuat("%mengunduh_map%")
 			server.rpc_id(1, "_kirim_map", client.id_koneksi)
 			return
-	var tmp_perintah := Callable(self, "_muat_map")
-	thread.start(tmp_perintah.bind(nama_map), Thread.PRIORITY_NORMAL)
-func _muat_map(file_map : StringName) -> void:
 	# INFO : (4) muat map
-	if file_map.substr(0,1) == "@":
-		if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]):
-			map = await load("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]).instantiate()
+	if nama_map.substr(0,1) == "@":
+		if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map.substr(1)]):
+			jalur_map = "%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map.substr(1)]
+			var validasi_muat_map = ResourceLoader.load_threaded_request(jalur_map, "PackedScene", true)
+			if validasi_muat_map != OK:
+				push_error("map [%s] tidak dapat dimuat!" % jalur_map)
+				jalur_map = ""
+			else:
+				memuat_map = true
 		else:
 			# server belum mengirim map atau proses unduhan map belum selesai
 			push_error("map tidak valid!")
 	else:
-		map = await load("res://map/%s.tscn" % [file_map]).instantiate()
-	map.name = "lingkungan"
-	if map.get_node_or_null("posisi_spawn") != null:
-		data["posisi"] = map.get_node("posisi_spawn").position
-		data["rotasi"] = map.get_node("posisi_spawn").rotation
-	if map.get_node_or_null("batas_bawah") != null:
-		batas_bawah = map.get_node("batas_bawah").position.y
-	call_deferred("_atur_persentase_memuat", 60)
-	await get_tree().create_timer(0.5).timeout
-	dunia.call_deferred("add_child", map)
-	dunia.call_deferred("set_process", true)
-	if koneksi == MODE_KONEKSI.SERVER:
-		# INFO : (5a) buat server
-		server.call_deferred("buat_koneksi")
-		if not server.headless:
-			# tambah pengamat objek
-			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
-			call_deferred("_atur_persentase_memuat", 70)
-			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
-			call_deferred("_tambahkan_pengamat_objek", pengamat_objek)
-			# tambahkan pemain
-			call_deferred("_tambahkan_pemain", 1, data)
-			server.pemain["admin"] = {
-				"id_client": 1,
-				"nama": 	data["nama"],
-				"posisi":	data["posisi"],
-				"rotasi":	data["rotasi"],
-				"model": {
-					"gender":		data["gender"],
-					"alis":			data["alis"],
-					"garis_mata":	data["garis_mata"],
-					"mata":			data["mata"],
-					"warna_mata":	data["warna_mata"],
-					"rambut":		data["rambut"],
-					"warna_rambut":	data["warna_rambut"],
-					"baju":			data["baju"],
-					"warna_baju":	data["warna_baju"],
-					"celana":		data["celana"],
-					"warna_celana":	data["warna_celana"],
-					"sepatu":		data["sepatu"],
-					"warna_sepatu":	data["warna_sepatu"]
-				},
-				"kondisi":		{
-					"arah_gerakan": 	Vector3.ZERO,
-					"arah_pandangan":	Vector2.ZERO,
-					"mode_gestur":		"berdiri",
-					"pose_duduk":		"normal",
-					"gestur_jongkok": 	0.0,
-					"mode_menyerang": 	"a"
-				}
-			}
-			server.pemain_terhubung = 1
-			client.id_sesi = "admin"
+		jalur_map = "res://map/%s.tscn" % [nama_map]
+		var validasi_muat_map = ResourceLoader.load_threaded_request(jalur_map, "PackedScene", true)
+		if validasi_muat_map != OK:
+			push_error("map [%s] tidak dapat dimuat!" % jalur_map)
+			jalur_map = ""
 		else:
-			call_deferred("_mulai_server_cli")
-		# 10/11/24 :: tambahkan objek
-		if map.get("objek_") != null:
-			for muat_objek in map.objek_:
-				if daftar_aset[map.objek_[muat_objek].id_aset].tipe == "objek":
-					server._tambahkan_objek(
-						daftar_aset[map.objek_[muat_objek].id_aset].sumber,
-						map.objek_[muat_objek].posisi,
-						map.objek_[muat_objek].rotasi,
-						daftar_aset[map.objek_[muat_objek].id_aset].setelan.jarak_render,
-						map.objek_[muat_objek].kondisi
-					)
-				# Panku.notify(map.objek_[muat_objek])
-	elif koneksi == MODE_KONEKSI.CLIENT:
-		if server.mode_replay:
-			# 13/09/24 :: buat koneksi virtual untuk mencegah kesalahan proses entitas
-			server.call_deferred("buat_koneksi_virtual")
-			# INFO : (5b3) muat data replay
-			# 04/02/24 :: ubah nilai properti menjadi keyframe animasi
-			koneksi = MODE_KONEKSI.SERVER
-			var indeks_frame : Array = server.timeline.keys() # berisi indeks seperti nomor frame, dll
-			var alur_waktu := AnimationPlayer.new()
-			var skenario := Animation.new()
-			var pengamat := Camera3D.new()
-			var _fungsi_pengamat : GDScript = load("res://skrip/objek/free_look_camera.gd")
-			alur_waktu.name = "alur_waktu"
-			dunia.call_deferred("add_child", alur_waktu)
-			pengamat.name = "pengamat"
-			pengamat.current = true
-			pengamat.set_script(_fungsi_pengamat)
-			call_deferred("add_child", pengamat)
-			for frame in indeks_frame:
-				if frame is int and server.timeline[frame] != {}:
-					var indeks_entitas : Array = server.timeline[frame].keys() # indeks/id entitas misalnya pemain
-					var waktu : float = frame * 0.001 # konversi ke satuan milidetik (float)
-					for entitas_ in indeks_entitas:
-						if server.timeline[frame][entitas_] != {}:
-							var data_frame = server.timeline[frame][entitas_]
-							if data_frame.tipe == "spawn":
-								if data_frame.tipe_objek == "pemain":
-									server.timeline.trek[entitas_] = {}
-									server.timeline.entitas[entitas_] = "pemain"
-									call_deferred("_tambahkan_pemain", entitas_, data_frame.data)
-									# matikan visibilitas pemain hingga di-sinkron
-									server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
-									skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "pemain/"+str(entitas_)+":visible")
-									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
-									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
-									# matikan visibilitas daftar pemain hingga di-sinkron
-									server.timeline.trek[entitas_]["visibilitas_"] = skenario.add_track(Animation.TYPE_VALUE)
-									skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas_"], "../Dreamline/hud/daftar_pemain/panel/gulir/baris/"+str(entitas_)+":visible")
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], 0.0, false)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, true)
-								elif data_frame.tipe_objek == "objek":
-									server.timeline.trek[entitas_] = {}
-									server.timeline.entitas[entitas_] = "objek"
-									server.call_deferred("spawn_pool_objek", 1, entitas_, data_frame.sumber, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
-									# buat track animasi
-									server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
-									server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
-									server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
-									# atur track animasi
-									skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "objek/"+str(entitas_)+":visible")
-									skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "objek/"+str(entitas_)+":position")
-									skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "objek/"+str(entitas_)+":rotation")
-									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
-									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
-									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["posisi"], Animation.INTERPOLATION_NEAREST)
-									#skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["posisi"], Animation.UPDATE_DISCRETE)
-									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
-									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
-									# atur nilai default animasi
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
-								elif data_frame.tipe_objek == "entitas":
-									server.timeline.trek[entitas_] = {}
-									server.timeline.entitas[entitas_] = "entitas"
-									server.call_deferred("spawn_pool_entitas", 1, entitas_, data_frame.sumber, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
-									# buat track animasi
-									server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
-									server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
-									server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
-									# atur track animasi
-									skenario.track_set_path(server.timeline.trek[entitas_]["visibilitas"], "entitas/"+str(entitas_)+":visible")
-									skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "entitas/"+str(entitas_)+":position")
-									skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "entitas/"+str(entitas_)+":rotation")
-									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["visibilitas"], Animation.INTERPOLATION_NEAREST)
-									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["visibilitas"], Animation.UPDATE_DISCRETE)
-									skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
-									skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
-									# atur nilai default animasi
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], 0.0, false)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, true)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], 0.0, data_frame.posisi)
-									skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], 0.0, data_frame.rotasi)
-									# buat track animasi properti kustom
-									server.timeline.trek[entitas_]["properti"] = Dictionary()
-									for indeks_properti in data_frame.properti:
-										# buat track animasi
-										server.timeline.trek[entitas_]["properti"][indeks_properti[0]] = skenario.add_track(Animation.TYPE_VALUE)
-										# atur track dan nilai animasi
-										skenario.track_set_path(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], "entitas/"+str(entitas_)+":"+indeks_properti[0])
-										if indeks_properti[0].begins_with("id_"):
-											# atur track animasi
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.INTERPOLATION_NEAREST)
-											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.UPDATE_DISCRETE)
-											# atur nilai default animasi
-											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], 0.0, -1)
-											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
-										else:
-											# atur track animasi
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.INTERPOLATION_CUBIC)
-											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], Animation.UPDATE_DISCRETE)
-											# atur nilai default animasi
-											skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], 0.0, indeks_properti[1])
-							elif data_frame.tipe == "sinkron":
-								if server.timeline.get("entitas") != null and server.timeline.entitas.get(entitas_) != null:
-									if server.timeline.entitas[entitas_] == "pemain":
-										if server.timeline.trek[entitas_].get("posisi") == null:
-											server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)
-											skenario.track_set_path(server.timeline.trek[entitas_]["posisi"], "pemain/"+str(entitas_)+":position")
-										if server.timeline.trek[entitas_].get("rotasi") == null:
-											server.timeline.trek[entitas_]["rotasi"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["rotasi"], "pemain/"+str(entitas_)+":rotation_degrees")
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["rotasi"], Animation.INTERPOLATION_CUBIC)
-											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["rotasi"], Animation.UPDATE_DISCRETE)
-										if server.timeline.trek[entitas_].get("skala") == null:
-											server.timeline.trek[entitas_]["skala"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["skala"], "pemain/"+str(entitas_)+":scale")
-										if server.timeline.trek[entitas_].get("arah_gerakan") == null:
-											server.timeline.trek[entitas_]["arah_gerakan"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["arah_gerakan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_gerakan/blend_position")
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["arah_gerakan"], Animation.INTERPOLATION_CUBIC)
-											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["arah_gerakan"], Animation.UPDATE_DISCRETE)
-										if server.timeline.trek[entitas_].get("arah_x_pandangan") == null:
-											server.timeline.trek[entitas_]["arah_x_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["arah_x_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_x_pandangan/blend_position")
-										if server.timeline.trek[entitas_].get("arah_y_pandangan") == null:
-											server.timeline.trek[entitas_]["arah_y_pandangan"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["arah_y_pandangan"], "pemain/"+str(entitas_)+"/pose:parameters/arah_y_pandangan/blend_position")
-										if server.timeline.trek[entitas_].get("gestur") == null:
-											server.timeline.trek[entitas_]["gestur"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["gestur"], "pemain/"+str(entitas_)+":gestur")
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["gestur"], Animation.INTERPOLATION_CUBIC)
-											skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"], 0.0, "berdiri")
-										if server.timeline.trek[entitas_].get("pose_duduk") == null:
-											server.timeline.trek[entitas_]["pose_duduk"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["pose_duduk"], "pemain/"+str(entitas_)+"/pose:parameters/pose_duduk/transition_request")
-											skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"], 0.0, "normal")
-										if server.timeline.trek[entitas_].get("gestur_jongkok") == null:
-											server.timeline.trek[entitas_]["gestur_jongkok"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["gestur_jongkok"], "pemain/"+str(entitas_)+":gestur_jongkok")
-										if server.timeline.trek[entitas_].get("lompat") == null:
-											server.timeline.trek[entitas_]["lompat?"] = false
-											server.timeline.trek[entitas_]["lompat"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["lompat"], "pemain/"+str(entitas_)+"/pose:parameters/melompat/request")
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["lompat"],	Animation.INTERPOLATION_NEAREST)
-											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["lompat"],	Animation.UPDATE_DISCRETE)
-											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],		0.0,	AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
-										if server.timeline.trek[entitas_].get("mode_menyerang_berdiri") == null:
-											server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] = ""
-											server.timeline.trek[entitas_]["mode_menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], "pemain/"+str(entitas_)+"/pose:parameters/mode_menyerang_berdiri/transition_request")
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], Animation.INTERPOLATION_CUBIC)
-											skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], 0.0, "mendorong")
-										if server.timeline.trek[entitas_].get("menyerang_berdiri") == null:
-											server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
-											server.timeline.trek[entitas_]["menyerang_berdiri"] = skenario.add_track(Animation.TYPE_VALUE)
-											skenario.track_set_path(server.timeline.trek[entitas_]["menyerang_berdiri"], "pemain/"+str(entitas_)+"/pose:parameters/menyerang_berdiri/request")
-											skenario.track_set_interpolation_type(server.timeline.trek[entitas_]["menyerang_berdiri"],	Animation.INTERPOLATION_NEAREST)
-											skenario.value_track_set_update_mode(server.timeline.trek[entitas_]["menyerang_berdiri"],	Animation.UPDATE_DISCRETE)
-											skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"],		0.0,	AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"],				waktu, data_frame.posisi)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"],				waktu, data_frame.rotasi)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["skala"],				waktu, data_frame.skala)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_gerakan"],		waktu, data_frame.kondisi.arah_gerakan)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_x_pandangan"],	waktu, data_frame.kondisi.arah_x_pandangan)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["arah_y_pandangan"],	waktu, data_frame.kondisi.arah_y_pandangan)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur"],				waktu, data_frame.kondisi.gestur)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["pose_duduk"],			waktu, data_frame.kondisi.pose_duduk)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["gestur_jongkok"],		waktu, data_frame.kondisi.gestur_jongkok)
-										if data_frame.kondisi.lompat and not server.timeline.trek[entitas_]["lompat?"]:
-											skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-											server.timeline.trek[entitas_]["lompat?"] = true
-										elif not data_frame.kondisi.lompat and server.timeline.trek[entitas_]["lompat?"]:
-											#skenario.track_insert_key(server.timeline.trek[entitas_]["lompat"],			waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
-											server.timeline.trek[entitas_]["lompat?"] = false
-										if data_frame.kondisi.menyerang:
-											match data_frame.kondisi.gestur:
-												"berdiri":
-													match data_frame.kondisi.mode_menyerang:
-														"a":
-															if server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] != "mendorong":
-																skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], waktu, "mendorong")
-																server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] = "mendorong"
-														"b":
-															if server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] != "menendang":
-																skenario.track_insert_key(server.timeline.trek[entitas_]["mode_menyerang_berdiri"], waktu, "menendang")
-																server.timeline.trek[entitas_]["mode_menyerang_berdiri?"] = "menendang"
-													if not server.timeline.trek[entitas_]["menyerang_berdiri?"]:
-														skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-														server.timeline.trek[entitas_]["menyerang_berdiri?"] = true
-										elif not data_frame.kondisi.menyerang:
-											match data_frame.kondisi.gestur:
-												"berdiri":
-													if server.timeline.trek[entitas_]["menyerang_berdiri?"]:
-														#skenario.track_insert_key(server.timeline.trek[entitas_]["menyerang_berdiri"], waktu, AnimationNodeOneShot.ONE_SHOT_REQUEST_FADE_OUT)
-														server.timeline.trek[entitas_]["menyerang_berdiri?"] = false
-										skenario.length = waktu
-									elif server.timeline.entitas[entitas_] == "objek":
-										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
-										skenario.length = waktu
-									elif server.timeline.entitas[entitas_] == "entitas":
-										skenario.track_insert_key(server.timeline.trek[entitas_]["posisi"], waktu, data_frame.posisi)
-										skenario.track_insert_key(server.timeline.trek[entitas_]["rotasi"], waktu, data_frame.rotasi)
-										for indeks_properti in data_frame.properti:
-											if indeks_properti[1] != null:
-												skenario.track_insert_key(server.timeline.trek[entitas_]["properti"][indeks_properti[0]], waktu, indeks_properti[1])
-										skenario.length = waktu
-							elif data_frame.tipe == "hapus" and server.timeline.entitas.has(entitas_):
-								# hapus entitas
-								skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas"], waktu, false)
-								# jika entitas adalah pemain, matikan visibilitas dari daftar pemain
-								if server.timeline.entitas[entitas_] == "pemain": skenario.track_insert_key(server.timeline.trek[entitas_]["visibilitas_"], waktu, false)
-							else: Panku.notify("["+entitas_+"] : "+str(server.timeline.has(entitas_)))
-			var pustaka_animasi := AnimationLibrary.new()
-			pustaka_animasi.add_animation("skenario", skenario)
-			alur_waktu.add_animation_library("alur_waktu", pustaka_animasi)
-			# $root.dunia.get_node("alur_waktu").play("alur_waktu/skenario")
-			ResourceSaver.save(skenario, "res://tmp/uji_animasi.res")
-		elif server.mode_uji_performa:
-			# INFO : (5b4) tampilkan halaman uji performa
-			# 28/06/24 :: demo uji algoritma object culling
-			koneksi = MODE_KONEKSI.SERVER
-			server.mode_replay = true
-			server.set_process(true)
-			call_deferred("_tampilkan_permainan")
-			var pengamat : Control = load("res://skena/perf_test.tscn").instantiate()
-			pengamat.name = "pengamat"
-			call_deferred("add_child", pengamat)
-		else:
-			# tambah pengamat objek
-			var pengamat_objek : Node3D = load("res://skena/pengamat_objek.tscn").instantiate()
-			call_deferred("_atur_persentase_memuat", 50)
-			call_deferred("_tambahkan_pengamat_objek", pengamat_objek)
-			# cek depedensi map
-			if map.get("depedensi") != null:
-				call_deferred("_atur_teks_memuat", "%mengunduh_aset%")
-				for cek_id_aset in map.depedensi:
-					if daftar_aset.has(cek_id_aset): pass
-					else: server.rpc_id(1,"_kirim_aset", cek_id_aset, client.id_koneksi)
-			call_deferred("_atur_persentase_memuat", 70)
-			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
-			# INFO : (5b1) kirim data pemain ke server
-			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
-	#thread.call_deferred("wait_to_finish")
+			memuat_map = true
 func _muat_kode(node_kode_ubahan : BlockCode) -> void:
 	# 31/10/24 :: # buat palet sintaks berdasarkan kelas objek
 	editor_kode.call_deferred("switch_block_code_node", node_kode_ubahan)
@@ -1038,9 +1064,6 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 			
 			# INFO : (7) tambahkan pemain ke dunia
 			dunia.get_node("pemain").add_child(pemain, true)
-			
-			# 16/11/24 :: hentikan thread
-			thread.wait_to_finish()
 			
 			# terapkan kondisi
 			pemain.position = data_pemain["posisi"]

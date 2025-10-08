@@ -383,6 +383,7 @@ func _process(_delta : float) -> void:
 				else:
 					push_error("aset [%s] bukan objek yang valid!" % muat_objek.jalur)
 				pool_pemuat_objek.pop_front()
+
 func buat_koneksi() -> void:
 	interface = MultiplayerAPI.create_default_interface()
 	peer = ENetMultiplayerPeer.new()
@@ -422,7 +423,8 @@ func buat_koneksi() -> void:
 	Panku.notify(t_inf_kon % [map, "localhost"])
 	Panku.gd_exprenv.register_env("server", self)
 func putuskan() -> void:
-	interface.set_refuse_new_connections(true)
+	if interface != null:
+		interface.set_refuse_new_connections(true)
 	hapus_siaran_server()
 	if publik: # koneksi publik
 		upnp.delete_port_mapping(10567, "UDP")
@@ -1397,24 +1399,6 @@ func _pemain_terputus(id_pemain):
 				"properti_objek"	: properti_objek
 			}
 		})
-		#if dunia.get_node("objek").get_node_or_null(nama_objek) == null and load(jalur_instance_objek) != null:
-			#var tmp_objek : Node3D = load(jalur_instance_objek).instantiate()
-			#var tmp_nama = tmp_objek.name
-			#tmp_objek.name = nama_objek
-			#dunia.get_node("objek").add_child(tmp_objek, true)
-			#for p in properti_objek.size():
-				#if tmp_objek.get(properti_objek[p][0]) != null:
-					#if properti_objek[p][0] == "kode":
-						#var compile_kode = permainan._compile_blok_kode(properti_objek[p][1])
-						#if compile_kode != null: tmp_objek.kode = compile_kode
-					#else: tmp_objek.set(properti_objek[p][0], properti_objek[p][1])
-				#elif properti_objek[p][0] == "id_objek":
-					#tmp_objek.set_meta("id_objek", properti_objek[p][1])
-					##Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [nama_objek, properti_objek[p][1]])
-				#else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+properti_objek[p][0]+"]")
-			#tmp_objek.id_pengubah = id_pengubah
-			#tmp_objek.global_transform.origin = posisi_objek
-			#tmp_objek.rotation = rotasi_objek
 @rpc("authority") func _spawn_visibilitas_karakter(jalur_instance_karakter, id_pengubah : int, nama_karakter : String, posisi_karakter : Vector3, rotasi_karakter : Vector3, kondisi_karakter : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("karakter").get_node_or_null(nama_karakter) == null and load(jalur_instance_karakter) != null:
