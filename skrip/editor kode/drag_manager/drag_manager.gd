@@ -69,6 +69,7 @@ func copy_block(block: Block) -> Block:
 
 func copy_picked_block_and_drag(block: Block):
 	var new_block: Block = copy_block(block)
+	# FIXME : blok terlihat dobel! [kecuali StatementBlock]
 	# 04/11/24 :: remove tooltip if visible
 	for informasi in new_block.get_children():
 		if informasi is PopupPanel: informasi.queue_free()

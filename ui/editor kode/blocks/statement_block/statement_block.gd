@@ -10,7 +10,7 @@ const ParameterInputScene = preload("res://ui/editor kode/blocks/utilities/param
 @export var defaults: Dictionary = {}
 
 @onready var _background := %Background
-@onready var _hbox := %HBoxContainer
+# @onready var _hbox := %HBoxContainer
 
 var param_name_input_pairs: Array
 var param_input_strings: Dictionary  # Only loaded from serialized
@@ -93,12 +93,12 @@ static func format_string(parent_block: Block, attach_to: Node, string: String, 
 
 	var start: int = 0
 	for result in results:
-		var label_text := string.substr(start, result.get_start() - start)
-		if label_text != "":
-			var label = Label.new()
-			label.add_theme_color_override("font_color", Color.WHITE)
-			label.text = label_text
-			attach_to.add_child(label)
+		var child_label_text := string.substr(start, result.get_start() - start)
+		if child_label_text != "":
+			var label_node = Label.new()
+			label_node.add_theme_color_override("font_color", Color.WHITE)
+			label_node.text = child_label_text
+			attach_to.add_child(label_node)
 
 		var param := result.get_string()
 		var copy_block: bool = param[0] == "["
@@ -119,7 +119,7 @@ static func format_string(parent_block: Block, attach_to: Node, string: String, 
 		if _defaults.has(param_name):
 			param_default = _defaults[param_name]
 
-		var param_node: Node
+		# var param_node: Node
 
 		if copy_block:
 			var parameter_output: ParameterOutput = preload("res://ui/editor kode/blocks/utilities/parameter_output/parameter_output.tscn").instantiate()
@@ -153,9 +153,15 @@ static func format_string(parent_block: Block, attach_to: Node, string: String, 
 
 	var label_text := string.substr(start)
 	if label_text != "":
-		var label = Label.new()
-		label.add_theme_color_override("font_color", Color.WHITE)
-		label.text = label_text
-		attach_to.add_child(label)
+		# 09/10/25 :: don't add label if already exist, this occur while block is a duplicate
+		var label_is_exist : bool = false
+		for check_duplicate_label in attach_to.get_children():
+			if check_duplicate_label is Label and check_duplicate_label.text == label_text:
+				label_is_exist = true
+		if !label_is_exist:
+			var label_node = Label.new()
+			label_node.add_theme_color_override("font_color", Color.WHITE)
+			label_node.text = label_text
+			attach_to.add_child(label_node)
 
 	return _param_name_input_pairs

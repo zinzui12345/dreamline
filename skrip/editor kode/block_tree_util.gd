@@ -38,7 +38,7 @@ static func generate_script_from_nodes(nodes: Array[Node], block_script: BlockSc
 		if entry_variable_set_statement.has("onset_var_" + variable.var_name):
 			var setter_block : EntryBlock = entry_variable_set_statement["onset_var_" + variable.var_name]
 			var setter_script : String = _generate_script_from_entry_blocks(setter_block.get_entry_statement(), [setter_block], init_func)
-			var indent_script : String
+			var indent_script : String = ""
 			var split_line = setter_script.split("\n")
 			for line in split_line:
 				if line == "\tpass" or line == "": pass

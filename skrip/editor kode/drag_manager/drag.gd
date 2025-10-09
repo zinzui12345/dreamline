@@ -96,7 +96,7 @@ func _remove_block():
 func _place_block():
 	var canvas_rect: Rect2 = _block_canvas.get_global_rect()
 
-	var position = _block.global_position - canvas_rect.position
+	var _position = _block.global_position - canvas_rect.position
 
 	remove_child(_block)	
 
@@ -108,7 +108,7 @@ func _place_block():
 			_block_canvas.arrange_block(orphaned_block, snap_block)
 	else:
 		# Block goes on screen somewhere
-		_block_canvas.add_block(_block, position)
+		_block_canvas.add_block(_block, _position)
 
 	target_snap_point = null
 

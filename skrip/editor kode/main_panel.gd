@@ -26,7 +26,7 @@ const TitleBar = preload("res://skrip/editor kode/title_bar/title_bar.gd")
 const Constants = preload("res://skrip/editor kode/constants.gd")
 
 var _current_block_code_node: BlockCode
-var _block_code_nodes: Array
+#var _block_code_nodes: Array
 var _collapsed: bool = false
 
 #var undo_redo: EditorUndoRedoManager:
@@ -311,7 +311,7 @@ func _select_block_code_node(edited_node: Node):
 	_set_selection([edited_node])
 
 
-func _set_selection(nodes: Array[Node]):
+func _set_selection(_nodes: Array[Node]):
 	#EditorInterface.get_selection().clear()
 	#for node in nodes:
 	#	EditorInterface.get_selection().add_node(node)
