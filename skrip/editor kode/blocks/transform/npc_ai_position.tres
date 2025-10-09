@@ -12,6 +12,3 @@ type = 3
 variant_type = 9
 display_template = "%posisi_karakter"
 code_template = "global_position"
-defaults = {}
-signal_name = ""
-scope = ""

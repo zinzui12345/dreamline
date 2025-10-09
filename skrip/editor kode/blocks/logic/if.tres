@@ -5,13 +5,7 @@
 [resource]
 script = ExtResource("1_c6ly3")
 name = &"if"
-target_node_class = ""
-description = ""
 category = "%logika_kondisi%"
 type = 4
-variant_type = 0
 display_template = "%jika {condition: BOOL}"
 code_template = "if {condition}:"
-defaults = {}
-signal_name = ""
-scope = ""

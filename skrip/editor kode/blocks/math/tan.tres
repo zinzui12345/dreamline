@@ -5,7 +5,6 @@
 [resource]
 script = ExtResource("1_e2566")
 name = &"tan"
-target_node_class = ""
 description = "%deskripsi_fungsi_tan%"
 category = "%matematika%"
 type = 3
@@ -15,5 +14,3 @@ code_template = "tan(deg_to_rad({sudut}))"
 defaults = {
 "sudut": 0.0
 }
-signal_name = ""
-scope = ""

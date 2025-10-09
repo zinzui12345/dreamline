@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_vk0xk")
 name = &"ready"
-target_node_class = ""
 description = "%deskripsi_ketika_mulai%"
 category = "%siklus_server%"
 type = 1
-variant_type = 0
 display_template = "%ketika_mulai"
 code_template = "func _ready():"
-defaults = {}
-signal_name = ""
-scope = ""

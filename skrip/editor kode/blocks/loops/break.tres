@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_4rhsl")
 name = &"break"
-target_node_class = ""
 description = "%deskripsi_hentikan_perulangan%"
 category = "%perulangan%"
 type = 2
-variant_type = 0
 display_template = "%hentikan_perulangan"
 code_template = "break"
-defaults = {}
-signal_name = ""
-scope = ""

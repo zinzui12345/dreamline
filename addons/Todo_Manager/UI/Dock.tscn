@@ -55,12 +55,14 @@ text = "Settings"
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+current_tab = 0
 
 [node name="Project" type="Panel" parent="VBoxContainer/TabContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("2")
+metadata/_tab_index = 0
 
 [node name="Tree" type="Tree" parent="VBoxContainer/TabContainer/Project"]
 layout_mode = 1
@@ -77,6 +79,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("3")
+metadata/_tab_index = 1
 
 [node name="Tree" type="Tree" parent="VBoxContainer/TabContainer/Current"]
 layout_mode = 1
@@ -91,6 +94,7 @@ hide_root = true
 [node name="Settings" type="Panel" parent="VBoxContainer/TabContainer"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 2
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/TabContainer/Settings"]
 layout_mode = 1
@@ -192,6 +196,7 @@ text = "Ignore Paths:"
 [node name="TextEdit" type="LineEdit" parent="VBoxContainer/TabContainer/Settings/ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/Scripts/IgnorePaths"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
+text = "android, addons"
 expand_to_text_length = true
 
 [node name="Label3" type="Label" parent="VBoxContainer/TabContainer/Settings/ScrollContainer/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2/Scripts/IgnorePaths"]

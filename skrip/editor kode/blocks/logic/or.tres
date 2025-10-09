@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_oets3")
 name = &"or"
-target_node_class = ""
-description = ""
 category = "%logika_boolean%"
 type = 3
 variant_type = 1
 display_template = "{bool1: BOOL} or {bool2: BOOL}"
 code_template = "{bool1} or {bool2}"
-defaults = {}
-signal_name = ""
-scope = ""

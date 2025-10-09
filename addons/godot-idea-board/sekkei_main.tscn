@@ -65,7 +65,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Open Floating Window"
+tooltip_text = "tooltip_main_window_button"
 toggle_mode = true
 icon_alignment = 1
 
@@ -73,7 +73,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Toggle H Split View"
+tooltip_text = "tooltip_main_split_button"
 toggle_mode = true
 icon_alignment = 1
 
@@ -81,7 +81,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Select Left(H Split)"
+tooltip_text = "tooltip_main_left_button"
 disabled = true
 toggle_mode = true
 button_pressed = true
@@ -92,7 +92,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Select Right(H Split)"
+tooltip_text = "tooltip_main_right_button"
 disabled = true
 toggle_mode = true
 button_group = ExtResource("2_wtk48")
@@ -102,7 +102,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Reload items"
+tooltip_text = "tooltip_main_reload_button"
 icon_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="SidebarVBoxContainer"]
@@ -112,28 +112,28 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Add new layout"
+tooltip_text = "tooltip_main_add_button"
 icon_alignment = 1
 
 [node name="DuplicateButton" type="Button" parent="SidebarVBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "Duplicate selected layout"
+tooltip_text = "tooltip_main_duplicate_button"
 icon_alignment = 1
 
 [node name="RenameButton" type="Button" parent="SidebarVBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "rename selected layout"
+tooltip_text = "tooltip_main_rename_button"
 icon_alignment = 1
 
 [node name="RemoveButton" type="Button" parent="SidebarVBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "remove selected layout"
+tooltip_text = "tooltip_main_remove_button"
 icon_alignment = 1
 
 [node name="SavedItemList" type="ItemList" parent="SidebarVBoxContainer"]
@@ -148,7 +148,7 @@ layout_mode = 2
 [node name="MainPathEditButton" type="Button" parent="SidebarVBoxContainer/HBoxContainer3"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "change layout directory path"
+tooltip_text = "tooltip_main_main_path_line_edit"
 toggle_mode = true
 icon_alignment = 1
 
@@ -156,7 +156,7 @@ icon_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-tooltip_text = "change layout directory path"
+tooltip_text = "tooltip_main_main_path_line_edit"
 mouse_filter = 2
 editable = false
 virtual_keyboard_enabled = false
@@ -190,7 +190,7 @@ script = ExtResource("5_extsy")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HSplitContainer/SekkeiGraph1/DragPath"]
 libraries = {
-"": SubResource("AnimationLibrary_jn6kl")
+&"": SubResource("AnimationLibrary_jn6kl")
 }
 
 [node name="SekkeiGraph2" type="GraphEdit" parent="HSplitContainer"]
@@ -211,7 +211,7 @@ script = ExtResource("5_extsy")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HSplitContainer/SekkeiGraph2/DragPath"]
 libraries = {
-"": SubResource("AnimationLibrary_jn6kl")
+&"": SubResource("AnimationLibrary_jn6kl")
 }
 
 [node name="FileNameDialog" type="ConfirmationDialog" parent="."]
@@ -279,5 +279,5 @@ position = Vector2(706, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Window/SekkeiGraph3/DragPath"]
 libraries = {
-"": SubResource("AnimationLibrary_jn6kl")
+&"": SubResource("AnimationLibrary_jn6kl")
 }

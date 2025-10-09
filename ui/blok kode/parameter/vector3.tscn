@@ -51,8 +51,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_fb87s")
 theme_override_icons/updown = ExtResource("1_t23p6")
-min_value = -2.14748e+09
-max_value = 2.14748e+09
+min_value = -2147480000.0
+max_value = 2147480000.0
 step = 0.001
 
 [node name="data_2" type="HBoxContainer" parent="data_parameter"]
@@ -74,8 +74,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_wogtj")
 theme_override_icons/updown = ExtResource("1_t23p6")
-min_value = -2.14748e+09
-max_value = 2.14748e+09
+min_value = -2147480000.0
+max_value = 2147480000.0
 step = 0.001
 
 [node name="data_3" type="HBoxContainer" parent="data_parameter"]
@@ -97,8 +97,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_wogtj")
 theme_override_icons/updown = ExtResource("1_t23p6")
-min_value = -2.14748e+09
-max_value = 2.14748e+09
+min_value = -2147480000.0
+max_value = 2147480000.0
 step = 0.001
 
 [node name="pemisah2" type="Label" parent="."]

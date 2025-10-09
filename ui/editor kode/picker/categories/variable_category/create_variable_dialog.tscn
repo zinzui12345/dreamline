@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ed72o7v242c2" path="res://skrip/editor kode/picker/categories/variable_category/create_variable_dialog.gd" id="1_b52me"]
 
 [node name="CreateVariableDialog" type="ConfirmationDialog"]
+oversampling_override = 1.0
 title = "%buat_variabel"
 initial_position = 1
 size = Vector2i(300, 183)
@@ -40,6 +41,7 @@ size_flags_horizontal = 3
 selected = 0
 item_count = 8
 popup/item_0/text = "STRING"
+popup/item_0/id = 0
 popup/item_1/text = "BOOL"
 popup/item_1/id = 1
 popup/item_2/text = "INT"

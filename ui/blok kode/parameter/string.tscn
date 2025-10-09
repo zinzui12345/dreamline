@@ -18,8 +18,8 @@ text = "
 [node name="nilai_parameter" type="TextEdit" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/background_color = Color(0.227997, 0.227997, 0.227997, 1)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/background_color = Color(0.227997, 0.227997, 0.227997, 1)
 text = "aaaa"
 
 [node name="pemisah2" type="Label" parent="."]

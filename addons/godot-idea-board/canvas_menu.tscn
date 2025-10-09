@@ -72,7 +72,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 0
 shortcut = SubResource("Shortcut_tpbq0")
-text = "Save"
+text = "canvas_menu_save_button"
 
 [node name="GroupButton" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -80,7 +80,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 0
 shortcut = SubResource("Shortcut_vact5")
-text = "Group"
+text = "canvas_menu_group_button"
 
 [node name="LabelButton" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -88,7 +88,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 0
 shortcut = SubResource("Shortcut_s5cmg")
-text = "Label"
+text = "canvas_menu_label_button"
 
 [node name="TextDocumentButton" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -96,7 +96,7 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 0
 shortcut = SubResource("Shortcut_ms2rg")
-text = "TxtDoc"
+text = "canvas_menu_text_document_button"
 
 [node name="ConnectButton" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -104,7 +104,7 @@ custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 shortcut = SubResource("Shortcut_s74jh")
-text = "Connect"
+text = "canvas_menu_connect_button"
 
 [node name="LockButton" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -112,14 +112,14 @@ custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 shortcut = SubResource("Shortcut_f84nk")
-text = "Lock"
+text = "canvas_menu_lock_button"
 
 [node name="UnlockButton" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 mouse_default_cursor_shape = 2
-text = "Unlock"
+text = "canvas_menu_unlock_button"
 
 [node name="BgColorIcon" type="Button" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -134,7 +134,7 @@ flat = true
 [node name="BgColorLabel" type="Label" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Bg:"
+text = "canvas_menu_bg_color_label"
 
 [node name="BgColorPickerButton" type="ColorPickerButton" parent="HBoxContainer/PanelContainer/LeftContainer"]
 unique_name_in_owner = true
@@ -176,7 +176,7 @@ layout_mode = 2
 [node name="SoundLabel" type="Label" parent="HBoxContainer/PanelContainer/LeftContainer/GridContainer2/HBoxContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "SndVol:"
+text = "canvas_menu_sound_label"
 
 [node name="CenterContainer" type="CenterContainer" parent="HBoxContainer/PanelContainer/LeftContainer/GridContainer2/HBoxContainer2"]
 layout_mode = 2

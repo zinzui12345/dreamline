@@ -280,14 +280,14 @@ corner_radius_top_left = 1
 corner_radius_bottom_left = 1
 corner_detail = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1x4vu"]
-bg_color = Color(0, 0, 0, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6o23"]
 bg_color = Color(0.2, 0.2, 0.196078, 1)
 corner_radius_top_left = 3
 corner_radius_bottom_left = 3
 corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1x4vu"]
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_onoxo"]
 bg_color = Color(0.769432, 0.769432, 0.769432, 1)
@@ -301,14 +301,14 @@ corner_radius_top_right = 1
 corner_radius_bottom_right = 1
 corner_detail = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_heqqv"]
-bg_color = Color(0, 0, 0, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wimlv"]
 bg_color = Color(0.2, 0.2, 0.196078, 1)
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_detail = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_heqqv"]
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1fao"]
 bg_color = Color(0, 0, 0, 0)
@@ -512,8 +512,8 @@ theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_disabled_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_t10m1")
-theme_override_styles/hover = SubResource("StyleBoxFlat_1x4vu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_q6o23")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1x4vu")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_onoxo")
 toggle_mode = true
 button_pressed = true
@@ -526,8 +526,8 @@ size_flags_horizontal = 3
 theme_override_colors/icon_normal_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_haqqv")
-theme_override_styles/hover = SubResource("StyleBoxFlat_heqqv")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_wimlv")
+theme_override_styles/hover = SubResource("StyleBoxFlat_heqqv")
 theme_override_styles/focus = SubResource("StyleBoxFlat_m1fao")
 toggle_mode = true
 icon = ExtResource("3_pxv10")
@@ -535,7 +535,6 @@ icon_alignment = 1
 
 [node name="informasi_performa" type="Control" parent="." node_paths=PackedStringArray("fps", "frame_time", "frame_number", "frame_history_total_avg", "frame_history_total_min", "frame_history_total_max", "frame_history_total_last", "frame_history_cpu_avg", "frame_history_cpu_min", "frame_history_cpu_max", "frame_history_cpu_last", "frame_history_gpu_avg", "frame_history_gpu_min", "frame_history_gpu_max", "frame_history_gpu_last", "fps_graph", "total_graph", "cpu_graph", "gpu_graph", "information", "settings")]
 custom_minimum_size = Vector2(400, 400)
-layout_mode = 2
 anchors_preset = 0
 anchor_left = 0.75
 anchor_right = 0.75
@@ -588,8 +587,8 @@ theme_override_constants/separation = 0
 modulate = Color(0, 1, 0, 1)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
 theme_override_constants/line_spacing = 0
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 18
 text = "60 FPS"
 horizontal_alignment = 2
@@ -1263,7 +1262,7 @@ metadata/_edit_lock_ = true
 
 [node name="animasi" type="AnimationPlayer" parent="panel_bawah/Panel/ProsesMemuat"]
 libraries = {
-"": SubResource("AnimationLibrary_qr4hl")
+&"": SubResource("AnimationLibrary_qr4hl")
 }
 
 [node name="SpinnerMemuat" type="Sprite2D" parent="panel_bawah/Panel"]
@@ -1272,12 +1271,12 @@ texture = ExtResource("7_oflen")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="panel_bawah/Panel/SpinnerMemuat"]
 libraries = {
-"": SubResource("AnimationLibrary_d7reu")
+&"": SubResource("AnimationLibrary_d7reu")
 }
 
 [node name="animasi" type="AnimationPlayer" parent="panel_bawah"]
 libraries = {
-"": SubResource("AnimationLibrary_fy5nv")
+&"": SubResource("AnimationLibrary_fy5nv")
 }
 
 [node name="panel_hasil_render" type="Panel" parent="."]

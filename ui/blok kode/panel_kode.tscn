@@ -532,7 +532,7 @@ text = "compile"
 
 [node name="animasi" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_hfk2v")
+&"": SubResource("AnimationLibrary_hfk2v")
 }
 
 [connection signal="value_changed" from="kontrol_skala/pengatur_skala" to="." method="_ketika_mengatur_skala"]

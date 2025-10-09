@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_u01bi")
 name = &"for"
-target_node_class = ""
 description = "%deskripsi_perulangan_for%"
 category = "%perulangan%"
 type = 4
-variant_type = 0
 display_template = "%ulangi {jumlah: INT}"
 code_template = "for __i in {jumlah}:"
-defaults = {}
-signal_name = ""
-scope = ""

@@ -11,11 +11,11 @@ corner_radius_bottom_left = 100
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ousiv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fyk0j"]
-bg_color = Color(1, 1, 1, 0.196078)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ha83k"]
 bg_color = Color(1, 1, 1, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fyk0j"]
+bg_color = Color(1, 1, 1, 0.196078)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dgecf"]
 
@@ -50,8 +50,8 @@ text = "Example"
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ousiv")
-theme_override_styles/hover = SubResource("StyleBoxFlat_fyk0j")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ha83k")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fyk0j")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_dgecf")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

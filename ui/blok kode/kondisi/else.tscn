@@ -9,22 +9,22 @@ bg_color = Color(1, 0.687939, 0.397949, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uysqq"]
 bg_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2d18v"]
-bg_color = Color(1.15514e-06, 0.75953, 0.900816, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7c0b8"]
 bg_color = Color(0, 0.992092, 0.513683, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2d18v"]
+bg_color = Color(1.15514e-06, 0.75953, 0.900816, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s8eaw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8eoj"]
 bg_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qx6aw"]
-bg_color = Color(1.15514e-06, 0.75953, 0.900816, 1)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gc3s1"]
 bg_color = Color(0, 0.992092, 0.513683, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qx6aw"]
+bg_color = Color(1.15514e-06, 0.75953, 0.900816, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fx2xy"]
 bg_color = Color(0.502719, 0.502719, 0.502719, 1)
@@ -51,15 +51,15 @@ text = " if x == true:"
 [node name="lipat" type="Button" parent="pemisah_vertikal"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_sk3qk")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_uysqq")
-theme_override_styles/hover = SubResource("StyleBoxFlat_2d18v")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_7c0b8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2d18v")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_s8eaw")
 text = " - "
 
@@ -67,15 +67,15 @@ text = " - "
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_sk3qk")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_r8eoj")
-theme_override_styles/hover = SubResource("StyleBoxFlat_qx6aw")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_gc3s1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qx6aw")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_fx2xy")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_gb0q5")
 text = " ] "
@@ -84,15 +84,15 @@ text = " ] "
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_sk3qk")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_r8eoj")
-theme_override_styles/hover = SubResource("StyleBoxFlat_qx6aw")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_gc3s1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qx6aw")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_fx2xy")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_gb0q5")
 text = " [ "

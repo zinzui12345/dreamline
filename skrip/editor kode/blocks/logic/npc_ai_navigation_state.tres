@@ -12,6 +12,3 @@ type = 3
 variant_type = 1
 display_template = "%karakter_menavigasi"
 code_template = "_proses_navigasi"
-defaults = {}
-signal_name = ""
-scope = ""

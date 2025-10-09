@@ -9,7 +9,6 @@ target_node_class = "npc_ai"
 description = "%deskripsi_navigasi_karakter%"
 category = "%karakter%"
 type = 2
-variant_type = 0
 display_template = "%navigasi_karakter_ke {posisi: VECTOR3} %navigasi_karakter_sambil_berlari% {berlari: BOOL}"
 code_template = "navigasi_ke({posisi}, {berlari})
 
@@ -18,5 +17,3 @@ defaults = {
 "berlari": false,
 "posisi": Vector3(0, 0, 0)
 }
-signal_name = ""
-scope = ""

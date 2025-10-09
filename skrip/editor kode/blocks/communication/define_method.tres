@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_6e473")
 name = &"define_method"
-target_node_class = ""
 description = "%deskripsi_definisikan_metode%"
 category = "%metode%"
 type = 1
-variant_type = 0
 display_template = "%definisikan_metode {nama_metode: NIL}"
 code_template = "func {nama_metode}():"
-defaults = {}
-signal_name = ""
-scope = ""

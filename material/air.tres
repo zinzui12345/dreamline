@@ -66,8 +66,8 @@ fractal_type = 0
 cellular_distance_function = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rwryd"]
-seamless = true
 noise = SubResource("FastNoiseLite_5uywx")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_mhlpe"]
 texture = SubResource("NoiseTexture2D_rwryd")
@@ -88,8 +88,8 @@ fractal_type = 0
 cellular_distance_function = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_syemq"]
-seamless = true
 noise = SubResource("FastNoiseLite_numhl")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_birpq"]
 texture = SubResource("NoiseTexture2D_syemq")
@@ -106,8 +106,8 @@ fractal_type = 0
 cellular_distance_function = 1
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ct8rc"]
-seamless = true
 noise = SubResource("FastNoiseLite_8bl68")
+seamless = true
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_6lio0"]
 expanded_output_ports = [0]
@@ -135,7 +135,7 @@ operator = 2
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, depth_test_default, cull_back, diffuse_lambert, specular_schlick_ggx;
 
 uniform sampler2D tex_vtx_2;
 uniform vec4 ColorParameter : source_color = vec4(0.000000, 0.266667, 0.533333, 1.000000);

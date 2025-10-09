@@ -14,13 +14,10 @@ serialized_props = [["color", Color(0.92549, 0.231373, 0.34902, 1)], ["scope", "
 script = ExtResource("1_barc5")
 name = &"ready"
 position = Vector2(54, 47)
-path_child_pairs = []
 block_serialized_properties = SubResource("Resource_b0aen")
 
 [resource]
 script = ExtResource("4_cqq7x")
 script_inherits = "INHERIT_DEFAULT"
 block_trees = Array[ExtResource("1_barc5")]([SubResource("Resource_1h6wi")])
-variables = Array[ExtResource("4_0twg1")]([])
 generated_script = "extends INHERIT_DEFAULT"
-version = 0

@@ -11,34 +11,22 @@ corner_radius_top_right = 40
 corner_radius_bottom_right = 40
 corner_radius_bottom_left = 40
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_afyv2"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6oowp"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3r4mt"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6oowp"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_afyv2"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqclr"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 1, 1, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5hy3f"]
+border_width_left = 10
+border_width_top = 6
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.6, 0.6, 0.6, 1)
 corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ttrde"]
-border_width_left = 10
-border_width_top = 7
-border_width_right = 8
-border_width_bottom = 7
-border_color = Color(0.6, 0.6, 0.6, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwhh1"]
 bg_color = Color(0.60933, 0.60933, 0.60933, 1)
@@ -52,12 +40,24 @@ corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5hy3f"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ttrde"]
 border_width_left = 10
-border_width_top = 6
-border_width_right = 5
-border_width_bottom = 5
+border_width_top = 7
+border_width_right = 8
+border_width_bottom = 7
 border_color = Color(0.6, 0.6, 0.6, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqclr"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 50
 corner_radius_top_right = 50
 corner_radius_bottom_right = 50
@@ -107,13 +107,13 @@ theme_override_constants/margin_bottom = 4
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "Parameter"
 expand_to_text_length = true
 
@@ -136,11 +136,11 @@ size_flags_horizontal = 3
 [node name="PlayAudio" type="Button" parent="InputSwitcher/AudioInput/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxFlat_wqclr")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_ttrde")
-theme_override_styles/hover = SubResource("StyleBoxFlat_nwhh1")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_nwhh1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_5hy3f")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nwhh1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nwhh1")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_ttrde")
+theme_override_styles/focus = SubResource("StyleBoxFlat_wqclr")
 disabled = true
 icon = ExtResource("2_5yhdu")
 alignment = 0
@@ -153,13 +153,13 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "/audio/ui/test.ogg"
 editable = false
 expand_to_text_length = true
@@ -229,13 +229,13 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "x"
 alignment = 1
 expand_to_text_length = true
@@ -262,13 +262,13 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "y"
 alignment = 1
 expand_to_text_length = true
@@ -297,13 +297,13 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "x"
 alignment = 1
 expand_to_text_length = true
@@ -330,13 +330,13 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "y"
 alignment = 1
 expand_to_text_length = true
@@ -363,13 +363,13 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
-theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
-theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
 theme_override_colors/font_color = Color(0.118581, 0.118581, 0.118581, 1)
+theme_override_colors/font_uneditable_color = Color(0.117647, 0.117647, 0.117647, 1)
+theme_override_colors/font_placeholder_color = Color(0.76662, 0.76662, 0.76662, 1)
 theme_override_constants/minimum_character_width = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
-theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_6oowp")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_3r4mt")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_afyv2")
 placeholder_text = "z"
 alignment = 1
 expand_to_text_length = true
@@ -388,13 +388,14 @@ theme_override_constants/margin_left = 8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/focus = SubResource("StyleBoxEmpty_e7f0k")
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_fjquj")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_e7f0k")
 selected = 0
 item_count = 2
 popup/item_0/text = "False"
+popup/item_0/id = 0
 popup/item_1/text = "True"
 popup/item_1/id = 1
 

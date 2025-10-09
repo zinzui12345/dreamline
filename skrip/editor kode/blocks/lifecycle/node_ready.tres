@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_q7yax")
 name = &"node_ready"
-target_node_class = ""
 description = "%deskripsi_ketika_mulai%"
 category = "%siklus_client%"
 type = 1
-variant_type = 0
 display_template = "%ketika_mulai"
 code_template = "func mulai():"
-defaults = {}
-signal_name = ""
-scope = ""

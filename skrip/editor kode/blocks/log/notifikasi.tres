@@ -5,15 +5,11 @@
 [resource]
 script = ExtResource("1_r7ul3")
 name = &"notify"
-target_node_class = ""
 description = "%deskripsi_notifikasi%"
 category = "%keluaran%"
 type = 2
-variant_type = 0
 display_template = "%notifikasi {teks: STRING}"
 code_template = "Panku.notify({teks})"
 defaults = {
 "teks": "ProgrammerIndonesia44"
 }
-signal_name = ""
-scope = ""

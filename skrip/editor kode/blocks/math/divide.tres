@@ -5,8 +5,6 @@
 [resource]
 script = ExtResource("1_rhh7v")
 name = &"divide"
-target_node_class = ""
-description = ""
 category = "%matematika%"
 type = 3
 variant_type = 3
@@ -16,5 +14,3 @@ defaults = {
 "a": 1.0,
 "b": 1.0
 }
-signal_name = ""
-scope = ""

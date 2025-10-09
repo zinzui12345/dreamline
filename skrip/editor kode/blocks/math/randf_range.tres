@@ -5,7 +5,6 @@
 [resource]
 script = ExtResource("1_03jps")
 name = &"randf_range"
-target_node_class = ""
 description = "%deskripsi_angka_desimal_acak%"
 category = "%matematika%"
 type = 3
@@ -16,5 +15,3 @@ defaults = {
 "from": -1.0,
 "to": 1.0
 }
-signal_name = ""
-scope = ""

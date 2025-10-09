@@ -5,13 +5,9 @@
 [resource]
 script = ExtResource("1_mab8n")
 name = &"get_objek_position"
-target_node_class = ""
 description = "%deskripsi_dapatkan_posisi_objek%"
 category = "%transformasi_posisi%"
 type = 3
 variant_type = 9
 display_template = "%dapatkan_posisi_objek {cekobjek: OBJECT}"
 code_template = "server.permainan.dapatkanPosisiObjek({cekobjek})"
-defaults = {}
-signal_name = ""
-scope = ""

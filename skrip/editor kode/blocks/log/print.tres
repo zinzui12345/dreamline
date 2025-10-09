@@ -5,15 +5,11 @@
 [resource]
 script = ExtResource("1_0lih2")
 name = &"print"
-target_node_class = ""
 description = "%deskripsi_cetak_teks%"
 category = "%keluaran%"
 type = 2
-variant_type = 0
 display_template = "%cetak {teks: STRING}"
 code_template = "print({teks})"
 defaults = {
 "teks": "dreamline"
 }
-signal_name = ""
-scope = ""

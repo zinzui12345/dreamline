@@ -16,12 +16,12 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource("Theme_3a8rc")
-current_tab = 2
+current_tab = 0
 script = ExtResource("1_06uxa")
 
 [node name="Editor" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="NewTemplateButton" type="CheckBox" parent="Editor"]
 layout_mode = 2
@@ -58,6 +58,7 @@ layout_mode = 2
 [node name="Runtime" type="VBoxContainer" parent="."]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="IncludeAllResponsesButton" type="CheckBox" parent="Runtime"]
 layout_mode = 2
@@ -123,7 +124,9 @@ hide_root = true
 select_mode = 1
 
 [node name="Advanced" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 2
+metadata/_tab_index = 2
 
 [node name="CheckForUpdates" type="CheckBox" parent="Advanced"]
 layout_mode = 2

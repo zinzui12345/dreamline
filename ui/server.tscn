@@ -5,6 +5,15 @@
 [ext_resource type="FontFile" uid="uid://h5iny2xu510v" path="res://ui/fonta/Seven Segment.ttf" id="3"]
 [ext_resource type="FontFile" uid="uid://0f78ciutn5cq" path="res://ui/fonta/noto_sans_regular.ttf" id="6"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_30h4h"]
+bg_color = Color(0.819608, 0.819608, 0.807843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avyfo"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1biyv"]
+bg_color = Color(0.980392, 0.980392, 0.980392, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5upea"]
 bg_color = Color(0, 0, 0, 0)
 border_width_left = 4
@@ -12,15 +21,6 @@ border_width_top = 4
 border_width_right = 4
 border_width_bottom = 4
 border_color = Color(0, 0, 0, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1biyv"]
-bg_color = Color(0.980392, 0.980392, 0.980392, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avyfo"]
-bg_color = Color(1, 1, 1, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_30h4h"]
-bg_color = Color(0.819608, 0.819608, 0.807843, 1)
 
 [sub_resource type="GDScript" id="GDScript_oopv7"]
 script/source = "extends Button
@@ -75,10 +75,10 @@ anchor_bottom = 0.107
 offset_top = -64.2
 offset_right = 0.255981
 offset_bottom = 63.8
-theme_override_styles/focus = SubResource("StyleBoxFlat_5upea")
-theme_override_styles/hover = SubResource("StyleBoxFlat_1biyv")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_avyfo")
 theme_override_styles/normal = SubResource("StyleBoxFlat_30h4h")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_avyfo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1biyv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_5upea")
 toggle_mode = true
 button_mask = 3
 script = SubResource("GDScript_oopv7")

@@ -5,7 +5,6 @@
 [resource]
 script = ExtResource("1_hk574")
 name = &"randi_range"
-target_node_class = ""
 description = "%deskripsi_angka_bulat_acak%"
 category = "%matematika%"
 type = 3
@@ -16,5 +15,3 @@ defaults = {
 "from": 0,
 "to": 100
 }
-signal_name = ""
-scope = ""

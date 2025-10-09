@@ -179,5 +179,5 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_vx7d7")
 
 [node name="animasi" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_1bm3d")
+&"": SubResource("AnimationLibrary_1bm3d")
 }

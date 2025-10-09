@@ -6,13 +6,9 @@
 script = ExtResource("1_xotf5")
 name = &"area2d_on_entered"
 target_node_class = "Area2D"
-description = ""
 category = "Communication | Methods"
 type = 1
-variant_type = 0
 display_template = "On [body: OBJECT] entered"
 code_template = "func _on_body_entered(body: Node2D):
 "
-defaults = {}
 signal_name = "body_entered"
-scope = ""

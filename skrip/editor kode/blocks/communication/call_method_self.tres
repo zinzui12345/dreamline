@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_fmhxa")
 name = &"call_method_self"
-target_node_class = ""
 description = "%deskripsi_panggil_metode%"
 category = "%metode%"
 type = 2
-variant_type = 0
 display_template = "%panggil_metode {nama_metode: STRING}"
 code_template = "call({nama_metode})"
-defaults = {}
-signal_name = ""
-scope = ""

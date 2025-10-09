@@ -6,10 +6,8 @@
 script = ExtResource("1_btxic")
 name = &"characterbody2d_move"
 target_node_class = "CharacterBody2D"
-description = ""
 category = "Input"
 type = 2
-variant_type = 0
 display_template = "Move with keys {up: STRING} {down: STRING} {left: STRING} {right: STRING} with speed {speed: VECTOR2}"
 code_template = "var dir = Vector2()
 dir.x += float(Input.is_key_pressed(OS.find_keycode_from_string({right})))
@@ -27,5 +25,3 @@ defaults = {
 "speed": Vector2(100, 100),
 "up": "W"
 }
-signal_name = ""
-scope = ""

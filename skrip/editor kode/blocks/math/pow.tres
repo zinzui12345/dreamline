@@ -5,8 +5,6 @@
 [resource]
 script = ExtResource("1_cx5g5")
 name = &"pow"
-target_node_class = ""
-description = ""
 category = "%matematika%"
 type = 3
 variant_type = 3
@@ -16,5 +14,3 @@ defaults = {
 "base": 1.0,
 "exp": 1.0
 }
-signal_name = ""
-scope = ""

@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_fxxh0")
 name = &"while"
-target_node_class = ""
 description = "%deskripsi_perulangan_while%"
 category = "%perulangan%"
 type = 4
-variant_type = 0
 display_template = "%selama {kondisi: BOOL}"
 code_template = "while {kondisi}:"
-defaults = {}
-signal_name = ""
-scope = ""

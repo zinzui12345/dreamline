@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://qn1mmq344o61"]
+[gd_scene load_steps=28 format=3 uid="uid://qn1mmq344o61"]
 
 [ext_resource type="Texture2D" uid="uid://dy06f0wqoxrt7" path="res://addons/godot-idea-board/icon/handle.svg" id="1_0jksm"]
 [ext_resource type="Script" uid="uid://cfobywdtw52yf" path="res://addons/godot-idea-board/comment_node.gd" id="1_pfk21"]
@@ -9,6 +9,12 @@
 [ext_resource type="StyleBox" uid="uid://dd45kulojlvij" path="res://addons/godot-idea-board/theme/focused_header_lineedit_stylebox.tres" id="7_rawt7"]
 [ext_resource type="StyleBox" uid="uid://do10b3bjhp1et" path="res://addons/godot-idea-board/theme/transparent_style_box_line.tres" id="8_alaah"]
 [ext_resource type="Script" uid="uid://cp4f5w6ru8kfk" path="res://addons/godot-idea-board/md/markdownlabel.gd" id="8_hg7xp"]
+[ext_resource type="Script" uid="uid://mvj0byy1k4uc" path="res://addons/godot-idea-board/md/header_formats/h1_format.gd" id="9_iebw1"]
+[ext_resource type="Script" uid="uid://dxlqcn7u72hyi" path="res://addons/godot-idea-board/md/header_formats/h2_format.gd" id="10_vvukf"]
+[ext_resource type="Script" uid="uid://cjq6v03mfq5hq" path="res://addons/godot-idea-board/md/header_formats/h3_format.gd" id="11_kte0m"]
+[ext_resource type="Script" uid="uid://b1eyv2gn08bcg" path="res://addons/godot-idea-board/md/header_formats/h4_format.gd" id="12_bmn0h"]
+[ext_resource type="Script" uid="uid://bi8aipmjkyg1q" path="res://addons/godot-idea-board/md/header_formats/h5_format.gd" id="13_so18p"]
+[ext_resource type="Script" uid="uid://h7drjc7aqedk" path="res://addons/godot-idea-board/md/header_formats/h6_format.gd" id="14_t0rij"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0sw32"]
 
@@ -27,6 +33,30 @@ content_margin_right = 8.0
 content_margin_bottom = 8.0
 color = Color(1, 1, 1, 1)
 thickness = 2
+
+[sub_resource type="Resource" id="Resource_7g13e"]
+resource_local_to_scene = true
+script = ExtResource("9_iebw1")
+
+[sub_resource type="Resource" id="Resource_utvj4"]
+resource_local_to_scene = true
+script = ExtResource("10_vvukf")
+
+[sub_resource type="Resource" id="Resource_y430c"]
+resource_local_to_scene = true
+script = ExtResource("11_kte0m")
+
+[sub_resource type="Resource" id="Resource_a7mla"]
+resource_local_to_scene = true
+script = ExtResource("12_bmn0h")
+
+[sub_resource type="Resource" id="Resource_20ac2"]
+resource_local_to_scene = true
+script = ExtResource("13_so18p")
+
+[sub_resource type="Resource" id="Resource_4eq1b"]
+resource_local_to_scene = true
+script = ExtResource("14_t0rij")
 
 [node name="CommentNode" type="GraphNode"]
 offset_right = 132.0
@@ -115,8 +145,8 @@ mouse_filter = 2
 mouse_default_cursor_shape = 13
 theme_override_constants/caret_width = 3
 theme_override_styles/normal = ExtResource("6_r7dye")
-theme_override_styles/focus = ExtResource("7_rawt7")
 theme_override_styles/read_only = SubResource("StyleBoxEmpty_ftuq2")
+theme_override_styles/focus = ExtResource("7_rawt7")
 alignment = 1
 expand_to_text_length = true
 
@@ -174,14 +204,20 @@ custom_minimum_size = Vector2(96, 64)
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxLine_pd02s")
 theme_override_styles/normal = SubResource("StyleBoxLine_pd02s")
+theme_override_styles/focus = SubResource("StyleBoxLine_pd02s")
 bbcode_enabled = true
 scroll_following = true
 autowrap_mode = 1
 threaded = true
 selection_enabled = true
 script = ExtResource("8_hg7xp")
+h1 = SubResource("Resource_7g13e")
+h2 = SubResource("Resource_utvj4")
+h3 = SubResource("Resource_y430c")
+h4 = SubResource("Resource_a7mla")
+h5 = SubResource("Resource_20ac2")
+h6 = SubResource("Resource_4eq1b")
 
 [node name="ColorPickerControl" type="Control" parent="MarginContainer/VB"]
 unique_name_in_owner = true

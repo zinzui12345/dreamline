@@ -5,14 +5,11 @@
 
 [sub_resource type="Resource" id="Resource_78j20"]
 script = ExtResource("1_28d7a")
-selected = 0
 items = ["==", ">", "<", ">=", "<=", "!="]
 
 [resource]
 script = ExtResource("2_sf2tt")
 name = &"compare_int"
-target_node_class = ""
-description = ""
 category = "%logika_perbandingan%"
 type = 3
 variant_type = 1
@@ -23,5 +20,3 @@ defaults = {
 "int2": 1,
 "op": SubResource("Resource_78j20")
 }
-signal_name = ""
-scope = ""

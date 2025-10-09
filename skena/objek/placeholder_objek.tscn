@@ -32,8 +32,6 @@ serialized_props = [["scope", ""], ["param_input_strings", {
 [sub_resource type="Resource" id="Resource_ulfht"]
 script = ExtResource("3_u80rt")
 name = &"notify"
-position = Vector2(0, 0)
-path_child_pairs = []
 block_serialized_properties = SubResource("Resource_ym4nf")
 
 [sub_resource type="Resource" id="Resource_kwyls"]
@@ -47,7 +45,6 @@ block_serialized_properties = SubResource("Resource_5667g")
 script = ExtResource("5_f6gj8")
 script_inherits = "objek"
 block_trees = Array[ExtResource("3_u80rt")]([SubResource("Resource_kwyls")])
-variables = Array[ExtResource("6_wwvnq")]([])
 generated_script = "extends placeholder_objek
 
 
@@ -55,7 +52,6 @@ func fungsikan():
 	Panku.notify('Halo Dunia!')
 
 "
-version = 0
 
 [node name="placeholder_objek" type="StaticBody3D" groups=["dapat_diedit"]]
 script = ExtResource("1_q8q8n")

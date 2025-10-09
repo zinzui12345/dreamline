@@ -5,13 +5,8 @@
 [resource]
 script = ExtResource("1_lstbo")
 name = &"concat"
-target_node_class = ""
-description = ""
 category = "Log"
 type = 3
 variant_type = 4
 display_template = "{string1: STRING} + {string2: STRING}"
 code_template = "{string1} + {string2}"
-defaults = {}
-signal_name = ""
-scope = ""

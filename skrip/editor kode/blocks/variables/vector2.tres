@@ -5,8 +5,6 @@
 [resource]
 script = ExtResource("1_ilw3v")
 name = &"vector2"
-target_node_class = ""
-description = ""
 category = "%variabel%"
 type = 3
 variant_type = 5
@@ -16,5 +14,3 @@ defaults = {
 "x": 0.0,
 "y": 0.0
 }
-signal_name = ""
-scope = ""

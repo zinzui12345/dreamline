@@ -7,7 +7,7 @@
 [node name="Compass" type="Node3D"]
 script = ExtResource("1_3qhln")
 
-[node name="Container" type="MeshInstance3D" parent="."]
+[node name="Container2" type="MeshInstance3D" parent="."]
 mesh = ExtResource("2_004jj")
 skeleton = NodePath("")
 

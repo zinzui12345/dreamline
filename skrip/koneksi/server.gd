@@ -430,10 +430,12 @@ func putuskan() -> void:
 		upnp.delete_port_mapping(10567, "UDP")
 		upnp.delete_port_mapping(10567, "TCP")
 		ip_publik = "<null>"
-	peer.close()
+	if peer != null:
+		peer.close()
 	peer = null
-	interface.clear()
-	interface.set_root_path(NodePath("/root"))
+	if interface != null:
+		interface.clear()
+		interface.set_root_path(NodePath("/root"))
 	interface = null
 	client.id_koneksi = -44
 	pemain_terhubung = 0

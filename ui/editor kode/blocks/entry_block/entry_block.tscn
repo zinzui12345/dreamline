@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://5jw27eybhyc1" path="res://ui/editor kode/blocks/entry_block/entry_block.gd" id="2_3ik8h"]
 
 [node name="EntryBlock" instance=ExtResource("1_byjbb")]
-focus_mode = 2
 script = ExtResource("2_3ik8h")
 signal_name = ""
 block_name = &"entry_block"

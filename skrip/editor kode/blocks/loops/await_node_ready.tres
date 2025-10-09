@@ -5,14 +5,8 @@
 [resource]
 script = ExtResource("1_gcch3")
 name = &"await_node_ready"
-target_node_class = ""
-description = ""
 category = "%perulangan%"
 type = 2
-variant_type = 0
 display_template = "%tunggu_node_siap"
 code_template = "if not is_node_ready():
 	await ready"
-defaults = {}
-signal_name = ""
-scope = ""
