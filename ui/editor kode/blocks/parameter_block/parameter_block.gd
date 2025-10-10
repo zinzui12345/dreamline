@@ -82,6 +82,8 @@ static func get_scene_path():
 
 
 func format():
+	for unused_node in %HBoxContainer.get_children():
+		unused_node.queue_free()
 	param_name_input_pairs = StatementBlock.format_string(self, %HBoxContainer, block_format, defaults)
 
 
