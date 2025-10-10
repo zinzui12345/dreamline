@@ -99,6 +99,10 @@ func format():
 
 	if block_formats.size() == 0:
 		return
+	
+	if $%Rows.get_child_count() > 0:
+		for unused_node in $%Rows.get_children():
+			unused_node.queue_free()
 
 	for i in block_formats.size():
 		var row := MarginContainer.new()
@@ -107,13 +111,13 @@ func format():
 		row.custom_minimum_size.y = 30
 		row.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 
-		var bg := Background.new()
-		bg.name = "Background"
-		bg.color = color
+		var bg_ := Background.new()
+		bg_.name = "Background"
+		bg_.color = color
 		if i != 0:
-			bg.shift_top = Constants.CONTROL_MARGIN
-		bg.shift_bottom = Constants.CONTROL_MARGIN
-		row.add_child(bg)
+			bg_.shift_top = Constants.CONTROL_MARGIN
+		bg_.shift_bottom = Constants.CONTROL_MARGIN
+		row.add_child(bg_)
 
 		if i == 0:
 			var drag_drop: DragDropArea = preload("res://ui/editor kode/blocks/utilities/drag_drop_area/drag_drop_area.tscn").instantiate()

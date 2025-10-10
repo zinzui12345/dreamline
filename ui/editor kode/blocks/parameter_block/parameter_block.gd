@@ -11,7 +11,7 @@ const Util = preload("res://skrip/editor kode/util.gd")
 @export var defaults: Dictionary = {}
 
 @onready var _panel := $Panel
-@onready var _hbox := %HBoxContainer
+#@onready var _hbox := %HBoxContainer
 
 var param_name_input_pairs: Array
 var param_input_strings: Dictionary  # Only loaded from serialized
