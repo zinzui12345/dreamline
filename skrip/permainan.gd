@@ -1144,6 +1144,8 @@ func _kirim_pesan() -> void:
 	$pesan/layout_input_pesan/input_pesan.grab_focus()
 func _tambahkan_pengamat_objek(pengamat_objek : Node3D):
 	$hud/tampilan_objek/viewport_objek.add_child(pengamat_objek)
+func _dapatkan_pengamat_objek() -> Camera3D:
+	return $hud/tampilan_objek/viewport_objek/pengamat.get_node("%pandangan")
 func _edit_objek(jalur : String) -> void:
 	edit_objek = get_node(jalur)
 	if edit_objek == null:

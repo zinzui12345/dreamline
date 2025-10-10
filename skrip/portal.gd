@@ -167,7 +167,10 @@ func _ketika_objek_keluar_dari_portal_b(node_objek : Node3D) -> void:
 
 func _process(_delta: float) -> void:
 	# sesuaikan pengamat
-	if pengamat != get_viewport().get_camera_3d():
+	if server.permainan.edit_objek != null:
+		if pengamat != server.permainan._dapatkan_pengamat_objek():
+			pengamat = server.permainan._dapatkan_pengamat_objek()
+	elif pengamat != get_viewport().get_camera_3d():
 		pengamat = get_viewport().get_camera_3d()
 	
 	# sesuaikan properti tiap pengamat
