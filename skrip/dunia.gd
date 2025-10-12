@@ -53,26 +53,39 @@ func hapus_instance_pemain() -> void:
 func _physics_process(_delta : float) -> void:
 	if server.mode_replay and not server.mode_uji_performa: pass # 06/07/24 :: jangan optimasi ketika memainkan replay
 	elif is_instance_valid(server.permainan) and is_instance_valid(server.permainan.karakter) and $objek.get_child_count() > 0:
-		# atur collider raycast occlusion culling jika belum ada
-		if pengamat.get_node_or_null("target_raycast_culling") == null:
-			var tmp_bb_fisik_pengamat = BoxShape3D.new()
-			var tmp_b_fisik_pengamat = CollisionShape3D.new()
-			var tmp_fisik_pengamat = StaticBody3D.new()
-			tmp_fisik_pengamat.name = "target_raycast_culling"
-			pengamat.add_child(tmp_fisik_pengamat)
-			tmp_fisik_pengamat.set_collision_layer_value(1, false)
-			tmp_fisik_pengamat.set_collision_layer_value(32, true)
-			tmp_b_fisik_pengamat.name = "fisik"
-			tmp_b_fisik_pengamat.shape = tmp_bb_fisik_pengamat
-			tmp_fisik_pengamat.add_child(tmp_b_fisik_pengamat)
-			tmp_bb_fisik_pengamat.size = Vector3(0.5, 0.5, 0.5)
-		
 		# loop setiap objek
 		for m_objek : Node in $objek.get_children():
+			var cek_pengamat : Camera3D
+			
+			# jika objek ditampilkan melalui portal, gunakan pengamat pada portal perender
+			if m_objek.has_meta("render_melalui_portal") and m_objek.get_meta("render_melalui_portal"):
+				# jika radius keterlihatan objek berjarak kurang dari portal perender
+				if server.permainan.karakter._pengamat_target_portal != null and server.permainan.karakter._posisi_target_portal.distance_to(m_objek.global_position) <= m_objek.jarak_render:
+					cek_pengamat = server.permainan.karakter._pengamat_target_portal
+				else:
+					cek_pengamat = pengamat
+					m_objek.remove_meta("render_melalui_portal")
+			else:
+				cek_pengamat = pengamat
+			
+			# atur collider raycast occlusion culling jika belum ada
+			if cek_pengamat.get_node_or_null("target_raycast_culling") == null:
+				var tmp_bb_fisik_pengamat = BoxShape3D.new()
+				var tmp_b_fisik_pengamat = CollisionShape3D.new()
+				var tmp_fisik_pengamat = StaticBody3D.new()
+				tmp_fisik_pengamat.name = "target_raycast_culling"
+				cek_pengamat.add_child(tmp_fisik_pengamat)
+				tmp_fisik_pengamat.set_collision_layer_value(1, false)
+				tmp_fisik_pengamat.set_collision_layer_value(32, true)
+				tmp_b_fisik_pengamat.name = "fisik"
+				tmp_b_fisik_pengamat.shape = tmp_bb_fisik_pengamat
+				tmp_fisik_pengamat.add_child(tmp_b_fisik_pengamat)
+				tmp_bb_fisik_pengamat.size = Vector3(0.5, 0.5, 0.5)
+			
 			# Direction Culling / Frustum Culling
 			if server.permainan.gunakan_frustum_culling:
 				# dapatkan posisi global kamera
-				posisi_pengamat = pengamat.global_position
+				posisi_pengamat = cek_pengamat.global_position
 				
 				# dapatkan posisi global kamera
 				posisi_objek = m_objek.global_position
@@ -83,8 +96,8 @@ func _physics_process(_delta : float) -> void:
 				# jika jarak kamera dengan objek lebih dari radius keterlihatan
 				if jarak_objek > m_objek.radius_keterlihatan:
 					# atur posisi dan rotasi posisi_relatif_pengamat dengan posisi dan rotasi pengamat
-					posisi_relatif_pengamat.global_position = pengamat.global_position
-					posisi_relatif_pengamat.global_rotation_degrees = pengamat.global_rotation_degrees
+					posisi_relatif_pengamat.global_position = cek_pengamat.global_position
+					posisi_relatif_pengamat.global_rotation_degrees = cek_pengamat.global_rotation_degrees
 					arah_target_pengamat.look_at(
 						posisi_objek, 
 						Vector3.UP,
@@ -95,7 +108,7 @@ func _physics_process(_delta : float) -> void:
 					var sudut : float = abs(arah_target_pengamat.rotation_degrees.y)
 					
 					# jika objek berada di belakang kamera
-					if sudut > (pengamat.fov * 1.125):
+					if sudut > (cek_pengamat.fov * 1.125):
 						# non-aktifkan visibilitas objek
 						if m_objek.visible: 
 							m_objek.visible = false
@@ -130,7 +143,7 @@ func _physics_process(_delta : float) -> void:
 						# 23/06/24 :: kalkulasi posisi titik berdasarkan posisi global dunia
 						raycast_occlusion_culling.global_position = m_objek.position + m_objek.transform.basis * m_objek.titik_sudut[m_objek.cek_titik]
 						# arahkan rayacast ke pengamat
-						raycast_occlusion_culling.look_at(pengamat.global_position)
+						raycast_occlusion_culling.look_at(cek_pengamat.global_position)
 						# exclude raycast dengan m_objek jika m_objek adalah CollisionObject3D
 						if m_objek is CollisionObject3D:
 							raycast_occlusion_culling.add_exception(m_objek) # 03/07/24 :: ini mengatasi jika m_objek adalah objek solid
@@ -138,7 +151,7 @@ func _physics_process(_delta : float) -> void:
 						raycast_occlusion_culling.force_raycast_update()
 						var mengenai_sesuatu : bool = raycast_occlusion_culling.is_colliding()
 						# jika raycast mengenai pengamat, atur ulang indeks cek titik | objek terlihat
-						if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == pengamat:
+						if mengenai_sesuatu and raycast_occlusion_culling.get_collider().get_parent() == cek_pengamat:
 							m_objek.cek_titik = 0
 							m_objek.terhalang = false
 						# jika raycast terhalang, tambah dan cek jumlah indeks cek titik

@@ -103,6 +103,7 @@ var _timer_ragdoll : Timer
 var _coba_reset_ragdoll : int = 0
 var _melihat_melalui_portal : bool
 var _posisi_target_portal : Vector3
+var _pengamat_target_portal : Camera3D
 var penarget : RayCast3D
 var penarget_serangan_a : RayCast3D
 var penarget_serangan_b : RayCast3D

@@ -289,8 +289,18 @@ func _process(_delta : float) -> void:
 								cek_visibilitas_pool_objek[id_pemain][nama_objek] = "hapus"
 							# jika frustum culling diaktifkan dan jarak pemain lebih dari jarak render objek
 							if permainan.gunakan_frustum_culling and jarak_pemain > pool_objek[nama_objek]["jarak_render"]:
+								# lakukan sebaliknya jika objek berada pada area disekitar portal yang dekat dengan pemain
+								if pemain[i_pool_pemain]["kondisi"].get("melihat_melalui_portal") != null \
+									and pemain[i_pool_pemain]["kondisi"]["melihat_melalui_portal"] == true \
+									and pemain[i_pool_pemain]["kondisi"]["posisi_target_portal"].distance_to(pool_objek[nama_objek]["posisi"]) < pool_objek[nama_objek]["jarak_render"]:
+									# hanya spawn jika pool belum di-spawn
+									if cek_visibilitas_pool_objek[id_pemain][nama_objek] == "hapus":
+										# rpc spawn pool objek
+										spawn_pool_objek(id_pemain, nama_objek, pool_objek[nama_objek]["jalur_instance"], pool_objek[nama_objek]["id_pengubah"], pool_objek[nama_objek]["posisi"], pool_objek[nama_objek]["rotasi"], pool_objek[nama_objek]["properti"], true)
+										# ubah visibilitas pool agar jangan rpc lagi
+										cek_visibilitas_pool_objek[id_pemain][nama_objek] = "spawn"
 								# pastikan pemain saat ini tidak mengubah objek
-								if pool_objek[nama_objek]["id_pengubah"] != id_pemain:
+								elif pool_objek[nama_objek]["id_pengubah"] != id_pemain:
 									# hanya hapus jika pool telah di-spawn
 									if cek_visibilitas_pool_objek[id_pemain][nama_objek] == "spawn":
 										# rpc hapus pool_objek
@@ -377,6 +387,8 @@ func _process(_delta : float) -> void:
 							tmp_objek.set_meta("id_objek", muat_objek.properti.properti_objek[p][1])
 							#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [muat_objek.nama, muat_objek.properti.properti_objek[p][1]])
 						else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+muat_objek.properti.properti_objek[p][0]+"]")
+					if muat_objek.get("render_melalui_portal") != null and muat_objek.render_melalui_portal:
+						tmp_objek.set_meta("render_melalui_portal", muat_objek.render_melalui_portal)
 					tmp_objek.id_pengubah = muat_objek.properti.id_pengubah
 					tmp_objek.global_transform.origin = muat_objek.properti.posisi_objek
 					tmp_objek.rotation = muat_objek.properti.rotasi_objek
@@ -532,11 +544,11 @@ func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas
 		#Panku.notify("spawn pool entitas [%s] pada pemain %s" % [str(jalur_instance_entitas), str(id_pemain)])
 		if id_pemain == 1: _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
 		else: rpc_id(id_pemain, "_spawn_visibilitas_entitas", jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
-func spawn_pool_objek(id_pemain, nama_objek : String, jalur_instance_objek, id_pengubah, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array):
+func spawn_pool_objek(id_pemain, nama_objek : String, jalur_instance_objek, id_pengubah, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array, render_melalui_portal : bool = false):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("spawn pool objek [%s] pada pemain %s" % [str(jalur_instance_objek), str(id_pemain)])
-		if id_pemain == 1: _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek)
-		else: rpc_id(id_pemain, "_spawn_visibilitas_objek", jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek)
+		if id_pemain == 1: _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek, render_melalui_portal)
+		else: rpc_id(id_pemain, "_spawn_visibilitas_objek", jalur_instance_objek, id_pengubah, nama_objek, posisi_objek, rotasi_objek, properti_objek, render_melalui_portal)
 func spawn_pool_karakter(id_pemain, nama_karakter : String, jalur_instance_karakter, id_pengubah, posisi_karakter : Vector3, rotasi_karakter : Vector3, kondisi_karakter : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("spawn pool karakter [%s] pada pemain %s" % [str(jalur_instance_karakter), str(id_pemain)])
@@ -1388,9 +1400,9 @@ func _pemain_terputus(id_pemain):
 			dunia.get_node("entitas").add_child(tmp_entitas, true)
 			tmp_entitas.global_transform.origin = posisi_entitas
 			tmp_entitas.rotation = rotasi_entitas
-@rpc("authority") func _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah : int, nama_objek : String, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array):
+@rpc("authority") func _spawn_visibilitas_objek(jalur_instance_objek, id_pengubah : int, nama_objek : String, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array, render_melalui_portal : bool = false):
 	if permainan != null and dunia != null:
-		pool_pemuat_objek.push_back({
+		var pool : Dictionary = {
 			"nama"		: nama_objek,
 			"jalur"		: jalur_instance_objek,
 			"thread"	: null,
@@ -1400,7 +1412,9 @@ func _pemain_terputus(id_pemain):
 				"rotasi_objek"		: rotasi_objek,
 				"properti_objek"	: properti_objek
 			}
-		})
+		}
+		if render_melalui_portal: pool.set("render_melalui_portal", render_melalui_portal)
+		pool_pemuat_objek.push_back(pool)
 @rpc("authority") func _spawn_visibilitas_karakter(jalur_instance_karakter, id_pengubah : int, nama_karakter : String, posisi_karakter : Vector3, rotasi_karakter : Vector3, kondisi_karakter : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("karakter").get_node_or_null(nama_karakter) == null and load(jalur_instance_karakter) != null:

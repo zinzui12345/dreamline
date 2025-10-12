@@ -51,22 +51,28 @@ func _ketika_pemain_memasuki_wilayah_portal_a(node_pemain : Node3D) -> void:
 		$portal_b/tampilan_b.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
 		node_pemain._posisi_target_portal = $portal_b.global_position
 		node_pemain._melihat_melalui_portal = true
+		node_pemain._pengamat_target_portal = $portal_b/tampilan_b/translasi_pengamat_b/pengamat_b
 		# Panku.notify("objek disekitar portal b dirender melalui portal a")
 func _ketika_pemain_meninggalkan_wilayah_portal_a(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_b/tampilan_b.render_target_update_mode = SubViewport.UPDATE_DISABLED
-		if node_pemain._posisi_target_portal == $portal_b.global_position: node_pemain._melihat_melalui_portal = false
+		if node_pemain._posisi_target_portal == $portal_b.global_position:
+			node_pemain._melihat_melalui_portal = false
+			node_pemain._pengamat_target_portal = null
 		# Panku.notify("objek disekitar portal b tidak akan dirender")
 func _ketika_pemain_memasuki_wilayah_portal_b(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_a/tampilan_a.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
 		node_pemain._posisi_target_portal = $portal_a.global_position
 		node_pemain._melihat_melalui_portal = true
+		node_pemain._pengamat_target_portal = $portal_a/tampilan_a/translasi_pengamat_a/pengamat_a
 		# Panku.notify("objek disekitar portal a dirender melalui portal b")
 func _ketika_pemain_meninggalkan_wilayah_portal_b(node_pemain : Node3D) -> void:
 	if node_pemain == dunia.get_node_or_null("pemain/"+str(client.id_koneksi)):
 		$portal_a/tampilan_a.render_target_update_mode = SubViewport.UPDATE_DISABLED
-		if node_pemain._posisi_target_portal == $portal_a.global_position: node_pemain._melihat_melalui_portal = false
+		if node_pemain._posisi_target_portal == $portal_a.global_position:
+			node_pemain._melihat_melalui_portal = false
+			node_pemain._pengamat_target_portal = null
 		# Panku.notify("objek disekitar portal a tidak akan dirender")
 
 # atur proses render portal berdasarkan visibilitasnya
