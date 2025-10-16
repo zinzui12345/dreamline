@@ -7,9 +7,6 @@ extends Node3D
 # Node ini harus berada pada child lingkungan
 # Posisi node ini harus di (0, 0, 0)!
 
-# TODO : kalau draw_calls >= 1000 atau vertex >= 100000 dan fps <= 25, kurangi jarak render pengamat
-# TODO : Multi-Threading
-
 @export var nama_permukaan = "pulau"
 @export var hasilkan_vegetasi = false
 @export var hasilkan_fisik = false
@@ -86,6 +83,7 @@ var total_bunga_nektar = 0
 var shader_air : MeshInstance3D
 var bentuk_air : MeshInstance3D
 var bunyi_air : AudioStreamPlayer3D
+var area_bunyi : Node3D
 var fisik : StaticBody3D
 
 func _enter_tree():
@@ -107,49 +105,89 @@ func _ready():
 		if get_node_or_null("air") != null and get_node_or_null("air/air_laut") != null:
 			bentuk_air = get_node("air/air_laut")
 			bunyi_air = get_node("air/air_laut/bunyi_air")
+		if get_node_or_null("area_bunyi") != null and get_node("area_bunyi").get_child_count() > 0:
+			area_bunyi = get_node_or_null("area_bunyi")
 func _process(_delta):
 	# jangan cek kalo gak ada
 	if pengamat != null:
-		# posisikan shader air (kalau ada) mengikuti posisi horizontal pengamat
-		if shader_air != null:
-			shader_air.global_position.x = pengamat.global_position.x
-			shader_air.global_position.z = pengamat.global_position.z
-			shader_air.get_surface_override_material(0).set_shader_parameter(
-				"posisi_offset",
-				Vector2(
-					-shader_air.position.x,
-					-shader_air.position.z
-				)
-			)
-		if bentuk_air != null:
-			var posisi_air_laut : float = bentuk_air.global_position.y
-			var posisi_pengamat : float = pengamat.global_position.y
-			var jarak_pengamat : float = abs(posisi_air_laut - posisi_pengamat)
-			if jarak_pengamat < 50:
-				if !bentuk_air.visible:
-					bentuk_air.visible = true
-					bentuk_air.get_node("gelombang_air").play("ombak")
-				if bentuk_air.get_node("cek_visibilitas").is_colliding() and jarak_pengamat > 1:
-					if bunyi_air.playing:
-						bunyi_air.stop()
-				elif !bunyi_air.playing:
-					bunyi_air.stream = load("res://audio/alam/ombak laut/ombak_%s.ogg" % str(server.permainan.hasilkanAngkaAcak(1, 6)))
-					bunyi_air.play()
-				bentuk_air.global_position.x = pengamat.global_position.x
-				bentuk_air.global_position.z = pengamat.global_position.z
-				if bentuk_air.visible:
-					var offset_gelombang : Vector3 = get_node("air").get_surface_override_material(0).get("uv1_offset")
-					bentuk_air.get_surface_override_material(0).set(
-						"uv1_offset",
+		# cek area bunyi pada map
+		if area_bunyi != null:
+			var posisi_bunyi : Array
+			for node_area_bunyi in area_bunyi.get_children():
+				if node_area_bunyi is Area3D and node_area_bunyi.monitoring:
+					var pengamat_terdeteksi : bool = false
+					var node_pengamat : AnimatableBody3D
+					for cek_node in node_area_bunyi.get_overlapping_bodies():
+						if cek_node is AnimatableBody3D and cek_node.name == "target_area_bunyi":
+							pengamat_terdeteksi = true
+							node_pengamat = cek_node
+							break
+						#elif cek_node == server.permainan.karakter:
+							#Panku.notify("trust your personality!")
+					if pengamat_terdeteksi and node_pengamat == dunia.pengamat.get_node_or_null("target_area_bunyi"):
+						if !posisi_bunyi.has(node_area_bunyi.name):
+							posisi_bunyi.append(node_area_bunyi.name)
+					elif posisi_bunyi.has(node_area_bunyi.name):
+						posisi_bunyi.erase(node_area_bunyi.name)
+			if posisi_bunyi.has("area_map"):
+				if posisi_bunyi.size() > 1:
+					for area in posisi_bunyi:
+						if area != "area_map":
+							if !area_bunyi.get_node(area + "/bunyi").get("playing"):
+								area_bunyi.get_node(area + "/bunyi").call("play")
+					if area_bunyi.get_node("area_map/bunyi").get("playing"):
+						area_bunyi.get_node("area_map/bunyi").call("stop")
+				else:
+					for node_area_bunyi in area_bunyi.get_children():
+						if node_area_bunyi.name == "area_map":
+							if !node_area_bunyi.get_node("bunyi").get("playing"):
+								node_area_bunyi.get_node("bunyi").call("play")
+						elif node_area_bunyi.get_node("bunyi").get("playing"):
+							node_area_bunyi.get_node("bunyi").call("stop")
+				# posisikan shader air (kalau ada) mengikuti posisi horizontal pengamat
+				if shader_air != null:
+					shader_air.global_position.x = pengamat.global_position.x
+					shader_air.global_position.z = pengamat.global_position.z
+					shader_air.get_surface_override_material(0).set_shader_parameter(
+						"posisi_offset",
 						Vector2(
-							offset_gelombang.x + bentuk_air.position.x * 0.15,
-							offset_gelombang.z + bentuk_air.position.z * 0.15
+							-shader_air.position.x,
+							-shader_air.position.z
 						)
 					)
-			elif bentuk_air.visible:
-				bunyi_air.stop()
-				bentuk_air.get_node("gelombang_air").stop()
-				bentuk_air.visible = false
+				if bentuk_air != null:
+					var posisi_air_laut : float = bentuk_air.global_position.y
+					var posisi_pengamat : float = pengamat.global_position.y
+					var jarak_pengamat : float = abs(posisi_air_laut - posisi_pengamat)
+					if jarak_pengamat < 50 and !posisi_bunyi.has("area_permukaan"):
+						if !bentuk_air.visible:
+							bentuk_air.visible = true
+							bentuk_air.get_node("gelombang_air").play("ombak")
+						if jarak_pengamat > 5:
+							if bunyi_air.playing:
+								bunyi_air.stop()
+						elif !bunyi_air.playing:
+							bunyi_air.stream = load("res://audio/alam/ombak laut/ombak_%s.ogg" % str(server.permainan.hasilkanAngkaAcak(1, 6)))
+							bunyi_air.play()
+						bentuk_air.global_position.x = pengamat.global_position.x
+						bentuk_air.global_position.z = pengamat.global_position.z
+						if bentuk_air.visible:
+							var offset_gelombang : Vector3 = get_node("air").get_surface_override_material(0).get("uv1_offset")
+							bentuk_air.get_surface_override_material(0).set(
+								"uv1_offset",
+								Vector2(
+									offset_gelombang.x + bentuk_air.position.x * 0.15,
+									offset_gelombang.z + bentuk_air.position.z * 0.15
+								)
+							)
+					elif bentuk_air.visible:
+						bunyi_air.stop()
+						bentuk_air.get_node("gelombang_air").stop()
+						bentuk_air.visible = false
+			else:
+				for node_area_bunyi in area_bunyi.get_children():
+					if node_area_bunyi.get_node("bunyi").get("playing"):
+						node_area_bunyi.get_node("bunyi").call("stop")
 func _exit_tree():
 	if Engine.is_editor_hint():
 		if $tanah.get_node_or_null("placeholder_permukaan") != null:

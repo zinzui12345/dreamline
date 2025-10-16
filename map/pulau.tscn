@@ -1,11 +1,13 @@
-[gd_scene load_steps=52 format=4 uid="uid://dfoyqfg2gqaff"]
+[gd_scene load_steps=55 format=4 uid="uid://dfoyqfg2gqaff"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_uaaqg"]
 [ext_resource type="Script" uid="uid://bmm5flmnbh45f" path="res://skrip/entitas/permukaan.gd" id="3_kx3r3"]
 [ext_resource type="ArrayMesh" uid="uid://d0ylp0id374jd" path="res://model/detail_air.res" id="4_dha2v"]
 [ext_resource type="Image" uid="uid://bllj5hw6hqn7k" path="res://map/pulau/pulau.png" id="4_kp02e"]
 [ext_resource type="Texture2D" uid="uid://bo6aeafrtjtu" path="res://material/air_1/air_normal_1.png" id="4_ws6jm"]
+[ext_resource type="AudioStream" uid="uid://2f7diangvdlx" path="res://audio/alam/angin/angin_sejuk_pepohonan.wav" id="6_qapuc"]
 [ext_resource type="PackedScene" uid="uid://du3g3bwcmqfb4" path="res://model/bangunan/mercusuar.scn" id="6_vg22w"]
+[ext_resource type="AudioStream" uid="uid://bkxmmk2bid21e" path="res://audio/alam/angin/angin_kencang.wav" id="7_776u0"]
 [ext_resource type="PackedScene" uid="uid://bfrbndvi106iv" path="res://model/bangunan/interior_mercusuar.scn" id="7_jv2ni"]
 [ext_resource type="PackedScene" uid="uid://dvtfq67kfjnh7" path="res://skena/entitas/bola_pantai.scn" id="7_mxxfs"]
 [ext_resource type="PackedScene" uid="uid://dyem5ut8nxl5w" path="res://model/bangunan/gedung_penelitian.scn" id="10_65xri"]
@@ -675,6 +677,9 @@ _data = {
 &"RESET": SubResource("Animation_ws6jm"),
 &"ombak": SubResource("Animation_2grqi")
 }
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gibio"]
+size = Vector3(1500, 1000, 1500)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g6kdx"]
 
@@ -11144,6 +11149,35 @@ collision_mask = 128
 debug_shape_custom_color = Color(0.323502, 0.222493, 0.164103, 1)
 
 [node name="tanah" type="Node3D" parent="permukaan"]
+
+[node name="area_bunyi" type="Node3D" parent="permukaan"]
+
+[node name="area_permukaan" type="Area3D" parent="permukaan/area_bunyi"]
+physics_interpolation_mode = 2
+collision_layer = 1073741824
+collision_mask = 1073741824
+
+[node name="col_area_permukaan" type="CollisionPolygon3D" parent="permukaan/area_bunyi/area_permukaan"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 15, 0)
+depth = 30.0
+polygon = PackedVector2Array(-348.5794, 358.51392, -347.1746, 320.09637, -329.2257, 278.58954, -311.65073, 231.84763, -316.5119, 192.58443, -360.26233, 159.67812, -446.18164, 117.99417, -474.06802, 50.021164, -473.96155, -24.714987, -450.84515, -68.766975, -412.02707, -90.57489, -397.1443, -141.46584, -373.21243, -182.2248, -349.65213, -217.16293, -306.74988, -258.47162, -279.35223, -327.09998, -254.46301, -373.5028, -203.28194, -445.4162, -153.0736, -461.56235, -57.720055, -441.74377, 21.984053, -472.2961, 98.729, -458.78748, 147.46472, -417.7732, 179.9971, -361.30893, 233.28928, -343.84726, 291.2493, -367.40518, 319.10004, -346.8282, 331.12552, -278.37338, 374.7229, -185.26994, 368.6811, -100.31812, 378.0274, 15.789964, 355.55103, 58.73565, 361.17963, 159.08928, 310.57663, 298.1473, 270.23346, 372.06888, 232.70004, 463.6165, 169.13101, 486.05258, 115.23472, 447.38913, 106.31671, 348.05655, 91.775894, 257.37683, 29.702606, 236.43643, -78.55455, 248.82657, -132.46014, 348.05655, -202.17609, 447.40167, -313.72144, 407.31503)
+
+[node name="bunyi" type="AudioStreamPlayer" parent="permukaan/area_bunyi/area_permukaan"]
+stream = ExtResource("6_qapuc")
+
+[node name="area_map" type="Area3D" parent="permukaan/area_bunyi"]
+physics_interpolation_mode = 2
+collision_layer = 1073741824
+collision_mask = 1073741824
+input_ray_pickable = false
+
+[node name="col_area_map" type="CollisionShape3D" parent="permukaan/area_bunyi/area_map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 475, 0)
+shape = SubResource("BoxShape3D_gibio")
+debug_fill = false
+
+[node name="bunyi" type="AudioStreamPlayer" parent="permukaan/area_bunyi/area_map"]
+stream = ExtResource("7_776u0")
 
 [node name="posisi_spawn" type="Marker3D" parent="."]
 transform = Transform3D(0.707107, 0, 0.70710695, 0, 1, 0, -0.70710695, 0, 0.707107, -259.69693, 9.702, 167.79997)

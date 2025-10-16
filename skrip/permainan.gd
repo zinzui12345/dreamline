@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 10/10/25 Early Access"
+const versi = "Dreamline v0.4.4 16/10/25 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -757,6 +757,8 @@ func _muat_map(file_map : StringName) -> void:
 			pengamat.current = true
 			pengamat.set_script(_fungsi_pengamat)
 			call_deferred("add_child", pengamat)
+			dunia.set_deferred("pengamat", pengamat)
+			if permukaan != null: permukaan.set_deferred("pengamat", pengamat)
 			for frame in indeks_frame:
 				if frame is int and server.timeline[frame] != {}:
 					var indeks_entitas : Array = server.timeline[frame].keys() # indeks/id entitas misalnya pemain

@@ -81,6 +81,21 @@ func _physics_process(_delta : float) -> void:
 				tmp_b_fisik_pengamat.shape = tmp_bb_fisik_pengamat
 				tmp_fisik_pengamat.add_child(tmp_b_fisik_pengamat)
 				tmp_bb_fisik_pengamat.size = Vector3(0.5, 0.5, 0.5)
+			# atur collider area bunyi jika belum ada
+			if cek_pengamat.get_node_or_null("target_area_bunyi") == null:
+				var tmp_bb_fisik_pengamat = BoxShape3D.new()
+				var tmp_b_fisik_pengamat = CollisionShape3D.new()
+				var tmp_fisik_pengamat = AnimatableBody3D.new()
+				tmp_fisik_pengamat.name = "target_area_bunyi"
+				cek_pengamat.add_child(tmp_fisik_pengamat)
+				tmp_fisik_pengamat.set_collision_layer_value(1, false)
+				tmp_fisik_pengamat.set_collision_layer_value(31, true)
+				tmp_fisik_pengamat.set_collision_mask_value(1, false)
+				tmp_fisik_pengamat.sync_to_physics = false
+				tmp_b_fisik_pengamat.name = "fisik"
+				tmp_b_fisik_pengamat.shape = tmp_bb_fisik_pengamat
+				tmp_fisik_pengamat.add_child(tmp_b_fisik_pengamat)
+				tmp_bb_fisik_pengamat.size = Vector3(0.25, 0.25, 0.25)
 			
 			# Direction Culling / Frustum Culling
 			if server.permainan.gunakan_frustum_culling:
