@@ -359,42 +359,42 @@ func _process(_delta : float) -> void:
 									# atur id_proses dengan id_pemain
 									pool_karakter[nama_karakter]["id_proses"] = id_pemain
 		
-		# pemuatan aset objek
-		if pool_pemuat_objek.size() > 0:
-			var muat_objek = pool_pemuat_objek[0]
-			if muat_objek.thread == null:
-				muat_objek.thread = ResourceLoader.load_threaded_request(muat_objek.jalur, "PackedScene", true)
-				if muat_objek.thread != OK:
-					push_error("objek [%s] tidak dapat dimuat!" % muat_objek.jalur)
-					pool_pemuat_objek.pop_front()
-				elif dunia.get_node("objek").get_node_or_null(muat_objek.nama) != null:
-					push_error("objek [%s] sudah ada di dunia, jadi tak perlu lagi dimuat!" % muat_objek.jalur)
-					pool_pemuat_objek.pop_front()
-			elif ResourceLoader.load_threaded_get_status(muat_objek.jalur) == ResourceLoader.THREAD_LOAD_LOADED:
-				var muat_skena_objek = ResourceLoader.load_threaded_get(muat_objek.jalur)
-				if muat_skena_objek:
-					var tmp_objek : Node3D = muat_skena_objek.instantiate()
-					var tmp_nama = tmp_objek.name
-					tmp_objek.name = muat_objek.nama
-					dunia.get_node("objek").add_child(tmp_objek, true)
-					for p in muat_objek.properti.properti_objek.size():
-						if tmp_objek.get(muat_objek.properti.properti_objek[p][0]) != null:
-							if muat_objek.properti.properti_objek[p][0] == "kode":
-								var compile_kode = permainan._compile_blok_kode(muat_objek.properti.properti_objek[p][1])
-								if compile_kode != null: tmp_objek.kode = compile_kode
-							else: tmp_objek.set(muat_objek.properti.properti_objek[p][0], muat_objek.properti.properti_objek[p][1])
-						elif muat_objek.properti.properti_objek[p][0] == "id_objek":
-							tmp_objek.set_meta("id_objek", muat_objek.properti.properti_objek[p][1])
-							#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [muat_objek.nama, muat_objek.properti.properti_objek[p][1]])
-						else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+muat_objek.properti.properti_objek[p][0]+"]")
-					if muat_objek.get("render_melalui_portal") != null and muat_objek.render_melalui_portal:
-						tmp_objek.set_meta("render_melalui_portal", muat_objek.render_melalui_portal)
-					tmp_objek.id_pengubah = muat_objek.properti.id_pengubah
-					tmp_objek.global_transform.origin = muat_objek.properti.posisi_objek
-					tmp_objek.rotation = muat_objek.properti.rotasi_objek
-				else:
-					push_error("aset [%s] bukan objek yang valid!" % muat_objek.jalur)
+	# pemuatan aset objek
+	if pool_pemuat_objek.size() > 0:
+		var muat_objek = pool_pemuat_objek[0]
+		if muat_objek.thread == null:
+			muat_objek.thread = ResourceLoader.load_threaded_request(muat_objek.jalur, "PackedScene", true)
+			if muat_objek.thread != OK:
+				push_error("objek [%s] tidak dapat dimuat!" % muat_objek.jalur)
 				pool_pemuat_objek.pop_front()
+			elif dunia.get_node("objek").get_node_or_null(muat_objek.nama) != null:
+				push_error("objek [%s] sudah ada di dunia, jadi tak perlu lagi dimuat!" % muat_objek.jalur)
+				pool_pemuat_objek.pop_front()
+		elif ResourceLoader.load_threaded_get_status(muat_objek.jalur) == ResourceLoader.THREAD_LOAD_LOADED:
+			var muat_skena_objek = ResourceLoader.load_threaded_get(muat_objek.jalur)
+			if muat_skena_objek:
+				var tmp_objek : Node3D = muat_skena_objek.instantiate()
+				var tmp_nama = tmp_objek.name
+				tmp_objek.name = muat_objek.nama
+				dunia.get_node("objek").add_child(tmp_objek, true)
+				for p in muat_objek.properti.properti_objek.size():
+					if tmp_objek.get(muat_objek.properti.properti_objek[p][0]) != null:
+						if muat_objek.properti.properti_objek[p][0] == "kode":
+							var compile_kode = permainan._compile_blok_kode(muat_objek.properti.properti_objek[p][1])
+							if compile_kode != null: tmp_objek.kode = compile_kode
+						else: tmp_objek.set(muat_objek.properti.properti_objek[p][0], muat_objek.properti.properti_objek[p][1])
+					elif muat_objek.properti.properti_objek[p][0] == "id_objek":
+						tmp_objek.set_meta("id_objek", muat_objek.properti.properti_objek[p][1])
+						#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [muat_objek.nama, muat_objek.properti.properti_objek[p][1]])
+					else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+muat_objek.properti.properti_objek[p][0]+"]")
+				if muat_objek.get("render_melalui_portal") != null and muat_objek.render_melalui_portal:
+					tmp_objek.set_meta("render_melalui_portal", muat_objek.render_melalui_portal)
+				tmp_objek.id_pengubah = muat_objek.properti.id_pengubah
+				tmp_objek.global_transform.origin = muat_objek.properti.posisi_objek
+				tmp_objek.rotation = muat_objek.properti.rotasi_objek
+			else:
+				push_error("aset [%s] bukan objek yang valid!" % muat_objek.jalur)
+			pool_pemuat_objek.pop_front()
 
 func buat_koneksi() -> void:
 	interface = MultiplayerAPI.create_default_interface()
@@ -527,12 +527,14 @@ func buat_koneksi_virtual():
 	interface.set_multiplayer_peer(peer)
 	get_tree().set_multiplayer(interface)
 	interface.set_refuse_new_connections(true)
+	set_process(true)
 func putuskan_koneksi_virtual():
 	peer.close()
 	peer = null
 	interface.clear()
 	interface.set_root_path(NodePath("/root"))
 	interface = null
+	set_process(false)
 
 func spawn_pool_pemain(id_pemain : int, id_spawn_pemain : int, data : Dictionary):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -1190,6 +1192,7 @@ func _pemain_terputus(id_pemain):
 				# - set frame sekarang untuk di-cek pada frame selanjutnya
 				pemain[id_sesi_pemain]["cek_frame"] = frame_sekarang
 @rpc("any_peer") func _sesuaikan_posisi_entitas(nama_entitas : String, id_pemain : int):
+	if id_pemain == -44: return
 	# kirim posisi entitas ke client kalau posisi di client de-sync
 	var t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null:
