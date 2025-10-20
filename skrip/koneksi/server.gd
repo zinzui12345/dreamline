@@ -191,7 +191,7 @@ func _process(_delta : float) -> void:
 										# ubah visibilitas pool agar jangan rpc lagi
 										cek_visibilitas_pemain[id_pemain][id_pemain_target] = "spawn"
 									# atur visibilitas pemain yang melihatnya pada pemain tersebut
-									if cek_visibilitas_pemain[id_pemain_target][id_pemain] == "hapus":
+									if cek_visibilitas_pemain.get(id_pemain_target) != null and cek_visibilitas_pemain[id_pemain_target][id_pemain] == "hapus":
 										cek_visibilitas_pemain[id_pemain_target][id_pemain] = "lihat"
 								# hanya hapus jika pool telah di-spawn
 								elif cek_visibilitas_pemain[id_pemain][id_pemain_target] == "spawn":
