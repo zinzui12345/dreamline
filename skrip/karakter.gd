@@ -545,22 +545,22 @@ func _physics_process(delta : float) -> void:
 			if !melompat and !_ragdoll:
 				if Input.is_action_pressed("berlari") and arah.z > 1.0:
 					if is_on_floor():
-						arah.y = 90 * delta
+						arah.y = 1000 * delta
 					elif (Input.is_action_pressed("kiri") and _input_arah_pandangan.x > 0) \
 					 or (Input.is_action_pressed("kanan") and _input_arah_pandangan.x < 0):
-						arah.y = clampf(arah.y * 1.4, 90 * delta, 125 * delta)
+						arah.y = clampf(arah.y * 1.4, 1100 * delta, 1450 * delta)
 						if Input.is_action_pressed("mundur"):
 							arah.z = -clampf(arah.z * 1.05, 0.0, 125 * delta)
 						elif jongkok:
-							arah.z = clampf(arah.z * 1.025, 0.0, 250 * delta)
+							arah.z = clampf(arah.z * 1.025, 0.0, 850 * delta)
 						else:
-							arah.z = clampf(arah.z * 1.025, 0.0, 125 * delta)
+							arah.z = clampf(arah.z * 1.025, 0.0, 625 * delta)
 				elif Input.is_action_pressed("maju") and arah.z > 0.5:
 					if is_on_floor():
-						arah.y = 82 * delta
+						arah.y = 785 * delta
 				elif is_on_floor():
 					melompat = true
-					arah.y = 75 * delta
+					arah.y = 512 * delta
 			if is_on_floor() and _ragdoll:
 				if _coba_reset_ragdoll > 40:
 					_timer_ragdoll.stop()

@@ -968,7 +968,6 @@ func _muat_map(file_map : StringName) -> void:
 			# 28/06/24 :: demo uji algoritma object culling
 			koneksi = MODE_KONEKSI.SERVER
 			server.mode_replay = true
-			server.set_process(true)
 			call_deferred("_tampilkan_permainan")
 			var pengamat : Control = load("res://skena/perf_test.tscn").instantiate()
 			pengamat.name = "pengamat"
@@ -988,6 +987,7 @@ func _muat_map(file_map : StringName) -> void:
 			call_deferred("_atur_teks_memuat", "%memuat_pemain%")
 			# INFO : (5b1) kirim data pemain ke server
 			server.call_deferred("rpc", "_tambahkan_pemain_ke_dunia", client.id_koneksi, client.id_sesi, data)
+	server.set_process(true)
 	#thread.call_deferred("wait_to_finish")
 func _muat_kode(node_kode_ubahan : BlockCode) -> void:
 	# 31/10/24 :: # buat palet sintaks berdasarkan kelas objek
@@ -1367,7 +1367,6 @@ func putuskan_server(paksa : bool = false) -> void:
 				return
 			else:
 				if server.mode_uji_performa:
-					server.set_process(false)
 					server.pool_entitas.clear()
 					server.pool_objek.clear()
 					server.cek_visibilitas_pool_entitas.clear()
@@ -1388,6 +1387,7 @@ func putuskan_server(paksa : bool = false) -> void:
 			if $proses_memuat.visible: $proses_memuat/panel_bawah/animasi.play_backwards("tampilkan")
 			$menu_utama/menu/Panel/gabung_server.grab_focus()
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		server.set_process(false)
 		
 		get_node("%karakter").add_child(karakter_cewek.instantiate())
 		get_node("%karakter/lulu").model["alis"] 		= data["alis"]

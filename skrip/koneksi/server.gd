@@ -408,7 +408,6 @@ func buat_koneksi() -> void:
 	interface.set_refuse_new_connections(false)
 	client.id_koneksi = 1
 	siarkan_server()
-	set_process(true)
 	if publik: # koneksi publik
 		upnp = UPNP.new()
 		var hasil_pencarian = upnp.discover(4000, 2)
@@ -527,7 +526,6 @@ func buat_koneksi_virtual():
 	interface.set_multiplayer_peer(peer)
 	get_tree().set_multiplayer(interface)
 	interface.set_refuse_new_connections(true)
-	set_process(true)
 func putuskan_koneksi_virtual():
 	peer.close()
 	peer = null
