@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://b2hlchrj4h2b7"]
+
+[ext_resource type="AudioStream" uid="uid://ffk31pjn3e78" path="res://audio/kendaraan/mesin_selis-kecepatan2.ogg" id="1_hgygv"]
+[ext_resource type="Script" uid="uid://baqktmu1dsq70" path="res://skrip/entitas/kendaraan/engine_sound.gd" id="2_noxdw"]
+
+[node name="EngineSound" type="AudioStreamPlayer3D"]
+stream = ExtResource("1_hgygv")
+autoplay = true
+script = ExtResource("2_noxdw")

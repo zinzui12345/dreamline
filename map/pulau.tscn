@@ -11375,7 +11375,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -165.826, 3.01818, 13.0283)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 297, 10, 115)
 
 [node name="selis" parent="." instance=ExtResource("17_ve7sj")]
-transform = Transform3D(0.493851, 0, 0.869547, 0, 1, 0, -0.869547, 0, 0.493851, -263.777, 10.0304, 162.708)
+transform = Transform3D(0.493851, 0, 0.869547, 0, 1, 0, -0.869547, 0, 0.493851, -263.777, 10.15, 162.708)
 
 [node name="jalan" type="Node3D" parent="."]
 script = ExtResource("14_gdyf4")
