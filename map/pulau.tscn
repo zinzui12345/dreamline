@@ -11377,7 +11377,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 297, 10, 115)
 [node name="selis" parent="." instance=ExtResource("17_ve7sj")]
 transform = Transform3D(0.493851, 0, 0.869547, 0, 1, 0, -0.869547, 0, 0.493851, -263.777, 10.15, 162.708)
 
-[node name="jalan" type="Node3D" parent="."]
+[node name="jalan" type="Node3D" parent="." groups=["permukaan_jalan"]]
 script = ExtResource("14_gdyf4")
 metadata/_custom_type_script = "uid://b586nuj20apyu"
 

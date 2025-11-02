@@ -24,11 +24,11 @@ var ackermann := 0.15
 var contact_patch := 0.2
 var braking_grip_multiplier := 1.4
 var surface_type := ""
-var tire_stiffnesses := { "Road" : 5.0, "Dirt" : 0.5, "Grass" : 0.5 }
-var coefficient_of_friction := { "Road" : 2.0, "Dirt" : 1.4, "Grass" : 1.0 }
-var rolling_resistance := { "Road" : 1.0, "Dirt" : 2.0, "Grass" : 4.0 }
-var lateral_grip_assist := { "Road" : 0.05, "Dirt" : 0.0, "Grass" : 0.0 }
-var longitudinal_grip_ratio := { "Road" : 0.5, "Dirt": 0.5, "Grass" : 0.5 }
+var tire_stiffnesses := { "permukaan_jalan" : 5.0, "permukaan_tanah" : 0.5, "permukaan_rumput" : 0.5, "dapat_diedit": 5.0 }
+var coefficient_of_friction := { "permukaan_jalan" : 2.0, "permukaan_tanah" : 1.4, "permukaan_rumput" : 1.0, "dapat_diedit": 2.0 }
+var rolling_resistance := { "permukaan_jalan" : 1.0, "permukaan_tanah" : 2.0, "permukaan_rumput" : 4.0, "dapat_diedit": 1.0 }
+var lateral_grip_assist := { "permukaan_jalan" : 0.05, "permukaan_tanah" : 0.0, "permukaan_rumput" : 0.0, "dapat_diedit": 0.05 }
+var longitudinal_grip_ratio := { "permukaan_jalan" : 0.5, "permukaan_tanah": 0.5, "permukaan_rumput" : 0.5, "dapat_diedit": 0.5 }
 
 var spring_length := 0.15
 var spring_rate := 0.0

@@ -270,26 +270,26 @@ extends entitas
 ## the responsiveness of the tire.
 ## Surface detection uses node groups to identify the surface, so make sure
 ## your staticbodies and rigidbodies belong to one of these groups.
-@export var tire_stiffnesses := { "Road" : 10.0, "Dirt" : 0.5, "Grass" : 0.5, "dapat_diedit": 0.0 } # TODO : sesuaikan grup permukaan fisik
+@export var tire_stiffnesses := { "permukaan_jalan" : 10.0, "permukaan_tanah" : 0.5, "permukaan_rumput" : 0.5, "dapat_diedit": 10.0 }
 ## A multiplier for the amount of force a tire can apply based on the surface.
 ## Surface detection uses node groups to identify the surface, so make sure
 ## your staticbodies and rigidbodies belong to one of these groups.
-@export var coefficient_of_friction := { "Road" : 3.0, "Dirt" : 2.4, "Grass" : 2.0, "dapat_diedit": 0.0 }
+@export var coefficient_of_friction := { "permukaan_jalan" : 3.0, "permukaan_tanah" : 2.4, "permukaan_rumput" : 2.0, "dapat_diedit": 3.0 }
 ## A multiplier for the amount of rolling resistance force based on the surface.
 ## Surface detection uses node groups to identify the surface, so make sure
 ## your staticbodies and rigidbodies belong to one of these groups.
-@export var rolling_resistance := { "Road" : 1.0, "Dirt" : 2.0, "Grass" : 4.0, "dapat_diedit": 0.0 }
+@export var rolling_resistance := { "permukaan_jalan" : 1.0, "permukaan_tanah" : 2.0, "permukaan_rumput" : 4.0, "dapat_diedit": 1.0 }
 ## A multiplier to provide more grip based on the amount of lateral wheel slip.
 ## This can be used to keep vehicles from sliding a long distance, but may provide
 ## unrealistically high amounts of grip.
 ## Surface detection uses node groups to identify the surface, so make sure
 ## your staticbodies and rigidbodies belong to one of these groups.
-@export var lateral_grip_assist := { "Road" : 0.05, "Dirt" : 0.0, "Grass" : 0.0, "dapat_diedit": 0.0 }
+@export var lateral_grip_assist := { "permukaan_jalan" : 0.05, "permukaan_tanah" : 0.0, "permukaan_rumput" : 0.0, "dapat_diedit": 0.05 }
 ## A multiplier to adjust longitudinal grip to differ from lateral grip.
 ## Useful for allowing vehicles to have wheel spin and maintain high lateral grip.
 ## Surface detection uses node groups to identify the surface, so make sure
 ## your staticbodies and rigidbodies belong to one of these groups.
-@export var longitudinal_grip_ratio := { "Road" : 0.5, "Dirt": 0.5, "Grass" : 0.5, "dapat_diedit": 0.0 }
+@export var longitudinal_grip_ratio := { "permukaan_jalan" : 0.5, "permukaan_tanah": 0.5, "permukaan_rumput" : 0.5, "dapat_diedit": 0.5 }
 @export_subgroup("Front Axle", "front_")
 ## Tire radius in meters
 @export var front_tire_radius := 0.3

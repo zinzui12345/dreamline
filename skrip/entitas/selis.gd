@@ -137,6 +137,9 @@ func proses(_waktu_delta : float) -> void:
 		steering_input = clampf(arah_belok, -1.0, 1.0)
 		
 		handbrake_input = Input.get_action_strength("lompat")
+		
+		if arah_belok != 0.0:	enable_stability = false
+		elif !enable_stability:	enable_stability = true
 
 func _input(_event: InputEvent) -> void:
 	if id_pengendara == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengendara)).kontrol:

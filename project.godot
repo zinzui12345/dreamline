@@ -78,6 +78,9 @@ import/fbx/enabled=false
 
 dapat_ditendang="Ini digunakan untuk objek fisik atau musuh berukuran kecil yang dapat ditendang oleh pemain"
 dapat_diedit="Agar objek dapat diedit pada mode edit"
+permukaan_jalan="Ini digunakan untuk menyesuaikan perilaku roda kendaraan pada fisik jalanan"
+permukaan_tanah="Ini digunakan untuk menyesuaikan perilaku roda kendaraan pada fisik permukaan"
+permukaan_rumput="Ini digunakan untuk menyesuaikan perilaku roda kendaraan pada fisik permukaan"
 
 [godot_idea_board]
 
