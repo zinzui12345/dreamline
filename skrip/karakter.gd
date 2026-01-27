@@ -434,6 +434,8 @@ func _input(event : InputEvent) -> void:
 						if objek_target is objek and objek_target.id_pengubah < 1 and objek_target.has_method("fungsikan"):
 							#objek_target.call("fungsikan", multiplayer.get_unique_id())
 							objek_target.call("fungsikan")
+						elif objek_target is npc_ai and objek_target.id_pengubah < 1 and objek_target.has_method("interaksi"):
+							objek_target.call("interaksi")
 						elif penarget_serangan_a.is_colliding() and gestur == "berdiri" and not menyerang:
 							objek_target = penarget_serangan_a.get_collider()
 							var arah_dorongan := Vector3(0, 0, 5)

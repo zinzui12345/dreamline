@@ -8,12 +8,16 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Dreamline"
 run/main_scene="res://skena/dreamline.tscn"
 config/quit_on_go_back=false
-config/features=PackedStringArray("4.5", "Mobile")
+config/features=PackedStringArray("4.6", "Mobile")
 run/delta_smoothing=false
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
@@ -33,7 +37,7 @@ server="*res://skrip/koneksi/server.gd"
 client="*res://skrip/koneksi/client.gd"
 Panku="*res://addons/panku_console/console.tscn"
 PerenderEfekGarisCahaya="*res://addons/glow_border_effect/glow_border_effect_renderer.tscn"
-DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
+DialogueManager="*uid://ridlodlc7dm0"
 
 [debug]
 

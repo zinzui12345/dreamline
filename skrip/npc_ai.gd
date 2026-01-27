@@ -206,6 +206,30 @@ func navigasi_ke(posisi : Vector3, _berlari : bool = false) -> void:
 		navigasi.set_target_position(posisi)
 		_proses_navigasi = true
 
+# gerakkan ke arah tertentu dengan jarak tertentu
+func gerakkan(arah: String, jarak: int) -> void:
+	var vektor_arah = Vector3.ZERO
+	
+	# Menentukan vektor arah berdasarkan input (mengasumsikan standar Godot -Z adalah depan)
+	match arah.to_lower():
+		"maju":
+			vektor_arah = -global_transform.basis.z
+		"mundur":
+			vektor_arah = global_transform.basis.z
+		"kiri":
+			vektor_arah = -global_transform.basis.x
+		"kanan":
+			vektor_arah = global_transform.basis.x
+		_:
+			push_warning("[Galat] npc : Arah tidak dikenal: " + arah)
+			return
+
+	# Hitung posisi target: posisi sekarang + (arah * jarak)
+	var posisi_target = global_position + (vektor_arah * jarak)
+	
+	# Panggil metode navigasi yang sudah kamu buat
+	navigasi_ke(posisi_target)
+
 # arahkan model ke posisi tertentu
 func lihat_ke(posisi : Vector3):
 	if model != null:
@@ -383,10 +407,12 @@ func dapatkan_data_animasi() -> String:
 			}
 	return JSON.stringify(gabung_data)
 
-## debug ##
-func _input(_event : InputEvent) -> void:
+## interaksi ##
+func _input(_event : InputEvent) -> void: # debug
 	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if Input.is_action_just_pressed("daftar_pemain"): _diserang(server.permainan.get_node("../dunia/pemain/"+str(client.id_koneksi)), 7)
+func interaksi() -> void:
+	pass
 
 # 26/10/24 :: Fungsi sintaks blok kode
 const BlockCategory = preload("res://skrip/editor kode/picker/categories/block_category.gd")

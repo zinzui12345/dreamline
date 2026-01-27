@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=25 format=3 uid="uid://bk18yfu0d77wk"]
+[gd_resource type="Theme" format=3 uid="uid://bk18yfu0d77wk"]
 
 [ext_resource type="Texture2D" uid="uid://bua84a0uv8ntw" path="res://addons/panku_console/res/icons2/checkbox_checked.svg" id="1_pq2ss"]
 [ext_resource type="Texture2D" uid="uid://dkiyle8rjahmw" path="res://addons/panku_console/res/icons2/checkbox_unchecked.svg" id="2_svie5"]

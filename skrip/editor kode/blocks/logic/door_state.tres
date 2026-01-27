@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=4 format=3 uid="uid://cg31kvpw2ff1e"]
+[gd_resource type="Resource" format=3 uid="uid://cg31kvpw2ff1e"]
 
 [ext_resource type="Script" uid="uid://c2fr8b2lkth1y" path="res://skrip/editor kode/block canvas/option_data.gd" id="1_3sbwi"]
 [ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="2_obap3"]

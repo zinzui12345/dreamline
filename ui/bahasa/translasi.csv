@@ -118,6 +118,8 @@ ARAH,Arah,Direction
 
 ,,
 # input,,
+Maju,maju,forward
+Mundur,mundur,backward
 INPUTSPASI,spasi,space
 INPUTHAPUS,hapus,delete
 %inputnama%,ketik namamu disini...,type your name here...
@@ -295,13 +297,18 @@ damage_serangan,damage_serangan,attack_damage
 %navigasi_karakter_ke ,Navigasi ke ,Navigate to 
  %navigasi_karakter_sambil_berlari% , sambil berlari , with running 
 %deskripsi_navigasi_karakter%,Mengarahkan karakter untuk berjalan atau berlari ke posisi tertentu,Navigate character to walk or run into defined position
+%gerakkan_karakter_ke ,Bergerak ,Move 
+ %gerakkan_karakter_dengan_jarak% , dengan jarak , with distance 
+%deskripsi_gerakkan_karakter%,Mengarahkan karakter untuk berpindah ke arah tertentu,Navigate character to move into defined direction
 %karakter_menavigasi,sedang menavigasi,is navigating
 %deskripsi_karakter_menavigasi%,Nilai kondisi bila karakter bergerak ke posisi tertentu (menavigasi),Character navigation state
 %arahkan_karakter_ke ,Lihat ke ,Look at 
 %deskripsi_arahkan_karakter%,Mengatur arah karakter ke posisi tertentu,Make character look to a defined position
 %ketika_karakter_diserang ,Ketika Diserang ,On Attacked by 
+%ketika_karakter_interaksi ,Ketika Interaksi ,On Interact 
  %karakter_diserang_dengan_damage% , sebanyak , with damage 
 %deskripsi_npc_diserang%,Blok yang terpasang akan dieksekusi pada saat karakter diserang,Attached blocks will be executed when character get attacked
+%deskripsi_npc_interaksi%,Blok yang terpasang akan dieksekusi saat karakter di-interaksi oleh pemain,Attached blocks will be executed when player interact with character
 ,,
 # konfirmasi,,
 %keluar%,Keluar Permainan?,Exit Game?

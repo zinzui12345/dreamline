@@ -1,4 +1,4 @@
-[gd_resource type="AnimationNodeBlendTree" load_steps=43 format=3 uid="uid://biebpppindc77"]
+[gd_resource type="AnimationNodeBlendTree" format=3 uid="uid://biebpppindc77"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cmy7d"]
 animation = &"animasi/menendang"

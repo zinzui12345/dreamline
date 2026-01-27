@@ -1,0 +1,25 @@
+[gd_resource type="Resource" format=3 uid="uid://be2vkqikvc0eo"]
+
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_agxwn"]
+[ext_resource type="Script" uid="uid://c2fr8b2lkth1y" path="res://skrip/editor kode/block canvas/option_data.gd" id="1_l0cux"]
+
+[sub_resource type="Resource" id="Resource_27qs0"]
+script = ExtResource("1_l0cux")
+items = ["maju", "mundur"]
+metadata/_custom_type_script = "uid://c2fr8b2lkth1y"
+
+[resource]
+script = ExtResource("1_agxwn")
+name = &"npc_ai_move"
+target_node_class = "npc_ai"
+description = "%deskripsi_gerakkan_karakter%"
+category = "%karakter%"
+type = 2
+display_template = "%gerakkan_karakter_ke {arah: OPTION} %gerakkan_karakter_dengan_jarak% {jarak: INT}"
+code_template = "gerakkan(\"{arah}\", {jarak})
+
+"
+defaults = {
+"arah": SubResource("Resource_27qs0"),
+"jarak": 1
+}

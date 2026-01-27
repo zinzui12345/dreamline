@@ -1,4 +1,4 @@
-[gd_resource type="BoxMesh" load_steps=2 format=3 uid="uid://exbjrf6s02tq"]
+[gd_resource type="BoxMesh" format=3 uid="uid://exbjrf6s02tq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jidrk"]
 albedo_color = Color(1, 1, 0, 1)

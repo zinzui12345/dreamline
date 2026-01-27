@@ -1,14 +1,12 @@
-[gd_scene load_steps=39 format=4 uid="uid://ihafed1x1w4f"]
+[gd_scene format=4 uid="uid://ihafed1x1w4f"]
 
 [ext_resource type="Script" uid="uid://u4oqds48ycv6" path="res://skrip/map.gd" id="1_h3x2o"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="1_xfa6m"]
 [ext_resource type="PackedScene" uid="uid://c5owgk7g0p8mt" path="res://karakter/rulu/rulu.scn" id="3_6a03b"]
-[ext_resource type="PackedScene" uid="uid://bi7w0776kr73y" path="res://skena/entitas/selis.scn" id="5_b2m5m"]
 [ext_resource type="PackedScene" uid="uid://b8sq2nbbhqrw5" path="res://skena/objek/pintu_1_kode.scn" id="7_am07k"]
-[ext_resource type="PackedScene" uid="uid://btfh3nq4bweai" path="res://skena/objek/perosotan.scn" id="8_knm7h"]
 [ext_resource type="Script" uid="uid://byemnaxwb0spk" path="res://skrip/portal.gd" id="8_rmo13"]
 [ext_resource type="Shader" uid="uid://xvkhmy27r1ji" path="res://material/portal.gdshader" id="9_jm2st"]
-[ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="9_rmo13"]
+[ext_resource type="PackedScene" uid="uid://b6h0s3nsnxc5e" path="res://skena/entitas/npc_test.scn" id="9_rmo13"]
 [ext_resource type="Shader" uid="uid://23ill3pcva8n" path="res://material/stencil_mask/mask.gdshader" id="10_sdm88"]
 [ext_resource type="Shader" uid="uid://cmgaaxyor4apg" path="res://material/stencil_mask/geometry.gdshader" id="11_sdm88"]
 
@@ -181,70 +179,59 @@ shader_parameter/visibility = 0.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_sdm88"]
 
-[node name="lingkungan" type="Node3D"]
+[node name="lingkungan" type="Node3D" unique_id=721443913]
 script = ExtResource("1_h3x2o")
 
-[node name="area_navigasi" type="NavigationRegion3D" parent="."]
+[node name="area_navigasi" type="NavigationRegion3D" parent="." unique_id=110834454]
 navigation_mesh = SubResource("NavigationMesh_kxi72")
 
-[node name="lantai" type="StaticBody3D" parent="area_navigasi"]
+[node name="lantai" type="StaticBody3D" parent="area_navigasi" unique_id=189054969]
 visible = false
 
-[node name="m_lantai" type="MeshInstance3D" parent="area_navigasi/lantai"]
+[node name="m_lantai" type="MeshInstance3D" parent="area_navigasi/lantai" unique_id=917154618]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("QuadMesh_56wji")
 skeleton = NodePath("../../..")
 
-[node name="f_lantai" type="CollisionShape3D" parent="area_navigasi/lantai"]
+[node name="f_lantai" type="CollisionShape3D" parent="area_navigasi/lantai" unique_id=1985784586]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_oj1l1")
 disabled = true
 
-[node name="penghalang" type="StaticBody3D" parent="area_navigasi"]
+[node name="penghalang" type="StaticBody3D" parent="area_navigasi" unique_id=260537270]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.00756, 0, -3.34998)
 script = SubResource("GDScript_6a03b")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="area_navigasi/penghalang"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="area_navigasi/penghalang" unique_id=1039476568]
 shape = SubResource("BoxShape3D_gcxvj")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="area_navigasi/penghalang"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="area_navigasi/penghalang" unique_id=179685247]
 mesh = SubResource("BoxMesh_fkvxr")
 
-[node name="lulu" parent="area_navigasi/penghalang" instance=ExtResource("3_6a03b")]
+[node name="lulu" parent="area_navigasi/penghalang" unique_id=2049505313 instance=ExtResource("3_6a03b")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.499949, 0)
 
-[node name="platform" type="AnimatableBody3D" parent="area_navigasi"]
+[node name="platform" type="AnimatableBody3D" parent="area_navigasi" unique_id=1236078866]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.01246, 0.206436, -4.35096)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="area_navigasi/platform"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="area_navigasi/platform" unique_id=983338052]
 shape = SubResource("BoxShape3D_gcxvj")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="area_navigasi/platform"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="area_navigasi/platform" unique_id=728206239]
 mesh = SubResource("BoxMesh_fkvxr")
 surface_material_override/0 = SubResource("StandardMaterial3D_6a03b")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="area_navigasi/platform"]
-libraries = {
-&"": SubResource("AnimationLibrary_rmo13")
-}
-autoplay = "gerakan"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="area_navigasi/platform" unique_id=1336272796]
+libraries/ = SubResource("AnimationLibrary_rmo13")
+autoplay = &"gerakan"
 
-[node name="posisi_spawn" type="Marker3D" parent="."]
+[node name="posisi_spawn" type="Marker3D" parent="." unique_id=1807250024]
 transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0, 0, 0)
 
-[node name="batas_bawah" type="Marker3D" parent="."]
+[node name="batas_bawah" type="Marker3D" parent="." unique_id=2064155846]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, -7, 0)
 
-[node name="perosotan" parent="." instance=ExtResource("8_knm7h")]
-transform = Transform3D(-0.642788, 0, -0.766044, 0, 1, 0, 0.766044, 0, -0.642788, -5.1, -0.2, 0)
-
-[node name="ayunan" parent="." instance=ExtResource("9_rmo13")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, -0.45, -3.75)
-
-[node name="selis" parent="." instance=ExtResource("5_b2m5m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.78067, -0.240179, -2.59366)
-
-[node name="pintu_1_statis" parent="." instance=ExtResource("7_am07k")]
+[node name="pintu_1_statis" parent="." unique_id=141901806 instance=ExtResource("7_am07k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -4)
 metadata/setelan = {
 "abaikan_transformasi": true,
@@ -254,7 +241,7 @@ metadata/setelan = {
 "warna_1": Color(0.56, 0.56, 0.56, 1)
 }
 
-[node name="portal" type="Node3D" parent="."]
+[node name="portal" type="Node3D" parent="." unique_id=997889095]
 editor_description = "portal b merupakan duplikat dari portal a 
 tetapi terdapat beberapa node portal b
  yang diubah transformasinya yaitu 
@@ -262,23 +249,23 @@ $arah,  $area_b, dan $node_tampilan  yang rotasi Y nya di set menjadi -180"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8056, -0.484694, -4.11226)
 script = ExtResource("8_rmo13")
 
-[node name="portal_a" type="MeshInstance3D" parent="portal"]
+[node name="portal_a" type="MeshInstance3D" parent="portal" unique_id=1195319559]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_rmo13")
 surface_material_override/0 = SubResource("ShaderMaterial_jm2st")
 
-[node name="arah" type="Marker3D" parent="portal/portal_a"]
+[node name="arah" type="Marker3D" parent="portal/portal_a" unique_id=1321117569]
 
-[node name="translasi_pengamat_a" type="Marker3D" parent="portal/portal_a"]
+[node name="translasi_pengamat_a" type="Marker3D" parent="portal/portal_a" unique_id=1565171859]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="pengamat_a" type="Camera3D" parent="portal/portal_a/translasi_pengamat_a"]
+[node name="pengamat_a" type="Camera3D" parent="portal/portal_a/translasi_pengamat_a" unique_id=1445704429]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.19209e-07, 0, 1)
 cull_mask = 1029
 
-[node name="tampilan_a" type="SubViewport" parent="portal/portal_a"]
+[node name="tampilan_a" type="SubViewport" parent="portal/portal_a" unique_id=377968731]
 handle_input_locally = false
 anisotropic_filtering_level = 0
 gui_snap_controls_to_pixels = false
@@ -289,52 +276,52 @@ positional_shadow_atlas_quad_1 = 0
 positional_shadow_atlas_quad_2 = 0
 positional_shadow_atlas_quad_3 = 0
 
-[node name="pos_pengamat_a" type="Marker3D" parent="portal/portal_a"]
+[node name="pos_pengamat_a" type="Marker3D" parent="portal/portal_a" unique_id=1264402351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="target_a" type="VisibleOnScreenNotifier3D" parent="portal/portal_a"]
+[node name="target_a" type="VisibleOnScreenNotifier3D" parent="portal/portal_a" unique_id=614993518]
 aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
 
-[node name="area_a" type="Area3D" parent="portal/portal_a"]
+[node name="area_a" type="Area3D" parent="portal/portal_a" unique_id=760306296]
 collision_mask = 7
 monitorable = false
 
-[node name="wilayah" type="CollisionShape3D" parent="portal/portal_a/area_a"]
+[node name="wilayah" type="CollisionShape3D" parent="portal/portal_a/area_a" unique_id=830671275]
 shape = SubResource("BoxShape3D_rmo13")
 
-[node name="pos_objek" type="Marker3D" parent="portal/portal_a/area_a"]
+[node name="pos_objek" type="Marker3D" parent="portal/portal_a/area_a" unique_id=1143830588]
 
-[node name="area_render" type="Area3D" parent="portal/portal_a"]
+[node name="area_render" type="Area3D" parent="portal/portal_a" unique_id=2120656333]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="wilayah_render" type="CollisionShape3D" parent="portal/portal_a/area_render"]
+[node name="wilayah_render" type="CollisionShape3D" parent="portal/portal_a/area_render" unique_id=1023560149]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 shape = SubResource("BoxShape3D_jm2st")
 
-[node name="node_tampilan" type="Node3D" parent="portal/portal_a"]
+[node name="node_tampilan" type="Node3D" parent="portal/portal_a" unique_id=1185264536]
 process_mode = 4
 
-[node name="portal_b" type="MeshInstance3D" parent="portal"]
+[node name="portal_b" type="MeshInstance3D" parent="portal" unique_id=1487040654]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1, 3)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_jm2st")
 surface_material_override/0 = SubResource("ShaderMaterial_sdm88")
 
-[node name="arah" type="Marker3D" parent="portal/portal_b"]
+[node name="arah" type="Marker3D" parent="portal/portal_b" unique_id=816619609]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="translasi_pengamat_b" type="Marker3D" parent="portal/portal_b"]
+[node name="translasi_pengamat_b" type="Marker3D" parent="portal/portal_b" unique_id=1084710605]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="pengamat_b" type="Camera3D" parent="portal/portal_b/translasi_pengamat_b"]
+[node name="pengamat_b" type="Camera3D" parent="portal/portal_b/translasi_pengamat_b" unique_id=914550282]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.19209e-07, 0, 1)
 cull_mask = 1029
 size = 0.1
 
-[node name="tampilan_b" type="SubViewport" parent="portal/portal_b"]
+[node name="tampilan_b" type="SubViewport" parent="portal/portal_b" unique_id=383553902]
 handle_input_locally = false
 anisotropic_filtering_level = 0
 gui_snap_controls_to_pixels = false
@@ -345,36 +332,36 @@ positional_shadow_atlas_quad_1 = 0
 positional_shadow_atlas_quad_2 = 0
 positional_shadow_atlas_quad_3 = 0
 
-[node name="pos_pengamat_b" type="Marker3D" parent="portal/portal_b"]
+[node name="pos_pengamat_b" type="Marker3D" parent="portal/portal_b" unique_id=1974240806]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="target_b" type="VisibleOnScreenNotifier3D" parent="portal/portal_b"]
+[node name="target_b" type="VisibleOnScreenNotifier3D" parent="portal/portal_b" unique_id=1522320822]
 aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
 
-[node name="area_b" type="Area3D" parent="portal/portal_b"]
+[node name="area_b" type="Area3D" parent="portal/portal_b" unique_id=210471950]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 collision_mask = 7
 monitorable = false
 
-[node name="wilayah" type="CollisionShape3D" parent="portal/portal_b/area_b"]
+[node name="wilayah" type="CollisionShape3D" parent="portal/portal_b/area_b" unique_id=2019993142]
 shape = SubResource("BoxShape3D_rmo13")
 
-[node name="pos_objek" type="Marker3D" parent="portal/portal_b/area_b"]
+[node name="pos_objek" type="Marker3D" parent="portal/portal_b/area_b" unique_id=2035884146]
 
-[node name="area_render" type="Area3D" parent="portal/portal_b"]
+[node name="area_render" type="Area3D" parent="portal/portal_b" unique_id=1114067644]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="wilayah_render" type="CollisionShape3D" parent="portal/portal_b/area_render"]
+[node name="wilayah_render" type="CollisionShape3D" parent="portal/portal_b/area_render" unique_id=780029554]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 shape = SubResource("BoxShape3D_jm2st")
 
-[node name="node_tampilan" type="Node3D" parent="portal/portal_b"]
+[node name="node_tampilan" type="Node3D" parent="portal/portal_b" unique_id=1751539341]
 process_mode = 4
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="portal_vertikal" type="Node3D" parent="."]
+[node name="portal_vertikal" type="Node3D" parent="." unique_id=1251944650]
 editor_description = "portal b merupakan duplikat dari portal a 
 tetapi terdapat beberapa node portal b
  yang diubah transformasinya yaitu 
@@ -382,23 +369,23 @@ $arah,  $area_b, dan $node_tampilan  yang rotasi Y nya di set menjadi -180"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.971, -1, -4.112)
 script = ExtResource("8_rmo13")
 
-[node name="portal_a" type="MeshInstance3D" parent="portal_vertikal"]
+[node name="portal_a" type="MeshInstance3D" parent="portal_vertikal" unique_id=1136478770]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.48, 0.5, -0.88)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_rmo13")
 surface_material_override/0 = SubResource("ShaderMaterial_nlnuh")
 
-[node name="arah" type="Marker3D" parent="portal_vertikal/portal_a"]
+[node name="arah" type="Marker3D" parent="portal_vertikal/portal_a" unique_id=1080229248]
 
-[node name="translasi_pengamat_a" type="Marker3D" parent="portal_vertikal/portal_a"]
+[node name="translasi_pengamat_a" type="Marker3D" parent="portal_vertikal/portal_a" unique_id=1260768578]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="pengamat_a" type="Camera3D" parent="portal_vertikal/portal_a/translasi_pengamat_a"]
+[node name="pengamat_a" type="Camera3D" parent="portal_vertikal/portal_a/translasi_pengamat_a" unique_id=79757753]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.19209e-07, 0, 1)
 cull_mask = 1029
 
-[node name="tampilan_a" type="SubViewport" parent="portal_vertikal/portal_a"]
+[node name="tampilan_a" type="SubViewport" parent="portal_vertikal/portal_a" unique_id=1830841398]
 handle_input_locally = false
 anisotropic_filtering_level = 0
 gui_snap_controls_to_pixels = false
@@ -409,52 +396,52 @@ positional_shadow_atlas_quad_1 = 0
 positional_shadow_atlas_quad_2 = 0
 positional_shadow_atlas_quad_3 = 0
 
-[node name="pos_pengamat_a" type="Marker3D" parent="portal_vertikal/portal_a"]
+[node name="pos_pengamat_a" type="Marker3D" parent="portal_vertikal/portal_a" unique_id=1828189377]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="target_a" type="VisibleOnScreenNotifier3D" parent="portal_vertikal/portal_a"]
+[node name="target_a" type="VisibleOnScreenNotifier3D" parent="portal_vertikal/portal_a" unique_id=1134032240]
 aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
 
-[node name="area_a" type="Area3D" parent="portal_vertikal/portal_a"]
+[node name="area_a" type="Area3D" parent="portal_vertikal/portal_a" unique_id=299683087]
 collision_mask = 7
 monitorable = false
 
-[node name="wilayah" type="CollisionShape3D" parent="portal_vertikal/portal_a/area_a"]
+[node name="wilayah" type="CollisionShape3D" parent="portal_vertikal/portal_a/area_a" unique_id=162472179]
 shape = SubResource("BoxShape3D_rmo13")
 
-[node name="pos_objek" type="Marker3D" parent="portal_vertikal/portal_a/area_a"]
+[node name="pos_objek" type="Marker3D" parent="portal_vertikal/portal_a/area_a" unique_id=282869046]
 
-[node name="area_render" type="Area3D" parent="portal_vertikal/portal_a"]
+[node name="area_render" type="Area3D" parent="portal_vertikal/portal_a" unique_id=600285197]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="wilayah_render" type="CollisionShape3D" parent="portal_vertikal/portal_a/area_render"]
+[node name="wilayah_render" type="CollisionShape3D" parent="portal_vertikal/portal_a/area_render" unique_id=1497995725]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 shape = SubResource("BoxShape3D_jm2st")
 
-[node name="node_tampilan" type="Node3D" parent="portal_vertikal/portal_a"]
+[node name="node_tampilan" type="Node3D" parent="portal_vertikal/portal_a" unique_id=178924716]
 process_mode = 4
 
-[node name="portal_b" type="MeshInstance3D" parent="portal_vertikal"]
+[node name="portal_b" type="MeshInstance3D" parent="portal_vertikal" unique_id=993887968]
 transform = Transform3D(1, -3.82137e-15, -2.13163e-14, -2.13163e-14, 4.37114e-08, -1, 3.82137e-15, 1, 4.37114e-08, 4.074, 5.1, 2)
 layers = 8
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_jm2st")
 surface_material_override/0 = SubResource("ShaderMaterial_7olyr")
 
-[node name="arah" type="Marker3D" parent="portal_vertikal/portal_b"]
+[node name="arah" type="Marker3D" parent="portal_vertikal/portal_b" unique_id=1799433510]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="translasi_pengamat_b" type="Marker3D" parent="portal_vertikal/portal_b"]
+[node name="translasi_pengamat_b" type="Marker3D" parent="portal_vertikal/portal_b" unique_id=949191747]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="pengamat_b" type="Camera3D" parent="portal_vertikal/portal_b/translasi_pengamat_b"]
+[node name="pengamat_b" type="Camera3D" parent="portal_vertikal/portal_b/translasi_pengamat_b" unique_id=2084904420]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.19209e-07, 0, 1)
 cull_mask = 1029
 size = 0.1
 
-[node name="tampilan_b" type="SubViewport" parent="portal_vertikal/portal_b"]
+[node name="tampilan_b" type="SubViewport" parent="portal_vertikal/portal_b" unique_id=856830658]
 handle_input_locally = false
 anisotropic_filtering_level = 0
 gui_snap_controls_to_pixels = false
@@ -465,55 +452,58 @@ positional_shadow_atlas_quad_1 = 0
 positional_shadow_atlas_quad_2 = 0
 positional_shadow_atlas_quad_3 = 0
 
-[node name="pos_pengamat_b" type="Marker3D" parent="portal_vertikal/portal_b"]
+[node name="pos_pengamat_b" type="Marker3D" parent="portal_vertikal/portal_b" unique_id=1004658147]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="target_b" type="VisibleOnScreenNotifier3D" parent="portal_vertikal/portal_b"]
+[node name="target_b" type="VisibleOnScreenNotifier3D" parent="portal_vertikal/portal_b" unique_id=257312551]
 aabb = AABB(-0.5, -1, 0, 1, 2, 0.05)
 
-[node name="area_b" type="Area3D" parent="portal_vertikal/portal_b"]
+[node name="area_b" type="Area3D" parent="portal_vertikal/portal_b" unique_id=1611387904]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 collision_mask = 7
 monitorable = false
 
-[node name="wilayah" type="CollisionShape3D" parent="portal_vertikal/portal_b/area_b"]
+[node name="wilayah" type="CollisionShape3D" parent="portal_vertikal/portal_b/area_b" unique_id=1319365647]
 shape = SubResource("BoxShape3D_rmo13")
 
-[node name="pos_objek" type="Marker3D" parent="portal_vertikal/portal_b/area_b"]
+[node name="pos_objek" type="Marker3D" parent="portal_vertikal/portal_b/area_b" unique_id=1048986852]
 
-[node name="area_render" type="Area3D" parent="portal_vertikal/portal_b"]
+[node name="area_render" type="Area3D" parent="portal_vertikal/portal_b" unique_id=1751081405]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="wilayah_render" type="CollisionShape3D" parent="portal_vertikal/portal_b/area_render"]
+[node name="wilayah_render" type="CollisionShape3D" parent="portal_vertikal/portal_b/area_render" unique_id=1439675837]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 shape = SubResource("BoxShape3D_jm2st")
 
-[node name="node_tampilan" type="Node3D" parent="portal_vertikal/portal_b"]
+[node name="node_tampilan" type="Node3D" parent="portal_vertikal/portal_b" unique_id=1904755501]
 process_mode = 4
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="stencil_geometry" type="MeshInstance3D" parent="."]
+[node name="stencil_geometry" type="MeshInstance3D" parent="." unique_id=368024728]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.19668, 0, -0.616212)
 material_override = SubResource("ShaderMaterial_04e41")
 mesh = SubResource("BoxMesh_04e41")
 
-[node name="stencil_mask" type="MeshInstance3D" parent="."]
+[node name="stencil_mask" type="MeshInstance3D" parent="." unique_id=193345148]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.55701, 0.487169, -0.824383)
 material_override = SubResource("ShaderMaterial_rui6e")
 mesh = SubResource("BoxMesh_sdm88")
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1866308503]
 use_collision = true
 
-[node name="lantai" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="lantai" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1639164762]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 size = Vector3(100, 0.01, 100)
 material = SubResource("StandardMaterial3D_fu78a")
 
-[node name="portal_a" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="portal_a" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1645607915]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, -0.75, -5)
 operation = 2
 calculate_tangents = false
 size = Vector3(1, 1, 2)
+
+[node name="npc_jamur" parent="." unique_id=870595564 instance=ExtResource("9_rmo13")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -3)

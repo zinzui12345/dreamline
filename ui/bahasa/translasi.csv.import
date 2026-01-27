@@ -15,3 +15,5 @@ dest_files=["res://ui/bahasa/translasi.id.translation", "res://ui/bahasa/transla
 
 compress=true
 delimiter=0
+unescape_keys=false
+unescape_translations=true

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" format=3 uid="uid://ccktdy4sh1voj"]
+
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_cs8c3"]
+
+[resource]
+script = ExtResource("1_cs8c3")
+name = &"npc_ai_interact"
+target_node_class = "npc_ai"
+description = "%deskripsi_npc_interaksi%"
+category = "%siklus_karakter%"
+type = 1
+display_template = "%ketika_karakter_interaksi "
+code_template = "func interaksi():"
