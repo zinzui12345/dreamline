@@ -268,6 +268,13 @@ func _physics_process(_delta: float) -> void:
 			$portal_a/area_a/pos_objek.global_rotation = objek_diteleportasi.global_rotation
 			$portal_b/area_b/pos_objek.rotation = $portal_a/area_a/pos_objek.rotation
 			objek_diteleportasi.global_rotation = $portal_b/area_b/pos_objek.global_rotation
+			# perbarui lokasi navigasi objek target bila objek adalah karakter
+			if objek_diteleportasi is npc_ai and objek_diteleportasi.get("navigasi") != null and objek_diteleportasi._proses_navigasi:
+				# sesuaikan posisi lokal navigasi objek pada portal a
+				$portal_a/area_a/pos_objek.global_position = objek_diteleportasi.navigasi.target_position
+				# sesuaikan posisi navigasi objek berdasarkan posisi lokal pada portal b
+				$portal_b/area_b/pos_objek.position = $portal_a/area_a/pos_objek.position
+				objek_diteleportasi.navigasi_ke($portal_b/area_b/pos_objek.global_position)
 			# hilangkan objek dari portal a
 			_ketika_objek_keluar_dari_portal_a(objek_diteleportasi)
 	
@@ -310,5 +317,12 @@ func _physics_process(_delta: float) -> void:
 			$portal_b/area_b/pos_objek.global_rotation = objek_diteleportasi.global_rotation
 			$portal_a/area_a/pos_objek.rotation = $portal_b/area_b/pos_objek.rotation
 			objek_diteleportasi.global_rotation = $portal_a/area_a/pos_objek.global_rotation
+			# perbarui lokasi navigasi objek target bila objek adalah karakter
+			if objek_diteleportasi is npc_ai and objek_diteleportasi.get("navigasi") != null and objek_diteleportasi._proses_navigasi:
+				# sesuaikan posisi lokal navigasi objek pada portal b
+				$portal_b/area_b/pos_objek.global_position = objek_diteleportasi.navigasi.target_position
+				# sesuaikan posisi navigasi objek berdasarkan posisi lokal pada portal a
+				$portal_a/area_a/pos_objek.position = $portal_b/area_b/pos_objek.position
+				objek_diteleportasi.navigasi_ke($portal_a/area_a/pos_objek.global_position)
 			# hilangkan objek dari portal b
 			_ketika_objek_keluar_dari_portal_b(objek_diteleportasi)

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3 uid="uid://bbony8e2o403p"]
+
+[ext_resource type="Script" uid="uid://c2fr8b2lkth1y" path="res://skrip/editor kode/block canvas/option_data.gd" id="1_aknm6"]
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="2_1wdew"]
+
+[sub_resource type="Resource" id="Resource_27qs0"]
+script = ExtResource("1_aknm6")
+items = ["kiri", "kanan"]
+metadata/_custom_type_script = "uid://c2fr8b2lkth1y"
+
+[resource]
+script = ExtResource("2_1wdew")
+name = &"npc_ai_rotate"
+target_node_class = "npc_ai"
+description = "%deskripsi_putar_karakter%"
+category = "%karakter%"
+type = 2
+display_template = "%putar_karakter_ke {arah: OPTION} %putar_karakter_dengan_sudut% {sudut: INT}"
+code_template = "putar_ke(\"{arah}\", {sudut})"
+defaults = {
+"arah": SubResource("Resource_27qs0"),
+"sudut": 90
+}

@@ -42,6 +42,8 @@ var id_pengubah : int = -1:					# id peer/pemain yang mengubah npc ini
 var posisi_awal : Vector3					# simpan posisi awal npc
 var rotasi_awal : Vector3					# simpan rotasi awal npc
 var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
+var daftar_tugas : Array
+var id_tugas_saat_ini : int = 0
 
 enum grup {
 	pemain,		# + teman, mis: hewan 
@@ -207,28 +209,76 @@ func navigasi_ke(posisi : Vector3, _berlari : bool = false) -> void:
 		_proses_navigasi = true
 
 # gerakkan ke arah tertentu dengan jarak tertentu
-func gerakkan(arah: String, jarak: int) -> void:
-	var vektor_arah = Vector3.ZERO
+func gerakkan(arah: String, jarak: int, id_tugas : int = -1) -> void:
+	if id_tugas < 0:
+		daftar_tugas.append({
+			"fungsi": "gerakkan",
+			"parameter": [arah, jarak],
+			"id_tugas": daftar_tugas.size() + 1
+		})
+		return
 	
-	# Menentukan vektor arah berdasarkan input (mengasumsikan standar Godot -Z adalah depan)
+	var vektor_arah = Vector3.ZERO
+	var basis_model = model.global_transform.basis
+	
 	match arah.to_lower():
 		"maju":
-			vektor_arah = -global_transform.basis.z
+			vektor_arah = basis_model.z
 		"mundur":
-			vektor_arah = global_transform.basis.z
-		"kiri":
-			vektor_arah = -global_transform.basis.x
-		"kanan":
-			vektor_arah = global_transform.basis.x
+			vektor_arah = -basis_model.z
+		#"kiri":
+			#vektor_arah = basis_model.x
+		#"kanan":
+			#vektor_arah = -basis_model.x
 		_:
 			push_warning("[Galat] npc : Arah tidak dikenal: " + arah)
 			return
 
-	# Hitung posisi target: posisi sekarang + (arah * jarak)
-	var posisi_target = global_position + (vektor_arah * jarak)
+	# Ambil nilai toleransi dari NavigationAgent3D
+	# Kita tambahkan jarak input dengan properti target_desired_distance
+	var jarak_total = jarak + navigasi.target_desired_distance
 	
-	# Panggil metode navigasi yang sudah kamu buat
+	# Hitung posisi target dengan jarak yang sudah dikompensasi
+	var posisi_target = global_position + (vektor_arah * jarak_total)
+	
+	# Eksekusi navigasi
 	navigasi_ke(posisi_target)
+# putar ke arah tertentu dengan sudut tertentu
+func putar_ke(arah: String, sudut: int = 90, id_tugas : int = -1) -> void:
+	if id_tugas < 0:
+		daftar_tugas.append({
+			"fungsi": "putar_ke",
+			"parameter": [arah, sudut],
+			"id_tugas": daftar_tugas.size() + 1
+		})
+		return
+	
+	var perubahan_sudut: float = 0.0
+	
+	# Di Godot, rotasi Y positif berputar ke KIRI (berlawanan jarum jam)
+	match arah.to_lower():
+		"kiri":
+			perubahan_sudut = deg_to_rad(sudut)
+		"kanan":
+			perubahan_sudut = deg_to_rad(-sudut)
+		_:
+			push_warning("[Galat] npc : Arah putar tidak dikenal: " + arah)
+			return
+
+	# Hitung target rotasi akhir
+	var rotasi_target = model.rotation.y + perubahan_sudut
+	
+	# Buat Tween untuk transisi yang halus
+	var tween = create_tween()
+	
+	# Menggerakkan properti rotation.y milik model
+	# Durasi disetel 0.5 detik, kamu bisa menyesuaikannya
+	tween.tween_property(model, "rotation:y", rotasi_target, 0.5)\
+		.set_trans(Tween.TRANS_QUART)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func(): 
+		tugas_selesai()
+	)
 
 # arahkan model ke posisi tertentu
 func lihat_ke(posisi : Vector3):
@@ -236,6 +286,21 @@ func lihat_ke(posisi : Vector3):
 		model.look_at(posisi, Vector3.UP, true)
 		model.rotation.x = 0
 		arah_pandangan = model.rotation.y
+
+# lakukan tugas pertama pada daftar
+func lakukan_tugas() -> void:
+	if id_tugas_saat_ini < 1:
+		id_tugas_saat_ini = daftar_tugas[0].id_tugas
+		var nama_fungsi : String = daftar_tugas[0].fungsi
+		var parameter : Array = daftar_tugas[0].parameter
+		parameter.append(daftar_tugas[0].id_tugas)
+		if has_method(nama_fungsi):
+			callv(nama_fungsi, parameter)
+# hapus tugas pertama saat selesai dikerjakan
+func tugas_selesai():
+	if daftar_tugas.size() > 0 and id_tugas_saat_ini > 0:
+		daftar_tugas.erase(daftar_tugas[0])
+		id_tugas_saat_ini = 0
 
 # putar animasi tertentu
 func putar_animasi(jalur_node_animasi : String, nama_animasi : String, putar : bool) -> void:
@@ -267,7 +332,6 @@ func _process(delta : float) -> void:
 		set_process(false)
 		set_physics_process(false)
 		#Panku.notify("disini bukan penyinkron, membatalkan sinkronisasi")
-	
 	else:
 		# buat variabel pembanding
 		var perubahan_kondisi = []
@@ -363,6 +427,10 @@ func _process(delta : float) -> void:
 		if timer_proses >= 0.2:
 			proses(delta)
 			timer_proses = 0.0
+	
+	# lakukan tugas pada daftar
+	if daftar_tugas.size() > 0 and id_tugas_saat_ini < 1:
+		lakukan_tugas()
 
 # proses navigasi
 func _physics_process(delta : float) -> void:
@@ -389,6 +457,7 @@ func _ketika_berjalan(arah : Vector3) -> void:
 func _ketika_navigasi_selesai() -> void:
 	if _proses_navigasi:
 		_proses_navigasi = false
+	tugas_selesai()
 
 # ketika mati
 func mati() -> void:

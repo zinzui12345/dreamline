@@ -120,6 +120,8 @@ ARAH,Arah,Direction
 # input,,
 Maju,maju,forward
 Mundur,mundur,backward
+Kiri,kiri,left
+Kanan,kanan,right
 INPUTSPASI,spasi,space
 INPUTHAPUS,hapus,delete
 %inputnama%,ketik namamu disini...,type your name here...
@@ -300,6 +302,9 @@ damage_serangan,damage_serangan,attack_damage
 %gerakkan_karakter_ke ,Bergerak ,Move 
  %gerakkan_karakter_dengan_jarak% , dengan jarak , with distance 
 %deskripsi_gerakkan_karakter%,Mengarahkan karakter untuk berpindah ke arah tertentu,Navigate character to move into defined direction
+%putar_karakter_ke ,Putar ke ,Rotate to 
+ %putar_karakter_dengan_sudut% , dengan sudut , by angle 
+%deskripsi_putar_karakter%,Memutar karakter ke arah tertentu berdasarkan sudut tertentu,Rotate character into defined direction by defined angle
 %karakter_menavigasi,sedang menavigasi,is navigating
 %deskripsi_karakter_menavigasi%,Nilai kondisi bila karakter bergerak ke posisi tertentu (menavigasi),Character navigation state
 %arahkan_karakter_ke ,Lihat ke ,Look at 
