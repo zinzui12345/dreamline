@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 16/10/25 Early Access"
+const versi = "Dreamline v0.4.4 28/01/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1465,7 +1465,7 @@ func alamat_ip() -> String:
 func _ketika_mulai_mengontrol_arah_pandangan() -> void: _touchpad_disentuh = true
 func _ketika_mengontrol_arah_pandangan(arah : Vector2, _touchpad : Node) -> void:
 	if is_instance_valid(karakter) and !jeda: # ketika dalam permainan
-		if _touchpad_disentuh:
+		if _touchpad_disentuh and $editor_kode.visible == false:
 			if _arah_sentuhan_touchpad.x == 0:
 				karakter._input_arah_pandangan.x = 0
 				_arah_gestur_tampilan_objek.x = 0

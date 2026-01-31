@@ -273,7 +273,38 @@ func putar_ke(arah: String, sudut: int = 90, id_tugas : int = -1) -> void:
 	
 	# Menggerakkan properti rotation.y milik model
 	# Durasi disetel 0.5 detik, kamu bisa menyesuaikannya
-	tween.tween_property(model, "rotation:y", rotasi_target, 0.5)\
+	tween.tween_property(self, "arah_pandangan", rotasi_target, 0.5)\
+		.set_trans(Tween.TRANS_QUART)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func(): 
+		tugas_selesai()
+	)
+# arahkan ke arah global tertentu
+func arahkan_ke(arah : String, id_tugas : int = -1) -> void:
+	if id_tugas < 0:
+		daftar_tugas.append({
+			"fungsi": "arahkan_ke",
+			"parameter": [arah],
+			"id_tugas": daftar_tugas.size() + 1
+		})
+		return
+		
+	var rotasi_target : int = 0
+	match arah.to_lower():
+		"utara":	rotasi_target = 0
+		"selatan":	rotasi_target = 180
+		"barat":	rotasi_target = -90
+		"timur":	rotasi_target = 90
+		_:
+			push_warning("[Galat] npc : Arah tidak dikenal: " + arah)
+			return
+	
+	var target_radian = deg_to_rad(rotasi_target)
+	var selisih = angle_difference(model.rotation.y, target_radian)
+	var target_akhir_smooth = model.rotation.y + selisih
+	var tween = create_tween()
+	
+	tween.tween_property(self, "arah_pandangan", target_akhir_smooth, 0.5)\
 		.set_trans(Tween.TRANS_QUART)\
 		.set_ease(Tween.EASE_OUT)
 	tween.tween_callback(func(): 
@@ -335,7 +366,7 @@ func _process(delta : float) -> void:
 	else:
 		# buat variabel pembanding
 		var perubahan_kondisi = []
-		var sinkron_kondisi : Array = get("sinkron_kondisi")
+		var sinkronkan_kondisi : Array = get("sinkron_kondisi")
 		
 		# cek apakah kondisi sebelumnya telah tersimpan
 		if cek_kondisi.get("posisi") == null:	cek_kondisi["posisi"] = Vector3.ZERO
@@ -390,12 +421,12 @@ func _process(delta : float) -> void:
 			if cek_kondisi["rotasi"] != rotation:	perubahan_kondisi.append(["rotation", rotation])
 		
 		# cek kondisi properti kustom
-		for p in sinkron_kondisi.size():
+		for p in sinkronkan_kondisi.size():
 			# cek apakah kondisi sebelumnya telah tersimpan
-			if cek_kondisi.get(sinkron_kondisi[p][0]) == null:	cek_kondisi[sinkron_kondisi[p][0]] = sinkron_kondisi[p][1]
+			if cek_kondisi.get(sinkronkan_kondisi[p][0]) == null:	cek_kondisi[sinkronkan_kondisi[p][0]] = sinkronkan_kondisi[p][1]
 			
 			# cek apakah kondisi berubah
-			if cek_kondisi[sinkron_kondisi[p][0]] != get(sinkron_kondisi[p][0]):	perubahan_kondisi.append([sinkron_kondisi[p][0], get(sinkron_kondisi[p][0])])
+			if cek_kondisi[sinkronkan_kondisi[p][0]] != get(sinkronkan_kondisi[p][0]):	perubahan_kondisi.append([sinkronkan_kondisi[p][0], get(sinkronkan_kondisi[p][0])])
 		
 		# jika kondisi berubah, maka sinkronkan perubahan ke server
 		if perubahan_kondisi.size() > 0:
@@ -419,8 +450,8 @@ func _process(delta : float) -> void:
 			cek_kondisi["kode"] = $kode_ubahan.block_script.generated_script
 		
 		# simpan perubahan kondisi properti kustom untuk di-cek lagi
-		for p in sinkron_kondisi.size():
-			cek_kondisi[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
+		for p in sinkronkan_kondisi.size():
+			cek_kondisi[sinkronkan_kondisi[p][0]] = get(sinkronkan_kondisi[p][0])
 		
 		# panggil fungsi pemroses npc setiap 200 milidetik
 		timer_proses += delta
@@ -452,6 +483,9 @@ func _physics_process(delta : float) -> void:
 func _ketika_berjalan(arah : Vector3) -> void:
 	velocity = arah
 	move_and_slide()
+	if daftar_tugas.size() > 0 and id_tugas_saat_ini > 0 and daftar_tugas[0].fungsi == "gerakkan" and daftar_tugas[0].parameter[0] == "mundur": return
+	if !_proses_navigasi: return
+	lihat_ke(navigasi.get_next_path_position())
  
 # ketika sampai di posisi tujuan
 func _ketika_navigasi_selesai() -> void:

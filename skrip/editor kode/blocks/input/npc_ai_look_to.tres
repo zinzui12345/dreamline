@@ -1,0 +1,22 @@
+[gd_resource type="Resource" format=3 uid="uid://crvl5rbpvkv11"]
+
+[ext_resource type="Script" uid="uid://c2fr8b2lkth1y" path="res://skrip/editor kode/block canvas/option_data.gd" id="1_lxyac"]
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="2_2dy8h"]
+
+[sub_resource type="Resource" id="Resource_27qs0"]
+script = ExtResource("1_lxyac")
+items = ["utara", "selatan", "barat", "timur"]
+metadata/_custom_type_script = "uid://c2fr8b2lkth1y"
+
+[resource]
+script = ExtResource("2_2dy8h")
+name = &"npc_ai_look_to"
+target_node_class = "npc_ai"
+description = "%deskripsi_arahkan_arah_karakter%"
+category = "%karakter%"
+type = 2
+display_template = "%arahkan_karakter_ke {arah: OPTION}"
+code_template = "arahkan_ke(\"{arah}\")"
+defaults = {
+"arah": SubResource("Resource_27qs0")
+}

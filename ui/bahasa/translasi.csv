@@ -309,6 +309,7 @@ damage_serangan,damage_serangan,attack_damage
 %deskripsi_karakter_menavigasi%,Nilai kondisi bila karakter bergerak ke posisi tertentu (menavigasi),Character navigation state
 %arahkan_karakter_ke ,Lihat ke ,Look at 
 %deskripsi_arahkan_karakter%,Mengatur arah karakter ke posisi tertentu,Make character look to a defined position
+%deskripsi_arahkan_arah_karakter%,Mengatur hadapan karakter ke arah tertentu,Make character oriented to a defined direction
 %ketika_karakter_diserang ,Ketika Diserang ,On Attacked by 
 %ketika_karakter_interaksi ,Ketika Interaksi ,On Interact 
  %karakter_diserang_dengan_damage% , sebanyak , with damage 
