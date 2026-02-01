@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 28/01/26 Early Access"
+const versi = "Dreamline v0.4.4 01/02/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -1977,7 +1977,12 @@ func _pilih_tab_rotasi_objek() -> void:
 	$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
 	$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
-	if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
+	if edit_objek is npc_ai:
+		$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.min_value = -359
+		$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.max_value = 359
+		$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.arah_pandangan
+		$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+	elif edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
 		await get_tree().create_timer(0.05).timeout
 		$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.min_value = -359
 		$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.max_value = 359
@@ -2079,13 +2084,16 @@ func _ketika_translasi_y_objek_diubah(nilai : float) -> void:
 				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
 				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_rotasi.button_pressed:
-				edit_objek.set_indexed("rotation_degrees:y", nilai)
-				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
-				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
-				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.rotation_degrees.x
-				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.rotation_degrees.z
-				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
-				$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
+				if edit_objek is npc_ai:
+					edit_objek.set_indexed("arah_pandangan", nilai)
+				else:
+					edit_objek.set_indexed("rotation_degrees:y", nilai)
+					$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+					$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+					$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.rotation_degrees.x
+					$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.rotation_degrees.z
+					$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+					$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
 			elif $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_skala.button_pressed:
 				edit_objek.set_indexed("skala:y", nilai)
 				$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
