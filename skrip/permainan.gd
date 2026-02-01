@@ -1184,8 +1184,8 @@ func _edit_objek(jalur : String) -> void:
 	$kontrol_sentuh/jongkok.visible = false
 	$kontrol_sentuh/daftar_pemain.visible = false
 	$kontrol_sentuh/mode_pandangan.visible = false
-	$kontrol_sentuh/kontrol_gerakan.visible = false
-	$kontrol_sentuh/kontrol_pandangan.visible = false
+	$kontrol_sentuh/kontrol_gerakan.visible = false # FIXME : hapus?
+	$kontrol_sentuh/kontrol_pandangan.visible = false # FIXME : hapus?
 	$hud/daftar_properti_objek/animasi.play("tampilkan")
 	$hud/daftar_properti_objek/panel/kontainer/jalur_objek/jalur.text = jalur
 	$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
@@ -1291,8 +1291,8 @@ func _berhenti_mengedit_objek() -> void:
 	$kontrol_sentuh/jongkok.visible = true
 	$kontrol_sentuh/daftar_pemain.visible = true
 	$kontrol_sentuh/mode_pandangan.visible = true
-	$kontrol_sentuh/kontrol_gerakan.visible = true
-	$kontrol_sentuh/kontrol_pandangan.visible = true
+	$kontrol_sentuh/kontrol_gerakan.visible = true # FIXME : hapus?
+	$kontrol_sentuh/kontrol_pandangan.visible = true # FIXME : hapus?
 	# 06/10/24 :: nonaktifkan proses sinkronisasi objek pada client
 	if edit_objek is objek: edit_objek.set_process(false)
 	elif edit_objek is entitas:
@@ -2164,6 +2164,23 @@ func _ketika_mengubah_jarak_pandangan_objek(jarak : float) -> void:
 	if edit_objek != null:
 		if !Input.is_action_pressed("perdekat_pandangan") and !Input.is_action_pressed("perjauh_pandangan"):
 			$hud/tampilan_objek/viewport_objek/pengamat.get_node("%pandangan").position.z = jarak
+func _ketika_mengubah_posisi_objek(arah_berpindah : Vector3, jarak : int, delta : float = 1) -> void:
+	if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
+		var pergerakan = arah_berpindah * (jarak * delta)
+		edit_objek.global_position += pergerakan
+		if $hud/daftar_properti_objek/panel/kontainer/tab_transformasi/pilih_tab_posisi.button_pressed:
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = false
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = false
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = false
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.value = edit_objek.global_transform.origin.x
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.value = edit_objek.global_transform.origin.y
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.value = edit_objek.global_transform.origin.z
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_x/translasi_x.editable = true
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_y/translasi_y.editable = true
+			$hud/daftar_properti_objek/panel/kontainer/transformasi_z/translasi_z.editable = true
+func _ketika_berhenti_mengubah_posisi_objek() -> void:
+	if edit_objek != null and (edit_objek.get("abaikan_transformasi") == null or edit_objek.get("abaikan_transformasi") == false):
+		edit_objek.global_transform.origin = edit_objek.global_transform.origin.snappedf(0.1)
 func _tampilkan_popup_informasi(teks_informasi : String, fokus_setelah : Control) -> void:
 	# 16/06/24 :: ketika dalam permainan
 	if is_instance_valid(karakter) and !jeda: _jeda()

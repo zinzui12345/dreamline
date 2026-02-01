@@ -5,7 +5,8 @@
 [sub_resource type="GDScript" id="GDScript_hcnrk"]
 script/source = "extends Node3D
 
-var fungsi_zoom = false
+var fungsi_zoom : bool = false
+var menggerakkan_objek : bool = false
 
 func _ready():
 	get_node(\"%pandangan\").far = Konfigurasi.jarak_render
@@ -29,6 +30,17 @@ func _process(delta):
 			if Input.is_action_just_pressed(\"aksi2\") and not server.permainan.get_node(\"blok_kode/panel_kode/panel_edit\").visible:
 				var jalur_node = server.permainan.edit_objek.name
 				server.edit_objek(jalur_node, false)
+			var input_dir = Vector3.ZERO
+			if Input.is_action_pressed(\"maju\"):		input_dir -= %pandangan.global_transform.basis.z; menggerakkan_objek = true
+			if Input.is_action_pressed(\"mundur\"):	input_dir += %pandangan.global_transform.basis.z; menggerakkan_objek = true
+			if Input.is_action_pressed(\"kiri\"):		input_dir -= %pandangan.global_transform.basis.x; menggerakkan_objek = true
+			if Input.is_action_pressed(\"kanan\"):	input_dir += %pandangan.global_transform.basis.x; menggerakkan_objek = true
+			if input_dir.length() > 0:
+				input_dir.y = 0
+				server.permainan._ketika_mengubah_posisi_objek(input_dir.normalized(), 1, delta)
+			elif menggerakkan_objek:
+				server.permainan._ketika_berhenti_mengubah_posisi_objek()
+				menggerakkan_objek = false
 "
 
 [node name="pengamat" type="Node3D" unique_id=342526980]
