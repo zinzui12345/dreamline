@@ -53,21 +53,22 @@ func calculate_node_sizes():
 	squaredHalfSizeLength = halfSize.x * halfSize.y
 	
 func _input(event):
-	if visible and isDynamicallyShowing:		#untuk mencegah deteksi ketika analog disable
-		var incomingPointer = extract_pointer_index(event)
-		if incomingPointer == INACTIVE_IDX:
-			#Input was not a touch
-			return
-		
-		if check_change_active_pointer(event):
-			if (currentPointerIDX != incomingPointer) and event.is_pressed():
-				currentPointerIDX = incomingPointer;
-				show_at_position(Vector2(event.position.x, event.position.y))
+	if get_parent().visible:
+		if visible and isDynamicallyShowing:		#untuk mencegah deteksi ketika analog disable
+			var incomingPointer = extract_pointer_index(event)
+			if incomingPointer == INACTIVE_IDX:
+				#Input was not a touch
+				return
+			
+			if check_change_active_pointer(event):
+				if (currentPointerIDX != incomingPointer) and event.is_pressed():
+					currentPointerIDX = incomingPointer;
+					show_at_position(Vector2(event.position.x, event.position.y))
 
-		var theSamePointer = currentPointerIDX == incomingPointer
-		if is_active() and theSamePointer:
-			#Touch is the same as the current touch
-			process_input(event)
+			var theSamePointer = currentPointerIDX == incomingPointer
+			if is_active() and theSamePointer:
+				#Touch is the same as the current touch
+				process_input(event)
 
 func check_change_active_pointer(event):
 	var mouseButton = event is InputEventMouseButton

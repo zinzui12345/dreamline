@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bwdt16766j55u"]
+[gd_scene format=3 uid="uid://bwdt16766j55u"]
 
 [sub_resource type="GDScript" id="GDScript_3x2ga"]
 script/source = "extends HSplitContainer
@@ -10,20 +10,26 @@ func atur_nilai(id):
 	$TextEdit.text = id
 "
 
-[node name="id" type="HSplitContainer"]
+[node name="id" type="HSplitContainer" unique_id=1768700116]
 custom_minimum_size = Vector2(0, 40)
+split_offsets = PackedInt32Array(25, 0)
+split_offset = 25
 script = SubResource("GDScript_3x2ga")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=777315293]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "  ID"
 
-[node name="TextEdit" type="LineEdit" parent="."]
+[node name="TextEdit" type="LineEdit" parent="." unique_id=1142563850]
 layout_mode = 2
 size_flags_horizontal = 3
 editable = false
 context_menu_enabled = false
 emoji_menu_enabled = false
-virtual_keyboard_enabled = false
 shortcut_keys_enabled = false
 middle_mouse_paste_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="jarak_batas" type="Control" parent="." unique_id=351642252]
+layout_mode = 2

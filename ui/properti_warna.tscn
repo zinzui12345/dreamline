@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://c6w1ecsxnrmni"]
+[gd_scene format=3 uid="uid://c6w1ecsxnrmni"]
 
 [sub_resource type="GDScript" id="GDScript_3x2ga"]
 script/source = "extends HSplitContainer
@@ -13,13 +13,19 @@ func _ubah_nilai(warna):
 	if visible: server.permainan.edit_objek.set(name, warna)
 "
 
-[node name="warna" type="HSplitContainer"]
+[node name="warna" type="HSplitContainer" unique_id=1182495718]
 custom_minimum_size = Vector2(0, 40)
+split_offsets = PackedInt32Array(0, 0)
 script = SubResource("GDScript_3x2ga")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=973114999]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "  warna"
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="." unique_id=851110912]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="jarak_batas" type="Control" parent="." unique_id=1202965238]
 layout_mode = 2

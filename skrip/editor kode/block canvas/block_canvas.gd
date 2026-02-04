@@ -165,6 +165,8 @@ func load_tree(parent: Node, node: BlockSerialization):
 
 	scene.position = node.position
 	scene.resource = node
+	
+	if !is_instance_valid(parent): return
 	parent.add_child(scene)
 
 	var scene_block: Block = scene as Block
