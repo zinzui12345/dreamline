@@ -14,6 +14,8 @@ KELUAR,Keluar,Exit
 %batal%,Batal,Cancel
 %buat,Buat,Create
 %sambungkan,  Sambungkan,  Connect
+%properti, Properti, Properties
+%kode, Kode, Code
 %mulai, Mulai, Start
 %simpan,  Simpan,  Save
 %tutup,Tutup,Close
@@ -247,7 +249,11 @@ nama_metode,nama metode,method name
 %tunggu_node_siap,Tunggu hingga node dimulai,Await node ready
 %posisi_objek,Posisi Objek,Object Position
 %deskripsi_posisi_objek%,Posisi global objek pada dunia,Object global position in world space
-%dapatkan_posisi_objek ,dapatkan posisi objek ,get object position 
+%posisi_awal_entitas,Posisi Awal Entitas,Entity Default Position
+%posisi_awal_npc_ai,Posisi Awal Karakter,Character Default Position
+%deskripsi_posisi_awal_entitas%,Posisi asli entitas pada dunia,Entity default global position
+%deskripsi_posisi_awal_npc_ai%,Posisi asli karakter pada dunia,Character default global position
+%dapatkan_posisi_objek ,Dapatkan posisi objek ,Get object position 
 %deskripsi_dapatkan_posisi_objek%,Dapatkan nilai posisi dari objek tertentu,Get position value from an object
 %pindahkan_objek ,Pindahkan Objek ,Move Object 
 %deskripsi_pindahkan_objek%,Memindahkan objek sejauh [i]arah[/i] tertentu,Move object by [i]direction[/i]

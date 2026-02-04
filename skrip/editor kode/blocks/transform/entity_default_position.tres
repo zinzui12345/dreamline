@@ -1,0 +1,14 @@
+[gd_resource type="Resource" format=3 uid="uid://bvae5kjwycf6p"]
+
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_4ycka"]
+
+[resource]
+script = ExtResource("1_4ycka")
+name = &"entity_default_position"
+target_node_class = "entitas"
+description = "%deskripsi_posisi_awal_entitas%"
+category = "%transformasi_posisi%"
+type = 3
+variant_type = 9
+display_template = "%posisi_awal_entitas"
+code_template = "posisi_awal"

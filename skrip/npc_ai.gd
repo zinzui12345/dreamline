@@ -40,7 +40,7 @@ var id_pengubah : int = -1:					# id peer/pemain yang mengubah npc ini
 				#Panku.notify("disini bukan penyinkron")
 		#Panku.notify("ini kecetak? gak???")
 var posisi_awal : Vector3					# simpan posisi awal npc
-var rotasi_awal : Vector3					# simpan rotasi awal npc
+var arah_pandangan_awal : float				# simpan rotasi awal npc
 var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 var daftar_tugas : Array
 var id_tugas_saat_ini : int = 0
@@ -168,7 +168,7 @@ func _setup() -> void:
 			
 			server._tambahkan_karakter(
 				_jalur_instance,
-				global_transform.origin,
+				global_position,
 				rotation,
 				_sp_properti
 			)
@@ -181,6 +181,8 @@ func _setup() -> void:
 					node_animasi.append(["model/" + node.name, "AnimationPlayer"])
 				elif node is AnimationTree:
 					node_animasi.append(["model/" + node.name, "AnimationTree"])
+		posisi_awal = global_position
+		arah_pandangan_awal = arah_pandangan
 		set("arah_pandangan", arah_pandangan)
 		navigasi = $navigasi
 		navigasi.avoidance_enabled = true
@@ -411,9 +413,9 @@ func _process(delta : float) -> void:
 		# reset kondisi jika npc jatuh ke void
 		if global_position.y < server.permainan.batas_bawah:
 			perubahan_kondisi.append(["position", posisi_awal])
-			perubahan_kondisi.append(["rotation", rotasi_awal])
+			perubahan_kondisi.append(["arah_pandangan", arah_pandangan_awal])
 			global_transform.origin = posisi_awal
-			rotation		 		= rotasi_awal
+			arah_pandangan		 	= arah_pandangan_awal
 		
 		# cek apakah kondisi berubah
 		else:

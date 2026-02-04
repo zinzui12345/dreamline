@@ -1,0 +1,14 @@
+[gd_resource type="Resource" format=3 uid="uid://bm06q04tp3f6s"]
+
+[ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_gb86r"]
+
+[resource]
+script = ExtResource("1_gb86r")
+name = &"npc_ai_default_position"
+target_node_class = "npc_ai"
+description = "%deskripsi_posisi_awal_npc_ai%"
+category = "%transformasi_posisi%"
+type = 3
+variant_type = 9
+display_template = "%posisi_awal_npc_ai"
+code_template = "posisi_awal"

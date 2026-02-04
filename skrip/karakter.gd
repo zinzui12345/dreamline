@@ -654,6 +654,15 @@ func _physics_process(delta : float) -> void:
 				PerenderEfekGarisCahaya.atur_proses_render(true)
 				objek_target.efek_cahaya.glow_border_effect = true
 				server.permainan.atur_warna_kursor(objek_target.efek_cahaya.glow_color)
+		elif objek_target.has_method("interaksi"):
+			server.permainan.set("tombol_aksi_1", "gunakan_objek") # TODO : buat tombol dan teksnya
+			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = true
+			server.permainan.bantuan_aksi_1 = true
+			if objek_target.get("efek_cahaya") != null:
+				%pandangan.aktifkan_efek()
+				PerenderEfekGarisCahaya.atur_proses_render(true)
+				objek_target.efek_cahaya.glow_border_effect = true
+				server.permainan.atur_warna_kursor(objek_target.efek_cahaya.glow_color)
 		else:
 			server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 			server.permainan.bantuan_aksi_1 = false
