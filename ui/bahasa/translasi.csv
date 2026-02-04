@@ -128,7 +128,7 @@ INPUTSPASI,spasi,space
 INPUTHAPUS,hapus,delete
 %inputnama%,ketik namamu disini...,type your name here...
 %inputperintah%,Masukkan perintah disini...,Input expression here...
-%inputperintahpemain,Kamu, You
+%inputperintahpemain,Kamu,You
 ,,
 # aksi,,
 %aksi,Aksi,Action
@@ -141,6 +141,7 @@ INPUTHAPUS,hapus,delete
 %lempar,Lempar,Throw
 %tendang,Tendang,Kick
 %jatuhkan,Jatuhkan,Drop
+%interaksi,Interaksi,Interact
 %bantuan,Bantuan,Help
 %kemudikan,Naiki,Drive
 %kendarai,Naiki,Ride

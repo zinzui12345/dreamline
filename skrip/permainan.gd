@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 02/02/26 Early Access"
+const versi = "Dreamline v0.4.4 04/02/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -115,6 +115,7 @@ var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 			"lempar_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%lempar"
 			"tendang_sesuatu":		$hud/bantuan_input/aksi1/teks.text = "%tendang"
 			"klakson_kendaraan":	$hud/bantuan_input/aksi1/teks.text = "%klakson"
+			"interaksi_karakter":	$hud/bantuan_input/aksi1/teks.text = "%interaksi"
 		if mode_vr and pengamat_vr != null:
 			pengamat_vr.teks_bantuan_aksi_1 = $hud/bantuan_input/aksi1/teks.text
 var tombol_aksi_2 : StringName = "angkat_sesuatu" :
