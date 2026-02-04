@@ -245,6 +245,16 @@ func gerakkan(arah: String, jarak: int, id_tugas : int = -1) -> void:
 	
 	# Eksekusi navigasi
 	navigasi_ke(posisi_target)
+# gerakkan ke posisi tertentu
+func gerakkan_ke(posisi_target: Vector3, berlari : bool = false, id_tugas : int = -1) -> void:
+	if id_tugas < 0:
+		daftar_tugas.append({
+			"fungsi": "gerakkan_ke",
+			"parameter": [posisi_target, berlari],
+			"id_tugas": daftar_tugas.size() + 1
+		})
+		return
+	navigasi_ke(posisi_target, berlari)
 # putar ke arah tertentu dengan sudut tertentu
 func putar_ke(arah: String, sudut: int = 90, id_tugas : int = -1) -> void:
 	if id_tugas < 0:

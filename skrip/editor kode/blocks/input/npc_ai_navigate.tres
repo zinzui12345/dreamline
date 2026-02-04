@@ -10,7 +10,7 @@ description = "%deskripsi_navigasi_karakter%"
 category = "%karakter%"
 type = 2
 display_template = "%navigasi_karakter_ke {posisi: VECTOR3} %navigasi_karakter_sambil_berlari% {berlari: BOOL}"
-code_template = "navigasi_ke({posisi}, {berlari})
+code_template = "gerakkan_ke({posisi}, {berlari})
 
 "
 defaults = {
