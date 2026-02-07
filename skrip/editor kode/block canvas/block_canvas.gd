@@ -144,6 +144,8 @@ func block_script_selected(block_script: BlockScriptSerialization, node : Node =
 
 func _load_block_script(block_script: BlockScriptSerialization):
 	for tree in block_script.block_trees:
+		if !is_instance_valid(_window):
+			await _window.ready
 		load_tree(_window, tree)
 
 
@@ -166,13 +168,17 @@ func load_tree(parent: Node, node: BlockSerialization):
 	scene.position = node.position
 	scene.resource = node
 	
-	if !is_instance_valid(parent): return
+	#if !is_instance_valid(parent):
+		#await parent.ready
+		#return
 	parent.add_child(scene)
 
 	var scene_block: Block = scene as Block
 	reconnect_block.emit(scene_block)
 
 	for c in node.path_child_pairs:
+		if scene.get_node_or_null(c[0]) == null:
+			await scene.ready
 		load_tree(scene.get_node(c[0]), c[1])
 
 

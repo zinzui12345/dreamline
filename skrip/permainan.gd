@@ -2566,6 +2566,7 @@ func tutup_editor_kode() -> void:
 		$hud/daftar_atribut_objek/Panel/kontainer/kode_objek.text = edit_objek.get_node("kode_ubahan").block_script.generated_script
 	_ketika_menghentikan_audio()
 	$editor_kode/blok_kode.switch_block_code_node(null)
+	$editor_kode/blok_kode._block_canvas.clear_canvas()
 	# kalau bukan dalam permainan, tampilkan kembali menu utama
 	if !is_instance_valid(karakter):
 		$menu_utama/animasi.play("perluas")
