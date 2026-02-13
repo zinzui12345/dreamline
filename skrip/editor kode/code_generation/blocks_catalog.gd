@@ -15,6 +15,7 @@ const _FALLBACK_SET_FOR_TYPE = {
 	TYPE_COLOR: Color.DARK_ORANGE,
 	TYPE_ARRAY: [],
 	TYPE_STRING: "",
+	TYPE_OBJECT: null
 }
 
 const _FALLBACK_CHANGE_FOR_TYPE = {
@@ -107,7 +108,7 @@ static func _add_property_definitions(_class_name: String, property_list: Array[
 		if not property.name in property_settings:
 			continue
 		var block_settings = property_settings[property.name]
-		var type_string: String = Types.VARIANT_TYPE_TO_STRING[property.type]
+		var type_as_string: String = Types.VARIANT_TYPE_TO_STRING[property.type]
 
 		if not _class_name in _by_class_name:
 			_by_class_name[_class_name] = {}
@@ -122,7 +123,7 @@ static func _add_property_definitions(_class_name: String, property_list: Array[
 				block_settings.category,
 				Types.BlockType.STATEMENT,
 				TYPE_NIL,
-				str(TranslationServer.translate("%atur_properti")) % [property.name.capitalize(), type_string],
+				str(TranslationServer.translate("%atur_properti")) % [property.name.capitalize(), type_as_string],
 				"%s = {nilai}" % property.name,
 				{"nilai": block_settings.get("default_set", _FALLBACK_SET_FOR_TYPE[property.type])},
 			)
@@ -141,7 +142,7 @@ static func _add_property_definitions(_class_name: String, property_list: Array[
 					block_settings.category,
 					Types.BlockType.STATEMENT,
 					TYPE_NIL,
-					str(TranslationServer.translate("%ubah_properti")) % [property.name.capitalize(), type_string],
+					str(TranslationServer.translate("%ubah_properti")) % [property.name.capitalize(), type_as_string],
 					"%s += {nilai}" % property.name,
 					{"nilai": block_settings.get("default_change", _FALLBACK_CHANGE_FOR_TYPE[property.type])},
 				)
@@ -224,6 +225,7 @@ static func setup():
 	if _catalog:
 		return
 
+	Panku.notify("terus ini[2]")
 	_catalog = {}
 	_setup_definitions_from_files()
 	_setup_properties_for_class()

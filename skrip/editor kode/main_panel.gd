@@ -163,10 +163,15 @@ func switch_block_code_node(block_code_node: BlockCode):
 	_delete_node_button.disabled = _current_block_code_node == null
 	if _current_block_code_node != null:
 		_try_migration()
+	Panku.notify("ini dulu [1]")
 	if block_code_node != null:
 		_picker.block_script_selected(block_script, block_code_node.get_parent())
 	else:
 		_picker.block_script_selected(block_script)
+		_picker.BlocksCatalog._catalog = {}
+	#await _picker.class_loaded
+	Panku.notify("kemudian ini [3]")
+	# hmm, bukan _picker, mungkin proses memuat kelas pada script, tapi anehnya tetap terload setelah switch ke null?
 	_title_bar.block_code_selected(block_code_node)
 	_title_bar.block_script_selected(block_script)
 	_block_canvas.block_script_selected(block_script, block_code_node)

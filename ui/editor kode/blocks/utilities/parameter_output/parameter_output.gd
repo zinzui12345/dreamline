@@ -23,6 +23,10 @@ func _update_parameter_block():
 		return
 
 	var parameter_block = preload("res://ui/editor kode/blocks/parameter_block/parameter_block.tscn").instantiate()
+	if parameter_block == null:
+		# FIXME: This sometimes occurs when a script is loaded but it is unclear why
+		push_error("Unable to create output block %s." % block.definition.name)
+		return
 	for key in block_params:
 		parameter_block[key] = block_params[key]
 	parameter_block.spawned_by = self

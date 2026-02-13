@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://vu5fwhn7n7aq"]
+[gd_resource type="Resource" format=3 uid="uid://vu5fwhn7n7aq"]
 
 [ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_mab8n"]
 
@@ -11,3 +11,6 @@ type = 3
 variant_type = 9
 display_template = "%dapatkan_posisi_objek {cekobjek: OBJECT}"
 code_template = "server.permainan.dapatkanPosisiObjek({cekobjek})"
+defaults = {
+"cekobjek": null
+}

@@ -143,9 +143,10 @@ func block_script_selected(block_script: BlockScriptSerialization, node : Node =
 
 
 func _load_block_script(block_script: BlockScriptSerialization):
+	if !_window.is_node_ready():
+		await _window.ready
+	Panku.notify("lalu ini [4]")
 	for tree in block_script.block_trees:
-		if !is_instance_valid(_window):
-			await _window.ready
 		load_tree(_window, tree)
 
 
@@ -177,8 +178,6 @@ func load_tree(parent: Node, node: BlockSerialization):
 	reconnect_block.emit(scene_block)
 
 	for c in node.path_child_pairs:
-		if scene.get_node_or_null(c[0]) == null:
-			await scene.ready
 		load_tree(scene.get_node(c[0]), c[1])
 
 

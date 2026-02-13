@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://b4kllw3kjnbxe"]
+[gd_resource type="Resource" format=3 uid="uid://b4kllw3kjnbxe"]
 
 [ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_dgsq4"]
 
@@ -11,3 +11,7 @@ category = "%siklus_karakter%"
 type = 1
 display_template = "%ketika_karakter_diserang [penyerang: OBJECT] %karakter_diserang_dengan_damage% [damage_serangan: INT]"
 code_template = "func _diserang(penyerang, damage_serangan):"
+defaults = {
+"damage_serangan": 0,
+"penyerang": null
+}

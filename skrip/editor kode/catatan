@@ -52,3 +52,5 @@ daftar urutan kategori blok dan warna kategori diatur di BUILTIN_CATEGORIES_PROP
 daftar blok berdasarkan nama blok dan kategori diatur di fungsi get_general_blocks() pada /skrip/editor kode/picker/categories/category_factory.gd
 
 tipe data untuk resource atau audio (TYPE_RESOURCE/TYPE_AUDIO) tidak tersedia, jadi untuk resource audio menggunakan bilangan INT 257
+
+tipe data kustom harus memiliki nilai default yang di set pada _FALLBACK_SET_FOR_TYPE di "res://skrip/editor kode/code_generation/blocks_catalog.gd"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cu3ru61vg6bx5"]
+[gd_resource type="Resource" format=3 uid="uid://cu3ru61vg6bx5"]
 
 [ext_resource type="Script" uid="uid://cd04fl28u67uy" path="res://skrip/editor kode/code_generation/block_definition.gd" id="1_btxic"]
 

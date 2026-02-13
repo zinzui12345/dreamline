@@ -11,6 +11,7 @@ const VariableCategoryDisplay = preload("res://skrip/editor kode/picker/categori
 
 signal block_picked(block: Block)
 signal variable_created(variable: VariableResource)
+signal class_loaded()
 
 @onready var _block_list := %BlockList
 @onready var _block_scroll := %BlockScroll
@@ -32,6 +33,7 @@ func block_script_selected(block_script: BlockScriptSerialization, script_node =
 
 	var categories_to_add: Array[BlockCategory] = []
 
+	BlocksCatalog.setup()
 	for class_dict in ProjectSettings.get_global_class_list():
 		if class_dict.class == block_script.script_inherits:
 			var script
@@ -50,7 +52,8 @@ func block_script_selected(block_script: BlockScriptSerialization, script_node =
 
 	init_picker(blocks_to_add, categories_to_add)
 	reload_variables(block_script.variables)
-
+	
+	class_loaded.emit() # FIXME : hapus
 
 func reset_picker():
 	for c in _category_list.get_children():

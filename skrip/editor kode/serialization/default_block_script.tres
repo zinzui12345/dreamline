@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BlockScriptSerialization" load_steps=7 format=3 uid="uid://dit7fykhl3h48"]
+[gd_resource type="Resource" script_class="BlockScriptSerialization" format=3 uid="uid://dit7fykhl3h48"]
 
 [ext_resource type="Script" uid="uid://0isyuyfkp520" path="res://skrip/editor kode/serialization/block_serialization.gd" id="1_barc5"]
 [ext_resource type="Script" uid="uid://cboqv5613dyqh" path="res://skrip/editor kode/serialization/block_serialized_properties.gd" id="2_cgfpx"]
