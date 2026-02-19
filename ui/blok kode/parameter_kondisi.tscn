@@ -1,0 +1,139 @@
+[gd_scene format=3 uid="uid://ds0611v7lmdk4"]
+
+[ext_resource type="Script" uid="uid://bg460xn0465xs" path="res://skrip/blok kode/parameter_kondisi.gd" id="1_0ypd0"]
+[ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="1_gk4pt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0ypd0"]
+bg_color = Color(0.18431373, 0.18431373, 0.18431373, 0.627451)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.18431373, 0.18431373, 0.18431373, 0.627451)
+border_blend = true
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 4
+
+[node name="ParameterKondisi" type="Control" unique_id=2096039953]
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+script = ExtResource("1_0ypd0")
+
+[node name="boolean" type="OptionButton" parent="." unique_id=42230747]
+visible = false
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 69.0
+grow_vertical = 2
+selected = 1
+item_count = 2
+popup/item_0/text = "false"
+popup/item_0/id = 1
+popup/item_1/text = "true"
+popup/item_1/id = 0
+
+[node name="input_block" type="Control" parent="." unique_id=788916734]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+script = ExtResource("1_gk4pt")
+
+[node name="input_operator" type="PanelContainer" parent="." unique_id=358734345]
+visible = false
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_0ypd0")
+
+[node name="compare_operator" type="HBoxContainer" parent="input_operator" unique_id=313707949]
+visible = false
+layout_mode = 2
+
+[node name="left_block" type="Control" parent="input_operator/compare_operator" unique_id=749479143]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+script = ExtResource("1_gk4pt")
+
+[node name="operator" type="OptionButton" parent="input_operator/compare_operator" unique_id=898167826]
+layout_mode = 2
+selected = 0
+item_count = 6
+popup/item_0/text = "<"
+popup/item_0/id = 0
+popup/item_1/text = ">"
+popup/item_1/id = 1
+popup/item_2/text = "<="
+popup/item_2/id = 2
+popup/item_3/text = ">="
+popup/item_3/id = 3
+popup/item_4/text = "=="
+popup/item_4/id = 4
+popup/item_5/text = "!="
+popup/item_5/id = 5
+
+[node name="right_block" type="Control" parent="input_operator/compare_operator" unique_id=2011497667]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+script = ExtResource("1_gk4pt")
+
+[node name="arithmetic_operator" type="HBoxContainer" parent="input_operator" unique_id=1085548025]
+visible = false
+layout_mode = 2
+
+[node name="left_block" type="Control" parent="input_operator/arithmetic_operator" unique_id=1954950896]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+script = ExtResource("1_gk4pt")
+
+[node name="operator" type="OptionButton" parent="input_operator/arithmetic_operator" unique_id=1942861427]
+layout_mode = 2
+selected = 0
+item_count = 5
+popup/item_0/text = "+"
+popup/item_0/id = 0
+popup/item_1/text = "-"
+popup/item_1/id = 1
+popup/item_2/text = "*"
+popup/item_2/id = 2
+popup/item_3/text = "/"
+popup/item_3/id = 3
+popup/item_4/text = "%"
+popup/item_4/id = 4
+
+[node name="right_block" type="Control" parent="input_operator/arithmetic_operator" unique_id=272277854]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+script = ExtResource("1_gk4pt")
+
+[node name="boolean_operator" type="HBoxContainer" parent="input_operator" unique_id=1191991430]
+visible = false
+layout_mode = 2
+
+[node name="left_block" type="Control" parent="input_operator/boolean_operator" unique_id=76732554]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+script = ExtResource("1_gk4pt")
+
+[node name="operator" type="OptionButton" parent="input_operator/boolean_operator" unique_id=177687137]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "and"
+popup/item_0/id = 0
+popup/item_1/text = "or"
+popup/item_1/id = 1
+
+[node name="right_block" type="Control" parent="input_operator/boolean_operator" unique_id=1628844933]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+script = ExtResource("1_gk4pt")

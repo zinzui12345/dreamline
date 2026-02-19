@@ -105,7 +105,6 @@
 [ext_resource type="Texture2D" uid="uid://b5frug6id5d0s" path="res://ui/ikon/ikon_analog.svg" id="67_5s073"]
 [ext_resource type="AudioStream" uid="uid://drxd3qfbhrvn0" path="res://audio/antarmuka/pilih_3.ogg" id="67_eoc6n"]
 [ext_resource type="Texture2D" uid="uid://bowie8rndsrl3" path="res://ui/ikon/ikon_d-pad.svg" id="68_a41ut"]
-[ext_resource type="PackedScene" uid="uid://d2k86ht18kg0d" path="res://ui/blok kode/panel_kode.tscn" id="72_fg215"]
 [ext_resource type="Script" uid="uid://dpxfqane0ylo6" path="res://addons/awesome_input_icons/classes/InputIconTextureRect.gd" id="73_6hd07"]
 [ext_resource type="Texture2D" uid="uid://cxkstissdjq73" path="res://addons/awesome_input_icons/assets/keyboard and mouse vector/mouse_left_outline.svg" id="73_p1pas"]
 [ext_resource type="Texture2D" uid="uid://cjrflqocbkufn" path="res://ui/ikon/ikon_vr.svg" id="74_jekg6"]
@@ -9550,17 +9549,13 @@ libraries/ = SubResource("AnimationLibrary_nq78w")
 [node name="blok_kode" type="Control" parent="." unique_id=882634917]
 visible = false
 layout_mode = 1
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 2.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_lock_ = true
-
-[node name="panel_kode" parent="blok_kode" unique_id=1775560573 instance=ExtResource("72_fg215")]
-layout_mode = 1
-offset_left = 0.0
 
 [node name="animasi" type="AnimationPlayer" parent="blok_kode" unique_id=1833465692]
 libraries/ = SubResource("AnimationLibrary_hdbku")
@@ -10479,7 +10474,6 @@ bus = &"Suara Pemain"
 [connection signal="pressed" from="setelan/panel/gulir/tab_setelan/setelan_debug/tampilkan_konsol" to="." method="_tampilkan_konsol"]
 [connection signal="file_selected" from="editor_kode/dialog_simpan_kode" to="." method="_ketika_menyimpan_kode"]
 [connection signal="file_selected" from="editor_kode/dialog_buka_audio" to="." method="_ketika_memilih_audio"]
-[connection signal="tutup_panel" from="blok_kode/panel_kode" to="." method="tutup_editor_kode"]
 [connection signal="pressed" from="popup_informasi/panel/tutup" to="." method="_tutup_popup_informasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/batal" to="." method="_tutup_popup_konfirmasi"]
 [connection signal="pressed" from="popup_konfirmasi/panel/oke" to="." method="_ketika_konfirmasi_popup_konfirmasi"]

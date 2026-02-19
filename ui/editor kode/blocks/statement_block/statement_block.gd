@@ -127,7 +127,6 @@ static func format_string(parent_block: Block, attach_to: Node, string: String, 
 		# var param_node: Node
 
 		if copy_block:
-			Panku.notify("disini? + " + param_name + " : " + param_type_str) # ketemuu! : Apa harus ditambahin ke block catalog?
 			var parameter_output: ParameterOutput = preload("res://ui/editor kode/blocks/utilities/parameter_output/parameter_output.tscn").instantiate()
 			parameter_output.name = "ParameterOutput%d" % start  # Unique path
 			parameter_output.block_params = {

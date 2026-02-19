@@ -45,7 +45,7 @@ static func instantiate_block_by_name(block_name: StringName) -> Block:
 	BlocksCatalog.setup()
 	var block_definition: BlockDefinition = BlocksCatalog.get_block(block_name)
 	if block_definition == null:
-		push_error("The block %s is not in the catalog yet!" % block_name) # FIXME : kenapa tuh kira-kira?
+		push_error("The block %s is not in the catalog yet!" % block_name)
 		return
 	return instantiate_block(block_definition)
 

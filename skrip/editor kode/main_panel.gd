@@ -65,6 +65,7 @@ func _on_undo_redo_version_changed():
 
 func _on_show_script_button_pressed():
 	if _current_block_code_node == null: return
+	_block_canvas._populate_block_scenes_by_class()
 	var block_script: BlockScriptSerialization = _current_block_code_node.block_script
 	var script: String = _block_canvas.generate_script_from_current_window(block_script)
 	script_window_requested.emit(script)

@@ -169,15 +169,15 @@ func load_tree(parent: Node, node: BlockSerialization):
 	scene.position = node.position
 	scene.resource = node
 	
-	#if !is_instance_valid(parent):
-		#await parent.ready
-		#return
 	parent.add_child(scene)
 
 	var scene_block: Block = scene as Block
 	reconnect_block.emit(scene_block)
 
 	for c in node.path_child_pairs:
+		if scene.get_node_or_null(c[0]) == null:
+			push_error("invalid node path : " + str(c[0]))
+			continue
 		load_tree(scene.get_node(c[0]), c[1])
 
 
