@@ -1,4 +1,4 @@
-extends Control
+extends PanelContainer
 class_name BlokArgumen
 
 @export_enum("String", "Integer", "Float", "Object") var tipe_data : String = "String"
@@ -8,14 +8,19 @@ func atur(tipe : String, data : String) -> void:
 		"String":
 			$String.visible = true
 			$String.text = data
+			_string_diubah()
 	tipe_data = tipe
 
 func _string_diubah() -> void:
-	var jumlah_baris = $String.get_line_count()
-	if jumlah_baris <= 1:
-		custom_minimum_size.y = 32
-	else:
-		custom_minimum_size.y = 32 * jumlah_baris
+	var jumlah_baris : int = $String.get_line_count()
+	var lebar_maks : float = 0.0
+	
+	for i in jumlah_baris:
+		var lebar = $String.get_line_width(i)
+		if lebar > lebar_maks:
+			lebar_maks = lebar
+	
+	custom_minimum_size.x = clamp(lebar_maks + 10, 100, 500)
 
 func dapatkan_nilai() -> String:
 	if tipe_data == "String":

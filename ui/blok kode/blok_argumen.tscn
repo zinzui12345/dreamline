@@ -2,28 +2,20 @@
 
 [ext_resource type="Script" uid="uid://qv5o271t48it" path="res://skrip/blok kode/blok_argumen.gd" id="1_os1il"]
 
-[node name="BlokArgumen" type="Control" unique_id=750574404]
+[node name="BlokArgumen" type="PanelContainer" unique_id=675144865]
 custom_minimum_size = Vector2(100, 40)
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 100.0
+offset_bottom = 40.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_os1il")
 
 [node name="String" type="TextEdit" parent="." unique_id=699890387]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
+scroll_fit_content_height = true
 
 [node name="AreaBlok" type="Control" parent="." unique_id=1263528824]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+visible = false
+layout_mode = 2
 
 [connection signal="text_changed" from="String" to="." method="_string_diubah"]

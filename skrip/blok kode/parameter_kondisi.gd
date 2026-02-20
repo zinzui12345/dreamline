@@ -41,6 +41,8 @@ class_name ParameterKondisi
 @export var right_block : Node
 @export var input_block : Node
 
+#const input_block_min_width = 80
+
 func tentukan_parameter(parameter : Dictionary) -> void:
 	print(parameter)
 	# { "type": "identifier", "value": "true" }
@@ -64,6 +66,7 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 					left_block.attached = false
 					$input_operator/compare_operator/left_block.add_child(left_block)
 					left_block.tentukan_parameter(parameter["left"])
+					#_atur_lebar_area_input_kiri($input_operator/compare_operator/left_block.size.x)
 			match parameter["operator"]:
 				"<":	$input_operator/compare_operator/operator.select(0)
 				">":	$input_operator/compare_operator/operator.select(1)
@@ -76,6 +79,12 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 					right_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
 					$input_operator/compare_operator/right_block.add_child(right_block)
 					right_block.tentukan_parameter(parameter["right"])
+				"identifier", "compare", "and", "or":
+					right_block = self.duplicate()
+					right_block.attached = false
+					$input_operator/compare_operator/right_block.add_child(right_block)
+					right_block.tentukan_parameter(parameter["right"])
+					#_atur_lebar_area_input_kanan($input_operator/compare_operator/right_block.size.x)
 		"and", "or":
 			match parameter["left"]["type"]:
 				"number":
@@ -87,6 +96,7 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 					left_block.attached = false
 					$input_operator/boolean_operator/left_block.add_child(left_block)
 					left_block.tentukan_parameter(parameter["left"])
+					#_atur_lebar_area_input_kiri($input_operator/boolean_operator/left_block.size.x)
 			match parameter["type"]:
 				"and":	$input_operator/boolean_operator/operator.select(0)
 				"or":	$input_operator/boolean_operator/operator.select(1)
@@ -95,6 +105,12 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 					right_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
 					$input_operator/compare_operator/right_block.add_child(right_block)
 					right_block.tentukan_parameter(parameter["right"])
+				"identifier", "compare", "and", "or":
+					right_block = self.duplicate()
+					right_block.attached = false
+					$input_operator/boolean_operator/right_block.add_child(right_block)
+					right_block.tentukan_parameter(parameter["right"])
+					#_atur_lebar_area_input_kanan($input_operator/boolean_operator/right_block.size.x)
 
 func hasilkan_kode() -> String:
 	match operator_type:
@@ -129,3 +145,12 @@ func hasilkan_kode() -> String:
 			result += ")"
 			return result
 	return ""
+
+#func _atur_lebar_area_input_kiri(lebar_px) -> void:
+	#$input_operator/compare_operator/left_block.custom_minimum_size.x = lebar_px
+	#$input_operator/arithmetic_operator/left_block.custom_minimum_size.x = lebar_px
+	#$input_operator/boolean_operator/left_block.custom_minimum_size.x = lebar_px
+#func _atur_lebar_area_input_kanan(lebar_px) -> void:
+	#$input_operator/compare_operator/right_block.custom_minimum_size.x = lebar_px
+	#$input_operator/arithmetic_operator/right_block.custom_minimum_size.x = lebar_px
+	#$input_operator/boolean_operator/right_block.custom_minimum_size.x = lebar_px

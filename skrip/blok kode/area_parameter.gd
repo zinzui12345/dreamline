@@ -1,2 +1,2 @@
-extends Control
+extends PanelContainer
 class_name AreaParameter

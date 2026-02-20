@@ -3,28 +3,21 @@
 [ext_resource type="Script" uid="uid://c3cfkoqfkg2yq" path="res://skrip/blok kode/parameter_angka.gd" id="1_0glea"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_ixa71"]
 
-[node name="ParameterAngka" type="Control" unique_id=2096039953]
-layout_mode = 3
-anchors_preset = 9
-anchor_bottom = 1.0
-grow_vertical = 2
+[node name="ParameterAngka" type="PanelContainer" unique_id=1970027611]
+offset_right = 86.5
+offset_bottom = 31.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_0glea")
 
 [node name="number" type="SpinBox" parent="." unique_id=2129212918]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 86.5
-grow_vertical = 2
+layout_mode = 2
 min_value = -3276800.0
 max_value = 3276800.0
 step = 0.001
 
-[node name="input_block" type="Control" parent="." unique_id=788916734]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-grow_vertical = 2
+[node name="input_block" type="PanelContainer" parent="." unique_id=1059347313]
+visible = false
+layout_mode = 2
 script = ExtResource("2_ixa71")

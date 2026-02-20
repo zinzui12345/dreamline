@@ -1,4 +1,4 @@
-extends Control
+extends PanelContainer
 class_name BlokParameter
 
 @export var locked : bool = false
