@@ -229,7 +229,7 @@ func _parse_kondisi(kondisi: String) -> Dictionary:
 	return parser.parse(kondisi)
 
 func _ready() -> void:
-	konversi_kode_menjadi_blok("extends Node\nfunc _mulai():\n\tif ((0 > 1) or (1 > 3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\nfunc _proses():\n\tPanku.notify(\"test\")")
+	konversi_kode_menjadi_blok("extends Node\nvar a : String\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\nfunc _proses():\n\tPanku.notify(\"test\")")
 	print_debug(dapatkan_daftar_kode())
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):

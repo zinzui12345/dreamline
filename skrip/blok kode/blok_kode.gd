@@ -152,12 +152,13 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	block_id = EditorKode.tambah_kode(instruksi)
 func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
-	var input_kondisi = load("res://ui/blok kode/parameter_kondisi.tscn").instantiate()
+	var input_kondisi = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
 	label_tampilan.text = "Jika "
 	header_container.add_child(label_tampilan)
 	header_container.add_child(input_kondisi)
 	input_kondisi.attached = true
 	input_kondisi.tentukan_parameter(parameter)
+	input_kondisi._setup()
 	block_type = "Logika"
 	logic_input = input_kondisi
 	var logika = hasilkan_kode()

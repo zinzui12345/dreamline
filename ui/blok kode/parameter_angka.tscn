@@ -11,13 +11,17 @@ size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_0glea")
 
-[node name="number" type="SpinBox" parent="." unique_id=2129212918]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1161401770]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+
+[node name="number" type="SpinBox" parent="MarginContainer" unique_id=2129212918]
 layout_mode = 2
 min_value = -3276800.0
 max_value = 3276800.0
 step = 0.001
 
-[node name="input_block" type="PanelContainer" parent="." unique_id=1059347313]
+[node name="input_block" type="PanelContainer" parent="MarginContainer" unique_id=1059347313]
 visible = false
 layout_mode = 2
 script = ExtResource("2_ixa71")

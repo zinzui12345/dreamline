@@ -48,17 +48,21 @@ script = ExtResource("1_gk4pt")
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_0ypd0")
 
-[node name="compare_operator" type="HBoxContainer" parent="input_operator" unique_id=313707949]
+[node name="MarginContainer" type="MarginContainer" parent="input_operator" unique_id=1592624974]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+
+[node name="compare_operator" type="HBoxContainer" parent="input_operator/MarginContainer" unique_id=313707949]
 visible = false
 layout_mode = 2
 
-[node name="left_block" type="PanelContainer" parent="input_operator/compare_operator" unique_id=994790521]
+[node name="left_block" type="PanelContainer" parent="input_operator/MarginContainer/compare_operator" unique_id=994790521]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("1_gk4pt")
 
-[node name="operator" type="OptionButton" parent="input_operator/compare_operator" unique_id=898167826]
+[node name="operator" type="OptionButton" parent="input_operator/MarginContainer/compare_operator" unique_id=898167826]
 layout_mode = 2
 selected = 0
 item_count = 6
@@ -75,22 +79,22 @@ popup/item_4/id = 4
 popup/item_5/text = "!="
 popup/item_5/id = 5
 
-[node name="right_block" type="PanelContainer" parent="input_operator/compare_operator" unique_id=1370382999]
+[node name="right_block" type="PanelContainer" parent="input_operator/MarginContainer/compare_operator" unique_id=1370382999]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("1_gk4pt")
 
-[node name="arithmetic_operator" type="HBoxContainer" parent="input_operator" unique_id=1085548025]
+[node name="arithmetic_operator" type="HBoxContainer" parent="input_operator/MarginContainer" unique_id=1085548025]
 layout_mode = 2
 
-[node name="left_block" type="PanelContainer" parent="input_operator/arithmetic_operator" unique_id=1611160863]
+[node name="left_block" type="PanelContainer" parent="input_operator/MarginContainer/arithmetic_operator" unique_id=1611160863]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("1_gk4pt")
 
-[node name="operator" type="OptionButton" parent="input_operator/arithmetic_operator" unique_id=1942861427]
+[node name="operator" type="OptionButton" parent="input_operator/MarginContainer/arithmetic_operator" unique_id=1942861427]
 layout_mode = 2
 selected = 0
 item_count = 5
@@ -105,23 +109,23 @@ popup/item_3/id = 3
 popup/item_4/text = "%"
 popup/item_4/id = 4
 
-[node name="right_block" type="PanelContainer" parent="input_operator/arithmetic_operator" unique_id=1834070652]
+[node name="right_block" type="PanelContainer" parent="input_operator/MarginContainer/arithmetic_operator" unique_id=1834070652]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("1_gk4pt")
 
-[node name="boolean_operator" type="HBoxContainer" parent="input_operator" unique_id=1191991430]
+[node name="boolean_operator" type="HBoxContainer" parent="input_operator/MarginContainer" unique_id=1191991430]
 visible = false
 layout_mode = 2
 
-[node name="left_block" type="PanelContainer" parent="input_operator/boolean_operator" unique_id=1603780848]
+[node name="left_block" type="PanelContainer" parent="input_operator/MarginContainer/boolean_operator" unique_id=1603780848]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("1_gk4pt")
 
-[node name="operator" type="OptionButton" parent="input_operator/boolean_operator" unique_id=177687137]
+[node name="operator" type="OptionButton" parent="input_operator/MarginContainer/boolean_operator" unique_id=177687137]
 layout_mode = 2
 selected = 0
 item_count = 2
@@ -130,7 +134,7 @@ popup/item_0/id = 0
 popup/item_1/text = "or"
 popup/item_1/id = 1
 
-[node name="right_block" type="PanelContainer" parent="input_operator/boolean_operator" unique_id=1875191831]
+[node name="right_block" type="PanelContainer" parent="input_operator/MarginContainer/boolean_operator" unique_id=1875191831]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3

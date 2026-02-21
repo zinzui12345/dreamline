@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://bqq4ovuhdavrr"]
+
+[ext_resource type="Script" uid="uid://2lcwcvmtruic" path="res://skrip/blok kode/parameter_logika.gd" id="1_1cyv0"]
+[ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_y1fl1"]
+
+[node name="ParameterLogika" type="PanelContainer" unique_id=679656644]
+custom_minimum_size = Vector2(0, 40)
+offset_right = 69.0
+offset_bottom = 40.0
+size_flags_horizontal = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_1cyv0")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1592624974]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="logic_operator" type="HBoxContainer" parent="MarginContainer" unique_id=313707949]
+layout_mode = 2
+
+[node name="left_block" type="PanelContainer" parent="MarginContainer/logic_operator" unique_id=994790521]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_y1fl1")
+
+[node name="operator" type="OptionButton" parent="MarginContainer/logic_operator" unique_id=898167826]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "and"
+popup/item_0/id = 0
+popup/item_1/text = "or"
+popup/item_1/id = 1
+
+[node name="right_block" type="PanelContainer" parent="MarginContainer/logic_operator" unique_id=1370382999]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_y1fl1")

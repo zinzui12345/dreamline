@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://dxac1xb8h8u73"]
+
+[ext_resource type="Script" uid="uid://by8p5xvyg1mcs" path="res://skrip/blok kode/parameter_aritmatika.gd" id="1_oi7ww"]
+[ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_vxrd1"]
+
+[node name="ParameterAritmatika" type="PanelContainer" unique_id=679656644]
+custom_minimum_size = Vector2(0, 40)
+offset_right = 69.0
+offset_bottom = 40.0
+size_flags_horizontal = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_oi7ww")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1592624974]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="arithmetic_operator" type="HBoxContainer" parent="MarginContainer" unique_id=1085548025]
+layout_mode = 2
+
+[node name="left_block" type="PanelContainer" parent="MarginContainer/arithmetic_operator" unique_id=1611160863]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_vxrd1")
+
+[node name="operator" type="OptionButton" parent="MarginContainer/arithmetic_operator" unique_id=1942861427]
+layout_mode = 2
+selected = 0
+item_count = 5
+popup/item_0/text = "+"
+popup/item_0/id = 0
+popup/item_1/text = "-"
+popup/item_1/id = 1
+popup/item_2/text = "*"
+popup/item_2/id = 2
+popup/item_3/text = "/"
+popup/item_3/id = 3
+popup/item_4/text = "%"
+popup/item_4/id = 4
+
+[node name="right_block" type="PanelContainer" parent="MarginContainer/arithmetic_operator" unique_id=1834070652]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("2_vxrd1")
