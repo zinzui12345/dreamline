@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://bsh80l27dqkn0"]
+
+[ext_resource type="Script" uid="uid://c3u0yv0qx1tem" path="res://skrip/blok kode/buat_tipe_variabel.gd" id="1_or4y3"]
+
+[node name="BuatTipeVariabel" type="OptionButton" unique_id=2071209572]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -15.5
+offset_right = 68.5
+offset_bottom = 15.5
+grow_vertical = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+selected = 0
+item_count = 6
+popup/item_0/text = "Boolean"
+popup/item_0/id = 0
+popup/item_1/text = "Integer"
+popup/item_1/id = 1
+popup/item_2/text = "Float"
+popup/item_2/id = 2
+popup/item_3/text = "String"
+popup/item_3/id = 3
+popup/item_4/text = "Array"
+popup/item_4/id = 4
+popup/item_5/text = "Dictionary"
+popup/item_5/id = 5
+script = ExtResource("1_or4y3")

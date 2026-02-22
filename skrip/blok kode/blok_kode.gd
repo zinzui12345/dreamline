@@ -21,6 +21,7 @@ class_name BlokKode
 
 # Variabel
 @export var variable_name : LineEdit
+@export var variable_type : OptionButton
 
 
 const EditorKode = preload("res://skrip/blok kode/editor_kode.gd")
@@ -156,12 +157,19 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	block_id = EditorKode.tambah_kode(instruksi)
 func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	var label_tampilan_1 = Label.new()
+	var label_tampilan_2 = Label.new()
 	variable_name = load("res://ui/blok kode/buat_nama_variabel.tscn").instantiate()
 	label_tampilan_1.text = "Definisikan Variabel "
 	header_container.add_child(label_tampilan_1)
 	header_container.add_child(variable_name)
 	variable_name.text = nama
 	block_type = "Variabel"
+	if tipe.length() > 0:
+		variable_type = load("res://ui/blok kode/buat_tipe_variabel.tscn").instantiate()
+		label_tampilan_2.text = " dengan tipe "
+		header_container.add_child(label_tampilan_2)
+		header_container.add_child(variable_type)
+		variable_type.atur_tipe(tipe.replace(' ', ''))
 	var sintaks = hasilkan_kode()
 	code = sintaks
 	block_id = EditorKode.tambah_kode(sintaks)
@@ -209,6 +217,8 @@ func hasilkan_kode() -> String:
 			if variable_name != null:
 				variable_name.text = variable_name.text.replace(' ', '_')
 				tmp_code += variable_name.text
+			if variable_type != null:
+				tmp_code += " : " + variable_type.dapatkan_tipe()
 			return tmp_code
 		"Logika":
 			var tmp_code : String = ""
