@@ -19,6 +19,10 @@ class_name BlokKode
 # Logika
 @export var logic_input : Node
 
+# Variabel
+@export var variable_name : LineEdit
+
+
 const EditorKode = preload("res://skrip/blok kode/editor_kode.gd")
 
 var block_id : int = -1
@@ -116,7 +120,7 @@ func sesuaikan_indentasi() -> void:
 
 func buat_blok_extends(nama_kelas : String) -> void:
 	var label_tampilan = Label.new()
-	var instruksi = "extends " + nama_kelas
+	var instruksi = "extends " + nama_kelas + "\n"
 	label_tampilan.text = "Mewarisi " + nama_kelas
 	code = instruksi
 	locked = true
@@ -150,6 +154,17 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	var instruksi = hasilkan_kode()
 	code = instruksi
 	block_id = EditorKode.tambah_kode(instruksi)
+func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
+	var label_tampilan_1 = Label.new()
+	variable_name = load("res://ui/blok kode/buat_nama_variabel.tscn").instantiate()
+	label_tampilan_1.text = "Definisikan Variabel "
+	header_container.add_child(label_tampilan_1)
+	header_container.add_child(variable_name)
+	variable_name.text = nama
+	block_type = "Variabel"
+	var sintaks = hasilkan_kode()
+	code = sintaks
+	block_id = EditorKode.tambah_kode(sintaks)
 func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
 	var input_kondisi = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
@@ -188,6 +203,12 @@ func hasilkan_kode() -> String:
 				for args in instruction_argument:
 					tmp_args.append(args.dapatkan_nilai())
 			tmp_code += instruction_method + "(" + ", ".join(tmp_args) + ")"
+			return tmp_code
+		"Variabel":
+			var tmp_code : String = "var "
+			if variable_name != null:
+				variable_name.text = variable_name.text.replace(' ', '_')
+				tmp_code += variable_name.text
 			return tmp_code
 		"Logika":
 			var tmp_code : String = ""

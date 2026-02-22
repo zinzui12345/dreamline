@@ -40,7 +40,11 @@ func konversi_blok_menjadi_kode() -> String:
 				for jumlah_indentasi in blok_kode.indent_level:
 					tmp_baris_kode += "\t"
 				tmp_baris_kode += instruksi
-			tmp_kode += "\n" + tmp_baris_kode
+			if blok_kode.block_type in ["Fungsi", "Pernyataan"]:
+				tmp_kode += "\n"
+			tmp_kode += tmp_baris_kode
+	if tmp_kode.begins_with("\n\n"):
+		tmp_kode = tmp_kode.substr(2)
 	return tmp_kode
 
 func _parse_baris_instruksi(instruksi: String, indent_level: int):
@@ -74,8 +78,8 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	regex_while.compile("^while\\s+(.*):")
 
 	# ==== ASSIGNMENT ====
-	var regex_var_assign = RegEx.new()
-	regex_var_assign.compile("^var\\s+(\\w+)\\s*=\\s*(.*)")
+	var regex_var = RegEx.new()
+	regex_var.compile("^var\\s+(\\w+)(?:\\s*:\\s*([\\w\\[\\],\\s]+))?(?:\\s*=\\s*(.*))?$")
 
 	var regex_assign = RegEx.new()
 	regex_assign.compile("^(\\w+)\\s*=\\s*(.*)")
@@ -154,12 +158,13 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	# -----------------
 	# VAR ASSIGN
 	# -----------------
-	cocok = regex_var_assign.search(instruksi)
+	cocok = regex_var.search(instruksi)
 	if cocok:
-		print("Blok VAR ASSIGN:",
-			  cocok.get_string(1),
-			  "=",
-			  cocok.get_string(2))
+		_buat_blok("Variabel", indent_level, instruksi, {
+			"nama": cocok.get_string(1),
+			"tipe": cocok.get_string(2),
+			"nilai": cocok.get_string(3)
+		})
 		return
 
 	# -----------------
@@ -219,6 +224,11 @@ func _buat_blok(tipe: String, indentasi: int, _instruksi: String, data : Diction
 		"Instruksi":
 			print("Blok METHOD CALL:", data.metode)
 			node_blok_kode.buat_blok_instruksi(data.objek, data.metode, data.argumen)
+		"Variabel":
+			print("Blok VAR ASSIGN:", data.nama)
+			print("     VAR TYPE:", data.tipe)
+			print("     VAR VALUE:", data.nilai)
+			node_blok_kode.buat_blok_variabel(data.nama, data.tipe, data.nilai)
 		"IF":
 			print("Blok IF (Indent:", indentasi, ")")
 			node_blok_kode.buat_blok_if(data)
@@ -229,7 +239,7 @@ func _parse_kondisi(kondisi: String) -> Dictionary:
 	return parser.parse(kondisi)
 
 func _ready() -> void:
-	konversi_kode_menjadi_blok("extends Node\nvar a : String\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\nfunc _proses():\n\tPanku.notify(\"test\")")
+	konversi_kode_menjadi_blok("extends Node\nvar a\nvar b : String\nvar c : int = 11\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\nfunc _proses():\n\tPanku.notify(\"test\")")
 	print_debug(dapatkan_daftar_kode())
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):
