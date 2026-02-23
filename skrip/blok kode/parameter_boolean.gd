@@ -18,9 +18,9 @@ func _setup() -> void:
 		$MarginContainer.remove_theme_constant_override("margin_left")
 
 func tentukan_parameter(parameter : Dictionary) -> void:
-	print(parameter)
+	print_debug(parameter)
 	match parameter["type"]:
-		"identifier":
+		"bool":
 			match parameter["value"]:
 				"true":		$MarginContainer/boolean.select(1)
 				"false":	$MarginContainer/boolean.select(0)

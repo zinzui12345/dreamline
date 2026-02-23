@@ -123,9 +123,8 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	# -----------------
 	cocok = regex_elif.search(instruksi)
 	if cocok:
-		print("Blok ELIF (Indent:", indent_level, ")")
 		var kondisi = _parse_kondisi(cocok.get_string(1))
-		print(kondisi)
+		_buat_blok("ELIF", indent_level, instruksi, kondisi)
 		return
 
 	# -----------------
@@ -232,6 +231,9 @@ func _buat_blok(tipe: String, indentasi: int, _instruksi: String, data : Diction
 		"IF":
 			print("Blok IF (Indent:", indentasi, ")")
 			node_blok_kode.buat_blok_if(data)
+		"ELIF":
+			print("Blok ELIF (Indent:", indentasi, ")")
+			node_blok_kode.buat_blok_elif(data)
 	node_blok_kode._setup()
 
 func _parse_kondisi(kondisi: String) -> Dictionary:
@@ -239,7 +241,7 @@ func _parse_kondisi(kondisi: String) -> Dictionary:
 	return parser.parse(kondisi)
 
 func _ready() -> void:
-	konversi_kode_menjadi_blok("extends Node\nvar a\nvar b : String\nvar c : int = 11\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\nfunc _proses():\n\tPanku.notify(\"test\")")
+	konversi_kode_menjadi_blok("extends Node\nvar a\nvar b : int\nvar c : String = \"Halo Dunia\"\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 0.3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\n\telif (1 > 0):\n\t\tprint_debug(\"salah\")\nfunc _proses():\n\tPanku.notify(\"test\")")
 	print_debug(dapatkan_daftar_kode())
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):

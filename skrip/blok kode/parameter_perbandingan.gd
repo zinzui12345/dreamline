@@ -18,9 +18,11 @@ class_name ParameterPerbandingan
 
 func tentukan_parameter(parameter : Dictionary) -> void:
 	match parameter["left"]["type"]:
-		"number":
+		"int":
 			left_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
-		"identifier":
+		"float":
+			left_block = load("res://ui/blok kode/parameter_angka_desimal.tscn").instantiate()
+		"bool":
 			left_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
 		"compare":
 			left_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
@@ -38,9 +40,11 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 		"==":	$MarginContainer/compare_operator/operator.select(4)
 		"!=":	$MarginContainer/compare_operator/operator.select(5)
 	match parameter["right"]["type"]:
-		"number":
+		"int":
 			right_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
-		"identifier":
+		"float":
+			right_block = load("res://ui/blok kode/parameter_angka_desimal.tscn").instantiate()
+		"bool":
 			right_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
 		"compare":
 			right_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()

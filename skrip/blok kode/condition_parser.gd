@@ -137,13 +137,25 @@ func parse_factor():
 	
 	advance()
 	
+	# =========================
+	# DETEKSI ANGKA
+	# =========================
+	if token.is_valid_int():
+		return {
+			"type": "int",
+			"value": int(token)
+		}
+	
 	if token.is_valid_float():
 		return {
-			"type": "number",
+			"type": "float",
 			"value": float(token)
 		}
 	
+	# =========================
+	# IDENTIFIER
+	# =========================
 	return {
-		"type": "identifier",
+		"type": "bool",
 		"value": token
 	}

@@ -1,0 +1,81 @@
+[gd_scene format=3 uid="uid://cuwg1s457s3ig"]
+
+[ext_resource type="Script" uid="uid://vtjckqjd06dr" path="res://skrip/blok kode/parameter_input.gd" id="1_pi4ni"]
+[ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_h746t"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pi4ni"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pi4ni"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 5
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[node name="ParameterInput" type="PanelContainer" unique_id=679656644]
+custom_minimum_size = Vector2(0, 40)
+offset_right = 69.0
+offset_bottom = 40.0
+size_flags_horizontal = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_pi4ni")
+data_type = "Variant"
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1592624974]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+
+[node name="default_value" type="PanelContainer" parent="MarginContainer" unique_id=600303192]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_pi4ni")
+
+[node name="Boolean" type="Label" parent="MarginContainer/default_value" unique_id=1467721413]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "false"
+
+[node name="Integer" type="Label" parent="MarginContainer/default_value" unique_id=1527769515]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "0"
+
+[node name="Float" type="Label" parent="MarginContainer/default_value" unique_id=197989519]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "0.0"
+
+[node name="String" type="Label" parent="MarginContainer/default_value" unique_id=1110585971]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "\"\""
+
+[node name="Array" type="Label" parent="MarginContainer/default_value" unique_id=1923949781]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "[]"
+
+[node name="Dictionary" type="Label" parent="MarginContainer/default_value" unique_id=510606036]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "{}"
+
+[node name="Object" type="Label" parent="MarginContainer/default_value" unique_id=593706881]
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "null"
+
+[node name="Variant" type="Label" parent="MarginContainer/default_value" unique_id=2088603394]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
+text = "null"
+
+[node name="input_block" type="PanelContainer" parent="MarginContainer" unique_id=63057711]
+layout_mode = 2
+script = ExtResource("2_h746t")

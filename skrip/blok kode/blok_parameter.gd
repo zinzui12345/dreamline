@@ -4,6 +4,8 @@ class_name BlokParameter
 @export var locked : bool = false
 @export var attached : bool = false
 
+@export_enum("Boolean", "Integer", "Float", "String", "Array", "Dictionary", "Object", "Variant") var data_type = "Boolean"
+
 func tentukan_parameter(parameter : Dictionary) -> void:
 	print(parameter)
 
@@ -26,6 +28,6 @@ func _get_drag_data(_at_position):
 # 2. Cek apakah bisa didrop di sini
 func _can_drop_data(_at_position, data):
 	if locked: return false
-	if data is BlokParameter and data != self:
+	if data is BlokParameter and data != self and data.data_type == data_type:
 		return true
 	return false
