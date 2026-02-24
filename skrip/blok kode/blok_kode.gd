@@ -20,12 +20,12 @@ class_name BlokKode
 @export_enum("if", "elif", "else") var logic_type = "if"
 @export var logic_input : Node
 @export var logic_elif_blocks : VBoxContainer
+@export var logic_else_block : VBoxContainer
 
 # Variabel
 @export var variable_name : LineEdit
 @export var variable_type : OptionButton
 @export var variable_value : ParameterInput
-
 
 const EditorKode = preload("res://skrip/blok kode/editor_kode.gd")
 
@@ -49,6 +49,12 @@ func _setup():
 			if block_type == "Logika" and sibling_atas.block_type == "Logika" and sibling_atas.logic_type == "if":
 				parent.remove_child(self)
 				sibling_atas.logic_elif_blocks.add_child(self)
+			else:
+				_setup()
+		if logic_type == "else":
+			if block_type == "Logika" and sibling_atas.block_type == "Logika" and sibling_atas.logic_type == "if" and sibling_atas.logic_else_block.get_child_count() == 0:
+				parent.remove_child(self)
+				sibling_atas.logic_else_block.add_child(self)
 			else:
 				_setup()
 	sesuaikan_indentasi()
@@ -90,7 +96,9 @@ func _can_drop_data(_at_position, data):
 			return true
 		elif data.block_type == "Logika" and block_type != "Variabel" and data.logic_type not in ["elif", "else"]:
 			return true
-		elif data.block_type == "Logika" and block_type == "Logika" and logic_type == "if" and data.logic_type in ["elif", "else"]:
+		elif data.block_type == "Logika" and block_type == "Logika" and logic_type == "if" and data.logic_type == "elif":
+			return true
+		elif data.block_type == "Logika" and block_type == "Logika" and logic_type == "if" and data.logic_type == "else" and logic_else_block.get_child_count() == 0:
 			return true
 		#elif get_parent() is AreaBlokKode and data.block_type in ["Fungsi", "Pernyataan"]:
 			#return true
@@ -107,6 +115,8 @@ func _drop_data(_at_position, data):
 	if block_type in ["Fungsi", "Logika"]:
 		if data.logic_type == "elif" and logic_type == "if" and logic_elif_blocks != null:
 			new_parent = logic_elif_blocks
+		elif data.logic_type == "else" and logic_type == "if" and logic_else_block != null:
+			new_parent = logic_else_block
 		else:
 			# Masukkan ke dalam container body (Nested)
 			new_parent = body_container
@@ -141,6 +151,9 @@ func sesuaikan_indentasi() -> void:
 		for sub_code in logic_elif_blocks.get_children():
 			if sub_code is BlokKode:
 				sub_code.sesuaikan_indentasi()
+	if logic_else_block != null and logic_else_block.get_child_count() > 0:
+		if logic_else_block.get_child(0) is BlokKode:
+			logic_else_block.get_child(0).sesuaikan_indentasi()
 
 func buat_blok_extends(nama_kelas : String) -> void:
 	var label_tampilan = Label.new()
@@ -212,6 +225,7 @@ func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
 	var input_kondisi = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
 	logic_elif_blocks = VBoxContainer.new()
+	logic_else_block = VBoxContainer.new()
 	label_tampilan.text = "Jika "
 	header_container.add_child(label_tampilan)
 	header_container.add_child(input_kondisi)
@@ -222,7 +236,9 @@ func buat_blok_if(parameter : Dictionary) -> void:
 	logic_type = "if"
 	logic_input = input_kondisi
 	logic_elif_blocks.name = "elif"
+	logic_else_block.name = "else"
 	$VBoxContainer.add_child(logic_elif_blocks)
+	$VBoxContainer.add_child(logic_else_block)
 	var logika = hasilkan_kode()
 	code = logika
 	block_id = EditorKode.tambah_kode(logika)
@@ -238,6 +254,15 @@ func buat_blok_elif(parameter : Dictionary) -> void:
 	block_type = "Logika"
 	logic_type = "elif"
 	logic_input = input_kondisi
+	var logika = hasilkan_kode()
+	code = logika
+	block_id = EditorKode.tambah_kode(logika)
+func buat_blok_else() -> void:
+	var label_tampilan = Label.new()
+	label_tampilan.text = "Selain itu"
+	header_container.add_child(label_tampilan)
+	block_type = "Logika"
+	logic_type = "else"
 	var logika = hasilkan_kode()
 	code = logika
 	block_id = EditorKode.tambah_kode(logika)
@@ -280,7 +305,10 @@ func hasilkan_kode() -> String:
 			var tmp_code : String = ""
 			var tmp_sub_code : String = ""
 			var tmp_indentasi : String = ""
-			tmp_code = logic_type + " " + logic_input.hasilkan_kode() + ":"
+			var tmp_kode_input : String = ""
+			if logic_input != null:
+				tmp_kode_input = " " + logic_input.hasilkan_kode()
+			tmp_code = logic_type + tmp_kode_input + ":"
 			for hitung_indentasi in indent_level + 1:
 				tmp_indentasi += "\t"
 			if body_container.get_child_count() > 0:
@@ -296,6 +324,12 @@ func hasilkan_kode() -> String:
 				for sub_code in logic_elif_blocks.get_children():
 					if sub_code is BlokKode:
 						tmp_sub_code += "\n" + tmp_indentasi + sub_code.hasilkan_kode()
+			if logic_else_block != null and logic_else_block.get_child_count() > 0:
+				tmp_indentasi = ""
+				for hitung_indentasi in indent_level:
+					tmp_indentasi += "\t"
+				if logic_else_block.get_child(0) is BlokKode:
+					tmp_sub_code += "\n" + tmp_indentasi + logic_else_block.get_child(0).hasilkan_kode()
 			return tmp_code + tmp_sub_code
 	return code
 

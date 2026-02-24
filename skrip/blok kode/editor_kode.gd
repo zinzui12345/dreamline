@@ -1,8 +1,8 @@
 extends Control
 class_name EditorBlokKode
 
-@onready var daftar_blok_kode = $HSplitContainer/Panel
-@onready var area_blok_kode = $HSplitContainer/ScrollContainer/VBoxContainer
+@onready var daftar_blok_kode : DaftarBlokKode = $HSplitContainer/Pallete
+@onready var area_blok_kode : AreaBlokKode = $HSplitContainer/ScrollContainer/VBoxContainer
 
 static var daftar_kode : Array[String]
 
@@ -46,6 +46,13 @@ func konversi_blok_menjadi_kode() -> String:
 	if tmp_kode.begins_with("\n\n"):
 		tmp_kode = tmp_kode.substr(2)
 	return tmp_kode
+
+func _notification(notification_type):
+	match notification_type:
+		NOTIFICATION_DRAG_BEGIN:
+			area_blok_kode.mouse_filter = Control.MOUSE_FILTER_STOP
+		NOTIFICATION_DRAG_END:
+			area_blok_kode.mouse_filter = Control.MOUSE_FILTER_PASS
 
 func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	# ==== REGEX DASAR ====
@@ -132,7 +139,7 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	# -----------------
 	cocok = regex_else.search(instruksi)
 	if cocok:
-		print("Blok ELSE (Indent:", indent_level, ")")
+		_buat_blok("ELSE", indent_level, instruksi, {})
 		return
 
 	# -----------------
@@ -234,6 +241,9 @@ func _buat_blok(tipe: String, indentasi: int, _instruksi: String, data : Diction
 		"ELIF":
 			print("Blok ELIF (Indent:", indentasi, ")")
 			node_blok_kode.buat_blok_elif(data)
+		"ELSE":
+			print("Blok ELSE (Indent:", indentasi, ")")
+			node_blok_kode.buat_blok_else()
 	node_blok_kode._setup()
 
 func _parse_kondisi(kondisi: String) -> Dictionary:
@@ -241,7 +251,13 @@ func _parse_kondisi(kondisi: String) -> Dictionary:
 	return parser.parse(kondisi)
 
 func _ready() -> void:
-	konversi_kode_menjadi_blok("extends Node\nvar a\nvar b : int\nvar c : String = \"Halo Dunia\"\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 0.3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\n\telif (1 > 0):\n\t\tprint_debug(\"salah\")\nfunc _proses():\n\tPanku.notify(\"test\")")
+	var test_pallete : BlokKode = load("res://ui/blok kode/blok_kode.scn").instantiate()
+	test_pallete.name = "fungsi setup"
+	$HSplitContainer/Pallete.add_child(test_pallete)
+	test_pallete.buat_blok_fungsi("_setup", "")
+	hapus_kode(test_pallete.block_id - 1)
+	test_pallete.block_id = -1
+	konversi_kode_menjadi_blok("extends Node\nvar a\nvar b : int\nvar c : String = \"Halo Dunia\"\nfunc _mulai():\n\tif (((0 * 1) > 0) or (1 > 0.3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (true):\n\t\t\tPanku.notify(\"test2\")\n\telif (1 > 0):\n\t\tprint_debug(\"salah\")\n\telse:\n\t\tprint(\"nnn\")\nfunc _proses():\n\tPanku.notify(\"test\")")
 	print_debug(dapatkan_daftar_kode())
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):
