@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bafskajq5o36u"]
+
+[ext_resource type="Script" uid="uid://sad0uqc2k1da" path="res://skrip/blok kode/parameter_teks.gd" id="1_tg04l"]
+
+[node name="ParameterTeks" type="PanelContainer" unique_id=1970027611]
+offset_right = 86.5
+offset_bottom = 31.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("1_tg04l")
+data_type = "String"
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1161401770]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+
+[node name="String" type="TextEdit" parent="MarginContainer" unique_id=510246728]
+layout_mode = 2
+scroll_fit_content_height = true
+
+[connection signal="text_changed" from="MarginContainer/String" to="." method="_string_diubah"]

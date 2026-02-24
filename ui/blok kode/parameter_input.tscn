@@ -29,29 +29,31 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pi4ni")
 
-[node name="Boolean" type="Label" parent="MarginContainer/default_value" unique_id=1467721413]
+[node name="bool" type="OptionButton" parent="MarginContainer/default_value" unique_id=90155175]
 visible = false
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
-text = "false"
+selected = 0
+item_count = 2
+popup/item_0/text = "false"
+popup/item_0/id = 1
+popup/item_1/text = "true"
+popup/item_1/id = 0
 
-[node name="Integer" type="Label" parent="MarginContainer/default_value" unique_id=1527769515]
+[node name="int" type="Label" parent="MarginContainer/default_value" unique_id=1527769515]
 visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
 text = "0"
 
-[node name="Float" type="Label" parent="MarginContainer/default_value" unique_id=197989519]
+[node name="float" type="Label" parent="MarginContainer/default_value" unique_id=197989519]
 visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
 text = "0.0"
 
-[node name="String" type="Label" parent="MarginContainer/default_value" unique_id=1110585971]
-visible = false
+[node name="String" type="TextEdit" parent="MarginContainer/default_value" unique_id=1608738314]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
-text = "\"\""
+scroll_fit_content_height = true
 
 [node name="Array" type="Label" parent="MarginContainer/default_value" unique_id=1923949781]
 visible = false
@@ -72,10 +74,14 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
 text = "null"
 
 [node name="Variant" type="Label" parent="MarginContainer/default_value" unique_id=2088603394]
+visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
 text = "null"
 
-[node name="input_block" type="PanelContainer" parent="MarginContainer" unique_id=63057711]
+[node name="input_block" type="PanelContainer" parent="." unique_id=63057711]
+visible = false
 layout_mode = 2
 script = ExtResource("2_h746t")
+
+[connection signal="text_changed" from="MarginContainer/default_value/String" to="." method="_string_diubah"]

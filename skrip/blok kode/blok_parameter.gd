@@ -4,7 +4,7 @@ class_name BlokParameter
 @export var locked : bool = false
 @export var attached : bool = false
 
-@export_enum("Boolean", "Integer", "Float", "String", "Array", "Dictionary", "Object", "Variant") var data_type = "Boolean"
+@export_enum("bool", "int", "float", "String", "Array", "Dictionary", "Object", "Variant") var data_type = "bool"
 
 func tentukan_parameter(parameter : Dictionary) -> void:
 	print(parameter)

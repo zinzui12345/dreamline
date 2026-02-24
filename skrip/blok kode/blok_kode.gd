@@ -177,14 +177,20 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	var daftar_argumen : Array = _parse_argumen(argumen)
 	label_tampilan.text = "Panggil " + metode + " pada " + target_objek + " dengan "
 	header_container.add_child(label_tampilan)
+	instruction_argument = []
 	for data_argumen in daftar_argumen:
 		print("Argumen hasil parsing:", data_argumen)
-		instruction_argument = []
+		var input_argumen : ParameterInput = load("res://ui/blok kode/parameter_input.tscn").instantiate()
 		if data_argumen.begins_with('"') and data_argumen.ends_with('"'):
-			var input_argumen = load("res://ui/blok kode/blok_argumen.tscn").instantiate()
-			input_argumen.atur("String", data_argumen.substr(1, data_argumen.length() - 2))
-			header_container.add_child(input_argumen)
-			instruction_argument.append(input_argumen)
+			input_argumen.tentukan_parameter({
+				"type": "String",
+				"value": data_argumen
+			})
+		input_argumen.name = "argumen_" + str(header_container.get_child_count())
+		input_argumen.attached = true
+		header_container.add_child(input_argumen)
+		instruction_argument.append(input_argumen)
+		input_argumen._setup()
 	instruction_object = target_objek
 	instruction_method = metode
 	block_type = "Instruksi"
@@ -223,7 +229,7 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	block_id = EditorKode.tambah_kode(sintaks)
 func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
-	var input_kondisi = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
+	var input_kondisi = load("res://ui/blok kode/parameter_input.tscn").instantiate()
 	logic_elif_blocks = VBoxContainer.new()
 	logic_else_block = VBoxContainer.new()
 	label_tampilan.text = "Jika "
@@ -244,7 +250,7 @@ func buat_blok_if(parameter : Dictionary) -> void:
 	block_id = EditorKode.tambah_kode(logika)
 func buat_blok_elif(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
-	var input_kondisi = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
+	var input_kondisi = load("res://ui/blok kode/parameter_input.tscn").instantiate()
 	label_tampilan.text = "Atau Jika "
 	header_container.add_child(label_tampilan)
 	header_container.add_child(input_kondisi)
@@ -288,7 +294,7 @@ func hasilkan_kode() -> String:
 				tmp_code += instruction_object + "."
 			if instruction_argument.size() > 0:
 				for args in instruction_argument:
-					tmp_args.append(args.dapatkan_nilai())
+					tmp_args.append(args.hasilkan_kode())
 			tmp_code += instruction_method + "(" + ", ".join(tmp_args) + ")"
 			return tmp_code
 		"Variabel":

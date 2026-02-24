@@ -1,9 +1,6 @@
 [gd_scene format=3 uid="uid://dyjqvpiydif4s"]
 
 [ext_resource type="Script" uid="uid://br637mf34u4vr" path="res://skrip/blok kode/parameter_boolean.gd" id="1_0casu"]
-[ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_wvuha"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0casu"]
 
 [node name="ParameterBoolean" type="PanelContainer" unique_id=679656644]
 custom_minimum_size = Vector2(0, 40)
@@ -26,9 +23,3 @@ popup/item_0/text = "false"
 popup/item_0/id = 1
 popup/item_1/text = "true"
 popup/item_1/id = 0
-
-[node name="input_block" type="PanelContainer" parent="MarginContainer" unique_id=63057711]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_0casu")
-script = ExtResource("2_wvuha")
