@@ -25,9 +25,10 @@ func _setup() -> void:
 func tentukan_parameter(parameter : Dictionary) -> void:
 	print_debug(parameter)
 	match parameter["type"]:
-		"compare":		input_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
-		"and", "or":	input_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
-		"arithmetic":	input_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
+		"compare":			input_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
+		"compare_variant":	input_block = load("res://ui/blok kode/parameter_perbandingan_tipe_data.tscn").instantiate()
+		"and", "or":		input_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
+		"arithmetic":		input_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 	if input_block is BlokParameter:
 		data_type = input_block.data_type
 		input_block.tentukan_parameter(parameter)
@@ -37,8 +38,16 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 				match parameter["value"]:
 					"false":	$MarginContainer/default_value/bool.select(0)
 					"true":		$MarginContainer/default_value/bool.select(1)
+				$input_block.accept_type = "Boolean"
+			"int":
+				$MarginContainer/default_value/int.value = int(parameter["value"])
+				$input_block.accept_type = "Number"
+			"float":
+				$MarginContainer/default_value/float.value = float(parameter["value"])
+				$input_block.accept_type = "Number"
 			"String":
 				$MarginContainer/default_value/String.text = parameter["value"].substr(1, parameter["value"].length()-2)
+				$input_block.accept_type = "String"
 				_string_diubah()
 		data_type = parameter["type"]
 
@@ -51,6 +60,10 @@ func hasilkan_kode() -> String:
 				match $MarginContainer/default_value/bool.selected:
 					0:	return "(false)"
 					1:	return "(true)"
+			"int":
+				return str(int($MarginContainer/default_value/int.value))
+			"float":
+				return str($MarginContainer/default_value/float.value)
 			"String":
 				var result_text : String
 				result_text = $MarginContainer/default_value/String.text.replace("\n", "\\n")

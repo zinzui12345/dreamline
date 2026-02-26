@@ -18,7 +18,7 @@ func parse(text : String):
 # =============================
 func tokenize(text : String) -> Array:
 	var regex = RegEx.new()
-	regex.compile(r"\s*(>=|<=|==|!=|and|or|not|[()*/+\-<>]|[A-Za-z_][A-Za-z0-9_]*|\d+(\.\d+)?)")
+	regex.compile(r'\s*(>=|<=|==|!=|and|or|not|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[()*/+\-<>]|[A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?)')
 	
 	var result = []
 	for m in regex.search_all(text):
@@ -88,7 +88,7 @@ func parse_comparison():
 	if peek() in ops:
 		var op = advance()
 		return {
-			"type": "compare",
+			"type": "compare_variant" if op in ["==", "!="] else "compare",
 			"operator": op,
 			"left": expr,
 			"right": parse_expression()
@@ -153,9 +153,28 @@ func parse_factor():
 		}
 	
 	# =========================
+	# DETEKSI STRING
+	# =========================
+	if (token.begins_with('"') and token.ends_with('"')) \
+	or (token.begins_with("'") and token.ends_with("'")):
+		return {
+			"type": "String",
+			"value": token
+		}
+	
+	# =========================
+	# DETEKSI BOOLEAN
+	# =========================
+	if token in ["true", "false"]:
+		return {
+			"type": "bool",
+			"value": token
+		}
+	
+	# =========================
 	# IDENTIFIER
 	# =========================
 	return {
-		"type": "bool",
+		"type": "identifier",
 		"value": token
 	}

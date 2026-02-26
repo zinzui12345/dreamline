@@ -1,5 +1,5 @@
 extends BlokParameter
-class_name ParameterPerbandingan
+class_name ParameterPerbandinganTipeData
 
 @export var left_block : Node :
 	set(node):
@@ -29,20 +29,34 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 			left_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
 		"float":
 			left_block = load("res://ui/blok kode/parameter_angka_desimal.tscn").instantiate()
+		"String":
+			left_block = load("res://ui/blok kode/parameter_teks.tscn").instantiate()
+		"bool":
+			left_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
+		"compare":
+			left_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
+		"and", "or":
+			left_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
 		"arithmetic":
 			left_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 	if left_block is BlokParameter:
 		left_block.tentukan_parameter(parameter["left"])
 	match parameter["operator"]:
-		"<":	$MarginContainer/compare_operator/operator.select(0)
-		">":	$MarginContainer/compare_operator/operator.select(1)
-		"<=":	$MarginContainer/compare_operator/operator.select(2)
-		">=":	$MarginContainer/compare_operator/operator.select(3)
+		"==":	$MarginContainer/compare_operator/operator.select(0)
+		"!=":	$MarginContainer/compare_operator/operator.select(1)
 	match parameter["right"]["type"]:
 		"int":
 			right_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
 		"float":
 			right_block = load("res://ui/blok kode/parameter_angka_desimal.tscn").instantiate()
+		"String":
+			right_block = load("res://ui/blok kode/parameter_teks.tscn").instantiate()
+		"bool":
+			right_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
+		"compare":
+			right_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
+		"and", "or":
+			right_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
 		"arithmetic":
 			right_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 	if right_block is BlokParameter:
@@ -53,10 +67,8 @@ func hasilkan_kode() -> String:
 	if left_block != null and left_block is BlokParameter:
 		result += left_block.hasilkan_kode()
 	match $MarginContainer/compare_operator/operator.selected:
-		0: result += " < "
-		1: result += " > "
-		2: result += " <= "
-		3: result += " >= "
+		0: result += " == "
+		1: result += " != "
 	if right_block != null and right_block is BlokParameter:
 		result += right_block.hasilkan_kode()
 	result += ")"

@@ -16,9 +16,8 @@ layout_mode = 2
 theme_override_constants/margin_left = 20
 
 [node name="number" type="SpinBox" parent="MarginContainer" unique_id=2129212918]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 min_value = -3276800.0
 max_value = 3276800.0
 rounded = true
-
-[connection signal="changed" from="MarginContainer/number" to="." method="_angka_diubah"]

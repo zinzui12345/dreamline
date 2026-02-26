@@ -16,11 +16,11 @@ func hasilkan_kode() -> String:
 	return "null"
 
 func _string_diubah() -> void:
-	var jumlah_baris : int = $MarginContainer/default_value/String.get_line_count()
+	var jumlah_baris : int = $MarginContainer/String.get_line_count()
 	var lebar_maks : float = 0.0
 	
 	for i in jumlah_baris:
-		var lebar = $MarginContainer/default_value/String.get_line_width(i)
+		var lebar = $MarginContainer/String.get_line_width(i)
 		if lebar > lebar_maks:
 			lebar_maks = lebar
 	

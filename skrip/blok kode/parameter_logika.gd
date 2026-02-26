@@ -18,36 +18,28 @@ class_name ParameterLogika
 
 func tentukan_parameter(parameter : Dictionary) -> void:
 	match parameter["left"]["type"]:
-		"int":
-			left_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
-		"float":
-			left_block = load("res://ui/blok kode/parameter_angka_desimal.tscn").instantiate()
 		"bool":
 			left_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
 		"compare":
 			left_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
+		"compare_variant":
+			left_block = load("res://ui/blok kode/parameter_perbandingan_tipe_data.tscn").instantiate()
 		"and", "or":
 			left_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
-		"arithmetic":
-			left_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 	if left_block is BlokParameter:
 		left_block.tentukan_parameter(parameter["left"])
 	match parameter["type"]:
 		"and":	$MarginContainer/logic_operator/operator.select(0)
 		"or":	$MarginContainer/logic_operator/operator.select(1)
 	match parameter["right"]["type"]:
-		"int":
-			right_block = load("res://ui/blok kode/parameter_angka.tscn").instantiate()
-		"float":
-			right_block = load("res://ui/blok kode/parameter_angka_desimal.tscn").instantiate()
 		"bool":
 			right_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
 		"compare":
 			right_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
+		"compare_variant":
+			right_block = load("res://ui/blok kode/parameter_perbandingan_tipe_data.tscn").instantiate()
 		"and", "or":
 			right_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
-		"arithmetic":
-			right_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 	if right_block is BlokParameter:
 		right_block.tentukan_parameter(parameter["right"])
 

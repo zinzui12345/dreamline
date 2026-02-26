@@ -30,7 +30,6 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pi4ni")
 
 [node name="bool" type="OptionButton" parent="MarginContainer/default_value" unique_id=90155175]
-visible = false
 layout_mode = 2
 selected = 0
 item_count = 2
@@ -39,19 +38,23 @@ popup/item_0/id = 1
 popup/item_1/text = "true"
 popup/item_1/id = 0
 
-[node name="int" type="Label" parent="MarginContainer/default_value" unique_id=1527769515]
+[node name="int" type="SpinBox" parent="MarginContainer/default_value" unique_id=1349953501]
 visible = false
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
-text = "0"
+min_value = -3276800.0
+max_value = 3276800.0
+rounded = true
 
-[node name="float" type="Label" parent="MarginContainer/default_value" unique_id=197989519]
+[node name="float" type="SpinBox" parent="MarginContainer/default_value" unique_id=1563056365]
 visible = false
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
-text = "0.0"
+min_value = -3276800.0
+max_value = 3276800.0
+step = 0.001
 
 [node name="String" type="TextEdit" parent="MarginContainer/default_value" unique_id=1608738314]
+visible = false
 layout_mode = 2
 scroll_fit_content_height = true
 
@@ -83,5 +86,8 @@ text = "null"
 visible = false
 layout_mode = 2
 script = ExtResource("2_h746t")
+accept_type = "Boolean"
+parameter_input_node = NodePath("..")
+parameter_input_property = "input_block"
 
 [connection signal="text_changed" from="MarginContainer/default_value/String" to="." method="_string_diubah"]

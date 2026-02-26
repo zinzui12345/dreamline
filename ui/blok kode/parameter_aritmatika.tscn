@@ -11,6 +11,7 @@ size_flags_horizontal = 2
 size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_oi7ww")
+data_type = "float"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1592624974]
 layout_mode = 2
@@ -27,6 +28,7 @@ custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_vxrd1")
+accept_type = "Number"
 
 [node name="operator" type="OptionButton" parent="MarginContainer/arithmetic_operator" unique_id=1942861427]
 layout_mode = 2
@@ -48,3 +50,4 @@ custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_vxrd1")
+accept_type = "Number"

@@ -46,7 +46,7 @@ func _setup():
 			if (indent_level - sibling_atas.indent_level) > 1:
 				_setup()
 		if logic_type == "elif":
-			if block_type == "Logika" and sibling_atas.block_type == "Logika" and sibling_atas.logic_type == "if":
+			if block_type == "Logika" and sibling_atas.block_type == "Logika" and sibling_atas.logic_type == "if" and self.get_parent() == parent:
 				parent.remove_child(self)
 				sibling_atas.logic_elif_blocks.add_child(self)
 			else:
@@ -181,7 +181,9 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	for data_argumen in daftar_argumen:
 		print("Argumen hasil parsing:", data_argumen)
 		var input_argumen : ParameterInput = load("res://ui/blok kode/parameter_input.tscn").instantiate()
-		if data_argumen.begins_with('"') and data_argumen.ends_with('"'):
+		# TODO : buat fungsi parser seperti ConditionParser untuk menghasilkan Dictionary parameter berdasarkan data_argumen
+		if (data_argumen.begins_with('"') and data_argumen.ends_with('"')) \
+		or (data_argumen.begins_with("'") and data_argumen.ends_with("'")):
 			input_argumen.tentukan_parameter({
 				"type": "String",
 				"value": data_argumen
