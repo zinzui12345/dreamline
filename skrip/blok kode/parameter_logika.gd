@@ -3,18 +3,34 @@ class_name ParameterLogika
 
 @export var left_block : Node :
 	set(node):
-		if node != null:
-			$MarginContainer/logic_operator/left_block.add_child(node)
+		if $MarginContainer/logic_operator/left_value/left_block.get_child_count() == 1 and node != null:
+			left_block = $MarginContainer/logic_operator/left_value/left_block.get_child(0)
+			$MarginContainer/logic_operator/left_value/left_default_value.visible = false
 		else:
-			$MarginContainer/logic_operator/left_block.remove_child(left_block)
-		left_block = node
+			if node != null:
+				$MarginContainer/logic_operator/left_value/left_block.add_child(node)
+				$MarginContainer/logic_operator/left_value/left_block.visible = true
+				$MarginContainer/logic_operator/left_value/left_default_value.visible = false
+			else:
+				$MarginContainer/logic_operator/left_value/left_block.remove_child(left_block)
+				$MarginContainer/logic_operator/left_value/left_block.visible = false
+				$MarginContainer/logic_operator/left_value/left_default_value.visible = true
+			left_block = node
 @export var right_block : Node :
 	set(node):
-		if node != null:
-			$MarginContainer/logic_operator/right_block.add_child(node)
+		if $MarginContainer/logic_operator/right_value/right_block.get_child_count() == 1 and node != null:
+			right_block = $MarginContainer/logic_operator/right_value/right_block.get_child(0)
+			$MarginContainer/logic_operator/right_value/right_default_value.visible = false
 		else:
-			$MarginContainer/logic_operator/right_block.remove_child(right_block)
-		right_block = node
+			if node != null:
+				$MarginContainer/logic_operator/right_value/right_block.add_child(node)
+				$MarginContainer/logic_operator/right_value/right_block.visible = true
+				$MarginContainer/logic_operator/right_value/right_default_value.visible = false
+			else:
+				$MarginContainer/logic_operator/right_value/right_block.remove_child(right_block)
+				$MarginContainer/logic_operator/right_value/right_block.visible = false
+				$MarginContainer/logic_operator/right_value/right_default_value.visible = true
+			right_block = node
 
 func tentukan_parameter(parameter : Dictionary) -> void:
 	match parameter["left"]["type"]:
@@ -47,10 +63,18 @@ func hasilkan_kode() -> String:
 	var result : String = "("
 	if left_block != null and left_block is BlokParameter:
 		result += left_block.hasilkan_kode()
+	else:
+		match $MarginContainer/logic_operator/left_value/left_default_value.selected:
+			0:	result += "(false)"
+			1:	result += "(true)"
 	match $MarginContainer/logic_operator/operator.selected:
 		0: result += " and "
 		1: result += " or "
 	if right_block != null and right_block is BlokParameter:
 		result += right_block.hasilkan_kode()
+	else:
+		match $MarginContainer/logic_operator/right_value/right_default_value.selected:
+			0:	result += "(false)"
+			1:	result += "(true)"
 	result += ")"
 	return result

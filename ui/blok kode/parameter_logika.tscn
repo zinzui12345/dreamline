@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://2lcwcvmtruic" path="res://skrip/blok kode/parameter_logika.gd" id="1_1cyv0"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_y1fl1"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1cyv0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y1fl1"]
+
 [node name="ParameterLogika" type="PanelContainer" unique_id=679656644]
 custom_minimum_size = Vector2(0, 40)
 offset_right = 69.0
@@ -22,11 +26,31 @@ theme_override_constants/margin_bottom = 5
 [node name="logic_operator" type="HBoxContainer" parent="MarginContainer" unique_id=313707949]
 layout_mode = 2
 
-[node name="left_block" type="PanelContainer" parent="MarginContainer/logic_operator" unique_id=994790521]
+[node name="left_value" type="PanelContainer" parent="MarginContainer/logic_operator" unique_id=2142002779]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_1cyv0")
+
+[node name="left_default_value" type="OptionButton" parent="MarginContainer/logic_operator/left_value" unique_id=467909976]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "false"
+popup/item_0/id = 1
+popup/item_1/text = "true"
+popup/item_1/id = 0
+
+[node name="left_block" type="PanelContainer" parent="MarginContainer/logic_operator/left_value" unique_id=994790521]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_y1fl1")
+accept_type = "Boolean"
+parameter_input_node = NodePath("../../../..")
+parameter_input_property = "left_block"
 
 [node name="operator" type="OptionButton" parent="MarginContainer/logic_operator" unique_id=898167826]
 layout_mode = 2
@@ -37,8 +61,28 @@ popup/item_0/id = 0
 popup/item_1/text = "or"
 popup/item_1/id = 1
 
-[node name="right_block" type="PanelContainer" parent="MarginContainer/logic_operator" unique_id=1370382999]
+[node name="right_value" type="PanelContainer" parent="MarginContainer/logic_operator" unique_id=332095864]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_y1fl1")
+
+[node name="right_default_value" type="OptionButton" parent="MarginContainer/logic_operator/right_value" unique_id=1029546991]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+selected = 1
+item_count = 2
+popup/item_0/text = "false"
+popup/item_0/id = 1
+popup/item_1/text = "true"
+popup/item_1/id = 0
+
+[node name="right_block" type="PanelContainer" parent="MarginContainer/logic_operator/right_value" unique_id=1370382999]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_y1fl1")
+accept_type = "Boolean"
+parameter_input_node = NodePath("../../../..")
+parameter_input_property = "right_block"
