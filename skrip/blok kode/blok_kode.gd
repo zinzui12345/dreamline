@@ -181,13 +181,9 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	for data_argumen in daftar_argumen:
 		print("Argumen hasil parsing:", data_argumen)
 		var input_argumen : ParameterInput = load("res://ui/blok kode/parameter_input.tscn").instantiate()
-		# TODO : buat fungsi parser seperti ConditionParser untuk menghasilkan Dictionary parameter berdasarkan data_argumen
-		if (data_argumen.begins_with('"') and data_argumen.ends_with('"')) \
-		or (data_argumen.begins_with("'") and data_argumen.ends_with("'")):
-			input_argumen.tentukan_parameter({
-				"type": "String",
-				"value": data_argumen
-			})
+		var _condition_parser := ConditionParser.new()
+		var parameter_data : Dictionary = _condition_parser.parse(data_argumen)
+		input_argumen.tentukan_parameter(parameter_data)
 		input_argumen.name = "argumen_" + str(header_container.get_child_count())
 		input_argumen.attached = true
 		header_container.add_child(input_argumen)
