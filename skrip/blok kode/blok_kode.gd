@@ -175,7 +175,7 @@ func buat_blok_fungsi(nama_fungsi : String, parameter : String) -> void:
 func buat_blok_instruksi(target_objek : String, metode : String, argumen : String) -> void:
 	var label_tampilan = Label.new()
 	var daftar_argumen : Array = _parse_argumen(argumen)
-	label_tampilan.text = "Panggil " + metode + " pada " + target_objek + " dengan "
+	label_tampilan.text = "Panggil " + metode + (" pada " + target_objek if target_objek.length() > 0 else "") + " dengan "
 	header_container.add_child(label_tampilan)
 	instruction_argument = []
 	for data_argumen in daftar_argumen:
@@ -217,10 +217,9 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 		header_container.add_child(label_tampilan_3)
 		header_container.add_child(variable_value)
 		variable_value.attached = true
-		variable_value.tentukan_parameter({
-			"type": tipe.replace(' ', ''),
-			"value": nilai.replace(' ', '')
-		})
+		var _condition_parser := ConditionParser.new()
+		var parameter_data : Dictionary = _condition_parser.parse(nilai)
+		variable_value.tentukan_parameter(parameter_data)
 		variable_value._setup()
 	var sintaks = hasilkan_kode()
 	code = sintaks

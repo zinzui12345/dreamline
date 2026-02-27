@@ -62,11 +62,11 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	var regex_func = RegEx.new()
 	regex_func.compile("^func\\s+(\\w+)\\((.*?)\\):")
 
-	var regex_instruction = RegEx.new()
-	regex_instruction.compile("^s+(.*)")
-
 	var regex_method_call = RegEx.new()
 	regex_method_call.compile("^(\\w+)\\.(\\w+)\\((.*)\\)")
+	
+	var regex_instruction = RegEx.new()
+	regex_instruction.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s*\((.*)\)$")
 
 	# ==== STRUKTUR KONTROL ====
 	var regex_if = RegEx.new()
@@ -193,23 +193,29 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 			  cocok.get_string(1),
 			  ".",
 			  cocok.get_string(2),
-			  "Arg:",
+			  " Arg:",
 			  cocok.get_string(3),
-			  "Indent:", indent_level)
+			  " Indent:", indent_level)
 		_buat_blok("Instruksi", indent_level, instruksi, {
 			"objek": cocok.get_string(1),
 			"metode": cocok.get_string(2),
 			"argumen": cocok.get_string(3)
 		})
 		return
-
-	# -----------------
-	# PRINT
-	# -----------------
+	
+	# =========================
+	# DIRECT METHOD CALL
+	# =========================
 	cocok = regex_instruction.search(instruksi)
 	if cocok:
-		print("Blok PRINT:", cocok.get_string(1),
-			  "Indent:", indent_level)
+		var method_name = cocok.get_string(1)
+		var arg = cocok.get_string(2)
+		print("Blok DIRECT CALL:", method_name, " Arg:", arg)
+		_buat_blok("Instruksi", indent_level, instruksi, {
+			"objek": "",
+			"metode": method_name,
+			"argumen": arg
+		})
 		return
 
 	print("Instruksi tidak dikenali:", instruksi)

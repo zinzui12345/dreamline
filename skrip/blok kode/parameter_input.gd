@@ -54,6 +54,8 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 				$MarginContainer/default_value/String.text = parameter["value"].substr(1, parameter["value"].length()-2)
 				$input_block.accept_type = "String"
 				_string_diubah()
+			"Array":
+				pass
 		data_type = parameter["type"]
 
 func hasilkan_kode() -> String:
@@ -74,6 +76,8 @@ func hasilkan_kode() -> String:
 				result_text = $MarginContainer/default_value/String.text.replace("\n", "\\n")
 				result_text = result_text.replace("\t", "\\t")
 				return "\"" + result_text + "\""
+			"Array":
+				return $MarginContainer/default_value/Array.text
 		return "null"
 
 func _string_diubah() -> void:

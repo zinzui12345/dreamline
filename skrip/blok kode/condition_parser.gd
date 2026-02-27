@@ -18,7 +18,7 @@ func parse(text : String):
 # =============================
 func tokenize(text : String) -> Array:
 	var regex = RegEx.new()
-	regex.compile(r'\s*(>=|<=|==|!=|and|or|not|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[()*/+\-<>]|[A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?)')
+	regex.compile(r'\s*(>=|<=|==|!=|and|or|not|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|[()\[\]{}:,*/+\-<>]|[A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?)')
 	
 	var result = []
 	for m in regex.search_all(text):
@@ -130,12 +130,64 @@ func parse_term():
 func parse_factor():
 	var token = peek()
 	
+	# =========================
+	# GROUPING ( ... )
+	# =========================
 	if is_match("("):
 		var expr = parse_or()
 		is_match(")")
 		return expr
 	
-	advance()
+	# =========================
+	# ARRAY LITERAL
+	# =========================
+	if is_match("["):
+		var elements : Array = []
+		
+		if not is_match("]"):
+			while true:
+				elements.append(parse_or())
+				
+				if is_match("]"):
+					break
+				
+				is_match(",")
+		
+		return {
+			"type": "Array",
+			"elements": elements
+		}
+	
+	# =========================
+	# DICTIONARY LITERAL
+	# =========================
+	if is_match("{"):
+		var pairs : Array = []
+		
+		if not is_match("}"):
+			while true:
+				var key = parse_or()
+				
+				is_match(":")
+				
+				var value = parse_or()
+				
+				pairs.append({
+					"key": key,
+					"value": value
+				})
+				
+				if is_match("}"):
+					break
+				
+				is_match(",")
+		
+		return {
+			"type": "Dictionary",
+			"pairs": pairs
+		}
+	
+	token = advance()
 	
 	# =========================
 	# DETEKSI ANGKA
