@@ -154,6 +154,10 @@ func sesuaikan_indentasi() -> void:
 	if logic_else_block != null and logic_else_block.get_child_count() > 0:
 		if logic_else_block.get_child(0) is BlokKode:
 			logic_else_block.get_child(0).sesuaikan_indentasi()
+func sesuaikan_warna(warna : Color) -> void:
+	set("theme_override_styles/panel", get("theme_override_styles/panel").duplicate())
+	get("theme_override_styles/panel").set("bg_color", warna)
+	get("theme_override_styles/panel").set("border_color", warna)
 
 func buat_blok_extends(nama_kelas : String) -> void:
 	var label_tampilan = Label.new()
@@ -164,6 +168,7 @@ func buat_blok_extends(nama_kelas : String) -> void:
 	block_type = "Pernyataan"
 	block_id = EditorKode.tambah_kode(instruksi)
 	header_container.add_child(label_tampilan)
+	sesuaikan_warna(EditorKode.warna_blok_pernyataan)
 func buat_blok_fungsi(nama_fungsi : String, parameter : String) -> void:
 	var label_tampilan = Label.new()
 	var instruksi = "func " + nama_fungsi + "(" + parameter + "):"
@@ -172,6 +177,7 @@ func buat_blok_fungsi(nama_fungsi : String, parameter : String) -> void:
 	use_once = true
 	block_id = EditorKode.tambah_kode(instruksi)
 	header_container.add_child(label_tampilan)
+	sesuaikan_warna(EditorKode.warna_blok_fungsi)
 func buat_blok_instruksi(target_objek : String, metode : String, argumen : String) -> void:
 	var label_tampilan = Label.new()
 	var daftar_argumen : Array = _parse_argumen(argumen)
@@ -195,6 +201,7 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	var instruksi = hasilkan_kode()
 	code = instruksi
 	block_id = EditorKode.tambah_kode(instruksi)
+	sesuaikan_warna(EditorKode.warna_blok_instruksi)
 func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	var label_tampilan_1 = Label.new()
 	var label_tampilan_2 = Label.new()
@@ -224,6 +231,7 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	var sintaks = hasilkan_kode()
 	code = sintaks
 	block_id = EditorKode.tambah_kode(sintaks)
+	sesuaikan_warna(EditorKode.warna_blok_variabel)
 func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
 	var input_kondisi = load("res://ui/blok kode/parameter_input.tscn").instantiate()
@@ -245,6 +253,7 @@ func buat_blok_if(parameter : Dictionary) -> void:
 	var logika = hasilkan_kode()
 	code = logika
 	block_id = EditorKode.tambah_kode(logika)
+	sesuaikan_warna(EditorKode.warna_blok_logika)
 func buat_blok_elif(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
 	var input_kondisi = load("res://ui/blok kode/parameter_input.tscn").instantiate()
@@ -260,6 +269,7 @@ func buat_blok_elif(parameter : Dictionary) -> void:
 	var logika = hasilkan_kode()
 	code = logika
 	block_id = EditorKode.tambah_kode(logika)
+	sesuaikan_warna(EditorKode.warna_blok_logika)
 func buat_blok_else() -> void:
 	var label_tampilan = Label.new()
 	label_tampilan.text = "Selain itu"
@@ -269,6 +279,7 @@ func buat_blok_else() -> void:
 	var logika = hasilkan_kode()
 	code = logika
 	block_id = EditorKode.tambah_kode(logika)
+	sesuaikan_warna(EditorKode.warna_blok_logika)
 
 func hasilkan_kode() -> String:
 	match block_type:

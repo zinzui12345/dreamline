@@ -14,6 +14,12 @@ static func dapatkan_daftar_kode() -> Array:
 static func hapus_kode(baris : int) -> void:
 	daftar_kode.remove_at(baris)
 
+const warna_blok_fungsi : Color = Color("073984ff")
+const warna_blok_variabel : Color = Color("11694fff")
+const warna_blok_logika : Color = Color("5b2d07ff")
+const warna_blok_instruksi : Color = Color("5f5fd3ff")
+const warna_blok_pernyataan : Color = Color("4f1319ff")
+
 func konversi_kode_menjadi_blok(kode : String) -> void:
 	var baris_kode : Array = kode.split("\n")
 

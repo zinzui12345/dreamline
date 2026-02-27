@@ -3,6 +3,18 @@
 [ext_resource type="Script" uid="uid://cviymjxgr0pxj" path="res://skrip/blok kode/parameter_perbandingan_tipe_data.gd" id="1_tqn6s"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_x3hs7"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqn6s"]
+bg_color = Color(1, 0.47058824, 0.5019608, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tqn6s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x3hs7"]
@@ -17,6 +29,7 @@ offset_bottom = 40.0
 size_flags_horizontal = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tqn6s")
 script = ExtResource("1_tqn6s")
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1592624974]

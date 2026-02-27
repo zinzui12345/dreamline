@@ -3,6 +3,18 @@
 [ext_resource type="Script" uid="uid://by8p5xvyg1mcs" path="res://skrip/blok kode/parameter_aritmatika.gd" id="1_oi7ww"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_vxrd1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oi7ww"]
+bg_color = Color(1, 0.5882353, 0.19607843, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oi7ww"]
 
 [node name="ParameterAritmatika" type="PanelContainer" unique_id=679656644]
@@ -12,6 +24,7 @@ offset_bottom = 40.0
 size_flags_horizontal = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_oi7ww")
 script = ExtResource("1_oi7ww")
 data_type = "float"
 
