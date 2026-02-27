@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://dpc8q735b38ao" path="res://skrip/blok kode/parameter_perbandingan.gd" id="1_gvtmo"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_bxgl0"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gvtmo"]
+
 [node name="ParameterPerbandingan" type="PanelContainer" unique_id=679656644]
 custom_minimum_size = Vector2(0, 40)
 offset_right = 69.0
@@ -22,12 +24,28 @@ theme_override_constants/margin_bottom = 5
 [node name="compare_operator" type="HBoxContainer" parent="MarginContainer" unique_id=313707949]
 layout_mode = 2
 
-[node name="left_block" type="PanelContainer" parent="MarginContainer/compare_operator" unique_id=994790521]
+[node name="left_value" type="PanelContainer" parent="MarginContainer/compare_operator" unique_id=1681972369]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_gvtmo")
+
+[node name="left_default_value" type="SpinBox" parent="MarginContainer/compare_operator/left_value" unique_id=2143179068]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+min_value = -3276800.0
+max_value = 3276800.0
+rounded = true
+
+[node name="left_block" type="PanelContainer" parent="MarginContainer/compare_operator/left_value" unique_id=994790521]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_bxgl0")
 accept_type = "Number"
+parameter_input_node = NodePath("../../../..")
+parameter_input_property = "left_block"
 
 [node name="operator" type="OptionButton" parent="MarginContainer/compare_operator" unique_id=898167826]
 layout_mode = 2
@@ -42,9 +60,26 @@ popup/item_2/id = 2
 popup/item_3/text = ">="
 popup/item_3/id = 3
 
-[node name="right_block" type="PanelContainer" parent="MarginContainer/compare_operator" unique_id=1370382999]
+[node name="right_value" type="PanelContainer" parent="MarginContainer/compare_operator" unique_id=2069179766]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_gvtmo")
+
+[node name="right_default_value" type="SpinBox" parent="MarginContainer/compare_operator/right_value" unique_id=303024080]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+min_value = -3276800.0
+max_value = 3276800.0
+value = 1.0
+rounded = true
+
+[node name="right_block" type="PanelContainer" parent="MarginContainer/compare_operator/right_value" unique_id=1370382999]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_bxgl0")
 accept_type = "Number"
+parameter_input_node = NodePath("../../../..")
+parameter_input_property = "right_block"

@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://by8p5xvyg1mcs" path="res://skrip/blok kode/parameter_aritmatika.gd" id="1_oi7ww"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_vxrd1"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_oi7ww"]
+
 [node name="ParameterAritmatika" type="PanelContainer" unique_id=679656644]
 custom_minimum_size = Vector2(0, 40)
 offset_right = 69.0
@@ -23,12 +25,28 @@ theme_override_constants/margin_bottom = 5
 [node name="arithmetic_operator" type="HBoxContainer" parent="MarginContainer" unique_id=1085548025]
 layout_mode = 2
 
-[node name="left_block" type="PanelContainer" parent="MarginContainer/arithmetic_operator" unique_id=1611160863]
+[node name="left_value" type="PanelContainer" parent="MarginContainer/arithmetic_operator" unique_id=848705716]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_oi7ww")
+
+[node name="left_default_value" type="SpinBox" parent="MarginContainer/arithmetic_operator/left_value" unique_id=94331118]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+min_value = -3276800.0
+max_value = 3276800.0
+rounded = true
+
+[node name="left_block" type="PanelContainer" parent="MarginContainer/arithmetic_operator/left_value" unique_id=2015690619]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_vxrd1")
 accept_type = "Number"
+parameter_input_node = NodePath("../../../../../..")
+parameter_input_property = "left_block"
 
 [node name="operator" type="OptionButton" parent="MarginContainer/arithmetic_operator" unique_id=1942861427]
 layout_mode = 2
@@ -45,9 +63,26 @@ popup/item_3/id = 3
 popup/item_4/text = "%"
 popup/item_4/id = 4
 
-[node name="right_block" type="PanelContainer" parent="MarginContainer/arithmetic_operator" unique_id=1834070652]
+[node name="right_value" type="PanelContainer" parent="MarginContainer/arithmetic_operator" unique_id=1562486333]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_oi7ww")
+
+[node name="right_default_value" type="SpinBox" parent="MarginContainer/arithmetic_operator/right_value" unique_id=1882902376]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+min_value = -3276800.0
+max_value = 3276800.0
+value = 1.0
+rounded = true
+
+[node name="right_block" type="PanelContainer" parent="MarginContainer/arithmetic_operator/right_value" unique_id=994905612]
+visible = false
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2_vxrd1")
 accept_type = "Number"
+parameter_input_node = NodePath("../../../../../..")
+parameter_input_property = "right_block"

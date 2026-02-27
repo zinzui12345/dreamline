@@ -3,15 +3,20 @@ class_name ParameterInput
 
 @export var input_block : Node :
 	set(node):
-		if node != null:
+		if $input_block.get_child_count() == 1 and node != null:
 			$MarginContainer/default_value.visible = false
-			$input_block.visible = true
-			$input_block.add_child(node)
+			input_block = $input_block.get_child(0)
 		else:
-			$MarginContainer/default_value.visible = true
-			$input_block.visible = false
-			$input_block.remove_child(input_block)
-		input_block = node
+			if node != null:
+				$MarginContainer/default_value.visible = false
+				$input_block.visible = true
+				$input_block.add_child(node)
+			else:
+				$MarginContainer/default_value.visible = true
+				$input_block.visible = false
+				if input_block != null and input_block.get_parent() == $input_block:
+					$input_block.remove_child(input_block)
+			input_block = node
 
 func _setup() -> void:
 	if attached:

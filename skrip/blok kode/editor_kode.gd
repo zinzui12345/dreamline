@@ -257,8 +257,9 @@ func _ready() -> void:
 	test_pallete.buat_blok_fungsi("_setup", "")
 	hapus_kode(test_pallete.block_id - 1)
 	test_pallete.block_id = -1
-	konversi_kode_menjadi_blok("extends Node\nvar a\nvar b : int\nvar c : String = \"Halo Dunia\"\nvar d : int = 11\nvar e : float = 3.14\nfunc _mulai():\n\tif (((0 * 1) > 4) or (1 != 0.3)):\n\t\tPanku.notify(\"ProgrammerIndonesia44\")\n\t\tif (\"hidup\" == \"jokowi\"):\n\t\t\tPanku.notify(\"test2\")\n\t\telif (true):\n\t\t\tpass\n\telif (1 > 0):\n\t\tprint_debug(\"salah\")\n\telse:\n\t\tbergerak(\"maju\", 2)\nfunc _proses():\n\tPanku.notify(\"test\")")
+	konversi_kode_menjadi_blok($kode_debug.text)
 	print_debug(dapatkan_daftar_kode())
+	$kode_debug.hide()
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):
 		$HSplitContainer/CodeEdit.text = konversi_blok_menjadi_kode()

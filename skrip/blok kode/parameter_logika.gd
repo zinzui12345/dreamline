@@ -12,7 +12,8 @@ class_name ParameterLogika
 				$MarginContainer/logic_operator/left_value/left_block.visible = true
 				$MarginContainer/logic_operator/left_value/left_default_value.visible = false
 			else:
-				$MarginContainer/logic_operator/left_value/left_block.remove_child(left_block)
+				if left_block != null and left_block.get_parent() == $MarginContainer/logic_operator/left_value/left_block:
+					$MarginContainer/logic_operator/left_value/left_block.remove_child(left_block)
 				$MarginContainer/logic_operator/left_value/left_block.visible = false
 				$MarginContainer/logic_operator/left_value/left_default_value.visible = true
 			left_block = node
@@ -27,7 +28,8 @@ class_name ParameterLogika
 				$MarginContainer/logic_operator/right_value/right_block.visible = true
 				$MarginContainer/logic_operator/right_value/right_default_value.visible = false
 			else:
-				$MarginContainer/logic_operator/right_value/right_block.remove_child(right_block)
+				if right_block != null and right_block.get_parent() == $MarginContainer/logic_operator/right_value/right_block:
+					$MarginContainer/logic_operator/right_value/right_block.remove_child(right_block)
 				$MarginContainer/logic_operator/right_value/right_block.visible = false
 				$MarginContainer/logic_operator/right_value/right_default_value.visible = true
 			right_block = node
@@ -35,7 +37,9 @@ class_name ParameterLogika
 func tentukan_parameter(parameter : Dictionary) -> void:
 	match parameter["left"]["type"]:
 		"bool":
-			left_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
+			match parameter["left"]["value"]:
+				"false":	$MarginContainer/logic_operator/left_value/left_default_value.select(0)
+				"true":		$MarginContainer/logic_operator/left_value/left_default_value.select(1)
 		"compare":
 			left_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
 		"compare_variant":
@@ -49,7 +53,9 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 		"or":	$MarginContainer/logic_operator/operator.select(1)
 	match parameter["right"]["type"]:
 		"bool":
-			right_block = load("res://ui/blok kode/parameter_boolean.tscn").instantiate()
+			match parameter["right"]["value"]:
+				"false":	$MarginContainer/logic_operator/right_value/right_default_value.select(0)
+				"true":		$MarginContainer/logic_operator/right_value/right_default_value.select(1)
 		"compare":
 			right_block = load("res://ui/blok kode/parameter_perbandingan.tscn").instantiate()
 		"compare_variant":
@@ -65,8 +71,8 @@ func hasilkan_kode() -> String:
 		result += left_block.hasilkan_kode()
 	else:
 		match $MarginContainer/logic_operator/left_value/left_default_value.selected:
-			0:	result += "(false)"
-			1:	result += "(true)"
+			0:	result += "false"
+			1:	result += "true"
 	match $MarginContainer/logic_operator/operator.selected:
 		0: result += " and "
 		1: result += " or "
@@ -74,7 +80,7 @@ func hasilkan_kode() -> String:
 		result += right_block.hasilkan_kode()
 	else:
 		match $MarginContainer/logic_operator/right_value/right_default_value.selected:
-			0:	result += "(false)"
-			1:	result += "(true)"
+			0:	result += "false"
+			1:	result += "true"
 	result += ")"
 	return result
