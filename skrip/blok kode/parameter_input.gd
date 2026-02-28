@@ -16,6 +16,12 @@ class_name ParameterInput
 				$input_block.visible = false
 				if input_block != null and input_block.get_parent() == $input_block:
 					$input_block.remove_child(input_block)
+				match data_type:
+					"bool":		_sesuaikan_warna(Color("789bffff"))
+					"int":		_sesuaikan_warna(Color("ffb107ff"))
+					"float":	_sesuaikan_warna(Color("ffb107ff"))
+					"String":	_sesuaikan_warna(Color("ae78ffff"))
+					"Array":	pass
 			input_block = node
 
 func _setup() -> void:
@@ -26,6 +32,10 @@ func _setup() -> void:
 			default_value_display.visible = true
 		else:
 			default_value_display.visible = false
+
+func _sesuaikan_warna(warna : Color) -> void:
+	set("theme_override_styles/panel", get("theme_override_styles/panel").duplicate())
+	get("theme_override_styles/panel").set("bg_color", warna)
 
 func tentukan_parameter(parameter : Dictionary) -> void:
 	print_debug(parameter)
@@ -44,16 +54,20 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 					"false":	$MarginContainer/default_value/bool.select(0)
 					"true":		$MarginContainer/default_value/bool.select(1)
 				$input_block.accept_type = "Boolean"
+				_sesuaikan_warna(Color("789bffff"))
 			"int":
 				$MarginContainer/default_value/int.value = int(parameter["value"])
 				$input_block.accept_type = "Number"
+				_sesuaikan_warna(Color("ffb107ff"))
 			"float":
 				$MarginContainer/default_value/float.value = float(parameter["value"])
 				$input_block.accept_type = "Number"
+				_sesuaikan_warna(Color("ffb107ff"))
 			"String":
 				$MarginContainer/default_value/String.text = parameter["value"].substr(1, parameter["value"].length()-2)
 				$input_block.accept_type = "String"
 				_string_diubah()
+				_sesuaikan_warna(Color("ae78ffff"))
 			"Array":
 				pass
 		data_type = parameter["type"]

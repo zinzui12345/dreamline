@@ -3,6 +3,18 @@
 [ext_resource type="Script" uid="uid://vtjckqjd06dr" path="res://skrip/blok kode/parameter_input.gd" id="1_pi4ni"]
 [ext_resource type="Script" uid="uid://b4qgj6qnh02ay" path="res://skrip/blok kode/area_parameter.gd" id="2_h746t"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h746t"]
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pi4ni"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pi4ni"]
@@ -17,6 +29,7 @@ offset_bottom = 40.0
 size_flags_horizontal = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_h746t")
 script = ExtResource("1_pi4ni")
 data_type = "Variant"
 

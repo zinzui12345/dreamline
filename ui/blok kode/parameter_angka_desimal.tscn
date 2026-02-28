@@ -2,12 +2,26 @@
 
 [ext_resource type="Script" uid="uid://c3cfkoqfkg2yq" path="res://skrip/blok kode/parameter_angka.gd" id="1_0glea"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nl8m2"]
+bg_color = Color(1, 0.69411767, 0.02745098, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
 [node name="ParameterAngkaDesimal" type="PanelContainer" unique_id=1970027611]
 offset_right = 86.5
 offset_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nl8m2")
 script = ExtResource("1_0glea")
 data_type = "float"
 

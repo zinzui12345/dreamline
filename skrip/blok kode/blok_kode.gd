@@ -157,7 +157,7 @@ func sesuaikan_indentasi() -> void:
 func sesuaikan_warna(warna : Color) -> void:
 	set("theme_override_styles/panel", get("theme_override_styles/panel").duplicate())
 	get("theme_override_styles/panel").set("bg_color", warna)
-	get("theme_override_styles/panel").set("border_color", warna)
+	#get("theme_override_styles/panel").set("border_color", warna)
 
 func buat_blok_extends(nama_kelas : String) -> void:
 	var label_tampilan = Label.new()
