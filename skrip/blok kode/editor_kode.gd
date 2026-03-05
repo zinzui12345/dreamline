@@ -4,15 +4,26 @@ class_name EditorBlokKode
 @onready var daftar_blok_kode : DaftarBlokKode = $HSplitContainer/Pallete
 @onready var area_blok_kode : AreaBlokKode = $HSplitContainer/ScrollContainer/VBoxContainer
 
-static var daftar_kode : Array[String]
+static var daftar_kode : Dictionary = {}
+static var _free_ids : Array[int] = []
+static var _next_id : int = 1
 
-static func tambah_kode(kode : String) -> int:
-	daftar_kode.append(kode)
-	return daftar_kode.size()
-static func dapatkan_daftar_kode() -> Array:
+static func tambah_kode(node : Control) -> int:
+	var id : int
+	if _free_ids.size() > 0:
+		id = _free_ids.pop_front()
+	else:
+		id = _next_id
+		_next_id += 1
+	daftar_kode.set(id, node)
+	return id
+static func dapatkan_daftar_kode() -> Dictionary:
 	return daftar_kode
-static func hapus_kode(baris : int) -> void:
-	daftar_kode.remove_at(baris)
+static func hapus_kode(id : int) -> void:
+	if daftar_kode.has(id):
+		daftar_kode.erase(id)
+		_free_ids.append(id)
+		_free_ids.sort()
 
 const warna_blok_fungsi : Color = Color("073984ff")
 const warna_blok_variabel : Color = Color("11694fff")
@@ -275,3 +286,7 @@ func _ready() -> void:
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):
 		$HSplitContainer/CodeEdit.text = konversi_blok_menjadi_kode()
+	
+	if Input.is_action_just_pressed("mode_bermain"):
+		print("daftar saat ini :")
+		print(dapatkan_daftar_kode())

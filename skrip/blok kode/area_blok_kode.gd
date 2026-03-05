@@ -16,4 +16,4 @@ func _can_drop_data(_at_position, data):
 func _drop_data(_at_position, data):
 	if data is BlokKode:
 		add_child(data)
-		data.block_id = EditorKode.tambah_kode(data.code)
+		data.block_id = EditorKode.tambah_kode(data)

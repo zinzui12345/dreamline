@@ -166,7 +166,7 @@ func buat_blok_extends(nama_kelas : String) -> void:
 	code = instruksi
 	locked = true
 	block_type = "Pernyataan"
-	block_id = EditorKode.tambah_kode(instruksi)
+	block_id = EditorKode.tambah_kode(self)
 	header_container.add_child(label_tampilan)
 	sesuaikan_warna(EditorKode.warna_blok_pernyataan)
 func buat_blok_fungsi(nama_fungsi : String, parameter : String) -> void:
@@ -175,7 +175,7 @@ func buat_blok_fungsi(nama_fungsi : String, parameter : String) -> void:
 	label_tampilan.text = "Ketika " + nama_fungsi
 	code = instruksi
 	use_once = true
-	block_id = EditorKode.tambah_kode(instruksi)
+	block_id = EditorKode.tambah_kode(self)
 	header_container.add_child(label_tampilan)
 	sesuaikan_warna(EditorKode.warna_blok_fungsi)
 func buat_blok_instruksi(target_objek : String, metode : String, argumen : String) -> void:
@@ -200,7 +200,7 @@ func buat_blok_instruksi(target_objek : String, metode : String, argumen : Strin
 	block_type = "Instruksi"
 	var instruksi = hasilkan_kode()
 	code = instruksi
-	block_id = EditorKode.tambah_kode(instruksi)
+	block_id = EditorKode.tambah_kode(self)
 	sesuaikan_warna(EditorKode.warna_blok_instruksi)
 func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	var label_tampilan_1 = Label.new()
@@ -230,7 +230,7 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 		variable_value._setup()
 	var sintaks = hasilkan_kode()
 	code = sintaks
-	block_id = EditorKode.tambah_kode(sintaks)
+	block_id = EditorKode.tambah_kode(self)
 	sesuaikan_warna(EditorKode.warna_blok_variabel)
 func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
@@ -252,7 +252,7 @@ func buat_blok_if(parameter : Dictionary) -> void:
 	$VBoxContainer.add_child(logic_else_block)
 	var logika = hasilkan_kode()
 	code = logika
-	block_id = EditorKode.tambah_kode(logika)
+	block_id = EditorKode.tambah_kode(self)
 	sesuaikan_warna(EditorKode.warna_blok_logika)
 func buat_blok_elif(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
@@ -268,7 +268,7 @@ func buat_blok_elif(parameter : Dictionary) -> void:
 	logic_input = input_kondisi
 	var logika = hasilkan_kode()
 	code = logika
-	block_id = EditorKode.tambah_kode(logika)
+	block_id = EditorKode.tambah_kode(self)
 	sesuaikan_warna(EditorKode.warna_blok_logika)
 func buat_blok_else() -> void:
 	var label_tampilan = Label.new()
@@ -278,7 +278,7 @@ func buat_blok_else() -> void:
 	logic_type = "else"
 	var logika = hasilkan_kode()
 	code = logika
-	block_id = EditorKode.tambah_kode(logika)
+	block_id = EditorKode.tambah_kode(self)
 	sesuaikan_warna(EditorKode.warna_blok_logika)
 
 func hasilkan_kode() -> String:
