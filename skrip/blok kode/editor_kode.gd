@@ -26,6 +26,22 @@ static func hapus_kode(id : int) -> void:
 		_id_kosong.append(id)
 		_id_kosong.sort()
 
+static func tambah_variabel(nama : String, tipe : String) -> void:
+	daftar_variabel.set(nama, tipe)
+static func dapatkan_daftar_variabel() -> Dictionary:
+	return daftar_variabel
+static func dapatkan_daftar_variabel_berdasarkan_tipe(tipe : String) -> Dictionary:
+	var hasil : Dictionary = {}
+	if tipe == "" or tipe == "Variant":
+		return daftar_variabel
+	for nama_variabel in daftar_variabel:
+		if daftar_variabel[nama_variabel] == tipe:
+			hasil[nama_variabel] = daftar_variabel[nama_variabel]
+	return hasil
+static func hapus_variabel(id : int) -> void:
+	if daftar_variabel.has(id):
+		daftar_variabel.erase(id)
+
 const warna_blok_fungsi : Color = Color("073984ff")
 const warna_blok_variabel : Color = Color("11694fff")
 const warna_blok_logika : Color = Color("5b2d07ff")
@@ -286,7 +302,6 @@ func _ready() -> void:
 	hapus_kode(test_pallete.block_id - 1)
 	test_pallete.block_id = -1
 	konversi_kode_menjadi_blok($kode_debug.text)
-	print_debug(dapatkan_daftar_kode())
 	$kode_debug.hide()
 func _input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("daftar_pemain"):
@@ -294,4 +309,4 @@ func _input(_event: InputEvent) -> void:
 	
 	if Input.is_action_just_pressed("mode_bermain"):
 		print("daftar saat ini :")
-		print(dapatkan_daftar_kode())
+		print(dapatkan_daftar_variabel())

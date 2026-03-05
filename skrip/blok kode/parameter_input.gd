@@ -44,6 +44,18 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 		"compare_variant":	input_block = load("res://ui/blok kode/parameter_perbandingan_tipe_data.tscn").instantiate()
 		"and", "or":		input_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
 		"arithmetic":		input_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
+		"identifier":
+			var daftar_variabel : Dictionary = EditorKode.dapatkan_daftar_variabel()
+			if daftar_variabel.has(parameter["value"]):
+				var tipe_variabel : String = daftar_variabel.get(parameter["value"])
+				var daftar_variabel_yang_dapat_dipilih = EditorKode.dapatkan_daftar_variabel_berdasarkan_tipe(tipe_variabel)
+				if $MarginContainer/default_value/Variable.item_count > 0:
+					$MarginContainer/default_value/Variable.clear()
+				for nama_variabel in daftar_variabel_yang_dapat_dipilih:
+					$MarginContainer/default_value/Variable.add_item(nama_variabel)
+					if nama_variabel == parameter["value"]:
+						$MarginContainer/default_value/Variable.select($MarginContainer/default_value/Variable.item_count - 1)
+				parameter["type"] = "Variable"
 	if input_block is BlokParameter:
 		data_type = input_block.data_type
 		input_block.tentukan_parameter(parameter)
@@ -70,10 +82,9 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 				_sesuaikan_warna(Color("ae78ffff"))
 			"Array":
 				pass
+			"Variable":
+				pass
 		data_type = parameter["type"]
-	if parameter["type"] == "identifier":
-		print_debug(parameter)
-		pass
 
 func hasilkan_kode() -> String:
 	if input_block != null:
@@ -95,6 +106,8 @@ func hasilkan_kode() -> String:
 				return "\"" + result_text + "\""
 			"Array":
 				return $MarginContainer/default_value/Array.text
+			"Variable":
+				return $MarginContainer/default_value/Variable.get_item_text($MarginContainer/default_value/Variable.selected)
 		return "null"
 
 func _string_diubah() -> void:

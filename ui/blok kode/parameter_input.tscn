@@ -99,6 +99,13 @@ text = "null"
 [node name="Variable" type="OptionButton" parent="MarginContainer/default_value" unique_id=1128071476]
 visible = false
 layout_mode = 2
+item_count = 3
+popup/item_0/text = "anies"
+popup/item_0/id = 0
+popup/item_1/text = "prabowo"
+popup/item_1/id = 1
+popup/item_2/text = "ganjar"
+popup/item_2/id = 2
 
 [node name="input_block" type="PanelContainer" parent="." unique_id=63057711]
 visible = false

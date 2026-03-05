@@ -6,6 +6,8 @@ class_name BlokParameter
 
 @export_enum("bool", "int", "float", "String", "Array", "Dictionary", "Object", "Variant") var data_type = "bool"
 
+const EditorKode = preload("res://skrip/blok kode/editor_kode.gd")
+
 func tentukan_parameter(parameter : Dictionary) -> void:
 	print(parameter)
 

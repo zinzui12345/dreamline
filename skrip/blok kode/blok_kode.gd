@@ -242,6 +242,7 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	var sintaks = hasilkan_kode()
 	code = sintaks
 	block_id = EditorKode.tambah_kode(self)
+	EditorKode.tambah_variabel(nama, tipe.replace(' ', ''))
 	sesuaikan_warna(EditorKode.warna_blok_variabel)
 func buat_blok_penetapan_nilai_variabel(nama : String, nilai : String, kalkulasi : String = "") -> void:
 	var label_tampilan_1 = Label.new()
