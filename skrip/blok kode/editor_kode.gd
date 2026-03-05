@@ -5,16 +5,17 @@ class_name EditorBlokKode
 @onready var area_blok_kode : AreaBlokKode = $HSplitContainer/ScrollContainer/VBoxContainer
 
 static var daftar_kode : Dictionary = {}
-static var _free_ids : Array[int] = []
-static var _next_id : int = 1
+static var daftar_variabel : Dictionary = {}
+static var _id_kosong : Array[int] = []
+static var _id_selanjutnya : int = 1
 
 static func tambah_kode(node : Control) -> int:
 	var id : int
-	if _free_ids.size() > 0:
-		id = _free_ids.pop_front()
+	if _id_kosong.size() > 0:
+		id = _id_kosong.pop_front()
 	else:
-		id = _next_id
-		_next_id += 1
+		id = _id_selanjutnya
+		_id_selanjutnya += 1
 	daftar_kode.set(id, node)
 	return id
 static func dapatkan_daftar_kode() -> Dictionary:
@@ -22,8 +23,8 @@ static func dapatkan_daftar_kode() -> Dictionary:
 static func hapus_kode(id : int) -> void:
 	if daftar_kode.has(id):
 		daftar_kode.erase(id)
-		_free_ids.append(id)
-		_free_ids.sort()
+		_id_kosong.append(id)
+		_id_kosong.sort()
 
 const warna_blok_fungsi : Color = Color("073984ff")
 const warna_blok_variabel : Color = Color("11694fff")
@@ -57,7 +58,7 @@ func konversi_blok_menjadi_kode() -> String:
 				for jumlah_indentasi in blok_kode.indent_level:
 					tmp_baris_kode += "\t"
 				tmp_baris_kode += instruksi
-			if blok_kode.block_type in ["Fungsi", "Pernyataan"]:
+			if blok_kode.block_type in ["Fungsi", "Extends"]:
 				tmp_kode += "\n"
 			tmp_kode += tmp_baris_kode
 	if tmp_kode.begins_with("\n\n"):
@@ -195,10 +196,11 @@ func _parse_baris_instruksi(instruksi: String, indent_level: int):
 	# -----------------
 	cocok = regex_assign.search(instruksi)
 	if cocok:
-		print("Blok ASSIGN:",
-			  cocok.get_string(1),
-			  "=",
-			  cocok.get_string(2))
+		_buat_blok("ASSIGN", indent_level, instruksi, {
+			"nama": cocok.get_string(1),
+			"kalkulasi": "",
+			"nilai": cocok.get_string(2)
+		})
 		return
 
 	# -----------------
@@ -258,6 +260,9 @@ func _buat_blok(tipe: String, indentasi: int, _instruksi: String, data : Diction
 			print("     VAR TYPE:", data.tipe)
 			print("     VAR VALUE:", data.nilai)
 			node_blok_kode.buat_blok_variabel(data.nama, data.tipe, data.nilai)
+		"ASSIGN":
+			print("Blok ASSIGN:", data.nama, " << ", data.nilai)
+			node_blok_kode.buat_blok_penetapan_nilai_variabel(data.nama, data.nilai, data.kalkulasi)
 		"IF":
 			print("Blok IF (Indent:", indentasi, ")")
 			node_blok_kode.buat_blok_if(data)

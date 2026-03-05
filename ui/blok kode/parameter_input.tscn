@@ -43,6 +43,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_pi4ni")
 
 [node name="bool" type="OptionButton" parent="MarginContainer/default_value" unique_id=90155175]
+visible = false
 layout_mode = 2
 selected = 0
 item_count = 2
@@ -94,6 +95,10 @@ visible = false
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_pi4ni")
 text = "null"
+
+[node name="Variable" type="OptionButton" parent="MarginContainer/default_value" unique_id=1128071476]
+visible = false
+layout_mode = 2
 
 [node name="input_block" type="PanelContainer" parent="." unique_id=63057711]
 visible = false

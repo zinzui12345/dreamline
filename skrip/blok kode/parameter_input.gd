@@ -71,6 +71,9 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 			"Array":
 				pass
 		data_type = parameter["type"]
+	if parameter["type"] == "identifier":
+		print_debug(parameter)
+		pass
 
 func hasilkan_kode() -> String:
 	if input_block != null:

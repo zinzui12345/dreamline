@@ -24,8 +24,10 @@ class_name BlokKode
 
 # Variabel
 @export var variable_name : LineEdit
+@export var set_variable_name : ParameterInput
 @export var variable_type : OptionButton
 @export var variable_value : ParameterInput
+@export var calc_variable_value_by : String # TODO : implementasi
 
 const EditorKode = preload("res://skrip/blok kode/editor_kode.gd")
 
@@ -40,9 +42,17 @@ func _setup():
 	var parent = get_parent()
 	var sibling_atas = parent.get_child(get_index() - 1) if get_index() > 0 else null
 	if sibling_atas != null:
-		if indent_level > sibling_atas.indent_level:
+		if indent_level > sibling_atas.indent_level: # FIXME : kalau parent-nya elif/else, malah masuk ke blok if!
 			parent.remove_child(self)
-			sibling_atas.body_container.add_child(self)
+			if sibling_atas.logic_type == "if":
+				if sibling_atas.logic_else_block != null and sibling_atas.logic_else_block.get_child_count() > 0:
+					sibling_atas.logic_else_block.get_child(0).body_container.add_child(self)
+				elif sibling_atas.logic_elif_blocks != null and sibling_atas.logic_elif_blocks.get_child_count() > 0:
+					sibling_atas.logic_elif_blocks.get_child(sibling_atas.logic_elif_blocks.get_child_count() - 1).body_container.add_child(self)
+				else:
+					sibling_atas.body_container.add_child(self)
+			else:
+				sibling_atas.body_container.add_child(self)
 			if (indent_level - sibling_atas.indent_level) > 1:
 				_setup()
 		if logic_type == "elif":
@@ -165,7 +175,8 @@ func buat_blok_extends(nama_kelas : String) -> void:
 	label_tampilan.text = "Mewarisi " + nama_kelas
 	code = instruksi
 	locked = true
-	block_type = "Pernyataan"
+	use_once = true
+	block_type = "Pewarisan"
 	block_id = EditorKode.tambah_kode(self)
 	header_container.add_child(label_tampilan)
 	sesuaikan_warna(EditorKode.warna_blok_pernyataan)
@@ -232,6 +243,31 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	code = sintaks
 	block_id = EditorKode.tambah_kode(self)
 	sesuaikan_warna(EditorKode.warna_blok_variabel)
+func buat_blok_penetapan_nilai_variabel(nama : String, nilai : String, kalkulasi : String = "") -> void:
+	var label_tampilan_1 = Label.new()
+	var label_tampilan_2 = Label.new()
+	label_tampilan_1.text = "Atur nilai "
+	label_tampilan_2.text = " menjadi "
+	set_variable_name = load("res://ui/blok kode/parameter_input.tscn").instantiate()
+	set_variable_name.attached = true
+	var _condition_parser := ConditionParser.new()
+	var parameter_data : Dictionary = _condition_parser.parse(nama)
+	set_variable_name.tentukan_parameter(parameter_data)
+	set_variable_name._setup()
+	calc_variable_value_by = kalkulasi
+	variable_value = load("res://ui/blok kode/parameter_input.tscn").instantiate()
+	variable_value.attached = true
+	parameter_data = _condition_parser.parse(nilai)
+	variable_value.tentukan_parameter(parameter_data)
+	variable_value._setup()
+	block_type = "Pernyataan"
+	header_container.add_child(label_tampilan_1)
+	header_container.add_child(set_variable_name)
+	header_container.add_child(label_tampilan_2)
+	header_container.add_child(variable_value)
+	code = hasilkan_kode()
+	block_id = EditorKode.tambah_kode(self)
+	sesuaikan_warna(EditorKode.warna_blok_pernyataan)
 func buat_blok_if(parameter : Dictionary) -> void:
 	var label_tampilan = Label.new()
 	var input_kondisi = load("res://ui/blok kode/parameter_input.tscn").instantiate()
@@ -345,6 +381,13 @@ func hasilkan_kode() -> String:
 				if logic_else_block.get_child(0) is BlokKode:
 					tmp_sub_code += "\n" + tmp_indentasi + logic_else_block.get_child(0).hasilkan_kode()
 			return tmp_code + tmp_sub_code
+		"Pernyataan":
+			var tmp_code : String = ""
+			if set_variable_name != null:
+				tmp_code += set_variable_name.hasilkan_kode()
+			if variable_value != null:
+				tmp_code += " = " + variable_value.hasilkan_kode()
+			return tmp_code
 	return code
 
 func _parse_argumen(teks: String) -> Array:
