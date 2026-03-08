@@ -109,10 +109,14 @@ func hasilkan_kode() -> String:
 			"Array":
 				return $MarginContainer/default_value/Array.text
 			"Variable":
-				if $MarginContainer/default_value/Variable.selected < 0:
-					return "# _"
+				if input_block == null:
+					if $MarginContainer/default_value/Variable.selected < 0:
+						return "# _"
+					else:
+						return $MarginContainer/default_value/Variable.get_item_text($MarginContainer/default_value/Variable.selected)
 				else:
-					return $MarginContainer/default_value/Variable.get_item_text($MarginContainer/default_value/Variable.selected)
+					# TODO : ambil dari blok variabel
+					return "# belum di implementasi"
 		return "null"
 
 func _string_diubah() -> void:
@@ -125,3 +129,11 @@ func _string_diubah() -> void:
 			lebar_maks = lebar
 	
 	custom_minimum_size.x = clamp(lebar_maks + 10, 100, 500)
+func _ubah_nama_variabel(nama_lama : String, nama_baru : String) -> void:
+	if input_block == null:
+		for item_id in $MarginContainer/default_value/Variable.item_count:
+			if $MarginContainer/default_value/Variable.get_item_text(item_id) == nama_lama:
+				$MarginContainer/default_value/Variable.set_item_text(item_id, nama_baru)
+	else:
+		# TODO : lakukan di blok variabel
+		pass

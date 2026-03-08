@@ -83,9 +83,10 @@ static func ubah_nama_variabel(id_variabel : int, nama_baru : String) -> void:
 	# ======================================================
 	# Setiap node di "deklarasi" diasumsikan adalah blok yang
 	# menampilkan nama variabel (misalnya label atau input)
-	#for blok in data_variabel["deklarasi"]:
-		#if blok and blok.has_method("update_nama_variabel"):
-			#blok.update_nama_variabel(nama_lama, nama_baru)
+	for blok in data_variabel["deklarasi"]:
+		#blok adalah ParameterInput
+		if blok and blok.has_method("_ubah_nama_variabel"):
+			blok._ubah_nama_variabel(nama_lama, nama_baru)
 static func ubah_tipe_variabel(id_variabel : int, tipe_baru : String) -> void:
 	if not daftar_variabel.has(id_variabel):
 		return
@@ -98,6 +99,7 @@ static func ubah_tipe_variabel(id_variabel : int, tipe_baru : String) -> void:
 	# ======================================================
 	# Misalnya blok operator atau input yang harus berubah tipe
 	#for blok in data_variabel["deklarasi"]:
+		# blok adalah ParameterInput
 		#if blok and blok.has_method("update_tipe_variabel"):
 			#blok.update_tipe_variabel(tipe_baru)
 static func daftar_penggunaan_variabel(id_variabel:int, blok:Node) -> void:
