@@ -8,6 +8,8 @@ static var daftar_kode : Dictionary = {}
 static var daftar_variabel : Dictionary = {}
 static var _id_kosong : Array[int] = []
 static var _id_selanjutnya : int = 1
+static var _id_variabel_kosong : Array[int] = []
+static var _id_variabel_selanjutnya : int = 1
 
 static func tambah_kode(node : Control) -> int:
 	var id : int
@@ -26,21 +28,95 @@ static func hapus_kode(id : int) -> void:
 		_id_kosong.append(id)
 		_id_kosong.sort()
 
-static func tambah_variabel(nama : String, tipe : String) -> void:
-	daftar_variabel.set(nama, tipe)
+static func tambah_variabel(nama : String, tipe : String) -> int:
+	var id_variabel : int
+	if _id_variabel_kosong.size() > 0:
+		id_variabel = _id_variabel_kosong.pop_front()
+	else:
+		id_variabel = _id_variabel_selanjutnya
+		_id_variabel_selanjutnya += 1
+	daftar_variabel[id_variabel] = {
+		"nama": nama,
+		"tipe": tipe,
+		"deklarasi": []
+	}
+	return id_variabel
+static func dapatkan_variabel(nama_variabel : String) -> Dictionary:
+	for id_variabel in daftar_variabel:
+		if daftar_variabel[id_variabel]["nama"] == nama_variabel:
+			return {
+				"id":	id_variabel,
+				"tipe":	daftar_variabel[id_variabel]["tipe"]
+			}
+	return {}
 static func dapatkan_daftar_variabel() -> Dictionary:
 	return daftar_variabel
 static func dapatkan_daftar_variabel_berdasarkan_tipe(tipe : String) -> Dictionary:
 	var hasil : Dictionary = {}
 	if tipe == "" or tipe == "Variant":
 		return daftar_variabel
-	for nama_variabel in daftar_variabel:
-		if daftar_variabel[nama_variabel] == tipe:
-			hasil[nama_variabel] = daftar_variabel[nama_variabel]
+	for id_variabel in daftar_variabel:
+		if daftar_variabel[id_variabel]["tipe"] == tipe:
+			hasil[id_variabel] = daftar_variabel[id_variabel]
 	return hasil
+static func cek_apakah_variabel_sudah_ada(nama_variabel : String) -> bool:
+	for id_variabel in daftar_variabel:
+		if daftar_variabel[id_variabel]["nama"] == nama_variabel:
+			return true
+	return false
+static func ubah_nama_variabel(id_variabel : int, nama_baru : String) -> void:
+	if not daftar_variabel.has(id_variabel):
+		return
+	
+	# Cegah nama variabel duplikat
+	if cek_apakah_variabel_sudah_ada(nama_baru):
+		return
+	
+	var data_variabel = daftar_variabel[id_variabel]
+	var nama_lama = data_variabel["nama"]
+	
+	# Ubah nama pada data variabel
+	data_variabel["nama"] = nama_baru
+	
+	# ======================================================
+	# UPDATE SEMUA BLOK YANG MENGGUNAKAN VARIABEL INI
+	# ======================================================
+	# Setiap node di "deklarasi" diasumsikan adalah blok yang
+	# menampilkan nama variabel (misalnya label atau input)
+	#for blok in data_variabel["deklarasi"]:
+		#if blok and blok.has_method("update_nama_variabel"):
+			#blok.update_nama_variabel(nama_lama, nama_baru)
+static func ubah_tipe_variabel(id_variabel : int, tipe_baru : String) -> void:
+	if not daftar_variabel.has(id_variabel):
+		return
+	
+	var data_variabel = daftar_variabel[id_variabel]
+	data_variabel["tipe"] = tipe_baru
+	
+	# ======================================================
+	# UPDATE BLOK YANG BERGANTUNG PADA TIPE
+	# ======================================================
+	# Misalnya blok operator atau input yang harus berubah tipe
+	#for blok in data_variabel["deklarasi"]:
+		#if blok and blok.has_method("update_tipe_variabel"):
+			#blok.update_tipe_variabel(tipe_baru)
+static func daftar_penggunaan_variabel(id_variabel:int, blok:Node) -> void:
+	if not daftar_variabel.has(id_variabel):
+		return
+	daftar_variabel[id_variabel]["deklarasi"].append(blok)
+static func hapus_penggunaan_variabel(id_variabel:int, blok:Node) -> void:
+	if not daftar_variabel.has(id_variabel):
+		return
+	daftar_variabel[id_variabel]["deklarasi"].erase(blok)
 static func hapus_variabel(id : int) -> void:
 	if daftar_variabel.has(id):
+		# ======================================================
+		# UPDATE SEMUA BLOK YANG MENGGUNAKAN VARIABEL APAPUN
+		# ======================================================
+		# TODO : implementasi
 		daftar_variabel.erase(id)
+		_id_variabel_kosong.append(id)
+		_id_variabel_kosong.sort()
 
 const warna_blok_fungsi : Color = Color("073984ff")
 const warna_blok_variabel : Color = Color("11694fff")

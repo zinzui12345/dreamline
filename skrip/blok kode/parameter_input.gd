@@ -45,16 +45,18 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 		"and", "or":		input_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
 		"arithmetic":		input_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 		"identifier":
-			var daftar_variabel : Dictionary = EditorKode.dapatkan_daftar_variabel()
-			if daftar_variabel.has(parameter["value"]):
-				var tipe_variabel : String = daftar_variabel.get(parameter["value"])
+			if EditorKode.cek_apakah_variabel_sudah_ada(parameter["value"]):
+				var data_variabel = EditorKode.dapatkan_variabel(parameter["value"])
+				var tipe_variabel : String = data_variabel["tipe"]
 				var daftar_variabel_yang_dapat_dipilih = EditorKode.dapatkan_daftar_variabel_berdasarkan_tipe(tipe_variabel)
 				if $MarginContainer/default_value/Variable.item_count > 0:
 					$MarginContainer/default_value/Variable.clear()
-				for nama_variabel in daftar_variabel_yang_dapat_dipilih:
+				for id_variabel_pilihan in daftar_variabel_yang_dapat_dipilih:
+					var nama_variabel : String = daftar_variabel_yang_dapat_dipilih[id_variabel_pilihan]["nama"]
 					$MarginContainer/default_value/Variable.add_item(nama_variabel)
 					if nama_variabel == parameter["value"]:
 						$MarginContainer/default_value/Variable.select($MarginContainer/default_value/Variable.item_count - 1)
+					EditorKode.daftar_penggunaan_variabel(id_variabel_pilihan, self)
 				parameter["type"] = "Variable"
 	if input_block is BlokParameter:
 		data_type = input_block.data_type
@@ -83,7 +85,7 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 			"Array":
 				pass
 			"Variable":
-				pass
+				_sesuaikan_warna(Color("ff1500ff"))
 		data_type = parameter["type"]
 
 func hasilkan_kode() -> String:
@@ -107,7 +109,10 @@ func hasilkan_kode() -> String:
 			"Array":
 				return $MarginContainer/default_value/Array.text
 			"Variable":
-				return $MarginContainer/default_value/Variable.get_item_text($MarginContainer/default_value/Variable.selected)
+				if $MarginContainer/default_value/Variable.selected < 0:
+					return "# _"
+				else:
+					return $MarginContainer/default_value/Variable.get_item_text($MarginContainer/default_value/Variable.selected)
 		return "null"
 
 func _string_diubah() -> void:

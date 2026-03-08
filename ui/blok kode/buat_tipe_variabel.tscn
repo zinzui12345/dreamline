@@ -27,3 +27,5 @@ popup/item_4/id = 4
 popup/item_5/text = "Dictionary"
 popup/item_5/id = 5
 script = ExtResource("1_or4y3")
+
+[connection signal="item_selected" from="." to="." method="tipe_diubah"]

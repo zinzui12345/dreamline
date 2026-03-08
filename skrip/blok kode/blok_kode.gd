@@ -32,6 +32,7 @@ class_name BlokKode
 const EditorKode = preload("res://skrip/blok kode/editor_kode.gd")
 
 var block_id : int = -1
+var var_id : int = -1
 
 func _setup():
 	# Sembunyikan body jika bukan IF atau WHILE
@@ -222,12 +223,14 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	header_container.add_child(label_tampilan_1)
 	header_container.add_child(variable_name)
 	variable_name.text = nama
+	variable_name.blok_kode = self
 	block_type = "Variabel"
 	if tipe.length() > 0:
 		variable_type = load("res://ui/blok kode/buat_tipe_variabel.tscn").instantiate()
 		label_tampilan_2.text = " dengan tipe "
 		header_container.add_child(label_tampilan_2)
 		header_container.add_child(variable_type)
+		variable_type.blok_kode = self
 		variable_type.atur_tipe(tipe.replace(' ', ''))
 	if nilai.length() > 0:
 		variable_value = load("res://ui/blok kode/parameter_input.tscn").instantiate()
@@ -242,7 +245,7 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	var sintaks = hasilkan_kode()
 	code = sintaks
 	block_id = EditorKode.tambah_kode(self)
-	EditorKode.tambah_variabel(nama, tipe.replace(' ', ''))
+	var_id = EditorKode.tambah_variabel(nama, tipe.replace(' ', ''))
 	sesuaikan_warna(EditorKode.warna_blok_variabel)
 func buat_blok_penetapan_nilai_variabel(nama : String, nilai : String, kalkulasi : String = "") -> void:
 	var label_tampilan_1 = Label.new()
