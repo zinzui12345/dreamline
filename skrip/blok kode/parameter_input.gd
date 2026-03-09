@@ -139,6 +139,7 @@ func _tentukan_pilihan_variabel_berdasarkan_tipe(nama_variabel : String) -> void
 			$MarginContainer/default_value/Variable.select($MarginContainer/default_value/Variable.item_count - 1)
 		EditorKode.daftar_penggunaan_variabel(id_variabel_pilihan, self)
 	if blok_kode != null and blok_kode.variable_value != null:
+		# FIXME : kalau blok_kode.input_block != null, hapus blok input
 		blok_kode.variable_value.tentukan_parameter({
 			"type":	tipe_variabel
 		})

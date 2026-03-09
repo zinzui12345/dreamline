@@ -111,6 +111,8 @@ func _can_drop_data(_at_position, data):
 			return true
 		elif data.block_type == "Logika" and block_type == "Logika" and logic_type == "if" and data.logic_type == "else" and logic_else_block.get_child_count() == 0:
 			return true
+		elif data.block_type == "Pernyataan":
+			return true
 		#elif get_parent() is AreaBlokKode and data.block_type in ["Fungsi", "Pernyataan"]:
 			#return true
 	return false

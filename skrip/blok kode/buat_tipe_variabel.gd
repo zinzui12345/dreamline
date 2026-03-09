@@ -27,6 +27,7 @@ func tipe_diubah(_tipe_dipilih : int) -> void:
 	var tipe_variabel : String = dapatkan_tipe()
 	EditorKode.ubah_tipe_variabel(blok_kode.var_id, tipe_variabel)
 	if blok_kode != null and blok_kode.variable_value != null:
+		# FIXME : kalau blok_kode.input_block != null, hapus blok input
 		blok_kode.variable_value.tentukan_parameter({
 			"type":	tipe_variabel
 		})
