@@ -24,4 +24,12 @@ func dapatkan_tipe() -> String:
 		_: 	return "Variant"
 
 func tipe_diubah(_tipe_dipilih : int) -> void:
-	EditorKode.ubah_tipe_variabel(blok_kode.var_id, dapatkan_tipe())
+	var tipe_variabel : String = dapatkan_tipe()
+	EditorKode.ubah_tipe_variabel(blok_kode.var_id, tipe_variabel)
+	if blok_kode != null and blok_kode.variable_value != null:
+		blok_kode.variable_value.tentukan_parameter({
+			"type":	tipe_variabel
+		})
+		if tipe_variabel != "String":
+			blok_kode.variable_value.custom_minimum_size.x = 100
+		blok_kode.variable_value._setup()

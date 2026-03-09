@@ -224,6 +224,7 @@ func buat_blok_variabel(nama : String, tipe : String, nilai : String) -> void:
 	header_container.add_child(variable_name)
 	variable_name.text = nama
 	variable_name.blok_kode = self
+	variable_name._setup()
 	block_type = "Variabel"
 	if tipe.length() > 0:
 		variable_type = load("res://ui/blok kode/buat_tipe_variabel.tscn").instantiate()
@@ -258,6 +259,7 @@ func buat_blok_penetapan_nilai_variabel(nama : String, nilai : String, kalkulasi
 	var parameter_data : Dictionary = _condition_parser.parse(nama)
 	set_variable_name.tentukan_parameter(parameter_data)
 	set_variable_name._setup()
+	set_variable_name.blok_kode = self
 	calc_variable_value_by = kalkulasi
 	variable_value = load("res://ui/blok kode/parameter_input.tscn").instantiate()
 	variable_value.attached = true

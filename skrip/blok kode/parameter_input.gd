@@ -22,7 +22,9 @@ class_name ParameterInput
 					"float":	_sesuaikan_warna(Color("ffb107ff"))
 					"String":	_sesuaikan_warna(Color("ae78ffff"))
 					"Array":	pass
+					"Variable":	_sesuaikan_warna(Color("ff1500ff"))
 			input_block = node
+@export var blok_kode : BlokKode
 
 func _setup() -> void:
 	if attached:
@@ -46,17 +48,7 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 		"arithmetic":		input_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 		"identifier":
 			if EditorKode.cek_apakah_variabel_sudah_ada(parameter["value"]):
-				var data_variabel = EditorKode.dapatkan_variabel(parameter["value"])
-				var tipe_variabel : String = data_variabel["tipe"]
-				var daftar_variabel_yang_dapat_dipilih = EditorKode.dapatkan_daftar_variabel_berdasarkan_tipe(tipe_variabel)
-				if $MarginContainer/default_value/Variable.item_count > 0:
-					$MarginContainer/default_value/Variable.clear()
-				for id_variabel_pilihan in daftar_variabel_yang_dapat_dipilih:
-					var nama_variabel : String = daftar_variabel_yang_dapat_dipilih[id_variabel_pilihan]["nama"]
-					$MarginContainer/default_value/Variable.add_item(nama_variabel)
-					if nama_variabel == parameter["value"]:
-						$MarginContainer/default_value/Variable.select($MarginContainer/default_value/Variable.item_count - 1)
-					EditorKode.daftar_penggunaan_variabel(id_variabel_pilihan, self)
+				_tentukan_pilihan_variabel_berdasarkan_tipe(parameter["value"])
 				parameter["type"] = "Variable"
 	if input_block is BlokParameter:
 		data_type = input_block.data_type
@@ -64,21 +56,25 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 	if input_block == null:
 		match parameter["type"]:
 			"bool":
-				match parameter["value"]:
-					"false":	$MarginContainer/default_value/bool.select(0)
-					"true":		$MarginContainer/default_value/bool.select(1)
+				if parameter.has("value"):
+					match parameter["value"]:
+						"false":	$MarginContainer/default_value/bool.select(0)
+						"true":		$MarginContainer/default_value/bool.select(1)
 				$input_block.accept_type = "Boolean"
 				_sesuaikan_warna(Color("789bffff"))
 			"int":
-				$MarginContainer/default_value/int.value = int(parameter["value"])
+				if parameter.has("value"):
+					$MarginContainer/default_value/int.value = int(parameter["value"])
 				$input_block.accept_type = "Number"
 				_sesuaikan_warna(Color("ffb107ff"))
 			"float":
-				$MarginContainer/default_value/float.value = float(parameter["value"])
+				if parameter.has("value"):
+					$MarginContainer/default_value/float.value = float(parameter["value"])
 				$input_block.accept_type = "Number"
 				_sesuaikan_warna(Color("ffb107ff"))
 			"String":
-				$MarginContainer/default_value/String.text = parameter["value"].substr(1, parameter["value"].length()-2)
+				if parameter.has("value"):
+					$MarginContainer/default_value/String.text = parameter["value"].substr(1, parameter["value"].length()-2)
 				$input_block.accept_type = "String"
 				_string_diubah()
 				_sesuaikan_warna(Color("ae78ffff"))
@@ -129,6 +125,31 @@ func _string_diubah() -> void:
 			lebar_maks = lebar
 	
 	custom_minimum_size.x = clamp(lebar_maks + 10, 100, 500)
+func _tentukan_pilihan_variabel_berdasarkan_tipe(nama_variabel : String) -> void:
+	var data_variabel = EditorKode.dapatkan_variabel(nama_variabel)
+	var tipe_variabel : String = data_variabel["tipe"]
+	var daftar_variabel_yang_dapat_dipilih = EditorKode.dapatkan_daftar_variabel_berdasarkan_tipe(tipe_variabel)
+	if $MarginContainer/default_value/Variable.item_count > 0:
+		$MarginContainer/default_value/Variable.select(-1)
+		$MarginContainer/default_value/Variable.clear()
+	for id_variabel_pilihan in daftar_variabel_yang_dapat_dipilih:
+		var nama_variabel_saat_ini : String = daftar_variabel_yang_dapat_dipilih[id_variabel_pilihan]["nama"]
+		$MarginContainer/default_value/Variable.add_item(nama_variabel_saat_ini)
+		if nama_variabel_saat_ini == nama_variabel:
+			$MarginContainer/default_value/Variable.select($MarginContainer/default_value/Variable.item_count - 1)
+		EditorKode.daftar_penggunaan_variabel(id_variabel_pilihan, self)
+	if blok_kode != null and blok_kode.variable_value != null:
+		blok_kode.variable_value.tentukan_parameter({
+			"type":	tipe_variabel
+		})
+		if tipe_variabel != "String":
+			blok_kode.variable_value.custom_minimum_size.x = 100
+		blok_kode.variable_value._setup()
+func _dapatkan_nama_variabel_dipilih() -> String:
+	# if input_block == null:
+	return $MarginContainer/default_value/Variable.get_item_text($MarginContainer/default_value/Variable.selected)
+	# else:
+	# TODO : lakukan di blok variabel
 func _ubah_nama_variabel(nama_lama : String, nama_baru : String) -> void:
 	if input_block == null:
 		for item_id in $MarginContainer/default_value/Variable.item_count:

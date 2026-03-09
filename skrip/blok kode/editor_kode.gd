@@ -40,6 +40,7 @@ static func tambah_variabel(nama : String, tipe : String) -> int:
 		"tipe": tipe,
 		"deklarasi": []
 	}
+	tentukan_pilihan_blok_variabel_berdasarkan_tipe(tipe)
 	return id_variabel
 static func dapatkan_variabel(nama_variabel : String) -> Dictionary:
 	for id_variabel in daftar_variabel:
@@ -67,43 +68,26 @@ static func cek_apakah_variabel_sudah_ada(nama_variabel : String) -> bool:
 static func ubah_nama_variabel(id_variabel : int, nama_baru : String) -> void:
 	if not daftar_variabel.has(id_variabel):
 		return
-	
-	# Cegah nama variabel duplikat
 	if cek_apakah_variabel_sudah_ada(nama_baru):
 		return
-	
 	var data_variabel = daftar_variabel[id_variabel]
 	var nama_lama = data_variabel["nama"]
-	
-	# Ubah nama pada data variabel
 	data_variabel["nama"] = nama_baru
-	
-	# ======================================================
-	# UPDATE SEMUA BLOK YANG MENGGUNAKAN VARIABEL INI
-	# ======================================================
-	# Setiap node di "deklarasi" diasumsikan adalah blok yang
-	# menampilkan nama variabel (misalnya label atau input)
 	for blok in data_variabel["deklarasi"]:
-		#blok adalah ParameterInput
 		if blok and blok.has_method("_ubah_nama_variabel"):
 			blok._ubah_nama_variabel(nama_lama, nama_baru)
 static func ubah_tipe_variabel(id_variabel : int, tipe_baru : String) -> void:
 	if not daftar_variabel.has(id_variabel):
 		return
-	
 	var data_variabel = daftar_variabel[id_variabel]
+	var tipe_lama = data_variabel["tipe"]
 	data_variabel["tipe"] = tipe_baru
-	
-	# ======================================================
-	# UPDATE BLOK YANG BERGANTUNG PADA TIPE
-	# ======================================================
-	# Misalnya blok operator atau input yang harus berubah tipe
-	#for blok in data_variabel["deklarasi"]:
-		# blok adalah ParameterInput
-		#if blok and blok.has_method("update_tipe_variabel"):
-			#blok.update_tipe_variabel(tipe_baru)
+	tentukan_pilihan_blok_variabel_berdasarkan_tipe(tipe_lama)
+	tentukan_pilihan_blok_variabel_berdasarkan_tipe(tipe_baru)
 static func daftar_penggunaan_variabel(id_variabel:int, blok:Node) -> void:
 	if not daftar_variabel.has(id_variabel):
+		return
+	if daftar_variabel[id_variabel]["deklarasi"].has(blok):
 		return
 	daftar_variabel[id_variabel]["deklarasi"].append(blok)
 static func hapus_penggunaan_variabel(id_variabel:int, blok:Node) -> void:
@@ -113,12 +97,21 @@ static func hapus_penggunaan_variabel(id_variabel:int, blok:Node) -> void:
 static func hapus_variabel(id : int) -> void:
 	if daftar_variabel.has(id):
 		# ======================================================
-		# UPDATE SEMUA BLOK YANG MENGGUNAKAN VARIABEL APAPUN
+		# UPDATE SEMUA BLOK YANG MENGGUNAKAN VARIABEL INI
 		# ======================================================
 		# TODO : implementasi
 		daftar_variabel.erase(id)
 		_id_variabel_kosong.append(id)
 		_id_variabel_kosong.sort()
+static func tentukan_pilihan_blok_variabel_berdasarkan_tipe(pilih_tipe : String) -> void:
+	for id_variabel_lain in dapatkan_daftar_variabel_berdasarkan_tipe(pilih_tipe):
+		var variabel_lain = daftar_variabel[id_variabel_lain]
+		var blok_di_atur : Array
+		for blok_lain in variabel_lain["deklarasi"]:
+			if blok_lain and blok_lain.has_method("_tentukan_pilihan_variabel_berdasarkan_tipe"):
+				if not blok_di_atur.has(blok_lain) and variabel_lain["nama"] == blok_lain._dapatkan_nama_variabel_dipilih():
+					blok_di_atur.append(blok_lain)
+					blok_lain._tentukan_pilihan_variabel_berdasarkan_tipe(variabel_lain["nama"])
 
 const warna_blok_fungsi : Color = Color("073984ff")
 const warna_blok_variabel : Color = Color("11694fff")
