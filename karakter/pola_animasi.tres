@@ -47,33 +47,46 @@ animation = &"animasi/berjalan maju"
 animation = &"animasi/berlari maju"
 
 [sub_resource type="AnimationNodeBlendSpace2D" id="AnimationNodeBlendSpace2D_sttqg"]
+blend_mode = 1
 blend_point_0/node = SubResource("AnimationNodeAnimation_82mvo")
 blend_point_0/pos = Vector2(0, 0.5)
+blend_point_0/name = &"0"
 blend_point_1/node = SubResource("AnimationNodeAnimation_4xsrm")
 blend_point_1/pos = Vector2(0, 1)
+blend_point_1/name = &"1"
 blend_point_2/node = SubResource("AnimationNodeAnimation_5r0ql")
 blend_point_2/pos = Vector2(0, 0)
+blend_point_2/name = &"2"
 blend_point_3/node = SubResource("AnimationNodeAnimation_iuh3a")
 blend_point_3/pos = Vector2(0, -0.5)
+blend_point_3/name = &"3"
 blend_point_4/node = SubResource("AnimationNodeAnimation_vn3q5")
 blend_point_4/pos = Vector2(0, -1)
+blend_point_4/name = &"4"
 blend_point_5/node = SubResource("AnimationNodeAnimation_8k1co")
 blend_point_5/pos = Vector2(0.5, 0)
+blend_point_5/name = &"5"
 blend_point_6/node = SubResource("AnimationNodeAnimation_bhfbk")
 blend_point_6/pos = Vector2(-0.5, 0)
+blend_point_6/name = &"6"
 blend_point_7/node = SubResource("AnimationNodeAnimation_tkxui")
 blend_point_7/pos = Vector2(-0.5, 0.5)
+blend_point_7/name = &"7"
 blend_point_8/node = SubResource("AnimationNodeAnimation_ygb2y")
 blend_point_8/pos = Vector2(0.5, 0.5)
+blend_point_8/name = &"8"
 blend_point_9/node = SubResource("AnimationNodeAnimation_6k2so")
 blend_point_9/pos = Vector2(-0.5, 1)
+blend_point_9/name = &"9"
 blend_point_10/node = SubResource("AnimationNodeAnimation_cjqxl")
 blend_point_10/pos = Vector2(0.5, 1)
+blend_point_10/name = &"10"
 blend_point_11/node = SubResource("AnimationNodeAnimation_1hyaf")
 blend_point_11/pos = Vector2(0.5, -0.5)
+blend_point_11/name = &"11"
 blend_point_12/node = SubResource("AnimationNodeAnimation_o6214")
 blend_point_12/pos = Vector2(-0.5, -0.5)
-blend_mode = 1
+blend_point_12/name = &"12"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_asfuq"]
 animation = &"animasi/jongkok"
@@ -81,6 +94,7 @@ animation = &"animasi/jongkok"
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_e423v"]
 blend_point_0/node = SubResource("AnimationNodeAnimation_asfuq")
 blend_point_0/pos = 0.0
+blend_point_0/name = &"0"
 
 [sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_r5vs3"]
 filter_enabled = true
@@ -102,10 +116,13 @@ animation = &"animasi/melihat_kekiri"
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_o3ckr"]
 blend_point_0/node = SubResource("AnimationNodeAnimation_o55qy")
 blend_point_0/pos = 1.0
+blend_point_0/name = &"0"
 blend_point_1/node = SubResource("AnimationNodeAnimation_g1b1f")
 blend_point_1/pos = 0.0
+blend_point_1/name = &"1"
 blend_point_2/node = SubResource("AnimationNodeAnimation_3rivw")
 blend_point_2/pos = -1.0
+blend_point_2/name = &"2"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4rsse"]
 animation = &"animasi/melihat_kedepan"
@@ -125,14 +142,19 @@ animation = &"animasi/melihat_keatas"
 [sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_u5laf"]
 blend_point_0/node = SubResource("AnimationNodeAnimation_4rsse")
 blend_point_0/pos = 0.0
+blend_point_0/name = &"0"
 blend_point_1/node = SubResource("AnimationNodeAnimation_du260")
 blend_point_1/pos = -1.0
+blend_point_1/name = &"1"
 blend_point_2/node = SubResource("AnimationNodeAnimation_r0du5")
 blend_point_2/pos = -0.5
+blend_point_2/name = &"2"
 blend_point_3/node = SubResource("AnimationNodeAnimation_mn4eu")
 blend_point_3/pos = 0.5
+blend_point_3/name = &"3"
 blend_point_4/node = SubResource("AnimationNodeAnimation_rnc0o")
 blend_point_4/pos = 1.0
+blend_point_4/name = &"4"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dymm5"]
 animation = &"animasi/duduk_dibonceng_1 diam"

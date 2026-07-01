@@ -47,6 +47,8 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 		"and", "or":		input_block = load("res://ui/blok kode/parameter_logika.tscn").instantiate()
 		"arithmetic":		input_block = load("res://ui/blok kode/parameter_aritmatika.tscn").instantiate()
 		"identifier":
+			# TODO : buat kondisi tertentu buat bedain antara attach blok variabel atau tampilkan pilihan variabel
+			# gimana caranya ? karena fungsi ini dipanggil sebelum blok_kode diatur
 			if EditorKode.cek_apakah_variabel_sudah_ada(parameter["value"]):
 				_tentukan_pilihan_variabel_berdasarkan_tipe(parameter["value"])
 				parameter["type"] = "Variable"
@@ -139,7 +141,7 @@ func _tentukan_pilihan_variabel_berdasarkan_tipe(nama_variabel : String) -> void
 			$MarginContainer/default_value/Variable.select($MarginContainer/default_value/Variable.item_count - 1)
 		EditorKode.daftar_penggunaan_variabel(id_variabel_pilihan, self)
 	if blok_kode != null and blok_kode.variable_value != null:
-		# FIXME : kalau blok_kode.input_block != null, hapus blok input
+		# FIXME : kalau blok_kode.input_block != null, hapus blok input pada blok_kode
 		blok_kode.variable_value.tentukan_parameter({
 			"type":	tipe_variabel
 		})

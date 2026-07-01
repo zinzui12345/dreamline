@@ -35,6 +35,32 @@ extends Node3D
 		if nilai: simpan_terrain()
 		simpan = false
 
+# ---- Editor ketinggian ----
+@export var data_tinggi : Image
+@export var edit_grid_x : int = 0
+@export var edit_grid_y : int = 0
+@export_range(0.0, 50.0, 0.1) var edit_ketinggian : float = 0.0
+@export_range(0, 10) var edit_radius : int = 0
+@export var edit_terapkan = false :
+	set(nilai):
+		if nilai:
+			_edit_ketinggian(edit_grid_x, edit_grid_y, edit_ketinggian, edit_radius)
+		edit_terapkan = false
+@export var edit_reset = false :
+	set(nilai):
+		if nilai:
+			data_tinggi = null
+			hasilkan_terrain()
+		edit_reset = false
+@export var simpan_data_tinggi = false :
+	set(nilai):
+		if nilai: _simpan_data_tinggi()
+		simpan_data_tinggi = false
+@export var muat_data_tinggi = false :
+	set(nilai):
+		if nilai: _muat_data_tinggi()
+		muat_data_tinggi = false
+
 # data vegetasi
 var pohon = [
  "res://skena/objek/pohon_besar_1.scn",
@@ -94,7 +120,8 @@ func _enter_tree():
 				var data = load("res://model/permukaan/"+nama_permukaan+".scn").instantiate()
 				data.name = "placeholder_permukaan"
 				print("membuat tampilan permukaan")
-				$tanah.add_child(data)
+				if has_node("tanah"):
+					$tanah.add_child(data)
 func _ready():
 	if Engine.is_editor_hint(): pass
 	else:
@@ -190,13 +217,96 @@ func _process(_delta):
 						node_area_bunyi.get_node("bunyi").call("stop")
 func _exit_tree():
 	if Engine.is_editor_hint():
-		if $tanah.get_node_or_null("placeholder_permukaan") != null:
+		if has_node("tanah") and $tanah.get_node_or_null("placeholder_permukaan") != null:
 			print("menghapus tampilan permukaan")
 			var tmp = $tanah.get_node("placeholder_permukaan")
 			$tanah.remove_child(tmp)
 			tmp.queue_free()
 
+func _atur_dari_world(world_pos: Vector3):
+	if tekstur == null:
+		return
+
+	var res_x = tekstur.get_width()
+	var res_y = tekstur.get_height()
+	var faktor_x = res_x / 128.0
+	var faktor_y = res_y / 128.0
+
+	var gx = int((world_pos.x / ukuran + 128.0 * titik_offset) * faktor_x)
+	var gy = int((world_pos.z / ukuran + 128.0 * titik_offset) * faktor_y)
+
+	gx = clampi(gx, 0, res_x - 1)
+	gy = clampi(gy, 0, res_y - 1)
+
+	edit_grid_x = gx
+	edit_grid_y = gy
+	_edit_ketinggian(gx, gy, edit_ketinggian, edit_radius)
+
+func _snap_vertex(world_pos: Vector3) -> Vector3:
+	if tekstur == null or tekstur.get_width() <= 0 or tekstur.get_height() <= 0:
+		return world_pos
+
+	var res_x = tekstur.get_width()
+	var res_y = tekstur.get_height()
+	var faktor_x = res_x / 128.0
+	var faktor_y = res_y / 128.0
+
+	var gx = int((world_pos.x / ukuran + 128.0 * titik_offset) * faktor_x)
+	var gy = int((world_pos.z / ukuran + 128.0 * titik_offset) * faktor_y)
+
+	gx = clampi(gx, 0, res_x - 1)
+	gy = clampi(gy, 0, res_y - 1)
+
+	var vx = (gx / faktor_x - 128.0 * titik_offset) * ukuran
+	var vz = (gy / faktor_y - 128.0 * titik_offset) * ukuran
+
+	var warna = tekstur.get_pixel(gx, gy)
+	var vy = ((warna.r + warna.g + warna.b) / 3.0) * tinggi_maks
+	if data_tinggi != null and gx < data_tinggi.get_width() and gy < data_tinggi.get_height():
+		var edit_val = data_tinggi.get_pixel(gx, gy).r
+		if edit_val > 0.0:
+			vy = edit_val * tinggi_maks
+
+	return Vector3(vx, vy, vz)
+
+func _reset_dari_world(world_pos: Vector3):
+	if tekstur == null or tekstur.get_width() <= 0 or tekstur.get_height() <= 0:
+		return
+
+	var res_x = tekstur.get_width()
+	var res_y = tekstur.get_height()
+	var faktor_x = res_x / 128.0
+	var faktor_y = res_y / 128.0
+
+	var gx = int((world_pos.x / ukuran + 128.0 * titik_offset) * faktor_x)
+	var gy = int((world_pos.z / ukuran + 128.0 * titik_offset) * faktor_y)
+
+	gx = clampi(gx, 0, res_x - 1)
+	gy = clampi(gy, 0, res_y - 1)
+
+	_reset_ketinggian(gx, gy, edit_radius)
+
+func _reset_ketinggian(gx: int, gy: int, radius: int):
+	if tekstur == null or tekstur.get_width() <= 0 or tekstur.get_height() <= 0:
+		return
+
+	if data_tinggi == null:
+		return
+
+	for dy in range(-radius, radius + 1):
+		for dx in range(-radius, radius + 1):
+			var px = clampi(gx + dx, 0, data_tinggi.get_width() - 1)
+			var py = clampi(gy + dy, 0, data_tinggi.get_height() - 1)
+			var dist = sqrt(dx * dx + dy * dy)
+			if dist <= radius + 0.001:
+				data_tinggi.set_pixel(px, py, Color(0, 0, 0, 1))
+
+	hasilkan_terrain()
+
 func hasilkan_terrain():
+	if not has_node("tanah") or tekstur == null:
+		return
+
 	var arr_mesh = ArrayMesh.new()
 	var surftool = SurfaceTool.new()
 	var posisi_vegetasi = []
@@ -224,7 +334,7 @@ func hasilkan_terrain():
 			var warna_pixel : Color
 			var tmp_px_x = x; var tmp_px_y = y
 			if tmp_px_x >= gambar_noise.get_width(): tmp_px_x = gambar_noise.get_width() - 1
-			if tmp_px_y >= gambar_noise.get_width(): tmp_px_y = gambar_noise.get_width() - 1
+			if tmp_px_y >= gambar_noise.get_height(): tmp_px_y = gambar_noise.get_height() - 1
 			warna_pixel = gambar_noise.get_pixel(tmp_px_x, tmp_px_y)
 
 			# konversi warna pixel ke nilai noise (misal., menggunakan grayscale)
@@ -240,6 +350,10 @@ func hasilkan_terrain():
 			
 			var vertex : Vector3 = titik_jari_jari * ukuran;
 			vertex.y = nilai_grayscale * tinggi_maks
+			if data_tinggi != null and tmp_px_x < data_tinggi.get_width() and tmp_px_y < data_tinggi.get_height():
+				var edit_val = data_tinggi.get_pixel(tmp_px_x, tmp_px_y).r
+				if edit_val > 0.0:
+					vertex.y = edit_val * tinggi_maks
 			var uv = Vector2()
 			uv.x = jarak.x
 			uv.y = jarak.y
@@ -268,10 +382,10 @@ func hasilkan_terrain():
 		for x in range(gambar_noise.get_width()):
 			surftool.add_index(vert+0)
 			surftool.add_index(vert+1)
-			surftool.add_index(vert+gambar_noise.get_height()+1)
-			surftool.add_index(vert+gambar_noise.get_height()+1)
+			surftool.add_index(vert+gambar_noise.get_width()+1)
+			surftool.add_index(vert+gambar_noise.get_width()+1)
 			surftool.add_index(vert+1)
-			surftool.add_index(vert+gambar_noise.get_height()+2)
+			surftool.add_index(vert+gambar_noise.get_width()+2)
 			vert+=1
 		vert+=1
 	
@@ -309,6 +423,8 @@ func hasilkan_terrain():
 		slice_terrain(gambar_noise, mat)
 
 func simpan_terrain():
+	if get_parent() == null or get_parent().get_parent() == null:
+		return
 	var packed_scene 	= PackedScene.new()
 	var node 			= Node3D.new()
 	get_parent().get_parent().add_child(node, true)
@@ -321,11 +437,13 @@ func simpan_terrain():
 	node.name = "permukaan"
 	print("menyimpan terrain")
 	print(packed_scene.pack(node))
-	#print_debug(node.get_children())
 	ResourceSaver.save(packed_scene, "res://model/permukaan/"+nama_permukaan+".scn")
 	get_parent().get_parent().remove_child(node)
 	node.queue_free()
+
 func ekspor_terrain():
+	if get_parent() == null or get_parent().get_parent() == null:
+		return
 	var packed_scene 	= PackedScene.new()
 	var node 			= Node3D.new()
 	get_parent().get_parent().add_child(node, true)
@@ -338,18 +456,53 @@ func ekspor_terrain():
 	node.name = "permukaan"
 	print("mengekspor terrain [res://model/permukaan_e.scn]")
 	print(packed_scene.pack(node))
-	#print_debug(node.get_children())
 	ResourceSaver.save(packed_scene, "res://model/permukaan_e.scn")
 	get_parent().get_parent().remove_child(node)
 	node.queue_free()
+
+func _edit_ketinggian(gx: int, gy: int, tinggi: float, radius: int):
+	if tekstur == null or tekstur.get_width() <= 0 or tekstur.get_height() <= 0:
+		return
+
+	if data_tinggi == null or data_tinggi.get_size() != tekstur.get_size():
+		data_tinggi = Image.create(tekstur.get_width(), tekstur.get_height(), false, Image.FORMAT_RGBA8)
+		data_tinggi.fill(Color(0, 0, 0, 1))
+
+	var nilai_normalisasi = clampf(tinggi / tinggi_maks, 0.0, 1.0)
+
+	for dy in range(-radius, radius + 1):
+		for dx in range(-radius, radius + 1):
+			var px = clampi(gx + dx, 0, data_tinggi.get_width() - 1)
+			var py = clampi(gy + dy, 0, data_tinggi.get_height() - 1)
+			var dist = sqrt(dx * dx + dy * dy)
+			if dist <= radius + 0.001:
+				var weight = 1.0 - (dist / (radius + 1.0))
+				var lama = data_tinggi.get_pixel(px, py).r
+				data_tinggi.set_pixel(px, py, Color(max(lama, nilai_normalisasi * weight), 0, 0, 1))
+
+	hasilkan_terrain()
+
+func _simpan_data_tinggi():
+	if data_tinggi == null:
+		return
+	var path = "res://model/permukaan/" + nama_permukaan + "_tinggi.res"
+	ResourceSaver.save(data_tinggi, path)
+	print("data ketinggian disimpan: ", path)
+
+func _muat_data_tinggi():
+	var path = "res://model/permukaan/" + nama_permukaan + "_tinggi.res"
+	if ResourceLoader.exists(path):
+		data_tinggi = load(path)
+		print("data ketinggian dimuat: ", path)
 
 func muat_terrain():
 	print("memuat data permukaan")
 	if ResourceLoader.exists("res://model/permukaan/"+nama_permukaan+".scn"):
 		if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 			var data = load("res://model/permukaan/"+nama_permukaan+".scn").instantiate()
-			for isi_data in data.get_children():
-				$tanah.add_child(isi_data.duplicate())
+			if has_node("tanah"):
+				for isi_data in data.get_children():
+					$tanah.add_child(isi_data.duplicate())
 			data.queue_free()
 			
 			if vegetasi.size() > 0:
@@ -397,11 +550,16 @@ func muat_terrain():
 	else: print("tidak ada data permukaan")
 
 func slice_terrain(gambar_noise, material):
-	# Hapus child bentuk yang ada sebelumnya
-	if $tanah.has_node("bentuk"): $tanah.get_node("bentuk").queue_free()
+	if not has_node("tanah"):
+		return
 
-	# Mendapatkan mesh yang ada pada terrain
-	var terrain_mesh = $tanah/bentuk.mesh
+	var terrain_mesh = null
+	if $tanah.has_node("bentuk"):
+		terrain_mesh = $tanah/bentuk.mesh
+		$tanah.get_node("bentuk").queue_free()
+
+	if terrain_mesh == null:
+		return
 	var terrain_surface = terrain_mesh.surface_get_arrays(0)
 
 	# Mendapatkan informasi resolusi gambar
@@ -481,6 +639,9 @@ func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, bagi
 	var data_potongan = {}
 	var skala_aktual = 2.5 # ???
 	
+	if terrain_surface == null or terrain_surface.size() <= Mesh.ARRAY_TEX_UV or terrain_surface[Mesh.ARRAY_VERTEX] == null:
+		return slice_mesh
+
 	surftool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	data_potongan["indeks"]  = bagian_potongan
 	data_potongan["start_x"] = (start_x - (gambar_noise.get_width() / 2)) * skala_aktual
@@ -506,10 +667,10 @@ func _buat_bagian_potongan(terrain_surface, start_x, start_y, res_x, res_y, bagi
 			var base_vertex = vert
 			surftool.add_index(base_vertex)
 			surftool.add_index(base_vertex + 1)
-			surftool.add_index(base_vertex + res_y + 1)
-			surftool.add_index(base_vertex + res_y + 1)
+			surftool.add_index(base_vertex + res_x + 1)
+			surftool.add_index(base_vertex + res_x + 1)
 			surftool.add_index(base_vertex + 1)
-			surftool.add_index(base_vertex + res_y + 2)
+			surftool.add_index(base_vertex + res_x + 2)
 			vert += 1
 		vert += 1
 	
@@ -558,5 +719,9 @@ func tempatkan_vegetasi(posisi : Vector3):
 		data_vegetasi["posisi"] = posisi
 		vegetasi.append(data_vegetasi)
 func atur_fisik_potongan(id_potongan : int, nilai : bool):
-	if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: pass
-	else: get_node("tanah/fisik/fisik_" + potongan[id_potongan]["indeks"]).disabled = !nilai
+	if is_instance_valid(server.permainan) and server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		pass
+	elif id_potongan >= 0 and id_potongan < potongan.size():
+		var fisik_node = get_node_or_null("tanah/fisik/fisik_" + potongan[id_potongan]["indeks"])
+		if fisik_node:
+			fisik_node.disabled = !nilai
