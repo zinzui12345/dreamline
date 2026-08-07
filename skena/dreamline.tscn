@@ -5449,7 +5449,6 @@ _data = {
 [sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_skxpm"]
 
 [node name="Dreamline" type="Control" unique_id=1197778329]
-layout_direction = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -5458,6 +5457,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+layout_direction = 1
 mouse_filter = 1
 script = ExtResource("1_7ws0s")
 metadata/_edit_use_anchors_ = true
@@ -5786,8 +5786,8 @@ custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
 [node name="kontainer_a" type="VBoxContainer" parent="hud/daftar_properti_objek/panel/pembagi_kontainer" unique_id=566167579]
-clip_contents = true
 custom_minimum_size = Vector2(300, 128)
+clip_contents = true
 layout_mode = 2
 alignment = 1
 
@@ -7540,7 +7540,6 @@ text = "%nama_server"
 vertical_alignment = 1
 
 [node name="nama_server" type="LineEdit" parent="buat_server/panel/panel_input" unique_id=203034575]
-layout_direction = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.433
@@ -7553,6 +7552,7 @@ offset_right = -1.50598
 offset_bottom = 27.872
 grow_horizontal = 2
 grow_vertical = 2
+layout_direction = 2
 focus_next = NodePath("../jumlah_pemain")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_placeholder_color = Color(0, 0, 0, 0.196078)
@@ -7755,7 +7755,6 @@ alignment = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="input_ip" type="LineEdit" parent="daftar_server/panel/panel_input" unique_id=1879370009]
-layout_direction = 2
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -7768,6 +7767,7 @@ offset_right = -280.004
 offset_bottom = 27.968
 grow_horizontal = 2
 grow_vertical = 2
+layout_direction = 2
 focus_neighbor_left = NodePath("../batal")
 focus_neighbor_right = NodePath("../sambungkan")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -9562,13 +9562,13 @@ libraries/ = SubResource("AnimationLibrary_hdbku")
 
 [node name="proses_memuat" type="Control" parent="." unique_id=1130074564]
 visible = false
-layout_direction = 2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+layout_direction = 2
 mouse_filter = 2
 metadata/_edit_lock_ = true
 
@@ -9701,13 +9701,13 @@ libraries/ = SubResource("AnimationLibrary_kip3h")
 
 [node name="proses_koneksi" type="Control" parent="." unique_id=2067271018]
 visible = false
-layout_direction = 2
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+layout_direction = 2
 metadata/_edit_lock_ = true
 
 [node name="latar" type="Panel" parent="proses_koneksi" unique_id=1120270994]

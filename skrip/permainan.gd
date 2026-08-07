@@ -531,9 +531,9 @@ func uji_performa() -> void:
 func uji_vr() -> void:
 	if dunia != null: dunia.queue_free()
 	get_tree().change_scene_to_file("res://skena/vr_test.tscn")
-func uji_viewport() -> void:
+func uji_tool() -> void:
 	if dunia != null: dunia.queue_free()
-	get_tree().change_scene_to_file("res://tmp/skenario_1.tscn")
+	get_tree().change_scene_to_file("res://model/senjata/konverter_biner.scn")
 func mainkan_replay() -> void:
 	$dialog_buka_rekaman.show()
 func editor_entitas() -> void:
