@@ -43,35 +43,49 @@ func set_value(value : int) -> void:
 func animation_frame_1() -> void:
 	if animation_query[0]:
 		$A.visible = true
+		$off/A.visible = false
 	else:
 		$A.visible = false
+		$off/A.visible = true
 func animation_frame_2() -> void:
 	if animation_query[1]:
 		$B.visible = true
+		$off/B.visible = false
 	else:
 		$B.visible = false
+		$off/B.visible = true
 func animation_frame_3() -> void:
 	if animation_query[2]:
 		$C.visible = true
+		$off/C.visible = false
 	else:
 		$C.visible = false
+		$off/C.visible = true
 func animation_frame_4() -> void:
 	if animation_query[3]:
 		$D.visible = true
+		$off/D.visible = false
 	else:
 		$D.visible = false
+		$off/D.visible = true
 func animation_frame_5() -> void:
 	if animation_query[4]:
 		$E.visible = true
+		$off/E.visible = false
 	else:
 		$E.visible = false
+		$off/E.visible = true
 func animation_frame_6() -> void:
 	if animation_query[5]:
 		$F.visible = true
+		$off/F.visible = false
 	else:
 		$F.visible = false
+		$off/F.visible = true
 func animation_frame_7() -> void:
 	if animation_query[6]:
 		$G.visible = true
+		$off/G.visible = false
 	else:
 		$G.visible = false
+		$off/G.visible = true

@@ -88,10 +88,15 @@ func binary_input_8() -> void:
 func calculate_results() -> void:
 	var dec : int = 0
 	var dec_str : String = ""
+	var oct_str : String = ""
+	var hex_str : String = ""
 	var split_dec : PackedStringArray
+	var split_oct : PackedStringArray
 	
 	for dec_val in $dec_output.get_children():
 		dec_val.set_value(-1)
+	for oct_val in $oct_output.get_children():
+		oct_val.set_value(-1)
 	
 	for bit in binary_data:
 		dec = (dec << 1) | bit
@@ -100,3 +105,11 @@ func calculate_results() -> void:
 	split_dec = dec_str.split()
 	for digit_pos in split_dec.size():
 		$dec_output.get_child(digit_pos).set_value(int(split_dec[digit_pos]))
+	
+	oct_str = "%o" % dec
+	split_oct = oct_str.reverse().split()
+	for digit_pos in split_oct.size():
+		$oct_output.get_child(digit_pos).set_value(int(split_oct[digit_pos]))
+	
+	hex_str= "%X" % dec
+	$hex_output/hex_viewport/ui/hex_value.text = hex_str
