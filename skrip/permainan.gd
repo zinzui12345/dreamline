@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 04/02/26 Early Access"
+const versi = "Dreamline v0.4.4 10/08/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -78,7 +78,10 @@ var kurang_translasi_objek : Dictionary = { "x": false, "y": false, "z": false }
 var waktu_translasi_objek : Dictionary = { "x": 0.0, "y": 0.0, "z": 0.0 }
 var tunda_translasi_objek : float = 0.5	# tunda proses translasi berkelanjutan dalam detik
 var memasang_objek : bool = false
-var pasang_objek : Vector3		# posisi objek yang akan dipasang
+var pasang_objek : Vector3				# posisi objek yang akan dipasang
+var alat_digunakan : Dictionary = {		# alat yang digunakan pemain, misalnya senjata
+	"konverter_biner": { "nama_entitas": "", "digunakan": false, "interaksi": false }
+}
 var editor_kode
 var mode_vr : bool = false
 var pengamat_vr : XROrigin3D
@@ -1084,6 +1087,16 @@ func _tambahkan_pemain(id: int, data_pemain : Dictionary) -> void:
 					"sumber": 		sumber,
 					"data": 		data_pemain
 				}
+				
+				server._tambahkan_entitas(
+					"res://skena/entitas/konverter_biner.scn",
+					data_pemain["posisi"],
+					Vector3.ZERO,
+					[
+						[ "id_pengangkat", -1 ],
+						[ "id_pemilik", id]
+					]
+				)
 		
 		# INFO : tambah info pemain ke daftar pemain
 		_tambah_daftar_pemain(id, {
@@ -1936,11 +1949,26 @@ func pilih_mode_bermain() -> void:
 		#$hud/kompas.visible = true
 		$hud/info_posisi.visible = false
 		$mode_bermain/main.button_pressed = true
+		$mode_bermain/konversi.button_pressed = false
 		$mode_bermain/edit.button_pressed = false
 		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
 		if dunia.get_node("kursor_objek").visible: dunia.get_node("kursor_objek").visible = false
 		#Panku.notify("mode bermain")
 		$mode_bermain/main.release_focus()
+		_pilih_alat(0)
+	if server.mode_replay and not server.mode_uji_performa:
+		%timeline/animasi.play_backwards("tampilkan")
+func pilih_mode_konversi() -> void:
+	if is_instance_valid(karakter) and !jeda:
+		$hud/info_posisi.visible = false
+		$mode_bermain/main.button_pressed = false
+		$mode_bermain/konversi.button_pressed = true
+		$mode_bermain/edit.button_pressed = false
+		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
+		if dunia.get_node("kursor_objek").visible: dunia.get_node("kursor_objek").visible = false
+		#Panku.notify("mode konversi")
+		$mode_bermain/konversi.release_focus()
+		_pilih_alat(1)
 	if server.mode_replay and not server.mode_uji_performa:
 		%timeline/animasi.play_backwards("tampilkan")
 func pilih_mode_edit() -> void:
@@ -1948,13 +1976,28 @@ func pilih_mode_edit() -> void:
 		#$hud/kompas.visible = false
 		$hud/info_posisi.visible = true
 		$mode_bermain/main.button_pressed = false
+		$mode_bermain/konversi.button_pressed = false
 		$mode_bermain/edit.button_pressed = true
 		karakter.peran = Permainan.PERAN_KARAKTER.Arsitek
 		#Panku.notify("mode edit")
 		$mode_bermain/edit.release_focus()
+		_pilih_alat(0)
 	if server.mode_replay and not server.mode_uji_performa:
 		%timeline/animasi.play("tampilkan")
 		%timeline/durasi.text = "00:00/00:00"
+func _pilih_alat(id_alat : int) -> void:
+	if is_instance_valid(karakter) and !jeda:
+		match id_alat:
+			1:
+				if alat_digunakan["konverter_biner"]["nama_entitas"] != "" and not alat_digunakan["konverter_biner"]["digunakan"]:
+					server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_angkat")
+					alat_digunakan["konverter_biner"]["digunakan"] = true
+			0:
+				if alat_digunakan["konverter_biner"]["nama_entitas"] != "" and alat_digunakan["konverter_biner"]["digunakan"]:
+					if alat_digunakan["konverter_biner"]["interaksi"]:
+						server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_interaksi")
+					server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_lepas")
+					alat_digunakan["konverter_biner"]["digunakan"] = false
 func _pilih_tab_posisi_objek() -> void: 
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_a/tab_transformasi/pilih_tab_posisi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_a/tab_transformasi/pilih_tab_rotasi.button_pressed = false
@@ -2711,6 +2754,8 @@ func _jeda() -> void:
 			if memasang_objek: _tutup_daftar_objek(true)
 			if $dialog.get_node_or_null("ExampleBalloon") != null:
 				$dialog.get_node("ExampleBalloon").visible = false
+			if alat_digunakan["konverter_biner"]["nama_entitas"] != "" and alat_digunakan["konverter_biner"]["digunakan"] and alat_digunakan["konverter_biner"]["interaksi"]:
+				server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_interaksi")
 			karakter._atur_kendali(false)
 		$mode_bermain.visible = false
 		$kontrol_sentuh/menu.visible = false

@@ -113,3 +113,5 @@ func calculate_results() -> void:
 	
 	hex_str= "%X" % dec
 	$hex_output/hex_viewport/ui/hex_value.text = hex_str
+	
+	$sound.play()

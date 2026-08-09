@@ -27,9 +27,9 @@ func _process(delta):
 			get_node(\"%pandangan\").position.z = clamp(get_node(\"%pandangan\").position.z, -Konfigurasi.jarak_render, -0.5)
 			# TODO : sesuaikan posisi x kamera
 			# mis. posisi pandangan z == -0.5 maka posisi x kamera = -0.25
-			if Input.is_action_just_pressed(\"aksi2\") and not server.permainan.get_node(\"blok_kode/panel_kode/panel_edit\").visible:
-				var jalur_node = server.permainan.edit_objek.name
-				server.edit_objek(jalur_node, false)
+			#if Input.is_action_just_pressed(\"aksi2\") and not server.permainan.get_node(\"blok_kode/panel_kode/panel_edit\").visible:
+				#var jalur_node = server.permainan.edit_objek.name
+				#server.edit_objek(jalur_node, false)
 			var input_dir = Vector3.ZERO
 			if Input.is_action_pressed(\"maju\"):		input_dir -= %pandangan.global_transform.basis.z; menggerakkan_objek = true
 			if Input.is_action_pressed(\"mundur\"):	input_dir += %pandangan.global_transform.basis.z; menggerakkan_objek = true

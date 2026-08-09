@@ -149,8 +149,9 @@ func atur_mode(nilai : int) -> void:
 	if mode_kontrol == 2: mode_kontrol = 1
 	if mode_kontrol == 1 and nilai == 2: mode_kontrol = 2 # naik kendaraan / mulai duduk
 	# 07/05/25 :: sembunyikan tombol zoom pada mode pandangan 3
-	if nilai == 3:	server.permainan._sembunyikan_tombol_zoom()
-	else:			server.permainan._tampilkan_tombol_zoom()
+	if server.permainan != null and (server.permainan.has_method("_sembunyikan_tombol_zoom") and server.permainan.has_method("_tampilkan_tombol_zoom")):
+		if nilai == 3:	server.permainan._sembunyikan_tombol_zoom()
+		else:			server.permainan._tampilkan_tombol_zoom()
 	var ubah : bool = (mode_kontrol != nilai)
 	mode_kontrol = 0 # nonaktifkan kontrol
 	atur_ulang_arah_pandangan()

@@ -420,6 +420,7 @@ func _input(event : InputEvent) -> void:
 		
 		# mode interaksi
 		if Input.is_action_just_pressed("mode_bermain"):	server.permainan.pilih_mode_bermain()
+		if Input.is_action_just_pressed("mode_konversi"):	server.permainan.pilih_mode_konversi()
 		if Input.is_action_just_pressed("mode_edit"):		server.permainan.pilih_mode_edit()
 		
 		# aksi

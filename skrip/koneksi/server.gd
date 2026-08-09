@@ -987,6 +987,16 @@ func _pemain_terputus(id_pemain):
 	else: push_error("[Galat] fungsi [tambahkan_karakter] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
+	if t_entitas == null:
+		for p in pool_entitas.get(nama_entitas).kondisi.size():
+			if pool_entitas.get(nama_entitas).kondisi[p][0] == "id_pemilik" and pool_entitas.get(nama_entitas).kondisi[p][1] == id_pengguna:
+				var cari_pool_pemain = pemain.keys()
+				for i_pool_pemain in cari_pool_pemain:
+					var id_pemain_target = pemain[i_pool_pemain]["id_client"]
+					if id_pemain_target == id_pengguna:
+						pool_entitas[nama_entitas]["posisi"] = pemain[i_pool_pemain]["posisi"]
+				spawn_pool_entitas(id_pengguna, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+				t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null and t_entitas.has_method(fungsi):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
@@ -1322,6 +1332,7 @@ func _pemain_terputus(id_pemain):
 		kirim_aset(id_pemain, permainan.daftar_aset[id_aset].sumber, permainan.daftar_aset[id_aset].nama)
 @rpc("any_peer") func _hapus_objek(jalur_objek : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		# FIXME : jangan sembarangan menghapus objek!, cek apakah objek memiliki pemilik, seperti pada _gunakan_entitas()
 		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
 		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
 		if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)

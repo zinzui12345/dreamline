@@ -9,6 +9,7 @@ var id_proses : int = -1:					# id peer/pemain yang memproses entitas ini
 	set(id):
 		atur_pemroses(id)
 		id_proses = id
+#var id_pemilik : int = -1					# id peer/pemain yang memiliki entitas ini
 var posisi_awal : Vector3
 var rotasi_awal : Vector3
 var cek_kondisi : Dictionary = {}			# simpan beberapa properti di tiap frame untuk membandingkan perubahan

@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://dx8y5u3abiq7"]
+[gd_scene format=3 uid="uid://dx8y5u3abiq7"]
 
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="1_mbf47"]
 [ext_resource type="Texture2D" uid="uid://fqepvioy3jkr" path="res://ui/ikon/ikon_gender_cewek.svg" id="4_mavi4"]
@@ -384,10 +384,10 @@ radius = 50.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_crxf7"]
 radius = 45.0
 
-[node name="editor_entitas" type="Node3D"]
+[node name="editor_entitas" type="Node3D" unique_id=620903767]
 script = SubResource("GDScript_op6fk")
 
-[node name="antarmuka" type="Control" parent="."]
+[node name="antarmuka" type="Control" parent="." unique_id=691119327]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -395,7 +395,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="tampilan" type="SubViewportContainer" parent="antarmuka"]
+[node name="tampilan" type="SubViewportContainer" parent="antarmuka" unique_id=1574709616]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.625
@@ -404,18 +404,18 @@ offset_bottom = -0.200012
 stretch = true
 metadata/_edit_lock_ = true
 
-[node name="perender" type="SubViewport" parent="antarmuka/tampilan"]
+[node name="perender" type="SubViewport" parent="antarmuka/tampilan" unique_id=595999008]
 handle_input_locally = false
 size = Vector2i(640, 352)
 render_target_update_mode = 4
 
-[node name="kamera_bebas" type="Camera3D" parent="antarmuka/tampilan/perender"]
+[node name="kamera_bebas" type="Camera3D" parent="antarmuka/tampilan/perender" unique_id=1376860306]
 unique_name_in_owner = true
 cull_mask = 7
 current = true
 script = ExtResource("1_mbf47")
 
-[node name="inspektur" type="Panel" parent="antarmuka"]
+[node name="inspektur" type="Panel" parent="antarmuka" unique_id=1944969629]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.625
@@ -424,7 +424,7 @@ anchor_bottom = 1.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_opc4n")
 metadata/_edit_lock_ = true
 
-[node name="gulir" type="ScrollContainer" parent="antarmuka/inspektur"]
+[node name="gulir" type="ScrollContainer" parent="antarmuka/inspektur" unique_id=754659719]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -435,12 +435,12 @@ theme = SubResource("Theme_eaw3p")
 horizontal_scroll_mode = 0
 metadata/_edit_lock_ = true
 
-[node name="area" type="Control" parent="antarmuka/inspektur/gulir"]
+[node name="area" type="Control" parent="antarmuka/inspektur/gulir" unique_id=1956477827]
 custom_minimum_size = Vector2(0, 784)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="model" type="Panel" parent="antarmuka/inspektur/gulir/area"]
+[node name="model" type="Panel" parent="antarmuka/inspektur/gulir/area" unique_id=864867019]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.021
@@ -452,7 +452,7 @@ offset_bottom = 184.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
 metadata/_edit_lock_ = true
 
-[node name="gender" type="Label" parent="antarmuka/inspektur/gulir/area/model"]
+[node name="gender" type="Label" parent="antarmuka/inspektur/gulir/area/model" unique_id=242075387]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -470,7 +470,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pilih_gender" type="OptionButton" parent="antarmuka/inspektur/gulir/area/model"]
+[node name="pilih_gender" type="OptionButton" parent="antarmuka/inspektur/gulir/area/model" unique_id=1505821733]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -499,7 +499,7 @@ popup/item_1/icon = ExtResource("5_np8of")
 popup/item_1/id = 1
 metadata/_edit_lock_ = true
 
-[node name="entitas" type="Label" parent="antarmuka/inspektur/gulir/area/model"]
+[node name="entitas" type="Label" parent="antarmuka/inspektur/gulir/area/model" unique_id=199567524]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -516,7 +516,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="jalur_entitas" type="LineEdit" parent="antarmuka/inspektur/gulir/area/model"]
+[node name="jalur_entitas" type="LineEdit" parent="antarmuka/inspektur/gulir/area/model" unique_id=1274657424]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -543,7 +543,7 @@ editable = false
 caret_blink = true
 metadata/_edit_lock_ = true
 
-[node name="pilih_entitas" type="Button" parent="antarmuka/inspektur/gulir/area/model"]
+[node name="pilih_entitas" type="Button" parent="antarmuka/inspektur/gulir/area/model" unique_id=516917224]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.783
@@ -568,7 +568,7 @@ alignment = 0
 icon_alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/gulir/area/model"]
+[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/gulir/area/model" unique_id=1793580839]
 unique_name_in_owner = true
 auto_translate_mode = 1
 title = "Open a File"
@@ -579,7 +579,7 @@ file_mode = 0
 root_subfolder = "skena/entitas"
 filters = PackedStringArray("*.scn")
 
-[node name="karakter" type="Panel" parent="antarmuka/inspektur/gulir/area"]
+[node name="karakter" type="Panel" parent="antarmuka/inspektur/gulir/area" unique_id=147149446]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.021
@@ -591,7 +591,7 @@ offset_bottom = 384.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
 metadata/_edit_lock_ = true
 
-[node name="arah_pandangan_y" type="Label" parent="antarmuka/inspektur/gulir/area/karakter"]
+[node name="arah_pandangan_y" type="Label" parent="antarmuka/inspektur/gulir/area/karakter" unique_id=1808893605]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -609,7 +609,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="atur_arah_pandangan_y" type="HSlider" parent="antarmuka/inspektur/gulir/area/karakter"]
+[node name="atur_arah_pandangan_y" type="HSlider" parent="antarmuka/inspektur/gulir/area/karakter" unique_id=1159144283]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -624,7 +624,7 @@ max_value = 1.0
 step = 0.1
 metadata/_edit_lock_ = true
 
-[node name="nilai_arah_pandangan_y" type="SpinBox" parent="antarmuka/inspektur/gulir/area/karakter"]
+[node name="nilai_arah_pandangan_y" type="SpinBox" parent="antarmuka/inspektur/gulir/area/karakter" unique_id=1640130481]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -640,7 +640,7 @@ max_value = 1.0
 step = 0.05
 metadata/_edit_lock_ = true
 
-[node name="mode_pandangan" type="Label" parent="antarmuka/inspektur/gulir/area/karakter"]
+[node name="mode_pandangan" type="Label" parent="antarmuka/inspektur/gulir/area/karakter" unique_id=1742300263]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -658,7 +658,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pilih_mode_pandangan" type="OptionButton" parent="antarmuka/inspektur/gulir/area/karakter"]
+[node name="pilih_mode_pandangan" type="OptionButton" parent="antarmuka/inspektur/gulir/area/karakter" unique_id=2049650454]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -686,7 +686,7 @@ popup/item_1/text = "3"
 popup/item_1/id = 0
 metadata/_edit_lock_ = true
 
-[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/gulir/area/karakter"]
+[node name="dialog_buka_entitas" type="FileDialog" parent="antarmuka/inspektur/gulir/area/karakter" unique_id=1240402987]
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 1
@@ -696,7 +696,7 @@ file_mode = 0
 root_subfolder = "skena/entitas"
 filters = PackedStringArray("*.scn")
 
-[node name="transformasi" type="Panel" parent="antarmuka/inspektur/gulir/area"]
+[node name="transformasi" type="Panel" parent="antarmuka/inspektur/gulir/area" unique_id=2066659882]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.021
@@ -708,7 +708,7 @@ offset_bottom = 776.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mbf47")
 metadata/_edit_lock_ = true
 
-[node name="node" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="node" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=551277616]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -726,7 +726,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pilih_node" type="OptionButton" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="pilih_node" type="OptionButton" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1881570020]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -747,7 +747,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_w5jcf")
 theme_override_styles/focus = SubResource("StyleBoxFlat_vy5ut")
 metadata/_edit_lock_ = true
 
-[node name="langkah_transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="langkah_transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=379536109]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -766,7 +766,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pilih_langkah_transformasi" type="OptionButton" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="pilih_langkah_transformasi" type="OptionButton" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=2030938263]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -798,7 +798,7 @@ popup/item_3/text = "1.0"
 popup/item_3/id = 3
 metadata/_edit_lock_ = true
 
-[node name="transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="transformasi" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=545409943]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -817,7 +817,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="px" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="px" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1616981829]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -838,7 +838,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="py" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="py" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=855159071]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -859,7 +859,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="pz" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="pz" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1648289344]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.043
@@ -880,7 +880,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="translasi_x_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="translasi_x_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1131079681]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -897,7 +897,7 @@ step = 0.001
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="translasi_y_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="translasi_y_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1527302135]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -914,7 +914,7 @@ step = 0.001
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="translasi_z_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="translasi_z_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=338640851]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -931,7 +931,7 @@ step = 0.001
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="rx" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="rx" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=769622190]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.522
@@ -952,7 +952,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="ry" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="ry" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=2059730385]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.522
@@ -973,7 +973,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="rz" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="rz" type="Label" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1402752451]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.522
@@ -994,7 +994,7 @@ clip_text = true
 text_overrun_behavior = 1
 metadata/_edit_lock_ = true
 
-[node name="rotasi_x_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="rotasi_x_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=1498093683]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -1013,7 +1013,7 @@ step = 0.001
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="rotasi_y_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="rotasi_y_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=709621333]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -1032,7 +1032,7 @@ step = 0.001
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="rotasi_z_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi"]
+[node name="rotasi_z_node" type="SpinBox" parent="antarmuka/inspektur/gulir/area/transformasi" unique_id=99576480]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -1051,7 +1051,7 @@ step = 0.001
 alignment = 1
 metadata/_edit_lock_ = true
 
-[node name="keluaran" type="Panel" parent="antarmuka"]
+[node name="keluaran" type="Panel" parent="antarmuka" unique_id=339121773]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.587
@@ -1061,7 +1061,7 @@ offset_top = -0.200012
 theme_override_styles/panel = SubResource("StyleBoxFlat_8josj")
 metadata/_edit_lock_ = true
 
-[node name="tampilan" type="SubViewportContainer" parent="antarmuka/keluaran"]
+[node name="tampilan" type="SubViewportContainer" parent="antarmuka/keluaran" unique_id=930094662]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.012
@@ -1074,16 +1074,16 @@ offset_bottom = -0.0640106
 stretch = true
 metadata/_edit_lock_ = true
 
-[node name="SubViewport" type="SubViewport" parent="antarmuka/keluaran/tampilan"]
+[node name="SubViewport" type="SubViewport" parent="antarmuka/keluaran/tampilan" unique_id=994250514]
 handle_input_locally = false
 size = Vector2i(312, 231)
 render_target_update_mode = 4
 
-[node name="kamera_fps" type="Camera3D" parent="antarmuka/keluaran/tampilan/SubViewport"]
+[node name="kamera_fps" type="Camera3D" parent="antarmuka/keluaran/tampilan/SubViewport" unique_id=281353477]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04623, 1.09075)
 
-[node name="informasi" type="RichTextLabel" parent="antarmuka/keluaran"]
+[node name="informasi" type="RichTextLabel" parent="antarmuka/keluaran" unique_id=313410274]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
@@ -1102,20 +1102,20 @@ selection_enabled = true
 drag_and_drop_selection_enabled = false
 metadata/_edit_lock_ = true
 
-[node name="lantai" type="MeshInstance3D" parent="."]
+[node name="lantai" type="MeshInstance3D" parent="." unique_id=1932481615]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.500324, 0)
 mesh = SubResource("BoxMesh_op6fk")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="lantai"]
+[node name="StaticBody3D" type="StaticBody3D" parent="lantai" unique_id=2145947423]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="lantai/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="lantai/StaticBody3D" unique_id=1465602066]
 shape = SubResource("ConvexPolygonShape3D_vy5ut")
 
-[node name="objek" type="MeshInstance3D" parent="."]
+[node name="objek" type="MeshInstance3D" parent="." unique_id=1252865023]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.499676, 3)
 mesh = SubResource("BoxMesh_op6fk")
 
-[node name="kontrol_sentuh" type="Control" parent="."]
+[node name="kontrol_sentuh" type="Control" parent="." unique_id=1130596626]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -1123,7 +1123,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="aksi_1" type="Control" parent="kontrol_sentuh"]
+[node name="aksi_1" type="Control" parent="kontrol_sentuh" unique_id=1298608078]
 layout_mode = 1
 anchor_left = 0.691
 anchor_top = 0.853
@@ -1135,12 +1135,12 @@ offset_right = 56.4154
 offset_bottom = 56.1997
 metadata/_edit_use_anchors_ = true
 
-[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1"]
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_1" unique_id=210864463]
 texture_normal = ExtResource("6_vy5ut")
 texture_pressed = ExtResource("7_w5jcf")
 shape = SubResource("CircleShape2D_b7wtf")
 
-[node name="aksi_2" type="TextureButton" parent="kontrol_sentuh"]
+[node name="aksi_2" type="TextureButton" parent="kontrol_sentuh" unique_id=782487306]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.788086
@@ -1151,7 +1151,7 @@ action_mode = 0
 texture_normal = ExtResource("8_jcx6r")
 metadata/_edit_use_anchors_ = true
 
-[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2"]
+[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2" unique_id=217296357]
 position = Vector2(50, 50)
 shape = SubResource("CircleShape2D_crxf7")
 action = "aksi2"
