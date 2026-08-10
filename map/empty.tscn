@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://byemnaxwb0spk" path="res://skrip/portal.gd" id="8_rmo13"]
 [ext_resource type="Shader" uid="uid://xvkhmy27r1ji" path="res://material/portal.gdshader" id="9_jm2st"]
 [ext_resource type="PackedScene" uid="uid://b6h0s3nsnxc5e" path="res://skena/entitas/npc_test.scn" id="9_rmo13"]
-[ext_resource type="PackedScene" uid="uid://nrp1k2piov4r" path="res://skena/entitas/konverter_biner.scn" id="10_jm2st"]
+[ext_resource type="PackedScene" uid="uid://kfvido2r5n6v" path="res://skena/entitas/ayunan.scn" id="10_jm2st"]
 [ext_resource type="Shader" uid="uid://23ill3pcva8n" path="res://material/stencil_mask/mask.gdshader" id="10_sdm88"]
 [ext_resource type="Shader" uid="uid://cmgaaxyor4apg" path="res://material/stencil_mask/geometry.gdshader" id="11_sdm88"]
 
@@ -509,5 +509,5 @@ size = Vector3(1, 1, 2)
 [node name="npc_jamur" parent="." unique_id=870595564 instance=ExtResource("9_rmo13")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -3)
 
-[node name="konverter_biner" parent="." unique_id=601839053 instance=ExtResource("10_jm2st")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1, 0.4, -3)
+[node name="ayunan" parent="." unique_id=1066091614 instance=ExtResource("10_jm2st")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -0.44, 4)

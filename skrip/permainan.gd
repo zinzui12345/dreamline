@@ -124,7 +124,7 @@ var tombol_aksi_1 : StringName = "lempar_sesuatu" :
 var tombol_aksi_2 : StringName = "angkat_sesuatu" :
 	set(ikon):
 		if ikon != tombol_aksi_2:
-			get_node("kontrol_sentuh/aksi_2").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
+			get_node("kontrol_sentuh/aksi_2/tombol_sentuh").set("texture_normal", load("res://ui/tombol/%s.svg" % [ikon]))
 			tombol_aksi_2 = ikon
 		match ikon:
 			"berjalan":				$hud/bantuan_input/aksi2/teks.text = "%keluar_k"
@@ -179,7 +179,7 @@ enum MODE_KONEKSI {
 }
 enum PERAN_KARAKTER {
 	Arsitek,
-	Pedagang,
+	Matematikawan,
 	Penjelajah,
 	Nelayan
 }
@@ -1269,6 +1269,11 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_x/kurangi_translasi_x.disabled = false
 		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_y/kurangi_translasi_y.disabled = false
 		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_c/transformasi_z/kurangi_translasi_z.disabled = false
+		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_0/disabled", false)
+		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_1/disabled", false)
+	else:
+		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_0/disabled", true)
+		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_1/disabled", true)
 	if edit_objek.get("skala") != null:
 		_skala_awal_objek_diedit = edit_objek.skala
 		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_a/tab_transformasi/pilih_tab_skala.disabled = false
@@ -1286,6 +1291,7 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_atribut_objek/Panel/kontainer/edit_skrip.disabled = true
 	# 10/05/25 :: cek apakah objek bisa dihapus
 	if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
+		# FIXME : jangan sembarangan menghapus objek!, cek apakah objek memiliki pemilik, seperti pada server._hapus_objek()
 		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", false)
 	else:
 		$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", true)
@@ -1964,7 +1970,7 @@ func pilih_mode_konversi() -> void:
 		$mode_bermain/main.button_pressed = false
 		$mode_bermain/konversi.button_pressed = true
 		$mode_bermain/edit.button_pressed = false
-		karakter.peran = Permainan.PERAN_KARAKTER.Penjelajah
+		karakter.peran = Permainan.PERAN_KARAKTER.Matematikawan
 		if dunia.get_node("kursor_objek").visible: dunia.get_node("kursor_objek").visible = false
 		#Panku.notify("mode konversi")
 		$mode_bermain/konversi.release_focus()
@@ -2872,9 +2878,17 @@ func _ketika_mengatur_mode_kontrol_pemain(aktif : bool) -> void:
 	if aktif:
 		$kontrol_sentuh/kontrol_pandangan.visible = true
 		$kontrol_sentuh/kontrol_gerakan.visible = true
+		$kontrol_sentuh/lari.visible = true
+		$kontrol_sentuh/zoom.visible = true
+		$kontrol_sentuh/lompat.visible = true
+		$kontrol_sentuh/jongkok.visible = true
 	else:
 		$kontrol_sentuh/kontrol_pandangan.visible = false
 		$kontrol_sentuh/kontrol_gerakan.visible = false
+		$kontrol_sentuh/lari.visible = false
+		$kontrol_sentuh/zoom.visible = false
+		$kontrol_sentuh/lompat.visible = false
+		$kontrol_sentuh/jongkok.visible = false
 func _ketika_mengatur_mode_kontrol_kendaraan(aktif : bool) -> void:
 	if aktif:
 		$kontrol_sentuh/kontrol_gerakan/analog.visible = false

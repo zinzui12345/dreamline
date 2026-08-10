@@ -6875,8 +6875,6 @@ anchor_left = 0.263672
 anchor_top = 0.77
 anchor_right = 0.361391
 anchor_bottom = 0.936666
-offset_right = -0.0640259
-offset_bottom = 0.000183105
 action_mode = 0
 stretch_mode = 3
 metadata/_edit_use_anchors_ = true
@@ -6909,17 +6907,19 @@ shape = SubResource("CircleShape2D_28tvu")
 [node name="aksi_2" type="TextureButton" parent="kontrol_sentuh" unique_id=222474003]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.761719
-anchor_top = 0.293333
-anchor_right = 0.859375
-anchor_bottom = 0.460333
+anchor_left = 0.76171887
+anchor_top = 0.29333302
+anchor_right = 0.8593751
+anchor_bottom = 0.45999968
+grow_horizontal = 2
+grow_vertical = 2
 action_mode = 0
-texture_normal = ExtResource("17_2rhvy")
+stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="TouchScreenButton" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2" unique_id=98255866]
-position = Vector2(50, 50)
+[node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2" unique_id=98255866]
+texture_normal = ExtResource("17_2rhvy")
 shape = SubResource("CircleShape2D_2jlpn")
 action = "aksi2"
 

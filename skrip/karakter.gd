@@ -483,6 +483,8 @@ func _input(event : InputEvent) -> void:
 							server.edit_objek(objek_target.name, true)
 						elif objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan"):
 							server.edit_objek(objek_target.get_parent().name, true)
+					Permainan.PERAN_KARAKTER.Matematikawan:
+						pass
 					_:
 						if objek_target.has_method("gunakan"):
 							if objek_target is entitas and objek_target.id_proses == -1:
@@ -684,6 +686,8 @@ func _physics_process(delta : float) -> void:
 				else:
 					server.permainan.atur_informasi_posisi(objek_target.name)
 				server.permainan.get_node("kontrol_sentuh/aksi_2").visible = true
+			elif peran == Permainan.PERAN_KARAKTER.Matematikawan:
+				pass
 			else:
 				if objek_target.get("efek_cahaya") != null:
 					%pandangan.aktifkan_efek()

@@ -104,7 +104,7 @@ func _angkat(id):
 	$model.rotation_degrees = Vector3(60, -180, 0)
 	$fisik.rotation_degrees = Vector3(60, -180, 0)
 	if id == client.id_koneksi:
-		dunia.get_node("pemain/"+str(id))._atur_penarget(false)
+		#dunia.get_node("pemain/"+str(id))._atur_penarget(false)
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.bantuan_aksi_1 = false
@@ -125,7 +125,7 @@ func _lepas(id):
 	# atur pengecualian tabrakan
 	if id == client.id_koneksi and dunia.get_node_or_null("pemain/"+str(id)) != null:
 		call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id)))
-		dunia.get_node("pemain/"+str(id))._atur_penarget(true)
+		#dunia.get_node("pemain/"+str(id))._atur_penarget(true)
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.bantuan_aksi_1 = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
