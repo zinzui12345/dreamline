@@ -48,8 +48,13 @@ func _setup():
 				]
 			)
 		queue_free()
-	elif id_pemilik == client.id_koneksi:
+	elif id_pemilik == client.id_koneksi and server.permainan.alat_digunakan["konverter_biner"]["nama_entitas"] == "":
 		server.permainan.alat_digunakan["konverter_biner"]["nama_entitas"] = name
+		var posisi_entitas : Vector3 = Vector3(0, server.permainan.batas_bawah - 600, 0)
+		var tmp_kondisi : Array = [["posisi", posisi_entitas]]
+		global_position = posisi_entitas
+		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_pemilik, name, tmp_kondisi)
+		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_pemilik, name, tmp_kondisi)
 
 func proses(_waktu_delta : float) -> void:
 	if !is_instance_valid(server.permainan): set_process(false); return
@@ -92,7 +97,7 @@ func gunakan(_id_pemain):
 	if id_pengangkat == -1: 						server.gunakan_entitas(name, "_angkat")
 
 func _input(_event):
-	if id_pengangkat == client.id_koneksi and dunia.get_node("pemain/"+str(id_pengangkat)).kontrol:
+	if id_pengangkat == client.id_koneksi:
 		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_interaksi")
 
 func _angkat(id):
@@ -132,36 +137,40 @@ func _lepas(id):
 			var posisi_entitas : Vector3 = Vector3(0, server.permainan.batas_bawah - 600, 0)
 			global_position = posisi_entitas
 			tmp_kondisi.append(["posisi", posisi_entitas])
-			print_debug(tmp_kondisi)
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
 		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
 	# atur ulang id_pengangkat, id_pelempar dan id_proses
 	id_pengangkat = -1
 	id_proses = -1
 func _interaksi(id : int) -> void:
-	if id == client.id_koneksi and id == id_pengangkat and id == id_pemilik:
-		if !sedang_digunakan:
-			dunia.get_node("pemain/"+str(id_pemilik))._atur_penarget(false)
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fungsikan(false)
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fokus_pandangan_belakang = $model/view
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").posisi_pandangan_belakang = 0
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_mode_kendaraan(true)
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").aktifkan(false)
-			server.permainan.alat_digunakan["konverter_biner"]["interaksi"] = true
-			$model/view.make_current()
-			sedang_digunakan = true
+	if id == client.id_koneksi and id == id_pengangkat:
+		if id == id_pemilik:
+			if !sedang_digunakan:
+				dunia.get_node("pemain/"+str(id_pemilik))._atur_kendali(false)
+				#dunia.get_node("pemain/"+str(id_pemilik))._atur_penarget(false)
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fungsikan(false)
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fokus_pandangan_belakang = $model/view
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").posisi_pandangan_belakang = 0
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_mode_kendaraan(true)
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").aktifkan(false)
+				server.permainan.alat_digunakan["konverter_biner"]["interaksi"] = true
+				server.permainan._ketika_mengatur_mode_kontrol_pemain(false)
+				$model/view.make_current()
+				sedang_digunakan = true
+			else:
+				dunia.get_node("pemain/"+str(id_pemilik))._atur_kendali(true)
+				#dunia.get_node("pemain/"+str(id_pemilik))._atur_penarget(true)
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fungsikan(true)
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_mode_kendaraan(false)
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fokus_pandangan_belakang = null
+				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").aktifkan()
+				server.permainan.alat_digunakan["konverter_biner"]["interaksi"] = false
+				server.permainan._ketika_mengatur_mode_kontrol_pemain(true)
+				sedang_digunakan = false
 		else:
-			dunia.get_node("pemain/"+str(id_pemilik))._atur_penarget(true)
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fungsikan(true)
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_mode_kendaraan(false)
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fokus_pandangan_belakang = null
-			dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").aktifkan()
-			server.permainan.alat_digunakan["konverter_biner"]["interaksi"] = false
-			sedang_digunakan = false
-	else:
-		Panku.notify("Akses Ditolak")
-		server.gunakan_entitas(name, "_lepas")
+			Panku.notify("Akses Ditolak")
+			server.gunakan_entitas(name, "_lepas")
 
 func hapus():
 	if id_pengangkat != -1 and dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) != null:

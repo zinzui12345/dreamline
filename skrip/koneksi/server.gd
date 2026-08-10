@@ -757,20 +757,25 @@ func _pemain_terputus(id_pemain):
 			# dapatkan entitas
 			var nama_entitas = indeks_pool_entitas[i_pool_entitas]
 			var entitas_ = pool_entitas[nama_entitas]
-			# cek id pemroses entitas, apakah sama dengan id pemain yang terputus
-			if entitas_.id_proses == id_pemain:
-				# rpc atur ulang id_proses di semua peer
-				sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
-				# atur ulang id_proses
-				pool_entitas[nama_entitas]["id_proses"] = -1
-			# atur ulang id kustom misalnya id_pengguna_1
-			for indeks_properti in entitas_.kondisi.size():
-				if entitas_.kondisi[indeks_properti - 1][0].begins_with("id_") and int(entitas_.kondisi[indeks_properti - 1][1]) == id_pemain:
-					# rpc atur ulang id kustom di semua peer
-					sinkronkan_kondisi_entitas(-1, nama_entitas, [["kondisi", [[entitas_.kondisi[indeks_properti - 1][0], -1]]]])
-					# atur ulang id kustom
-					pool_entitas[nama_entitas]["kondisi"][indeks_properti - 1][1] = -1
-					print("%s => mengatur properti [%s] pada entitas [%s] dari [%s] menjadi: %s" % [permainan.detikKeMenit(Time.get_ticks_msec()), entitas_.kondisi[indeks_properti - 1][0], nama_entitas, id_pemain, str(pool_entitas[nama_entitas]["kondisi"][indeks_properti - 1][1])])
+			# cek id pemiliki entitas, apakah entitas dimiliki oleh pemain yang terputus
+			if entitas_.id_pemilik == id_pemain:
+				# 10/08/26 :: hapus entitas yang dimiliki oleh pemain (id_pemilik == id_pemain)
+				_hapus_objek(str(dunia.get_node("entitas").get_path()) + "/" + nama_entitas)
+			else:
+				# cek id pemroses entitas, apakah sama dengan id pemain yang terputus
+				if entitas_.id_proses == id_pemain:
+					# rpc atur ulang id_proses di semua peer
+					sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", -1]])
+					# atur ulang id_proses
+					pool_entitas[nama_entitas]["id_proses"] = -1
+				# atur ulang id kustom misalnya id_pengguna_1
+				for indeks_properti in entitas_.kondisi.size():
+					if entitas_.kondisi[indeks_properti - 1][0].begins_with("id_") and int(entitas_.kondisi[indeks_properti - 1][1]) == id_pemain:
+						# rpc atur ulang id kustom di semua peer
+						sinkronkan_kondisi_entitas(-1, nama_entitas, [["kondisi", [[entitas_.kondisi[indeks_properti - 1][0], -1]]]])
+						# atur ulang id kustom
+						pool_entitas[nama_entitas]["kondisi"][indeks_properti - 1][1] = -1
+						print("%s => mengatur properti [%s] pada entitas [%s] dari [%s] menjadi: %s" % [permainan.detikKeMenit(Time.get_ticks_msec()), entitas_.kondisi[indeks_properti - 1][0], nama_entitas, id_pemain, str(pool_entitas[nama_entitas]["kondisi"][indeks_properti - 1][1])])
 	
 	print("%s => pemain [%s] telah terputus" % [permainan.detikKeMenit(Time.get_ticks_msec()), id_pemain])
 	pemain_terhubung -= 1
@@ -994,13 +999,18 @@ func _pemain_terputus(id_pemain):
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas == null and pool_entitas.get(nama_entitas).id_pemilik == id_pengguna:
-			var cari_pool_pemain = pemain.keys()
-			for i_pool_pemain in cari_pool_pemain:
-				var id_pemain_target = pemain[i_pool_pemain]["id_client"]
-				if id_pemain_target == id_pengguna:
-					pool_entitas[nama_entitas]["posisi"] = pemain[i_pool_pemain]["posisi"]
-			spawn_pool_entitas(id_pengguna, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_pemilik"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
-			t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
+		var cari_pool_pemain = pemain.keys()
+		for i_pool_pemain in cari_pool_pemain:
+			var id_pemain_target = pemain[i_pool_pemain]["id_client"]
+			if id_pemain_target == id_pengguna:
+				pool_entitas[nama_entitas]["posisi"] = pemain[i_pool_pemain]["posisi"]
+				if pool_entitas[nama_entitas]["id_proses"] == -1:
+					pool_entitas[nama_entitas]["id_proses"] = id_pemain_target
+				spawn_pool_entitas(id_pengguna, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_pemilik"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+				cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] = "spawn"
+				#Panku.notify("posisi pemain : " + str(pemain[i_pool_pemain]["posisi"]))
+				#Panku.notify("posisi entitas : " + str(pool_entitas[nama_entitas]["posisi"]))
+				t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null and t_entitas.has_method(fungsi):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:

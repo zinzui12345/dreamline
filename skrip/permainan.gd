@@ -80,7 +80,7 @@ var tunda_translasi_objek : float = 0.5	# tunda proses translasi berkelanjutan d
 var memasang_objek : bool = false
 var pasang_objek : Vector3				# posisi objek yang akan dipasang
 var alat_digunakan : Dictionary = {		# alat yang digunakan pemain, misalnya senjata
-	"konverter_biner": { "nama_entitas": "", "digunakan": false, "interaksi": false }
+	"konverter_biner": { "nama_entitas": "", "digunakan": false, "interaksi": false } # FIXME : reset saat terputus
 }
 var editor_kode
 var mode_vr : bool = false
@@ -1988,16 +1988,16 @@ func pilih_mode_edit() -> void:
 func _pilih_alat(id_alat : int) -> void:
 	if is_instance_valid(karakter) and !jeda:
 		match id_alat:
-			1:
-				if alat_digunakan["konverter_biner"]["nama_entitas"] != "" and not alat_digunakan["konverter_biner"]["digunakan"]:
-					server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_angkat")
-					alat_digunakan["konverter_biner"]["digunakan"] = true
 			0:
 				if alat_digunakan["konverter_biner"]["nama_entitas"] != "" and alat_digunakan["konverter_biner"]["digunakan"]:
 					if alat_digunakan["konverter_biner"]["interaksi"]:
 						server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_interaksi")
 					server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_lepas")
 					alat_digunakan["konverter_biner"]["digunakan"] = false
+			1:
+				if alat_digunakan["konverter_biner"]["nama_entitas"] != "" and not alat_digunakan["konverter_biner"]["digunakan"]:
+					server.gunakan_entitas(alat_digunakan["konverter_biner"]["nama_entitas"], "_angkat")
+					alat_digunakan["konverter_biner"]["digunakan"] = true
 func _pilih_tab_posisi_objek() -> void: 
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_a/tab_transformasi/pilih_tab_posisi.button_pressed = true
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_a/tab_transformasi/pilih_tab_rotasi.button_pressed = false
@@ -2078,12 +2078,14 @@ func _pilih_tab_skala_objek() -> void:
 func _tampilkan_daftar_objek() -> void:
 	if $daftar_objek/Panel.anchor_top > 0: $daftar_objek/animasi.play("tampilkan")
 	karakter._atur_kendali(false)
+	_ketika_mengatur_mode_kontrol_pemain(false)
 	memasang_objek = true
 func _tutup_daftar_objek(paksa : bool = false) -> void:
 	if is_instance_valid(karakter):
 		# kalau paksa berarti kendali pemain gak dikembaliin
 		$daftar_objek/animasi.play("sembunyikan")
 		if !paksa: karakter._atur_kendali(true)
+		_ketika_mengatur_mode_kontrol_pemain(true)
 		memasang_objek = false
 func _tekan_tombol_tambah_translasi_x_objek() -> void:	tambah_translasi_objek.x = true;
 func _lepas_tombol_tambah_translasi_x_objek() -> void:	tambah_translasi_objek.x = false;	waktu_translasi_objek.x = 0.0
@@ -2866,6 +2868,13 @@ func _ketika_mengatur_mode_kontrol_gerak(mode : int) -> void:
 		1: $"kontrol_sentuh/kontrol_gerakan/d-pad".visible = true
 	if not $setelan/panel/gulir/tab_setelan/setelan_input/pilih_kontrol_gerak.disabled:
 		Konfigurasi.mode_kontrol_gerak = mode
+func _ketika_mengatur_mode_kontrol_pemain(aktif : bool) -> void:
+	if aktif:
+		$kontrol_sentuh/kontrol_pandangan.visible = true
+		$kontrol_sentuh/kontrol_gerakan.visible = true
+	else:
+		$kontrol_sentuh/kontrol_pandangan.visible = false
+		$kontrol_sentuh/kontrol_gerakan.visible = false
 func _ketika_mengatur_mode_kontrol_kendaraan(aktif : bool) -> void:
 	if aktif:
 		$kontrol_sentuh/kontrol_gerakan/analog.visible = false
