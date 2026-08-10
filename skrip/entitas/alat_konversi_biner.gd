@@ -1,9 +1,6 @@
 extends entitas
 
-const sinkron_kondisi = [
-	[ "id_pengangkat", -1 ],
-	[ "id_pengguna", -1]
-]
+const sinkron_kondisi = [[ "id_pengangkat", -1 ]]
 const jalur_instance = "res://skena/entitas/konverter_biner.scn"
 
 var id_pengangkat : int = -1:
@@ -120,11 +117,6 @@ func _angkat(id):
 func _lepas(id):
 	$model.rotation_degrees = Vector3.ZERO
 	$fisik.rotation_degrees = Vector3.ZERO
-	# terapkan percepatan
-	server.terapkan_percepatan_objek(
-		get_path(),
-		Vector3(0, 0.5, 1).rotated(Vector3.UP, rotation.y)
-	)
 	# atur pengecualian tabrakan
 	if id == client.id_koneksi and dunia.get_node_or_null("pemain/"+str(id)) != null:
 		call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id)))
@@ -136,11 +128,13 @@ func _lepas(id):
 		
 		# reset pemroses pada server
 		var tmp_kondisi = [["id_proses", -1], ["id_pengangkat", -1]]
+		if id_pemilik != -1:
+			var posisi_entitas : Vector3 = Vector3(0, server.permainan.batas_bawah - 600, 0)
+			global_position = posisi_entitas
+			tmp_kondisi.append(["posisi", posisi_entitas])
+			print_debug(tmp_kondisi)
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_proses, name, tmp_kondisi)
 		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_proses, name, tmp_kondisi)
-	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		set("contact_monitor", false)
-		set("max_contacts_reported", 0)
 	# atur ulang id_pengangkat, id_pelempar dan id_proses
 	id_pengangkat = -1
 	id_proses = -1

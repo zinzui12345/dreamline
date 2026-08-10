@@ -237,7 +237,7 @@ func _process(_delta : float) -> void:
 									# hanya spawn jika pool belum di-spawn
 									if cek_visibilitas_pool_entitas[id_pemain][nama_entitas] == "hapus":
 										# rpc spawn pool entitas
-										spawn_pool_entitas(id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+										spawn_pool_entitas(id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_pemilik"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
 										# ubah visibilitas pool agar jangan rpc lagi
 										cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "spawn"
 									# cek jika id_proses belum diatur
@@ -265,7 +265,7 @@ func _process(_delta : float) -> void:
 								# hanya spawn jika pool belum di-spawn
 								if cek_visibilitas_pool_entitas[id_pemain][nama_entitas] == "hapus":
 									# rpc spawn pool entitas
-									spawn_pool_entitas(id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+									spawn_pool_entitas(id_pemain, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_pemilik"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
 									# ubah visibilitas pool agar jangan rpc lagi
 									cek_visibilitas_pool_entitas[id_pemain][nama_entitas] = "spawn"
 								# cek jika id_proses belum diatur
@@ -539,11 +539,11 @@ func spawn_pool_pemain(id_pemain : int, id_spawn_pemain : int, data : Dictionary
 		if id_pemain == 1: _spawn_visibilitas_pemain(id_spawn_pemain, data)
 		else: rpc_id(id_pemain, "_spawn_visibilitas_pemain", id_spawn_pemain, data)
 		print("%s => spawn pool pemain [%s] pada pemain %s" % [permainan.detikKeMenit(Time.get_ticks_msec()), str(id_spawn_pemain), str(id_pemain)])
-func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas, id_pemroses_entitas, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
+func spawn_pool_entitas(id_pemain, nama_entitas : String, jalur_instance_entitas, id_pemilik_entitas : int, id_pemroses_entitas : int, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("spawn pool entitas [%s] pada pemain %s" % [str(jalur_instance_entitas), str(id_pemain)])
-		if id_pemain == 1: _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
-		else: rpc_id(id_pemain, "_spawn_visibilitas_entitas", jalur_instance_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
+		if id_pemain == 1: _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemilik_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
+		else: rpc_id(id_pemain, "_spawn_visibilitas_entitas", jalur_instance_entitas, id_pemilik_entitas, id_pemroses_entitas, nama_entitas, posisi_entitas, rotasi_entitas, kondisi_entitas)
 func spawn_pool_objek(id_pemain, nama_objek : String, jalur_instance_objek, id_pengubah, posisi_objek : Vector3, rotasi_objek : Vector3, properti_objek : Array, render_melalui_portal : bool = false):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		#Panku.notify("spawn pool objek [%s] pada pemain %s" % [str(jalur_instance_objek), str(id_pemain)])
@@ -906,9 +906,15 @@ func _pemain_terputus(id_pemain):
 		if load(jalur_skena) != null:
 			jumlah_entitas += 1
 			var nama_entitas : StringName = "entitas_"+str(jumlah_entitas)
+			var id_pemilik_entitas : int = -1
+			for p in properti.size():
+				if properti[p][0] == "id_pemilik":
+					id_pemilik_entitas = properti[p][1]
+					properti.erase(properti[p])
 			# INFO : tambahkan entitas ke array pool_entitas
 			pool_entitas[nama_entitas] = {
 				"jalur_instance": jalur_skena,
+				"id_pemilik" : id_pemilik_entitas,
 				"id_proses" : -1,
 				"id_pengubah": 0,
 				"posisi"	: posisi,
@@ -987,16 +993,14 @@ func _pemain_terputus(id_pemain):
 	else: push_error("[Galat] fungsi [tambahkan_karakter] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
-	if t_entitas == null:
-		for p in pool_entitas.get(nama_entitas).kondisi.size():
-			if pool_entitas.get(nama_entitas).kondisi[p][0] == "id_pemilik" and pool_entitas.get(nama_entitas).kondisi[p][1] == id_pengguna:
-				var cari_pool_pemain = pemain.keys()
-				for i_pool_pemain in cari_pool_pemain:
-					var id_pemain_target = pemain[i_pool_pemain]["id_client"]
-					if id_pemain_target == id_pengguna:
-						pool_entitas[nama_entitas]["posisi"] = pemain[i_pool_pemain]["posisi"]
-				spawn_pool_entitas(id_pengguna, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
-				t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
+	if t_entitas == null and pool_entitas.get(nama_entitas).id_pemilik == id_pengguna:
+			var cari_pool_pemain = pemain.keys()
+			for i_pool_pemain in cari_pool_pemain:
+				var id_pemain_target = pemain[i_pool_pemain]["id_client"]
+				if id_pemain_target == id_pengguna:
+					pool_entitas[nama_entitas]["posisi"] = pemain[i_pool_pemain]["posisi"]
+			spawn_pool_entitas(id_pengguna, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_pemilik"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
+			t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
 	if t_entitas != null and t_entitas.has_method(fungsi):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
@@ -1332,9 +1336,10 @@ func _pemain_terputus(id_pemain):
 		kirim_aset(id_pemain, permainan.daftar_aset[id_aset].sumber, permainan.daftar_aset[id_aset].nama)
 @rpc("any_peer") func _hapus_objek(jalur_objek : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		# FIXME : jangan sembarangan menghapus objek!, cek apakah objek memiliki pemilik, seperti pada _gunakan_entitas()
 		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
 		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
+		# FIXME : jangan sembarangan menghapus objek!, cek apakah objek memiliki pemilik, seperti pada _gunakan_entitas()
+		# cek nilai pool_entitas[nama_objek_dihapus]["id_pemilik"] terlebih dahulu
 		if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
 		if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
 		for p in cek_visibilitas_pool_objek:
@@ -1398,13 +1403,15 @@ func _pemain_terputus(id_pemain):
 		instance_pemain.set_process(false)
 		instance_pemain.set_physics_process(false)
 		instance_pemain.get_node("pengamat").set_process(false)
-@rpc("authority") func _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemroses_entitas : int, nama_entitas : String, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
+@rpc("authority") func _spawn_visibilitas_entitas(jalur_instance_entitas, id_pemilik_entitas : int, id_pemroses_entitas : int, nama_entitas : String, posisi_entitas : Vector3, rotasi_entitas : Vector3, kondisi_entitas : Array):
 	if permainan != null and dunia != null:
 		if dunia.get_node("entitas").get_node_or_null(nama_entitas) == null and load(jalur_instance_entitas) != null:
 			var tmp_entitas : Node3D = load(jalur_instance_entitas).instantiate()
 			var tmp_nama = tmp_entitas.name
 			tmp_entitas.name = nama_entitas
 			tmp_entitas.id_proses = id_pemroses_entitas
+			if id_pemilik_entitas != -1:
+				tmp_entitas.id_pemilik = id_pemilik_entitas
 			for p in kondisi_entitas.size():
 				if tmp_entitas.get(kondisi_entitas[p][0]) != null:	tmp_entitas.set(kondisi_entitas[p][0], kondisi_entitas[p][1])
 				elif kondisi_entitas[p][0] == "id_entitas":			tmp_entitas.set_meta("id_entitas", kondisi_entitas[p][1])
