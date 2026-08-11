@@ -7295,8 +7295,9 @@ action_mode = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="daftar_objek/tutup" unique_id=1798863684]
-position = Vector2(80, 0)
-rotation = 1.5708
+position = Vector2(145, 52)
+rotation = 3.1415927
+scale = Vector2(1.2, 1.2)
 texture_normal = ExtResource("32_clll1")
 texture_pressed = ExtResource("33_ovk4l")
 shape = SubResource("CircleShape2D_2jlpn")
