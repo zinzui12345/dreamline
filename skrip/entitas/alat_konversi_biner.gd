@@ -98,7 +98,9 @@ func gunakan(_id_pemain):
 
 func _input(_event):
 	if id_pengangkat == client.id_koneksi:
-		if Input.is_action_just_pressed("aksi2"): await get_tree().create_timer(0.1).timeout; server.gunakan_entitas(name, "_interaksi")
+		if Input.is_action_just_pressed("aksi2"):
+			await get_tree().create_timer(0.1).timeout;
+			server.gunakan_entitas(name, "_interaksi")
 
 func _angkat(id):
 	$model.rotation_degrees = Vector3(60, -180, 0)

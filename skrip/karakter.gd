@@ -478,7 +478,8 @@ func _input(event : InputEvent) -> void:
 			if menarget:
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
-						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()	# FIXME : ini gak work karena kendali pemain == false!
+						if server.permainan.memasang_objek:
+							server.permainan._tutup_daftar_objek()
 						elif objek_target.has_method("gunakan") or objek_target.is_in_group("dapat_diedit"):
 							server.edit_objek(objek_target.name, true)
 						elif objek_target.name == "bidang_raycast" and objek_target.get_parent().has_method("gunakan"):
@@ -499,7 +500,16 @@ func _input(event : InputEvent) -> void:
 			else:
 				match peran:
 					Permainan.PERAN_KARAKTER.Arsitek:
-						if server.permainan.memasang_objek: server.permainan._tutup_daftar_objek()	# FIXME : ini gak work karena kendali pemain == false!
+						if server.permainan.memasang_objek:
+							server.permainan._tutup_daftar_objek()
+	else:
+		if Input.is_action_just_pressed("aksi2"):
+			match peran:
+				Permainan.PERAN_KARAKTER.Arsitek:
+					if server.permainan.memasang_objek:
+						server.permainan._tutup_daftar_objek()
+				Permainan.PERAN_KARAKTER.Matematikawan:
+					pass
 func _physics_process(delta : float) -> void:
 	# hentikan proses jika node tidak berada dalam permainan
 	if !is_instance_valid(server.permainan): set_process(false); return

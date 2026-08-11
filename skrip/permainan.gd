@@ -1553,7 +1553,7 @@ func _ketika_berhenti_melompat() -> void:	Input.action_release("lompat")
 func _aksi_1_tekan() -> void: 				Input.action_press("aksi1_sentuh")
 func _aksi_1_lepas() -> void: 				Input.action_release("aksi1_sentuh");	$kontrol_sentuh/aksi_1.release_focus()
 func _aksi_2_tekan() -> void: 				Input.action_press("aksi2")
-func _aksi_2_lepas() -> void: 				Input.action_release("aksi2");			$kontrol_sentuh/aksi_2.release_focus()
+func _aksi_2_lepas() -> void: 				Input.action_release("aksi2")
 func _ketika_mulai_berlari() -> void:		Input.action_press("berlari")
 func _ketika_berhenti_berlari() -> void:	Input.action_release("berlari")
 func _tombol_jongkok_tekan() -> void:		Input.action_press("jongkok")
@@ -2505,16 +2505,16 @@ func _ketika_memilih_menu_properti_objek(indeks_menu : int) -> void:
 	# 4 => hapus objek
 	if edit_objek != null:
 		await get_tree().create_timer(0.05).timeout
-			# (https://youtu.be/NT7L6SbmCiU?si=q6eKGfrHWfzzDBxY&t=163)[Aoi Shiori English version]
-			# If you choose to give your heart away, put it in my hands - I won't break it
-			# We both laughed like every other day - but I really meant what I sait to you
-			# I made it in time, I can't believe it
-			# The city was fast asleep - but we didn't care one bit at all
-			# Hey can we start where we left off?
-			# And build our castle again - So let's go - up on that hill where you feel the ocean breeze
-			# My hands are cold - from holding this soda can
-			# I wonder if you'd let me - hold on to yours
-			# All my life - I will reach out for you
+		# (https://youtu.be/NT7L6SbmCiU?si=q6eKGfrHWfzzDBxY&t=163)[Aoi Shiori English version]
+		# If you choose to give your heart away, put it in my hands - I won't break it
+		# We both laughed like every other day - but I really meant what I sait to you
+		# I made it in time, I can't believe it
+		# The city was fast asleep - but we didn't care one bit at all
+		# Hey can we start where we left off?
+		# And build our castle again - So let's go - up on that hill where you feel the ocean breeze
+		# My hands are cold - from holding this soda can
+		# I wonder if you'd let me - hold on to yours
+		# All my life - I will reach out for you
 		match indeks_menu:
 			0:#	Panku.notify("My tears still reflect all the light we've gathered~")
 				if edit_objek is objek: 	edit_objek.set_indexed("global_position", _posisi_awal_objek_diedit)
@@ -2533,8 +2533,6 @@ func _ketika_memilih_menu_properti_objek(indeks_menu : int) -> void:
 			4:#	Panku.notify("You're there, I can still see you at the end of the road~")
 				if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
 					_tampilkan_popup_konfirmasi($menu_jeda/menu/kontrol/Panel/lanjutkan, _ketika_menghapus_objek_diedit, "%konfirmasi_hapus_objek%")
-		#Panku.notify("Aoi Shiori")
-	#Panku.notify(indeks_menu)
 func _ketika_mengubah_transformasi_objek_diedit() -> void:
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_x/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_y/translasi_y.editable = false
@@ -3202,6 +3200,15 @@ func mainkanReplay(jalur_rekaman : String = server.file_replay):
 			_mulai_permainan("replay", rekaman.data.map)
 			$hud/daftar_pemain/panel/informasi/alamat_ip.text = "-"
 	else: return "tidak ada file rekaman permainan!"
+func emulasiTekanTombolAksi(nama_aksi : String) -> void:
+	var ev_press : InputEventAction = InputEventAction.new()
+	var ev_release : InputEventAction = InputEventAction.new()
+	ev_press.action = nama_aksi
+	ev_release.action = nama_aksi
+	ev_press.pressed = true
+	ev_release.pressed = false
+	Input.parse_input_event(ev_press)
+	Input.parse_input_event(ev_release)
 
 # bantuan pada console
 const _HELP_alamat_ip				:= "Cek alamat IP Lokal/Publik koneksi"

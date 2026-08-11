@@ -6199,6 +6199,7 @@ custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
 [node name="tutup" type="Button" parent="hud/daftar_properti_objek/panel" unique_id=1868159665]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -6904,24 +6905,20 @@ texture_normal = ExtResource("23_p8sf0")
 texture_pressed = ExtResource("24_5vy8q")
 shape = SubResource("CircleShape2D_28tvu")
 
-[node name="aksi_2" type="TextureButton" parent="kontrol_sentuh" unique_id=222474003]
+[node name="aksi_2" type="Control" parent="kontrol_sentuh" unique_id=1854535147]
 layout_mode = 1
-anchors_preset = -1
 anchor_left = 0.76171887
 anchor_top = 0.29333302
 anchor_right = 0.8593751
 anchor_bottom = 0.45999968
 grow_horizontal = 2
 grow_vertical = 2
-action_mode = 0
-stretch_mode = 3
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
 [node name="tombol_sentuh" type="TouchScreenButton" parent="kontrol_sentuh/aksi_2" unique_id=98255866]
 texture_normal = ExtResource("17_2rhvy")
 shape = SubResource("CircleShape2D_2jlpn")
-action = "aksi2"
 
 [node name="menu" type="Button" parent="kontrol_sentuh" unique_id=1365836959]
 layout_mode = 1
@@ -10454,8 +10451,8 @@ bus = &"Suara Pemain"
 [connection signal="button_up" from="kontrol_sentuh/jongkok" to="." method="_tombol_jongkok_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/aksi_1/tombol_sentuh" to="." method="_aksi_1_tekan"]
 [connection signal="released" from="kontrol_sentuh/aksi_1/tombol_sentuh" to="." method="_aksi_1_lepas"]
-[connection signal="button_down" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_tekan"]
-[connection signal="button_up" from="kontrol_sentuh/aksi_2" to="." method="_aksi_2_lepas"]
+[connection signal="pressed" from="kontrol_sentuh/aksi_2/tombol_sentuh" to="." method="_aksi_2_tekan"]
+[connection signal="released" from="kontrol_sentuh/aksi_2/tombol_sentuh" to="." method="_aksi_2_lepas"]
 [connection signal="pressed" from="kontrol_sentuh/menu" to="." method="_jeda"]
 [connection signal="pressed" from="kontrol_sentuh/chat" to="." method="_tampilkan_input_pesan"]
 [connection signal="pressed" from="kontrol_sentuh/daftar_pemain" to="." method="_ketika_menekan_tombol_daftar_pemain"]
