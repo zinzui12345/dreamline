@@ -201,6 +201,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	var argumen : Array = OS.get_cmdline_args() # ["res://skena/dreamline.tscn", "--server", "empty"]
 	var jumlah_argumen : int = argumen.size()
+	var uji_loader : bool = false
 	for arg : int in jumlah_argumen:
 		if argumen[arg] == "--server":
 			server.publik = true
@@ -214,7 +215,10 @@ func _ready() -> void:
 			return
 		if argumen[arg] == "--no-shadow":
 			_ketika_mengatur_mode_render_pencahayaan(false)
+		if argumen[arg] == "--precache-debug":
+			uji_loader = true
 	var loader = await load("res://skena/loader.scn").instantiate()
+	loader.debug = uji_loader
 	get_tree().get_root().call_deferred("add_child", loader)
 	$hud.visible = false
 	$hud/titik_fokus.visible = false
@@ -2546,6 +2550,8 @@ func _ketika_memilih_menu_properti_objek(indeks_menu : int) -> void:
 					_tampilkan_popup_konfirmasi($menu_jeda/menu/kontrol/Panel/lanjutkan, _ketika_menghapus_objek_diedit, "%konfirmasi_hapus_objek%")
 			_:
 				pass
+	else:
+		pass
 func _ketika_mengubah_transformasi_objek_diedit() -> void:
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_x/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_y/translasi_y.editable = false
@@ -3222,6 +3228,25 @@ func emulasiTekanTombolAksi(nama_aksi : String) -> void:
 	ev_release.pressed = false
 	Input.parse_input_event(ev_press)
 	Input.parse_input_event(ev_release)
+func pramuatTampilanKarakter() -> void:
+	$karakter/animasi.play("pramuat_karakter")
+	await $karakter/animasi.animation_finished
+	await RenderingServer.frame_post_draw
+	%karakter.visible = true
+	%karakter/lulu.visible = true
+	get_node("%karakter/lulu").atur_model()
+	get_node("%karakter/lulu").atur_warna()
+	%karakter/reno.visible = true
+	get_node("%karakter/reno").atur_model()
+	get_node("%karakter/reno").atur_warna()
+	await get_tree().create_timer(1).timeout
+	await RenderingServer.frame_post_draw
+	$karakter/animasi.play_backwards("pramuat_karakter")
+	await $karakter/animasi.animation_finished
+	await RenderingServer.frame_post_draw
+	%karakter.visible = false
+	%karakter/lulu.visible = false
+	%karakter/reno.visible = false
 
 # bantuan pada console
 const _HELP_alamat_ip				:= "Cek alamat IP Lokal/Publik koneksi"

@@ -7,7 +7,19 @@ signal login_pemain
 
 const Util = preload("res://skrip/editor kode/code_generation/util.gd")
 
+var debug : bool = false
+
 func _ready() -> void:
+	var _jumlah_sub_node_induk : int = get_parent().get_child_count()
+	get_parent().move_child(self, _jumlah_sub_node_induk - 3)
+	if debug:	_debug()
+	else:		_setup()
+
+func _debug() -> void:
+	$"layar memuat/Panel".modulate = Color("ffffff80")
+	_ketika_login_guest()
+
+func _setup() -> void:
 	# 1. non-aktifkan proses precache aset
 	$"precache karakter/reno".set_process(false)
 	$"precache karakter/reno".set_physics_process(false)
@@ -61,6 +73,8 @@ func _ready() -> void:
 		#Panku.notify("ummai~!")
 	# 3. muat / input konfigurasi
 	if !FileAccess.file_exists(Konfigurasi.data_konfigurasi):
+		Panku.notify(server.permainan.versi)
+		Panku.notify("%muat_pengaturan")
 		$"panel konfigurasi/pilih bahasa".visible = true
 		match Konfigurasi.kode_bahasa[Konfigurasi.bahasa]:
 			"id", "id_ID":	$"panel konfigurasi/pilih bahasa/pilih_bahasa 2".button_pressed = true
@@ -103,11 +117,9 @@ func _ketika_login_guest():
 	$"panel konfigurasi/login".visible = false
 	$"panel konfigurasi/input profil".visible = true
 	await terapkan_profil
-	# TODO : mulai level 0
 	emit_signal("login_pemain")
 func _terapkan_profil():
 	if $"panel konfigurasi/input profil/input_nama".text == "":
-		# FIXME : gak keliatan!
 		server.permainan._tampilkan_popup_informasi("%namakosong", $"panel konfigurasi/input profil/input_nama")
 	else:
 		server.permainan.data["nama"] = $"panel konfigurasi/input profil/input_nama".text
@@ -117,4 +129,10 @@ func _terapkan_profil():
 		server.permainan._ketika_menyimpan_data_karakter()
 		$"panel konfigurasi/input profil".visible = false
 		await get_tree().create_timer(0.1).timeout
+		var _jumlah_sub_node_induk : int = get_parent().get_child_count()
+		get_parent().move_child(self, _jumlah_sub_node_induk - 1)
+		await get_tree().create_timer(0.9).timeout
+		server.permainan.pramuatTampilanKarakter()
+		await  RenderingServer.frame_post_draw
+		await get_tree().create_timer(1).timeout
 		emit_signal("terapkan_profil")
