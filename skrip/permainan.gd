@@ -2541,6 +2541,8 @@ func _ketika_memilih_menu_properti_objek(indeks_menu : int) -> void:
 			4:#	Panku.notify("You're there, I can still see you at the end of the road~")
 				if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
 					_tampilkan_popup_konfirmasi($menu_jeda/menu/kontrol/Panel/lanjutkan, _ketika_menghapus_objek_diedit, "%konfirmasi_hapus_objek%")
+			_:
+				pass
 func _ketika_mengubah_transformasi_objek_diedit() -> void:
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_x/translasi_x.editable = false
 	$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_b/transformasi_y/translasi_y.editable = false

@@ -652,9 +652,9 @@ func fungsikan_objek(nama_objek : StringName, nama_fungsi : StringName, paramete
 		rpc_id(1, "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
 func hapus_objek(jalur_objek : String) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-		_hapus_objek(jalur_objek)
+		_hapus_objek(jalur_objek, multiplayer.get_unique_id())
 	else:
-		rpc_id(1, "_hapus_objek", jalur_objek)
+		rpc_id(1, "_hapus_objek", jalur_objek, multiplayer.get_unique_id())
 func kirim_aset(id_penerima : int, jalur_aset : String, nama_aset : String):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and jalur_aset.length() > 5:
 		# 11/11/24 :: kirim aset ke client
@@ -760,7 +760,7 @@ func _pemain_terputus(id_pemain):
 			# cek id pemiliki entitas, apakah entitas dimiliki oleh pemain yang terputus
 			if entitas_.id_pemilik == id_pemain:
 				# 10/08/26 :: hapus entitas yang dimiliki oleh pemain (id_pemilik == id_pemain)
-				_hapus_objek(str(dunia.get_node("entitas").get_path()) + "/" + nama_entitas)
+				_hapus_objek(str(dunia.get_node("entitas").get_path()) + "/" + nama_entitas, id_pemain)
 			else:
 				# cek id pemroses entitas, apakah sama dengan id pemain yang terputus
 				if entitas_.id_proses == id_pemain:
@@ -1346,29 +1346,31 @@ func _pemain_terputus(id_pemain):
 @rpc("any_peer") func _kirim_aset(id_aset : String, id_pemain : int):	# 12/11/24 :: kirim aset tertentu ke pemain tertentu
 	if permainan.daftar_aset.has(id_aset) and ResourceLoader.exists(permainan.daftar_aset[id_aset].sumber):
 		kirim_aset(id_pemain, permainan.daftar_aset[id_aset].sumber, permainan.daftar_aset[id_aset].nama)
-@rpc("any_peer") func _hapus_objek(jalur_objek : String):
+@rpc("any_peer") func _hapus_objek(jalur_objek : String, id_pemain_yang_menghapus : int):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
 		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
-		# FIXME : jangan sembarangan menghapus objek!, cek apakah objek memiliki pemilik, seperti pada _gunakan_entitas()
-		# cek nilai pool_entitas[nama_objek_dihapus]["id_pemilik"] terlebih dahulu
-		if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
-		if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
-		for p in cek_visibilitas_pool_objek:
-			if cek_visibilitas_pool_objek[p].has(nama_objek_dihapus):
-				cek_visibilitas_pool_objek[p].erase(nama_objek_dihapus)
-		for p in cek_visibilitas_pool_entitas:
-			if cek_visibilitas_pool_entitas[p].has(nama_objek_dihapus):
-				cek_visibilitas_pool_entitas[p].erase(nama_objek_dihapus)
-		print("%s => objek [%s] dihapus" % [permainan.detikKeMenit(Time.get_ticks_msec()), nama_objek_dihapus])
-		# Timeline : hapus objek
-		var frame_sekarang = timeline["data"]["frame"]
-		if not timeline.has(frame_sekarang): timeline[frame_sekarang] = {}
-		timeline[frame_sekarang][nama_objek_dihapus] = {
-			"tipe": "hapus"
-		}
-		_hilangkan_objek(jalur_objek)
-		rpc("_hilangkan_objek", jalur_objek)
+		# jangan sembarangan menghapus objek, cek apakah objek memiliki pemilik
+		if pool_entitas[nama_objek_dihapus]["id_pemilik"] == id_pemain_yang_menghapus or pool_entitas[nama_objek_dihapus]["id_pemilik"] == -1:
+			if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
+			if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
+			for p in cek_visibilitas_pool_objek:
+				if cek_visibilitas_pool_objek[p].has(nama_objek_dihapus):
+					cek_visibilitas_pool_objek[p].erase(nama_objek_dihapus)
+			for p in cek_visibilitas_pool_entitas:
+				if cek_visibilitas_pool_entitas[p].has(nama_objek_dihapus):
+					cek_visibilitas_pool_entitas[p].erase(nama_objek_dihapus)
+			print("%s => objek [%s] dihapus" % [permainan.detikKeMenit(Time.get_ticks_msec()), nama_objek_dihapus])
+			# Timeline : hapus objek
+			var frame_sekarang = timeline["data"]["frame"]
+			if not timeline.has(frame_sekarang): timeline[frame_sekarang] = {}
+			timeline[frame_sekarang][nama_objek_dihapus] = {
+				"tipe": "hapus"
+			}
+			_hilangkan_objek(jalur_objek)
+			rpc("_hilangkan_objek", jalur_objek)
+		else:
+			push_error("[Galat] tidak dapat menghapus objek %s dari peer %s. kesalahan akses!" % [jalur_objek, str(id_pemain_yang_menghapus)])
 @rpc("authority") func _spawn_visibilitas_pemain(id : int, data : Dictionary):
 	if permainan != null and dunia != null:
 		var instance_pemain : Karakter
