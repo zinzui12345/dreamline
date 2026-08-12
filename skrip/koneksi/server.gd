@@ -998,13 +998,15 @@ func _pemain_terputus(id_pemain):
 	else: push_error("[Galat] fungsi [tambahkan_karakter] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
 @rpc("any_peer") func _gunakan_entitas(nama_entitas : String, id_pengguna : int, fungsi : String):
 	var t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
-	if t_entitas == null and pool_entitas.get(nama_entitas).id_pemilik == id_pengguna:
+	if (t_entitas == null and permainan.koneksi == Permainan.MODE_KONEKSI.SERVER) and \
+		(pool_entitas.get(nama_entitas) != null and pool_entitas[nama_entitas]["id_pemilik"] == id_pengguna):
 		var cari_pool_pemain = pemain.keys()
 		for i_pool_pemain in cari_pool_pemain:
 			var id_pemain_target = pemain[i_pool_pemain]["id_client"]
 			if id_pemain_target == id_pengguna:
 				pool_entitas[nama_entitas]["posisi"] = pemain[i_pool_pemain]["posisi"]
-				if pool_entitas[nama_entitas]["id_proses"] == -1:
+				if pool_entitas[nama_entitas]["id_proses"] == id_pemain_target:
+					sinkronkan_kondisi_entitas(-1, nama_entitas, [["id_proses", id_pemain_target]])
 					pool_entitas[nama_entitas]["id_proses"] = id_pemain_target
 				spawn_pool_entitas(id_pengguna, nama_entitas, pool_entitas[nama_entitas]["jalur_instance"], pool_entitas[nama_entitas]["id_pemilik"], pool_entitas[nama_entitas]["id_proses"], pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"], pool_entitas[nama_entitas]["kondisi"])
 				cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] = "spawn"
@@ -1222,7 +1224,7 @@ func _pemain_terputus(id_pemain):
 	else:
 		client.rpc_id(id_pemain, "dapatkan_posisi_entitas", nama_entitas, pool_entitas[nama_entitas]["posisi"], pool_entitas[nama_entitas]["rotasi"])
 @rpc("any_peer") func _sesuaikan_kondisi_entitas(id_pengatur : int, nama_entitas : String, kondisi_entitas : Array):
-	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas[nama_entitas]["id_proses"] == id_pengatur:
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null and pool_entitas[nama_entitas]["id_proses"] == id_pengatur:
 		for p in kondisi_entitas.size():
 			if kondisi_entitas[p][0] == "position":		pool_entitas[nama_entitas]["posisi"] = kondisi_entitas[p][1]
 			elif kondisi_entitas[p][0] == "rotation":	pool_entitas[nama_entitas]["rotasi"] = kondisi_entitas[p][1]
@@ -1281,7 +1283,7 @@ func _pemain_terputus(id_pemain):
 			if id_pemain_target != 0 and id_pemain_target != id_penyinkron:
 				if cek_visibilitas_pool_entitas.has(id_pemain_target) and cek_visibilitas_pool_entitas[id_pemain_target][nama_entitas] == "spawn":
 					sinkronkan_kondisi_entitas(id_pemain_target, nama_entitas, kondisi_entitas)
-	else:
+	elif pool_entitas.get(nama_entitas) != null:
 		push_error("[Galat] tidak dapat menyesuaikan kondisi entitias peer %s dari peer %s. kesalahan akses!" % [str(pool_entitas[nama_entitas]["id_proses"]), str(id_pengatur)])
 @rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:

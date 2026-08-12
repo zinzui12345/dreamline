@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 10/08/26 Early Access"
+const versi = "Dreamline v0.4.4 12/08/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -79,9 +79,7 @@ var waktu_translasi_objek : Dictionary = { "x": 0.0, "y": 0.0, "z": 0.0 }
 var tunda_translasi_objek : float = 0.5	# tunda proses translasi berkelanjutan dalam detik
 var memasang_objek : bool = false
 var pasang_objek : Vector3				# posisi objek yang akan dipasang
-var alat_digunakan : Dictionary = {		# alat yang digunakan pemain, misalnya senjata
-	"konverter_biner": { "nama_entitas": "", "digunakan": false, "interaksi": false } # FIXME : reset saat terputus
-}
+var alat_digunakan : Dictionary = {}	# alat yang digunakan pemain, misalnya senjata | nilai diatur pada atur_alat()
 var editor_kode
 var mode_vr : bool = false
 var pengamat_vr : XROrigin3D
@@ -340,6 +338,9 @@ func _setup() -> void:
 	var menu_properti_objek : PopupMenu = $hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.get_popup()
 	menu_properti_objek.connect("id_pressed", _ketika_memilih_menu_properti_objek)
 	
+	# atur ulang alat pemain
+	atur_alat()
+	
 	# INFO : (3) tampilkan menu utama
 	$latar.tampilkan()
 	await get_tree().create_timer(0.15).timeout
@@ -546,6 +547,10 @@ func atur_map(nama_map : StringName = "empty") -> String:
 	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
 	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;							return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);											return "map ["+nama_map+"] tidak ditemukan"
+func atur_alat() -> void:
+	alat_digunakan = {
+		"konverter_biner": { "nama_entitas": "", "digunakan": false, "interaksi": false }
+	}
 func simpan_map() -> void:
 	# simpan map ke user://map/nama_map.map
 	if koneksi == MODE_KONEKSI.SERVER and is_instance_valid(karakter):
@@ -1475,6 +1480,9 @@ func putuskan_server(paksa : bool = false) -> void:
 		
 		# hapus daftar objek
 		for d_objek in %DaftarObjek.get_children(): d_objek.queue_free()
+		
+		# atur ulang alat pemain
+		atur_alat()
 		
 		# hapus pengamat objek
 		if $hud/tampilan_objek/viewport_objek.get_node_or_null("pengamat") != null:
