@@ -54,12 +54,11 @@ func _setup():
 		var tmp_kondisi : Array = [["posisi", posisi_entitas]]
 		global_position = posisi_entitas
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_pemilik, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_pemilik, name, tmp_kondisi) # FIXME : gak bisa, karena id_proses adalah id server (1)!
+		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_pemilik, name, tmp_kondisi)
 
-func atur_pemroses(id_pemroses : int) -> void:
-	if id_pemilik == client.id_koneksi:
-		# FIXME : ini gak kepanggil di client
-		Panku.notify("pemroses : " + str(id_pemroses))
+#func atur_pemroses(id_pemroses : int) -> void:
+	#if id_pemilik == client.id_koneksi:
+		#Panku.notify("pemroses : " + str(id_pemroses))
 func proses(_waktu_delta : float) -> void:
 	if !is_instance_valid(server.permainan): set_process(false); return
 	
