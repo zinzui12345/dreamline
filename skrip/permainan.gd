@@ -1296,7 +1296,7 @@ func _edit_objek(jalur : String) -> void:
 		$hud/daftar_atribut_objek/Panel/kontainer/edit_skrip.disabled = true
 	# 10/05/25 :: cek apakah objek bisa dihapus
 	if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
-		# jangan sembarangan menghapus objek!, cek apakah objek memiliki pemilik
+		# jangan sembarangan menghapus objek, cek apakah objek memiliki pemilik
 		if edit_objek.get("id_pemilik") != null and (edit_objek.id_pemilik != -1 and edit_objek.id_pemilik != client.id_koneksi):
 			$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", true)
 		else:

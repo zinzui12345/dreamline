@@ -54,8 +54,12 @@ func _setup():
 		var tmp_kondisi : Array = [["posisi", posisi_entitas]]
 		global_position = posisi_entitas
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER: server._sesuaikan_kondisi_entitas(id_pemilik, name, tmp_kondisi)
-		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_pemilik, name, tmp_kondisi)
+		else: server.rpc_id(1, "_sesuaikan_kondisi_entitas", id_pemilik, name, tmp_kondisi) # FIXME : gak bisa, karena id_proses adalah id server (1)!
 
+func atur_pemroses(id_pemroses : int) -> void:
+	if id_pemilik == client.id_koneksi:
+		# FIXME : ini gak kepanggil di client
+		Panku.notify("pemroses : " + str(id_pemroses))
 func proses(_waktu_delta : float) -> void:
 	if !is_instance_valid(server.permainan): set_process(false); return
 	
@@ -85,7 +89,7 @@ func proses(_waktu_delta : float) -> void:
 				if dunia.get_node("pemain/"+str(tmp_id_pengangkat))._ragdoll:
 					server.gunakan_entitas(name, "_lepas")
 		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
-			# kalo pengangkatnya terputus, lepas # FIXME : pool gimana caranya???
+			# kalo pengangkatnya terputus, lepas
 			if dunia.get_node("pemain").get_node_or_null(str(id_pengangkat)) == null:
 				server._gunakan_entitas(name, 1, "_lepas")
 
