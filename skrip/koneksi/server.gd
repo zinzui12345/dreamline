@@ -912,15 +912,17 @@ func _pemain_terputus(id_pemain):
 			jumlah_entitas += 1
 			var nama_entitas : StringName = "entitas_"+str(jumlah_entitas)
 			var id_pemilik_entitas : int = -1
+			var id_pemroses_entitas : int = -1
 			for p in properti.size():
 				if properti[p][0] == "id_pemilik":
 					id_pemilik_entitas = properti[p][1]
+					id_pemroses_entitas = properti[p][1]
 					properti.erase(properti[p])
 			# INFO : tambahkan entitas ke array pool_entitas
 			pool_entitas[nama_entitas] = {
 				"jalur_instance": jalur_skena,
 				"id_pemilik" : id_pemilik_entitas,
-				"id_proses" : -1,
+				"id_proses" : id_pemroses_entitas,
 				"id_pengubah": 0,
 				"posisi"	: posisi,
 				"rotasi"	: rotasi,
