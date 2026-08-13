@@ -104,10 +104,17 @@ func _setup() -> void:
 			else:
 				push_error("[Galat] objek %s tidak memiliki jalur skena!" % name)
 			
+			var kalkulasi_rotasi : Vector3
+			var tmp_kalkulasi_rotasi : Node3D = Node3D.new()
+			dunia.add_child(tmp_kalkulasi_rotasi)
+			tmp_kalkulasi_rotasi.global_rotation = global_rotation
+			kalkulasi_rotasi = tmp_kalkulasi_rotasi.rotation
+			tmp_kalkulasi_rotasi.queue_free()
+			
 			server._tambahkan_objek(
 				_jalur_instance,
 				global_transform.origin,
-				rotation,
+				kalkulasi_rotasi,
 				jarak_render,
 				_sp_properti
 			)
