@@ -1,4 +1,5 @@
 extends objek
+class_name tombol
 
 @export var jalur_instance : String = ""
 

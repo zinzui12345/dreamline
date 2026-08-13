@@ -514,4 +514,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, -0.44, 4)
 
 [node name="puzzle_biner_a" parent="." unique_id=457953388 instance=ExtResource("11_04e41")]
-transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, -1.9292679, 0.25499934, 3.0354419)
+transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, -1.929, 0.6, 3.035)

@@ -1051,6 +1051,15 @@ func _pemain_terputus(id_pemain):
 				]
 			)
 			return
+		elif (nama_fungsi == "atur_ditekan") and parameter.size() == 1:
+			_sesuaikan_properti_objek(
+				pool_objek[nama_objek]["id_pengubah"],
+				nama_objek,
+				[
+					["ditekan", parameter[0]]
+				]
+			)
+			return
 		elif nama_fungsi == "tekan" and parameter.size() > 1:
 			# TODO : kelola parameter
 			# kirim ke semua peer yang di-spawn kecuali id_pengatur (server)!
