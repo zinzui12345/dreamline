@@ -1051,6 +1051,13 @@ func _pemain_terputus(id_pemain):
 				]
 			)
 			return
+		elif nama_fungsi == "tekan" and parameter.size() > 1:
+			# TODO : kelola parameter
+			# kirim ke semua peer yang di-spawn kecuali id_pengatur (server)!
+			for idx_pemain in pemain.keys():
+				if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != multiplayer.get_unique_id():
+					if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
+						rpc_id(pemain[idx_pemain]["id_client"], "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
 	if objek_difungsikan != null:
 		var panggil_fungsi : Callable
 		if objek_difungsikan.has_method(nama_fungsi):
