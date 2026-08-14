@@ -2,16 +2,18 @@ extends objek
 class_name tombol
 
 @export var jalur_instance : String = ""
-
+@export var ditekan : bool = false :
+	set(aktif_):
+		atur_ditekan(aktif_)
+		ditekan = aktif_
 @export var target_entitas : String
 @export var nama_fungsi : String
-@export var properti_fungsi : Array
 
 const abaikan_transformasi = true
 const properti = [
 	["target_entitas", ""],
 	["nama_fungsi", ""],
-	["properti_fungsi", []]
+	["ditekan", false]
 ]
 
 func fungsikan():
@@ -28,3 +30,6 @@ func fungsikan():
 
 func tekan():
 	$animasi.play("tekan")
+
+func atur_ditekan(_aktif : bool) -> void:
+	pass

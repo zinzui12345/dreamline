@@ -12,14 +12,14 @@ const sinkron_kondisi = [
 	["input_biner_128", false]
 ]
 
-var input_biner_1 : bool
-var input_biner_2 : bool
-var input_biner_4 : bool
-var input_biner_8 : bool
-var input_biner_16 : bool
-var input_biner_32 : bool
-var input_biner_64 : bool
-var input_biner_128 : bool
+@export var input_biner_1 : bool
+@export var input_biner_2 : bool
+@export var input_biner_4 : bool
+@export var input_biner_8 : bool
+@export var input_biner_16 : bool
+@export var input_biner_32 : bool
+@export var input_biner_64 : bool
+@export var input_biner_128 : bool
 
 #func mulai() -> void:
 	#Panku.notify("test")

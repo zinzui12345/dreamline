@@ -1,10 +1,5 @@
 extends tombol
 
-@export var ditekan : bool = false :
-	set(aktif_):
-		atur_ditekan(aktif_)
-		ditekan = aktif_
-
 func mulai() -> void:
 	atur_ditekan(ditekan)
 
@@ -17,8 +12,6 @@ func fungsikan():
 	if !ditekan:	aktifkan()
 	else:			nonaktifkan()
 
-func tekan() -> void:
-	$animasi.play("tekan")
 func atur_ditekan(aktif : bool) -> void:
 	if aktif:
 		$frame/transformasi/on.visible = true
@@ -26,6 +19,7 @@ func atur_ditekan(aktif : bool) -> void:
 	else:
 		$frame/transformasi/on.visible = false
 		$frame/transformasi/off.visible = true
+
 func aktifkan() -> void:
 	server.fungsikan_objek(
 		name,

@@ -1077,6 +1077,20 @@ func _pemain_terputus(id_pemain):
 					["ditekan", parameter[0]]
 				]
 			)
+			# 14/08/26 : atur properti entitas yang terhubung | nama_fungsi sebagai nama properti
+			var ubah_properti : bool = false
+			var tmp_nama_entitas : String = ""
+			var tmp_nama_properti : String = ""
+			for id_properti_objek in pool_objek[nama_objek]["properti"].size():
+				var properti_objek = pool_objek[nama_objek]["properti"][id_properti_objek]
+				if properti_objek[0] == "target_entitas" and pool_entitas.keys().has(properti_objek[1]):
+					tmp_nama_entitas = properti_objek[1]
+					ubah_properti = true
+				elif properti_objek[0] == "nama_fungsi":
+					tmp_nama_properti = properti_objek[1]
+			if ubah_properti:
+				# Panku.notify("TEST >> " + tmp_nama_entitas + " : " + tmp_nama_properti + " = " + str(parameter[0]))
+				sinkronkan_kondisi_entitas(-1, tmp_nama_entitas, [[tmp_nama_properti, parameter[0]]])
 			return
 		elif nama_fungsi == "tekan" and parameter.size() == 0:
 			# kirim ke semua peer yang di-spawn kecuali id_pengatur (server)!
