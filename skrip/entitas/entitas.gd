@@ -26,18 +26,39 @@ func _setup() -> void:
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
 			if get("sinkron_kondisi") != null:
 				var tmp_kondisi : Array = get("sinkron_kondisi").duplicate(true)
-				tmp_kondisi.append([
-					"id_entitas",
-					name
-				])
+				var tmp_id_relasi : String = server.permainan.hasilkanKarakterAcak(8)
+				var tmp_cek_relasi : bool = false
+				
+				# 14/08/26 :: cek node-node, apakah terdapat objek. jika terdapat objek, buat relasi dengan objek tersebut
+				while tmp_id_relasi in server.relasi_objek_dan_entitas:
+					tmp_id_relasi = server.permainan.hasilkanKarakterAcak(8)
+				for node_anak in get_children():
+					if node_anak is objek:
+						if tmp_cek_relasi == false:
+							tmp_cek_relasi = true
+						node_anak.set_meta("id_relasi", tmp_id_relasi)
+				
+				if tmp_cek_relasi:
+					server.relasi_objek_dan_entitas.append(tmp_id_relasi)
+					tmp_kondisi.append_array([
+						["id_entitas", name],
+						["id_relasi", tmp_id_relasi]
+					])
+				
 				server._tambahkan_entitas(
 					get("jalur_instance"),
 					global_transform.origin,
 					rotation,
 					tmp_kondisi
 				)
+				
+				if tmp_cek_relasi:
+					for node_anak in get_children():
+						if node_anak is objek:
+							node_anak._setup()
 			else:
 				# TODO : tambahkan objek placeholder error
+				push_error("[Galat] "+name+" tidak memiliki properti sinkron_kondisi, entitas tidak dapat disinkronkan!")
 				return
 		queue_free()
 	else:

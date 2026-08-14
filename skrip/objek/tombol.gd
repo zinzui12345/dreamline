@@ -3,17 +3,28 @@ class_name tombol
 
 @export var jalur_instance : String = ""
 
+@export var target_entitas : String
+@export var nama_fungsi : String
+@export var properti_fungsi : Array
+
 const abaikan_transformasi = true
+const properti = [
+	["target_entitas", ""],
+	["nama_fungsi", ""],
+	["properti_fungsi", []]
+]
 
 func fungsikan():
 	server.fungsikan_objek(
 		name,
 		"tekan",
-		[
-			"entitas_n",
-			"nama_fungsi"
-		]
+		[]
 	)
+	if target_entitas != "" and nama_fungsi != "":
+		server.gunakan_entitas(
+			target_entitas,
+			nama_fungsi
+		)
 
-func tekan(_nama_target_entitas : String, _nama_fungsi : String):
+func tekan():
 	$animasi.play("tekan")

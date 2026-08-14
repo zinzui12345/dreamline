@@ -12,15 +12,12 @@ func fungsikan():
 	server.fungsikan_objek(
 		name,
 		"tekan",
-		[
-			"entitas_n",
-			"nama_fungsi"
-		]
+		[]
 	)
 	if !ditekan:	aktifkan()
 	else:			nonaktifkan()
 
-func tekan(_nama_target_entitas : String, _nama_fungsi : String) -> void:
+func tekan() -> void:
 	$animasi.play("tekan")
 func atur_ditekan(aktif : bool) -> void:
 	if aktif:
@@ -35,11 +32,9 @@ func aktifkan() -> void:
 		"atur_ditekan",
 		[true]
 	)
-	#set("ditekan", true)
 func nonaktifkan() -> void:
 	server.fungsikan_objek(
 		name,
 		"atur_ditekan",
 		[false]
 	)
-	#set("ditekan", false)

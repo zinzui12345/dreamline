@@ -260,9 +260,9 @@ func _update_panel_bg_color(new_color):
 	_panel.add_theme_stylebox_override("panel", stylebox)
 
 
-func _on_option_input_item_selected(index):
+func _on_option_input_item_selected(_index):
 	modified.emit()
 
 
-func _on_snap_point_snapped_block_changed(block):
+func _on_snap_point_snapped_block_changed(_block):
 	_update_visible_input()

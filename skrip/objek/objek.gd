@@ -65,8 +65,14 @@ func _ready() -> void:
 	else: call_deferred("_setup")
 func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("objek").get_path():
-		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
+		if get_parent() is entitas and get_parent().is_inside_tree() and get_parent().get_parent().get_path() == dunia.get_node("entitas").get_path():
+			# 14/08/26 :: jangan spawn objek yang berada dalam entitas
+			pass
+		elif server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and (not server.mode_replay or server.mode_uji_performa):
 			var _sp_properti : Array	# array berisi properti kustom dengan nilai yang telah diubah pada objek | ini digunakan untuk menambahkan objek ke server
+			var _relasi : bool = false
+			var _id_relasi : String = ""
+			
 			if has_meta("id_objek"):
 				_sp_properti.append([
 					"id_objek",
@@ -103,6 +109,11 @@ func _setup() -> void:
 				_jalur_instance = get("jalur_instance")
 			else:
 				push_error("[Galat] objek %s tidak memiliki jalur skena!" % name)
+			if has_meta("id_relasi"):
+				_id_relasi = get_meta("id_relasi")
+				_relasi = true
+			elif get_parent() is entitas and get_parent().is_inside_tree() and get_parent().get_parent().get_path() != dunia.get_node("entitas").get_path():
+				return
 			
 			var kalkulasi_rotasi : Vector3
 			var tmp_kalkulasi_rotasi : Node3D = Node3D.new()
@@ -116,8 +127,12 @@ func _setup() -> void:
 				global_transform.origin,
 				kalkulasi_rotasi,
 				jarak_render,
-				_sp_properti
+				_sp_properti,
+				_id_relasi
 			)
+			
+			if _relasi:
+				server.hubungkan_objek_dengan_entitas(_id_relasi)
 		queue_free()
 	else:
 		# 03/03/25 :: buat daftar node suara/bunyi

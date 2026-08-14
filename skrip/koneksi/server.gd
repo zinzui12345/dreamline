@@ -25,11 +25,12 @@ var jumlah_karakter : int = 0
 var pool_entitas : Dictionary = {}
 var pool_objek : Dictionary = {}
 var pool_karakter : Dictionary = {}
-var cek_visibilitas_pemain : Dictionary = {} # [id_pemain][id_pemain_target] = "spawn" ? "hapus"
-var cek_visibilitas_pool_entitas : Dictionary = {} # [id_pemain][nama_entitas] = "spawn" ? "hapus"
-var cek_visibilitas_pool_objek : Dictionary = {} # [id_pemain][nama_objek] = "spawn" ? "hapus"
-var cek_visibilitas_pool_karakter : Dictionary = {} # [id_pemain][nama_karakter] = "spawn" ? "hapus"
+var cek_visibilitas_pemain : Dictionary = {} 		# [id_pemain][id_pemain_target] = "spawn" ? "hapus"
+var cek_visibilitas_pool_entitas : Dictionary = {}	# [id_pemain][nama_entitas] = "spawn" ? "hapus"
+var cek_visibilitas_pool_objek : Dictionary = {}	# [id_pemain][nama_objek] = "spawn" ? "hapus"
+var cek_visibilitas_pool_karakter : Dictionary = {}	# [id_pemain][nama_karakter] = "spawn" ? "hapus"
 var pool_pemuat_objek : Array
+var relasi_objek_dan_entitas : Array				# id unik untuk menghubungkan objek dengan entitas >> objek memanggil suatu fungsi pada entitas
 var b_cek_data_timeline : Dictionary
 var b_indeks_timeline : Array
 var b_nama_file_timeline : String
@@ -632,6 +633,22 @@ func cek_visibilitas_entitas_terhadap_pemain(id_pemain : int, jalur_objek, jarak
 		else:
 			return false
 	else:	return false
+func hubungkan_objek_dengan_entitas(id_relasi : String) -> void:
+	for nama_entitas in pool_entitas.keys():
+		for id_properti_entitas in pool_entitas[nama_entitas]["kondisi"].size():
+			var properti_entitas = pool_entitas[nama_entitas]["kondisi"][id_properti_entitas]
+			if properti_entitas[0] == "id_relasi" and properti_entitas[1] == id_relasi:
+				for hubungkan_objek in pool_objek.keys():
+					if pool_objek[hubungkan_objek].has("id_relasi") and pool_objek[hubungkan_objek]["id_relasi"] == id_relasi:
+						#Panku.notify("PASS : %s -> %s == %s -> %s" % [nama_entitas, id_relasi, hubungkan_objek, properti_entitas[1]])
+						_sesuaikan_properti_objek(
+							pool_objek[hubungkan_objek]["id_pengubah"],
+							hubungkan_objek,
+							[
+								["target_entitas", nama_entitas]
+							]
+						)
+				return
 func dorong_pemain(id_pemain : int, arah_dorong : Vector3):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_terima_dorongan_pemain_terhadap_pemain(client.id_sesi, id_pemain, arah_dorong)
@@ -942,7 +959,7 @@ func _pemain_terputus(id_pemain):
 				}
 		else: push_error("[Galat] entitas %s tidak ditemukan" % [jalur_skena]); Panku.notify("404 : Objek tak ditemukan [%s]" % [jalur_skena])
 	else: push_error("[Galat] fungsi [tambahkan_entitas] hanya dapat dipanggil pada server"); Panku.notify("403 : Terlarang")
-@rpc("any_peer") func _tambahkan_objek(jalur_skena : String, posisi : Vector3, rotasi : Vector3, jarak_render : int, properti : Array) -> void:
+@rpc("any_peer") func _tambahkan_objek(jalur_skena : String, posisi : Vector3, rotasi : Vector3, jarak_render : int, properti : Array, id_relasi : String = "") -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		if load(jalur_skena) != null:
 			jumlah_objek += 1
@@ -952,6 +969,7 @@ func _pemain_terputus(id_pemain):
 				"jarak_render"	: jarak_render,
 				"jalur_instance": jalur_skena,
 				"id_pengubah": 0,
+				"id_relasi": id_relasi,
 				"posisi"	: posisi,
 				"rotasi"	: rotasi,
 				"properti"	: properti
@@ -1060,8 +1078,7 @@ func _pemain_terputus(id_pemain):
 				]
 			)
 			return
-		elif nama_fungsi == "tekan" and parameter.size() > 1:
-			# TODO : kelola parameter
+		elif nama_fungsi == "tekan" and parameter.size() == 0:
 			# kirim ke semua peer yang di-spawn kecuali id_pengatur (server)!
 			for idx_pemain in pemain.keys():
 				if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != multiplayer.get_unique_id():
@@ -1327,7 +1344,7 @@ func _pemain_terputus(id_pemain):
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for idx_pemain in pemain.keys():
 			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
-				if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
+				if cek_visibilitas_pool_objek.has(pemain[idx_pemain]["id_client"]) and cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 					sinkronkan_kondisi_objek(pemain[idx_pemain]["id_client"], nama_objek, properti_objek)
 @rpc("any_peer") func _sesuaikan_kondisi_karakter(id_pengatur : int, nama_karakter : String, kondisi_karakter : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
@@ -1447,6 +1464,7 @@ func _pemain_terputus(id_pemain):
 			for p in kondisi_entitas.size():
 				if tmp_entitas.get(kondisi_entitas[p][0]) != null:	tmp_entitas.set(kondisi_entitas[p][0], kondisi_entitas[p][1])
 				elif kondisi_entitas[p][0] == "id_entitas":			tmp_entitas.set_meta("id_entitas", kondisi_entitas[p][1])
+				elif kondisi_entitas[p][0] == "id_relasi":			pass
 				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+kondisi_entitas[p][0]+"]")
 			dunia.get_node("entitas").add_child(tmp_entitas, true)
 			tmp_entitas.global_transform.origin = posisi_entitas

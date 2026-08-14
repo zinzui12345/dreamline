@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://e1weq8imn0mb"]
+[gd_scene format=3 uid="uid://e1weq8imn0mb"]
 
 [ext_resource type="Texture2D" uid="uid://kynepa64ngq2" path="res://ui/ikon/ikon_pemain_cewek.svg" id="1_5gjhk"]
 [ext_resource type="Texture2D" uid="uid://bespnn02lkeed" path="res://ui/ikon/ikon_os_linux.svg" id="2_kuco4"]
@@ -58,13 +58,13 @@ extends Panel
 		karakter = karakternya
 @export var gambar = {}
 
-func atur_gambar_karakter(gambar : Image):
-	$ikon.texture = ImageTexture.create_from_image(gambar)
+func atur_gambar_karakter(gambar_baru : Image):
+	$ikon.texture = ImageTexture.create_from_image(gambar_baru)
 "
 
-[node name="pemain" type="Panel"]
-clip_contents = true
+[node name="pemain" type="Panel" unique_id=729460654]
 custom_minimum_size = Vector2(0, 80)
+clip_contents = true
 anchors_preset = -1
 anchor_top = -0.000333328
 anchor_right = 1.0
@@ -74,20 +74,20 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_xgu5t")
 script = SubResource("GDScript_rm17g")
 nama = "Nanaaaaaaaaaaaaaaaaaaaaaaa"
 
-[node name="ikon" type="Sprite2D" parent="."]
+[node name="ikon" type="Sprite2D" parent="." unique_id=1803926716]
 position = Vector2(40, 40)
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("1_5gjhk")
 region_rect = Rect2(50, 100, 200, 200)
 
-[node name="ikon_os" type="Sprite2D" parent="."]
+[node name="ikon_os" type="Sprite2D" parent="." unique_id=156096552]
 position = Vector2(89, 40)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("2_kuco4")
 centered = false
 region_rect = Rect2(0, 0, 48, 48)
 
-[node name="nama" type="Label" parent="."]
+[node name="nama" type="Label" parent="." unique_id=1732267573]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
@@ -105,7 +105,7 @@ text = "Nanaaaaaaaaaaaaaaaaaaaaaaaaaa"
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="id" type="Label" parent="."]
+[node name="id" type="Label" parent="." unique_id=1561908451]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.5
@@ -122,7 +122,7 @@ vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="ping" type="Label" parent="."]
+[node name="ping" type="Label" parent="." unique_id=1918949669]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
