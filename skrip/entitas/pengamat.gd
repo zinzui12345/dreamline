@@ -68,6 +68,7 @@ func _process(delta : float) -> void:
 							var perbedaan_posisi_z_akhir : float = 0.237 * persentase_arah
 							#position.y = posisiAwalVertikalPandangan - perbedaan_posisi_y_akhir # gak usah dipake karena bakalan offset ketika pemain jongkok
 							get_node("%pandangan").position.z = 0 + perbedaan_posisi_z_akhir
+							get_node("%target").position.z = get_node("%pandangan").position.z
 							_karakter.arah_pandangan.y = arah_pandangan
 				2:
 					get_node("%pandangan").rotation_degrees.x -= rotasi.x
