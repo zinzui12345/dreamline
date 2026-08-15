@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 14/08/26 Early Access"
+const versi = "Dreamline v0.4.4 15/08/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -822,7 +822,7 @@ func _muat_map(file_map : StringName) -> void:
 								elif data_frame.tipe_objek == "entitas":
 									server.timeline.trek[entitas_] = {}
 									server.timeline.entitas[entitas_] = "entitas"
-									server.call_deferred("spawn_pool_entitas", 1, entitas_, data_frame.sumber, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
+									server.call_deferred("spawn_pool_entitas", 1, entitas_, data_frame.sumber, -1, 1, data_frame.posisi, data_frame.rotasi, data_frame.properti)
 									# buat track animasi
 									server.timeline.trek[entitas_]["visibilitas"] = skenario.add_track(Animation.TYPE_VALUE)
 									server.timeline.trek[entitas_]["posisi"] = skenario.add_track(Animation.TYPE_POSITION_3D)

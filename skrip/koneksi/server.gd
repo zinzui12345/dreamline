@@ -13,7 +13,7 @@ var publik : bool = false
 var ip_publik
 var jumlah_pemain : int = 32
 var pemain_terhubung : int = 0
-var map : StringName = &"empty"
+var map : StringName = &"arena"
 var nama : StringName = &"bebas"
 var pemain : Dictionary
 var timeline : Dictionary = {}
@@ -1240,7 +1240,7 @@ func _pemain_terputus(id_pemain):
 					"rotasi":	Vector3(rad_to_deg(pemain[id_sesi_pemain]["rotasi"].x), rad_to_deg(pemain[id_sesi_pemain]["rotasi"].y), rad_to_deg(pemain[id_sesi_pemain]["rotasi"].z)),
 					"skala":	Vector3(1, 1, 1), # asumsikan skala pemain tidak pernah berubah
 					"kondisi":	{
-						"arah_gerakan": 	Vector2(-pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].x, pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].z / 2),
+						"arah_gerakan": 	Vector2(-pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].x, pemain[id_sesi_pemain]["kondisi"]["arah_gerakan"].z),
 						"arah_x_pandangan": pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"].x,
 						"arah_y_pandangan": pemain[id_sesi_pemain]["kondisi"]["arah_pandangan"].y,
 						"gestur":			pemain[id_sesi_pemain]["kondisi"]["mode_gestur"],

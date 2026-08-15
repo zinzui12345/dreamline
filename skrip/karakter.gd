@@ -1,16 +1,14 @@
-extends CharacterBody3D
+extends SUCC
 
 class_name Karakter
-
-# TODO : floor_constant_speed = true, kecuali ketika menaiki tangga
 
 var arah : Vector3
 var arah_gerakan : Vector3 :				# ini arah gerakan
 	set(nilai):
-		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-nilai.x, nilai.z / 2)) # TODO : clamp arah gerak z > 0.25
+		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-nilai.x, nilai.z))
 		$pose.set("parameters/arah_jongkok/blend_position", nilai.z)
 		arah_gerakan = nilai
-var _transisi_reset_arah : Tween			# transisi ketika berhenti bergerak
+#var _transisi_reset_arah : Tween			# transisi ketika berhenti bergerak
 var _input_arah_pandangan : Vector2			# ini arah input / event relative
 var arah_pandangan : Vector2 :				# ini arah pose
 	set(nilai):
@@ -49,7 +47,7 @@ var gestur_jongkok : float = 0.0 :
 		$area_tabrak/area.shape.height = $fisik.shape.height + 0.02
 		# terapkan nilai ke properti
 		gestur_jongkok = nilai
-var _menabrak : bool = false
+#var _menabrak : bool = false
 var _ragdoll : bool = false :
 	set(nilai):
 		$pengamat.position.x 		= 0
@@ -365,6 +363,7 @@ func _enter_tree() -> void:
 	set_physics_process(false)
 func _ready() -> void:
 	$pose.active = true
+	_validate_input_actions()
 	penarget = get_node("pengamat/%target")
 	penarget_serangan_a = $area_serang_a
 	penarget_serangan_b = $area_serang_b
@@ -510,6 +509,10 @@ func _input(event : InputEvent) -> void:
 						server.permainan._tutup_daftar_objek()
 				Permainan.PERAN_KARAKTER.Matematikawan:
 					pass
+func _unhandled_input(_event: InputEvent) -> void:
+	# 15/08/26 :: cegah fungsi bawaan input SUCC
+	pass
+
 func _physics_process(delta : float) -> void:
 	# hentikan proses jika node tidak berada dalam permainan
 	if !is_instance_valid(server.permainan): set_process(false); return
@@ -517,65 +520,46 @@ func _physics_process(delta : float) -> void:
 	# kendalikan karakter dengan input
 	if kontrol:
 		# maju / mundur
-		if Input.is_action_pressed("berlari"):
-			if is_on_floor():
-				if Input.is_action_pressed("mundur"):
-					arah.z = -Input.get_action_strength("berlari") * 2
-				elif jongkok:
-					arah.z = Input.get_action_strength("berlari") * 1.5
-				else:
-					arah.z = Input.get_action_strength("berlari") * 2
-			elif Input.is_action_pressed("kiri") or Input.is_action_pressed("kanan"):
-				arah.z = lerp(arah.z, Input.get_action_strength("berlari") * 2, 0.5 * delta)
-		elif Input.is_action_pressed("maju"):
+		if Input.is_action_pressed("maju"):
 			arah.z = Input.get_action_strength("maju")
 		elif Input.is_action_pressed("mundur"):
 			arah.z = -Input.get_action_strength("mundur")
 		else:
-			if is_on_floor():
-				if self.is_inside_tree():
-					if _transisi_reset_arah == null:
-						_transisi_reset_arah = get_tree().create_tween()
-						_transisi_reset_arah.stop()
-						_transisi_reset_arah.tween_property(self, "arah", Vector3.FORWARD * 0.0, 0.35)
-						_transisi_reset_arah.set_trans(Tween.TRANS_SPRING)
-						_transisi_reset_arah.set_ease(Tween.EASE_OUT)
-						_transisi_reset_arah.play()
-					elif !_transisi_reset_arah.is_running():
-						_transisi_reset_arah = null
-			elif gestur == "duduk": arah.z = 0
-			else: arah.z = lerp(arah.z, 0.0, 0.5 * delta)
+			#if is_on_floor():
+				#if self.is_inside_tree():
+					#if _transisi_reset_arah == null:
+						#_transisi_reset_arah = get_tree().create_tween()
+						#_transisi_reset_arah.stop()
+						#_transisi_reset_arah.tween_property(self, "arah", Vector3.FORWARD * 0.0, 0.35)
+						#_transisi_reset_arah.set_trans(Tween.TRANS_SPRING)
+						#_transisi_reset_arah.set_ease(Tween.EASE_OUT)
+						#_transisi_reset_arah.play()
+					#elif !_transisi_reset_arah.is_running():
+						#_transisi_reset_arah = null
+			#elif gestur == "duduk": arah.z = 0
+			#else: arah.z = lerp(arah.z, 0.0, 0.5 * delta)
+			arah.z = 0
+		
+		# lari
+		wish_sprint = _action_pressed("sprint")
+		if wish_sprint and arah.z == 0:
+			arah.z = Input.get_action_strength("berlari")
 		
 		# kiri / kanan
 		if Input.is_action_pressed("kiri"):
-			if Input.is_action_pressed("berlari"): arah.x = Input.get_action_strength("kiri")
-			else: arah.x = Input.get_action_strength("kiri") / 2
+			#if Input.is_action_pressed("berlari"): arah.x = Input.get_action_strength("kiri")
+			#else:
+			arah.x = Input.get_action_strength("kiri") / 2
 		elif Input.is_action_pressed("kanan"):
-			if Input.is_action_pressed("berlari"): arah.x = -Input.get_action_strength("kanan")
-			else: arah.x = -Input.get_action_strength("kanan") / 2
+			#if Input.is_action_pressed("berlari"): arah.x = -Input.get_action_strength("kanan")
+			#else:
+			arah.x = -Input.get_action_strength("kanan") / 2
 		else: arah.x = 0
 		
 		# lompat
 		if Input.is_action_pressed("lompat"):
-			if !melompat and !_ragdoll:
-				if Input.is_action_pressed("berlari") and arah.z > 1.0:
-					if is_on_floor():
-						arah.y = 1000 * delta
-					elif (Input.is_action_pressed("kiri") and _input_arah_pandangan.x > 0) \
-					 or (Input.is_action_pressed("kanan") and _input_arah_pandangan.x < 0):
-						arah.y = clampf(arah.y * 1.4, 1100 * delta, 1450 * delta)
-						if Input.is_action_pressed("mundur"):
-							arah.z = -clampf(arah.z * 1.05, 0.0, 125 * delta)
-						elif jongkok:
-							arah.z = clampf(arah.z * 1.025, 0.0, 850 * delta)
-						else:
-							arah.z = clampf(arah.z * 1.025, 0.0, 625 * delta)
-				elif Input.is_action_pressed("maju") and arah.z > 0.5:
-					if is_on_floor():
-						arah.y = 785 * delta
-				elif is_on_floor():
-					melompat = true
-					arah.y = 512 * delta
+			if !melompat and !_ragdoll and is_on_floor():
+				melompat = true
 			if is_on_floor() and _ragdoll:
 				if _coba_reset_ragdoll > 40:
 					_timer_ragdoll.stop()
@@ -586,6 +570,8 @@ func _physics_process(delta : float) -> void:
 					_coba_reset_ragdoll += 1
 		elif is_on_floor() and melompat:
 			melompat = false
+		var buffered: bool = enable_bhop and config.bhop_buffered_jump
+		wish_jump = Input.is_action_pressed("lompat") if buffered else Input.is_action_just_pressed("lompat")
 		
 		# jongkok
 		if Input.is_action_just_pressed("jongkok"):
@@ -602,6 +588,7 @@ func _physics_process(delta : float) -> void:
 					tween.tween_property(self, "gestur_jongkok", 0, 0.6)
 					jongkok = false
 					tween.play()
+				wish_crouch = jongkok
 		
 		# zoom
 		if Input.is_action_just_pressed("fokus_pandangan"):
@@ -758,7 +745,8 @@ func _physics_process(delta : float) -> void:
 			Panku.notify("re-spawn")
 	
 	# kalkulasi arah gerakan
-	arah_gerakan = (get_real_velocity() * transform.basis) * arah.normalized()
+	var tmp_arah_gerakan = (get_real_velocity() * transform.basis) * arah.normalized()
+	arah_gerakan = Vector3(tmp_arah_gerakan.x, tmp_arah_gerakan.y, (tmp_arah_gerakan.z * 0.25) * arah.z)
 	
 	# sinkronkan perubahan kondisi
 	if id_pemain == client.id_koneksi and client.id_koneksi > 0:
@@ -849,16 +837,50 @@ func _physics_process(delta : float) -> void:
 		cek_perubahan_kondisi["posisi_target_portal"] = _posisi_target_portal
 	
 	# terapkan arah gerakan
-	if gestur == "duduk":
-		if pose_duduk == "meluncur":
-			arah.y = -(ProjectSettings.get_setting("physics/3d/default_gravity"))
-		elif arah.y != 0:
-			arah.y = 0
-	elif !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
-	elif is_on_floor() and arah.y < 0: arah.y = 0
+	#if gestur == "duduk":
+		#if pose_duduk == "meluncur":
+			#arah.y = -(ProjectSettings.get_setting("physics/3d/default_gravity"))
+		#elif arah.y != 0:
+			#arah.y = 0
+	#elif !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
+	#elif is_on_floor() and arah.y < 0: arah.y = 0
 	# jangan fungsikan kendali kalo animasi gak aktif
-	if $pose.active: velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
-	_menabrak = move_and_slide()
+	if $pose.active:
+		# velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
+		if global_position.is_equal_approx(_current_physics_position):
+			_previous_physics_position = _current_physics_position
+		#else:
+			#_reset_manual_camera_interpolation()
+		if not kontrol:
+			velocity = Vector3.ZERO
+			move_and_slide()
+			_current_physics_position = global_position
+			return
+		elif gestur == "duduk" and pose_duduk != "meluncur":
+			velocity = Vector3.ZERO
+			return
+		else:
+			if gestur == "duduk" and pose_duduk == "meluncur":
+				move_input = Vector2(0, arah.z - -arah.z).normalized()
+			else:
+				move_input = Vector2(arah.x - -arah.x, arah.z - -arah.z).normalized()
+			move_dir = Vector3(move_input.x, 0.0, move_input.y)
+			move_dir = move_dir.normalized() * _wish_speed()
+			move_dir = move_dir.rotated(Vector3.UP, global_rotation.y)
+		#_previous_view_offset = _view_offset
+		#_previous_visual_step_offset = _visual_step_offset
+		_set_floor_type(delta)
+		_apply_gravity(delta)
+		_set_velocity(delta)
+		_clamp_velocity()
+		_move_body(delta)
+		_set_floor_type(delta)
+		_land_air_crouch()
+		_update_movement_state()
+		_smooth_view_on_stairs(delta)
+		_current_physics_position = global_position
+		
+	#_menabrak = move_and_slide()
 
 func _ketika_ditabrak(node : CollisionObject3D) -> void:
 	var percepatan : Vector3 = node.get_linear_velocity()

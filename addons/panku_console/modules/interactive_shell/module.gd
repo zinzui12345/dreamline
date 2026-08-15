@@ -10,7 +10,7 @@ enum InputMode {
 }
 
 var gui_mode:InputMode = InputMode.Window
-var pause_if_input:bool = true
+var pause_if_input:bool = false
 var unified_window_visibility:bool = false
 var init_expr:String = ""
 
@@ -52,7 +52,7 @@ func init_module():
 	)
 
 	gui_mode = load_module_data("gui_mode", InputMode.Window)
-	pause_if_input = load_module_data("pause_if_input", true)
+	pause_if_input = load_module_data("pause_if_input", false)
 	unified_window_visibility = load_module_data("unified_window_visibility", false)
 	init_expr = load_module_data("init_expr", "")
 

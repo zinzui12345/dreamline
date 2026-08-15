@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SUCCConfig" format=3 uid="uid://dff56twp2y8nx"]
+
+[ext_resource type="Script" uid="uid://caigicac4nqdq" path="res://addons/SUCC/scripts/succ_config.gd" id="1_succ_config"]
+
+[resource]
+script = ExtResource("1_succ_config")
+max_velocity = 127.000254
+crouch_speed_modifier = 0.3333333
+bob_amount = 0.0
+bob_cycle = 0.1
+bob_up = 0.1
+bob_max = 0.0
+tilt_angle = 0.0
+tilt_speed = 0.5
