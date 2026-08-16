@@ -1098,6 +1098,8 @@ func _pemain_terputus(id_pemain):
 				if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != multiplayer.get_unique_id():
 					if cek_visibilitas_pool_objek[pemain[idx_pemain]["id_client"]][nama_objek] == "spawn":
 						rpc_id(pemain[idx_pemain]["id_client"], "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
+		else:
+			push_error("[Galat] tidak dapat memfungsikan objek, fungsi [%s] tidak ditangani" % [nama_fungsi])
 	if objek_difungsikan != null:
 		var panggil_fungsi : Callable
 		if objek_difungsikan.has_method(nama_fungsi):
@@ -1334,6 +1336,23 @@ func _pemain_terputus(id_pemain):
 					sinkronkan_kondisi_entitas(id_pemain_target, nama_entitas, kondisi_entitas)
 	elif pool_entitas.get(nama_entitas) != null:
 		push_error("[Galat] tidak dapat menyesuaikan kondisi entitias peer %s dari peer %s. kesalahan akses!" % [str(pool_entitas[nama_entitas]["id_proses"]), str(id_pengatur)])
+@rpc("any_peer") func _fungsikan_objek_relasi_pada_entitas(nama_entitas : String, daftar_nama_asli_objek : Array, nama_fungsi : String, parameter_fungsi : Array):
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
+		var id_relasi_entitas : String
+		for id_properti_entitas in pool_entitas[nama_entitas]["kondisi"].size():
+			var properti_entitas = pool_entitas[nama_entitas]["kondisi"][id_properti_entitas]
+			if properti_entitas[0] == "id_relasi":
+				id_relasi_entitas = properti_entitas[1]
+				for objek_relasi in pool_objek.keys():
+					if pool_objek[objek_relasi].has("id_relasi") and pool_objek[objek_relasi]["id_relasi"] == id_relasi_entitas:
+						var nama_asli_objek_relasi : String = ""
+						for id_properti_objek_relasi in pool_objek[objek_relasi]["properti"].size():
+							var properti_objek_relasi = pool_objek[objek_relasi]["properti"][id_properti_objek_relasi]
+							if properti_objek_relasi[0] == "id_objek":
+								nama_asli_objek_relasi = properti_objek_relasi[1]
+						if nama_asli_objek_relasi != "" and daftar_nama_asli_objek.has(nama_asli_objek_relasi):
+							_fungsikan_objek(objek_relasi, nama_fungsi, parameter_fungsi)
+						#Panku.notify("nama objek : '%s', nama asli objek : '%s'" % [objek_relasi, nama_asli_objek_relasi])
 @rpc("any_peer") func _sesuaikan_properti_objek(id_pengatur : int, nama_objek : String, properti_objek : Array):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_objek[nama_objek]["id_pengubah"] == id_pengatur:
 		for p in properti_objek.size():

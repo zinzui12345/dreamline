@@ -128,6 +128,11 @@ func sinkronkan_perubahan_kondisi(perubahan_kondisi : Array = []) -> void:
 	# simpan perubahan kondisi properti kustom untuk di-cek lagi
 	for p in sinkron_kondisi.size():
 		cek_kondisi[sinkron_kondisi[p][0]] = get(sinkron_kondisi[p][0])
+func fungsikan_objek_relasi(daftar_nama_asli_objek : Array, nama_fungsi : String, parameter_fungsi : Array):
+	if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		server._fungsikan_objek_relasi_pada_entitas(name, daftar_nama_asli_objek, nama_fungsi, parameter_fungsi)
+	else:
+		server.rpc_id(1, "_fungsikan_objek_relasi_pada_entitas", name, daftar_nama_asli_objek, nama_fungsi, parameter_fungsi)
 
 # fungsi yang akan dipanggil pada saat node memasuki SceneTree menggantikan _ready()
 func mulai() -> void:

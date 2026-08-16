@@ -56,7 +56,21 @@ func cek_nilai(id_pengguna : int) -> void:
 		else:
 			Panku.notify("salahh!")
 		output_desimal = 0
-		# TODO : reset state semua tombol_toggle
+		
+		fungsikan_objek_relasi(
+			[
+				"binary_button-1",
+				"binary_button-2",
+				"binary_button-4",
+				"binary_button-8",
+				"binary_button-16",
+				"binary_button-32",
+				"binary_button-64",
+				"binary_button-128"
+			],
+			"atur_ditekan",
+			[false]
+		)
 
 func proses(_waktu_delta : float) -> void:
 	if output_desimal == 0:
