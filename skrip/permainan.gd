@@ -843,6 +843,8 @@ func _muat_map(file_map : StringName) -> void:
 									# buat track animasi properti kustom
 									server.timeline.trek[entitas_]["properti"] = Dictionary()
 									for indeks_properti in data_frame.properti:
+										# abaikan properti id relasi entitas dengan objek
+										if indeks_properti[0] == "id_relasi": pass
 										# buat track animasi
 										server.timeline.trek[entitas_]["properti"][indeks_properti[0]] = skenario.add_track(Animation.TYPE_VALUE)
 										# atur track dan nilai animasi

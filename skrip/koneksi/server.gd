@@ -1349,12 +1349,17 @@ func _pemain_terputus(id_pemain):
 		if not mode_replay:
 			if not timeline.has(server.timeline["data"]["frame"]):
 				timeline[server.timeline["data"]["frame"]] = {}
-			timeline[server.timeline["data"]["frame"]][nama_objek] = {
-				"tipe": 		"sinkron",
-				"posisi":		pool_objek[nama_objek]["posisi"],
-				"rotasi":		pool_objek[nama_objek]["rotasi"],
-				"properti":		pool_objek[nama_objek]["properti"],
-			}
+			if timeline[server.timeline["data"]["frame"]].has(nama_objek) and timeline[server.timeline["data"]["frame"]][nama_objek]["tipe"] == "spawn":
+				timeline[server.timeline["data"]["frame"]][nama_objek]["posisi"] = pool_objek[nama_objek]["posisi"]
+				timeline[server.timeline["data"]["frame"]][nama_objek]["rotasi"] = pool_objek[nama_objek]["rotasi"]
+				timeline[server.timeline["data"]["frame"]][nama_objek]["properti"] = pool_objek[nama_objek]["properti"]
+			else:
+				timeline[server.timeline["data"]["frame"]][nama_objek] = {
+					"tipe": 		"sinkron",
+					"posisi":		pool_objek[nama_objek]["posisi"],
+					"rotasi":		pool_objek[nama_objek]["rotasi"],
+					"properti":		pool_objek[nama_objek]["properti"],
+				}
 		# kirim ke semua peer yang di-spawn kecuali id_pengatur!
 		for idx_pemain in pemain.keys():
 			if pemain[idx_pemain]["id_client"] != 0 and pemain[idx_pemain]["id_client"] != id_pengatur:
