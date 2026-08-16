@@ -8,7 +8,6 @@ var arah_gerakan : Vector3 :				# ini arah gerakan
 		$pose.set("parameters/arah_gerakan/blend_position", Vector2(-nilai.x, nilai.z))
 		$pose.set("parameters/arah_jongkok/blend_position", nilai.z)
 		arah_gerakan = nilai
-#var _transisi_reset_arah : Tween			# transisi ketika berhenti bergerak
 var _input_arah_pandangan : Vector2			# ini arah input / event relative
 var arah_pandangan : Vector2 :				# ini arah pose
 	set(nilai):
@@ -47,7 +46,6 @@ var gestur_jongkok : float = 0.0 :
 		$area_tabrak/area.shape.height = $fisik.shape.height + 0.02
 		# terapkan nilai ke properti
 		gestur_jongkok = nilai
-#var _menabrak : bool = false
 var _ragdoll : bool = false :
 	set(nilai):
 		$pengamat.position.x 		= 0
@@ -128,9 +126,6 @@ var menyerang : bool = false :
 			menyerang = serang
 var jongkok : bool = false
 var zoom : bool = false
-#var _interval_timeline : float	= 0.05
-#var _delay_timeline : float 	= _interval_timeline
-#var _frame_timeline_sb : int	= 0			# frame sebelumnya
 var cek_perubahan_kondisi : Dictionary = {}	# simpan beberapa properti di tiap frame untuk membandingkan perubahan
 
 @export var kontrol : bool = false
@@ -525,19 +520,6 @@ func _physics_process(delta : float) -> void:
 		elif Input.is_action_pressed("mundur"):
 			arah.z = -Input.get_action_strength("mundur")
 		else:
-			#if is_on_floor():
-				#if self.is_inside_tree():
-					#if _transisi_reset_arah == null:
-						#_transisi_reset_arah = get_tree().create_tween()
-						#_transisi_reset_arah.stop()
-						#_transisi_reset_arah.tween_property(self, "arah", Vector3.FORWARD * 0.0, 0.35)
-						#_transisi_reset_arah.set_trans(Tween.TRANS_SPRING)
-						#_transisi_reset_arah.set_ease(Tween.EASE_OUT)
-						#_transisi_reset_arah.play()
-					#elif !_transisi_reset_arah.is_running():
-						#_transisi_reset_arah = null
-			#elif gestur == "duduk": arah.z = 0
-			#else: arah.z = lerp(arah.z, 0.0, 0.5 * delta)
 			arah.z = 0
 		
 		# lari
@@ -547,12 +529,8 @@ func _physics_process(delta : float) -> void:
 		
 		# kiri / kanan
 		if Input.is_action_pressed("kiri"):
-			#if Input.is_action_pressed("berlari"): arah.x = Input.get_action_strength("kiri")
-			#else:
 			arah.x = Input.get_action_strength("kiri") / 2
 		elif Input.is_action_pressed("kanan"):
-			#if Input.is_action_pressed("berlari"): arah.x = -Input.get_action_strength("kanan")
-			#else:
 			arah.x = -Input.get_action_strength("kanan") / 2
 		else: arah.x = 0
 		
@@ -842,15 +820,12 @@ func _physics_process(delta : float) -> void:
 			#arah.y = -(ProjectSettings.get_setting("physics/3d/default_gravity"))
 		#elif arah.y != 0:
 			#arah.y = 0
-	#elif !is_on_floor() and arah.y > -(ProjectSettings.get_setting("physics/3d/default_gravity")): arah.y -= 0.2
-	#elif is_on_floor() and arah.y < 0: arah.y = 0
+	
 	# jangan fungsikan kendali kalo animasi gak aktif
 	if $pose.active:
-		# velocity = arah.rotated(Vector3.UP, global_transform.basis.get_euler().y)
 		if global_position.is_equal_approx(_current_physics_position):
 			_previous_physics_position = _current_physics_position
-		#else:
-			#_reset_manual_camera_interpolation()
+		
 		if not kontrol:
 			velocity = Vector3.ZERO
 			move_and_slide()
@@ -867,8 +842,7 @@ func _physics_process(delta : float) -> void:
 			move_dir = Vector3(move_input.x, 0.0, move_input.y)
 			move_dir = move_dir.normalized() * _wish_speed()
 			move_dir = move_dir.rotated(Vector3.UP, global_rotation.y)
-		#_previous_view_offset = _view_offset
-		#_previous_visual_step_offset = _visual_step_offset
+		
 		_set_floor_type(delta)
 		_apply_gravity(delta)
 		_set_velocity(delta)
@@ -879,8 +853,6 @@ func _physics_process(delta : float) -> void:
 		_update_movement_state()
 		_smooth_view_on_stairs(delta)
 		_current_physics_position = global_position
-		
-	#_menabrak = move_and_slide()
 
 func _ketika_ditabrak(node : CollisionObject3D) -> void:
 	var percepatan : Vector3 = node.get_linear_velocity()

@@ -25,8 +25,10 @@ const sinkron_kondisi = [
 	set(nilai_baru):
 		var dec_str : String = str(nilai_baru).reverse()
 		var split_dec : PackedStringArray = dec_str.split()
+		for dec_val in $dec_output.get_children():
+			dec_val.set_value(-1)
 		for digit_pos in split_dec.size():
-			$dec_output.get_child(digit_pos-1).set_value(int(split_dec[digit_pos-1]))
+			$dec_output.get_child(digit_pos).set_value(int(split_dec[digit_pos]))
 		output_desimal = nilai_baru
 
 #func mulai() -> void:
@@ -54,6 +56,7 @@ func cek_nilai(id_pengguna : int) -> void:
 		else:
 			Panku.notify("salahh!")
 		output_desimal = 0
+		# TODO : reset state semua tombol_toggle
 
 func proses(_waktu_delta : float) -> void:
 	if output_desimal == 0:

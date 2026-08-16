@@ -73,11 +73,9 @@ func proses(_waktu_delta : float) -> void:
 				global_position = dunia.get_node("pemain/"+str(tmp_id_pengangkat)).global_position + dunia.get_node("pemain/"+str(tmp_id_pengangkat)).transform.basis * tmp_pos_angkat
 				global_rotation = dunia.get_node("pemain/"+str(tmp_id_pengangkat)).global_rotation + $posisi_angkat.transform.basis * dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/%kepala").rotation
 				
-				# input kendali
-				#if dunia.get_node("pemain/"+str(tmp_id_pengangkat)).kontrol:
-					#if Input.is_action_just_pressed("aksi1") or Input.is_action_just_pressed("aksi1_sentuh"):
-						#if server.permainan.get_node("kontrol_sentuh").visible and !Input.is_action_just_pressed("aksi1_sentuh"): pass # cegah pada layar sentuh, tapi tetap bisa dengan klik virtual
-						#else: server.gunakan_entitas(name, "_lempar")
+				# sesuaikan posisi fisik
+				if dunia.get_node("pemain/"+str(tmp_id_pengangkat)).kontrol:
+					dunia.get_node("pemain/"+str(tmp_id_pengangkat)+"/fisik_alat_konversi_biner").global_position = self.global_position
 				
 				# jangan biarkan tombol lempar, lepas disable / bantuan input tersembunyi
 				if !server.permainan.get_node("kontrol_sentuh/aksi_2").visible:
@@ -110,6 +108,7 @@ func _angkat(id):
 	$fisik.rotation_degrees = Vector3(60, -180, 0)
 	if id == client.id_koneksi:
 		#dunia.get_node("pemain/"+str(id))._atur_penarget(false)
+		dunia.get_node("pemain/"+str(id)+"/fisik_alat_konversi_biner").disabled = false
 		await get_tree().create_timer(0.05).timeout		# ini untuk mencegah fungsi !_target di _process()
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.bantuan_aksi_1 = false
@@ -131,6 +130,7 @@ func _lepas(id):
 	if id == client.id_koneksi and dunia.get_node_or_null("pemain/"+str(id)) != null:
 		call("remove_collision_exception_with", dunia.get_node("pemain/"+str(id)))
 		#dunia.get_node("pemain/"+str(id))._atur_penarget(true)
+		dunia.get_node("pemain/"+str(id)+"/fisik_alat_konversi_biner").disabled = true
 		server.permainan.get_node("kontrol_sentuh/aksi_1").visible = false
 		server.permainan.bantuan_aksi_1 = false
 		server.permainan.get_node("kontrol_sentuh/aksi_2").visible = false
@@ -153,6 +153,7 @@ func _interaksi(id : int) -> void:
 			if !sedang_digunakan:
 				dunia.get_node("pemain/"+str(id_pemilik))._atur_kendali(false)
 				#dunia.get_node("pemain/"+str(id_pemilik))._atur_penarget(false)
+				dunia.get_node("pemain/"+str(id)+"/fisik_alat_konversi_biner").disabled = true
 				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fungsikan(false)
 				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fokus_pandangan_belakang = $model/view
 				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").posisi_pandangan_belakang = 0
@@ -165,6 +166,7 @@ func _interaksi(id : int) -> void:
 			else:
 				dunia.get_node("pemain/"+str(id_pemilik))._atur_kendali(true)
 				#dunia.get_node("pemain/"+str(id_pemilik))._atur_penarget(true)
+				dunia.get_node("pemain/"+str(id)+"/fisik_alat_konversi_biner").disabled = false
 				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").fungsikan(true)
 				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_mode_kendaraan(false)
 				dunia.get_node("pemain/"+str(id_pemilik)+"/pengamat").atur_ulang_posisi_pandangan_belakang()
