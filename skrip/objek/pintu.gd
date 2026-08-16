@@ -28,7 +28,7 @@ func mulai() -> void:
 	_telah_spawn = true
 
 func terapkan_warna(warnanya : Color) -> void:
-	if get_node_or_null("engsel/pintu/detail") != null:
+	if get_node_or_null("engsel/pintu/detail") != null and $engsel/pintu/detail.get_surface_override_material_count() > 0:
 		# 20/11/24 :: terapkan ulang material jika kode diubah
 		if material_pintu_detail != null and material_pintu_detail.get_rid() != $engsel/pintu/detail.get_surface_override_material(0).get_rid():
 			material_pintu_detail = null

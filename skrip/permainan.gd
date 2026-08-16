@@ -637,12 +637,13 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 	$hud/daftar_pemain/panel/informasi/nama_server.text = nama_server
 	await get_tree().create_timer($proses_memuat/panel_bawah/animasi.current_animation_length).timeout # tunda beberapa milidetik supaya animasi ui smooth
 	# INFO : ambil screenshot placeholder karakter berdasarkan data kemudian simpan sebagai gambar
-	get_node("%karakter").visible = true
-	var gambar_karakter : Image
-	match data["gender"]:
-		"L": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/reno"))
-		"P": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/lulu"))
-	if gambar_karakter != null: data["gambar"] = gambar_karakter.data
+	if not server.headless:
+		get_node("%karakter").visible = true
+		var gambar_karakter : Image
+		match data["gender"]:
+			"L": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/reno"))
+			"P": gambar_karakter = await get_node("%karakter/../tampilan_karakter").dapatkan_tampilan(get_node("%karakter/lulu"))
+		if gambar_karakter != null: data["gambar"] = gambar_karakter.data
 	get_node("%karakter").visible = false
 	_atur_persentase_memuat(1)
 	# hapus placeholder karakter untuk menghemat memori
