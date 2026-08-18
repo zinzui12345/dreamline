@@ -1,6 +1,6 @@
 // 11/05/25 :: render tampilan portal menyesuaikan ukuran layar
 shader_type spatial;
-render_mode unshaded, cull_back;
+render_mode unshaded, cull_back, specular_disabled, ambient_light_disabled;
 uniform sampler2D subviewport_tampilan : source_color;
 
 void fragment() {
