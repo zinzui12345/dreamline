@@ -6741,11 +6741,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TitikKursor" type="Sprite2D" parent="hud/titik_fokus" unique_id=1063892254]
-scale = Vector2(0.2, 0.2)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("21_q6cyv")
 
 [node name="GarisKursor" type="Sprite2D" parent="hud/titik_fokus" unique_id=1694574661]
-scale = Vector2(0.2, 0.2)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("22_pfpc7")
 
 [node name="latar" parent="." unique_id=2015007787 instance=ExtResource("2_o8pgj")]
@@ -9201,6 +9201,7 @@ volume_db = -5.0
 bus = &"Musik Latar"
 
 [node name="setelan" type="Control" parent="." unique_id=250670117]
+visible = false
 layout_mode = 1
 anchor_right = 0.312438
 anchor_bottom = 1.00033
@@ -9646,8 +9647,8 @@ rotation = 1.5708
 action_mode = 0
 
 [node name="TouchScreenButton" type="TouchScreenButton" parent="setelan/tutup" unique_id=1115256578]
-position = Vector2(80, 0)
-rotation = 1.5708
+position = Vector2(95, 80)
+rotation = 3.1415927
 texture_normal = ExtResource("32_clll1")
 texture_pressed = ExtResource("33_ovk4l")
 shape = SubResource("CircleShape2D_2jlpn")
