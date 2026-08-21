@@ -1,0 +1,240 @@
+[gd_scene format=3 uid="uid://cdgh257uxdh83"]
+
+[ext_resource type="Script" uid="uid://chh3wlcedihey" path="res://skrip/map_editor.gd" id="1_6o263"]
+[ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odwir"]
+bg_color = Color(0.721569, 0.721569, 0.721569, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ajpf8"]
+lightmap_size_hint = Vector2i(14, 21)
+
+[node name="map_editor" type="Control" unique_id=296226763]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6o263")
+
+[node name="latar" type="Panel" parent="." unique_id=1876408869]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_nef38")
+metadata/_edit_lock_ = true
+
+[node name="tata_letak_vertikal" type="VSplitContainer" parent="." unique_id=2009325161]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 6
+split_offsets = PackedInt32Array(30, 562)
+dragging_enabled = false
+split_offset = 30
+
+[node name="menu" type="Panel" parent="tata_letak_vertikal" unique_id=278435068]
+custom_minimum_size = Vector2(0, 30)
+custom_maximum_size = Vector2(-1, 30)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
+metadata/_edit_use_anchors_ = true
+
+[node name="VSplitContainer" type="HSplitContainer" parent="tata_letak_vertikal/menu" unique_id=1027606660]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="tata_letak" type="HSplitContainer" parent="tata_letak_vertikal" unique_id=670929322]
+layout_mode = 2
+theme_override_constants/separation = 6
+split_offsets = PackedInt32Array(736, 756)
+dragging_enabled = false
+split_offset = 736
+
+[node name="alat" type="Panel" parent="tata_letak_vertikal/tata_letak" unique_id=1233083544]
+custom_minimum_size = Vector2(50, 0)
+custom_maximum_size = Vector2(50, -1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
+metadata/_edit_use_anchors_ = true
+
+[node name="VSplitContainer" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/alat" unique_id=152349326]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 6
+split_offsets = PackedInt32Array(0, 0, 0)
+
+[node name="select_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000001]
+layout_mode = 2
+text = "Select"
+
+[node name="face_select_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000002]
+layout_mode = 2
+text = "Face"
+
+[node name="knife_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000003]
+layout_mode = 2
+text = "Knife"
+
+[node name="add_cube_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000010]
+layout_mode = 2
+text = "Add Cube"
+
+[node name="kanvas" type="HSplitContainer" parent="tata_letak_vertikal/tata_letak" unique_id=1866058727]
+layout_mode = 2
+theme_override_constants/separation = 6
+split_offsets = PackedInt32Array(404)
+dragging_enabled = false
+split_offset = 404
+metadata/_edit_use_anchors_ = true
+
+[node name="pemisah_vertikal_a" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/kanvas" unique_id=270893130]
+layout_mode = 2
+theme_override_constants/separation = 6
+split_offsets = PackedInt32Array(267)
+dragging_enabled = false
+split_offset = 267
+
+[node name="tampilan_3d" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a" unique_id=691187483]
+clip_contents = true
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d" unique_id=1776599016]
+handle_input_locally = false
+size = Vector2i(404, 267)
+render_target_update_mode = 4
+
+[node name="pengamat" type="Camera3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport" unique_id=1830200369]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+cull_mask = 3
+current = true
+script = ExtResource("2_466n8")
+
+[node name="titik_fokus" type="Node3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat" unique_id=1491061979]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
+[node name="tampilan_depan" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a" unique_id=1632669039]
+clip_contents = true
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan" unique_id=1319299226]
+handle_input_locally = false
+size = Vector2i(404, 259)
+render_target_update_mode = 4
+
+[node name="titik_fokus" type="Node3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" unique_id=7667926]
+
+[node name="pengamat" type="Camera3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus" unique_id=1407225684]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+cull_mask = 32775
+projection = 1
+current = true
+size = 2.0
+
+[node name="pemisah_vertikal_b" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/kanvas" unique_id=1354430811]
+layout_mode = 2
+theme_override_constants/separation = 6
+split_offsets = PackedInt32Array(267)
+dragging_enabled = false
+split_offset = 267
+
+[node name="tampilan_atas" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b" unique_id=2037450514]
+clip_contents = true
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas" unique_id=428214386]
+handle_input_locally = false
+size = Vector2i(396, 267)
+render_target_update_mode = 4
+
+[node name="titik_fokus" type="Node3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" unique_id=699491924]
+
+[node name="pengamat" type="Camera3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus" unique_id=1280435983]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 2, 1.7053026e-13)
+cull_mask = 32775
+projection = 1
+current = true
+size = 2.0
+
+[node name="tampilan_kanan" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b" unique_id=1537192371]
+clip_contents = true
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan" unique_id=207460045]
+handle_input_locally = false
+size = Vector2i(396, 259)
+render_target_update_mode = 4
+
+[node name="titik_fokus" type="Node3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" unique_id=826734246]
+
+[node name="pengamat" type="Camera3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus" unique_id=1668073841]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2, 0, 0)
+cull_mask = 32775
+projection = 1
+current = true
+size = 2.0
+
+[node name="inspektur" type="Panel" parent="tata_letak_vertikal/tata_letak" unique_id=21641502]
+custom_minimum_size = Vector2(150, 0)
+custom_maximum_size = Vector2(150, -1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
+metadata/_edit_use_anchors_ = true
+
+[node name="VSplitContainer" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur" unique_id=64954687]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="status" type="Panel" parent="tata_letak_vertikal" unique_id=1701144140]
+custom_minimum_size = Vector2(0, 20)
+custom_maximum_size = Vector2(-1, 20)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
+metadata/_edit_use_anchors_ = true
+
+[node name="VSplitContainer" type="HSplitContainer" parent="tata_letak_vertikal/status" unique_id=1178801082]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="lingkungan" type="Node3D" parent="." unique_id=1639728583]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="lingkungan" unique_id=181418573]
+mesh = SubResource("BoxMesh_ajpf8")
+groups = ["seleksi_aktif"]
+
+[node name="badan" type="StaticBody3D" parent="lingkungan/MeshInstance3D" unique_id=181418574]
+collision_layer = 1
+collision_mask = 1
+groups = ["seleksi_aktif"]
+
+[sub_resource type="BoxShape" id="BoxShape_1"]
+size = Vector3(1, 1, 1)
+
+[node name="bentuk_tabrakan" type="CollisionShape3D" parent="lingkungan/MeshInstance3D/badan" unique_id=181418575]
+shape = SubResource("BoxShape_1")
+
+[connection signal="resized" from="tata_letak_vertikal/tata_letak" to="." method="_ketika_ukuran_tampilan_diubah"]
