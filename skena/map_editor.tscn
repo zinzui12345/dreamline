@@ -18,10 +18,193 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 5.0
 reflected_light_source = 1
 
+[sub_resource type="GDScript" id="GDScript_b3t84"]
+resource_name = "pengamat_viewport_depan"
+script/source = "extends Camera3D
+
+signal bergerak
+
+var fungsikan : bool = false
+var drag_layar : bool = false
+
+func _input(event):
+	if not current or not fungsikan:
+		return
+		
+	if drag_layar and event is InputEventMouseMotion:
+		var gerak_dunia = Vector3(
+			-event.relative.x,
+			event.relative.y,
+			0.0
+		).normalized()
+		get_parent().global_translate(gerak_dunia * (0.01 * size))
+		emit_signal(\"bergerak\")
+	
+	if event is InputEventMouseButton:
+		match event.button_index:
+			MOUSE_BUTTON_RIGHT:
+				drag_layar = event.pressed
+				if not event.pressed: emit_signal(\"bergerak\")
+			MOUSE_BUTTON_WHEEL_UP:
+				size -= 0.5
+				size = clampf(size, 1.0, 100.0)
+				emit_signal(\"bergerak\")
+			MOUSE_BUTTON_WHEEL_DOWN:
+				size += 0.5
+				size = clampf(size, 1.0, 100.0)
+				emit_signal(\"bergerak\")
+
+func _process(delta):
+	if not current or not fungsikan:
+		return
+	
+	if not drag_layar:
+		var direction = Vector3(
+			float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
+			float(Input.is_physical_key_pressed(KEY_W)) - float(Input.is_physical_key_pressed(KEY_S)),
+			0.0
+		).normalized()
+		
+		if Input.is_physical_key_pressed(KEY_SHIFT): # boost
+			get_parent().translate(direction * 5 * delta * 3.0)
+		else:
+			get_parent().translate(direction * 5 * delta)
+		
+		emit_signal(\"bergerak\")
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b3t84"]
+shader = ExtResource("3_b3t84")
+shader_parameter/resolution = Vector2(396, 267)
+shader_parameter/line_color = Color(0.54901963, 0, 0, 1)
+shader_parameter/transform = Vector2(0, 0)
+shader_parameter/zoom = 8.0000001043084
+shader_parameter/thickness = 1.0000000149012
+shader_parameter/brightness = 1.0000000149012
+
+[sub_resource type="GDScript" id="GDScript_ih230"]
+resource_name = "pengamat_viewport_atas"
+script/source = "extends Camera3D
+
+signal bergerak
+
+var fungsikan : bool = false
+var drag_layar : bool = false
+
+func _input(event):
+	if not current or not fungsikan:
+		return
+		
+	if drag_layar and event is InputEventMouseMotion:
+		var gerak_dunia = Vector3(
+			-event.relative.x,
+			0.0,
+			-event.relative.y
+		).normalized()
+		get_parent().global_translate(gerak_dunia * (0.01 * size))
+		emit_signal(\"bergerak\")
+	
+	if event is InputEventMouseButton:
+		match event.button_index:
+			MOUSE_BUTTON_RIGHT:
+				drag_layar = event.pressed
+				if not event.pressed: emit_signal(\"bergerak\")
+			MOUSE_BUTTON_WHEEL_UP:
+				size -= 0.5
+				size = clampf(size, 1.0, 100.0)
+				emit_signal(\"bergerak\")
+			MOUSE_BUTTON_WHEEL_DOWN:
+				size += 0.5
+				size = clampf(size, 1.0, 100.0)
+				emit_signal(\"bergerak\")
+
+func _process(delta):
+	if not current or not fungsikan:
+		return
+	
+	if not drag_layar:
+		var direction = Vector3(
+			float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
+			0.0,
+			float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
+		).normalized()
+		
+		if Input.is_physical_key_pressed(KEY_SHIFT): # boost
+			get_parent().translate(direction * 5 * delta * 3.0)
+		else:
+			get_parent().translate(direction * 5 * delta)
+		
+		emit_signal(\"bergerak\")
+"
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uvcr3"]
 shader = ExtResource("3_b3t84")
 shader_parameter/resolution = Vector2(396, 267)
 shader_parameter/line_color = Color(0.28494456, 0.41041827, 0.65504736, 1)
+shader_parameter/transform = Vector2(0, 0)
+shader_parameter/zoom = 8.0000001043084
+shader_parameter/thickness = 1.0000000149012
+shader_parameter/brightness = 1.0000000149012
+
+[sub_resource type="GDScript" id="GDScript_1hfoe"]
+resource_name = "pengamat_viewport_kanan"
+script/source = "extends Camera3D
+
+signal bergerak
+
+var fungsikan : bool = false
+var drag_layar : bool = false
+
+func _input(event):
+	if not current or not fungsikan:
+		return
+		
+	if drag_layar and event is InputEventMouseMotion:
+		var gerak_dunia = Vector3(
+			0.0,
+			event.relative.y,
+			event.relative.x
+		).normalized()
+		get_parent().global_translate(gerak_dunia * (0.01 * size))
+		emit_signal(\"bergerak\")
+	
+	if event is InputEventMouseButton:
+		match event.button_index:
+			MOUSE_BUTTON_RIGHT:
+				drag_layar = event.pressed
+				if not event.pressed: emit_signal(\"bergerak\")
+			MOUSE_BUTTON_WHEEL_UP:
+				size -= 0.5
+				size = clampf(size, 1.0, 100.0)
+				emit_signal(\"bergerak\")
+			MOUSE_BUTTON_WHEEL_DOWN:
+				size += 0.5
+				size = clampf(size, 1.0, 100.0)
+				emit_signal(\"bergerak\")
+
+func _process(delta):
+	if not current or not fungsikan:
+		return
+	
+	if not drag_layar:
+		var direction = Vector3(
+			0.0,
+			float(Input.is_physical_key_pressed(KEY_W)) - float(Input.is_physical_key_pressed(KEY_S)),
+			float(Input.is_physical_key_pressed(KEY_A)) - float(Input.is_physical_key_pressed(KEY_D))
+		).normalized()
+		
+		if Input.is_physical_key_pressed(KEY_SHIFT): # boost
+			get_parent().translate(direction * 5 * delta * 3.0)
+		else:
+			get_parent().translate(direction * 5 * delta)
+		
+		emit_signal(\"bergerak\")
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ih230"]
+shader = ExtResource("3_b3t84")
+shader_parameter/resolution = Vector2(396, 267)
+shader_parameter/line_color = Color(0, 0.54901963, 0, 1)
 shader_parameter/transform = Vector2(0, 0)
 shader_parameter/zoom = 8.0000001043084
 shader_parameter/thickness = 1.0000000149012
@@ -143,6 +326,7 @@ size = Vector2i(404, 267)
 render_target_update_mode = 4
 
 [node name="pengamat" type="Camera3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport" unique_id=1830200369]
+process_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 cull_mask = 3
 current = true
@@ -170,6 +354,25 @@ environment = SubResource("Environment_n1bd0")
 projection = 1
 current = true
 size = 2.0
+script = SubResource("GDScript_b3t84")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" unique_id=917675598]
+
+[node name="grid_depan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=2007714187]
+material = SubResource("ShaderMaterial_b3t84")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=1480737718]
+offset_left = 5.0
+offset_right = 45.0
+offset_bottom = 23.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "1.0"
 
 [node name="pemisah_vertikal_b" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/kanvas" unique_id=1354430811]
 layout_mode = 2
@@ -197,6 +400,7 @@ environment = SubResource("Environment_n1bd0")
 projection = 1
 current = true
 size = 2.0
+script = SubResource("GDScript_ih230")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" unique_id=659118640]
 
@@ -207,6 +411,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=398405366]
+offset_left = 5.0
+offset_right = 45.0
+offset_bottom = 23.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "1.0"
 
 [node name="tampilan_kanan" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b" unique_id=1537192371]
 clip_contents = true
@@ -227,6 +439,25 @@ environment = SubResource("Environment_n1bd0")
 projection = 1
 current = true
 size = 2.0
+script = SubResource("GDScript_1hfoe")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" unique_id=1745255811]
+
+[node name="grid_kanan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1355657627]
+material = SubResource("ShaderMaterial_ih230")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1117194176]
+offset_left = 5.0
+offset_right = 45.0
+offset_bottom = 23.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "1.0"
 
 [node name="inspektur" type="Panel" parent="tata_letak_vertikal/tata_letak" unique_id=21641502]
 custom_minimum_size = Vector2(150, 0)
@@ -263,4 +494,7 @@ layers = 32768
 mesh = SubResource("PlaneMesh_nef38")
 surface_material_override/0 = SubResource("StandardMaterial3D_ajpf8")
 
+[connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
+[connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
+[connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]

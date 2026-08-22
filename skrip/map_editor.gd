@@ -131,26 +131,42 @@ func _ketika_ukuran_tampilan_diubah() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.y / 2
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.y / 2
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.size)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/grid_depan.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.size)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer/grid_kanan.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.size)
 	_cek_ukuran_kanvas = $tata_letak_vertikal/tata_letak/kanvas.size
 
 func _ketika_viewport_ditransformasi() -> void:
 	var zoom_atas : float = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat.size
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat.position.y = zoom_atas
-	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("transform", Vector2($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position.x / zoom_atas, $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position.z / zoom_atas))
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("transform", Vector2($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position.x / zoom_atas, $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position.z / zoom_atas))
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("zoom", jumlah_kisi_kisi * $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat.position.y)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/nilai_zoom.text = str(zoom_atas / 2)
+	
+	var zoom_depan : float = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.size
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.position.z = zoom_depan
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/grid_depan.material.set_shader_parameter("transform", Vector2($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position.x / zoom_depan, -($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position.y / zoom_depan)))
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/grid_depan.material.set_shader_parameter("zoom", jumlah_kisi_kisi * $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.position.z)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/nilai_zoom.text = str(zoom_depan / 2)
+	
+	var zoom_kanan : float = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat.size
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat.position.x = zoom_kanan
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer/grid_kanan.material.set_shader_parameter("transform", Vector2(-($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position.z / zoom_kanan), -($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position.y / zoom_kanan)))
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer/grid_kanan.material.set_shader_parameter("zoom", jumlah_kisi_kisi * $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat.position.x)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer/nilai_zoom.text = str(zoom_kanan / 2)
 
-func _input(_event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	# Sinkronisasi kamera tetap berlaku
 	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
 		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
 		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
+		_ketika_viewport_ditransformasi()
 
 	# Handle pemilihan objek dan transformasi
-	if _event is InputEventMouseButton and _event.pressed:
-		if _event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			if tool_aktif == "select" or tool_aktif == "face_select":
-				var objek_yang_diketahui = _deteksi_objek_dari_klik(_event.position)
+				var objek_yang_diketahui = _deteksi_objek_dari_klik(event.position)
 				if objek_yang_diketahui:
 					objek_terpilih = objek_yang_diketahui
 					if tool_aktif == "select":
@@ -164,26 +180,24 @@ func _input(_event: InputEvent) -> void:
 			elif tool_aktif == "knife":
 				# TODO: Logika untuk knife tool (misalnya memulai gambar garis)
 				print("Knife tool diklik.")
-		elif _event.button_index == MOUSE_BUTTON_WHEEL_UP or _event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			# Scroll mouse untuk mengganti mode transformasi hanya jika tool_aktif adalah "select"
-			if tool_aktif == "select" and objek_terpilih:
-				if _event.button_index == MOUSE_BUTTON_WHEEL_UP:
-					mode_transformasi = _mode_berikutnya(mode_transformasi)
-				else:
-					mode_transformasi = _mode_sebelumnya(mode_transformasi)
-				_perbarui_handles()
+		#elif event.button_index == MOUSE_BUTTON_WHEEL_UP or _event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			## Scroll mouse untuk mengganti mode transformasi hanya jika tool_aktif adalah "select"
+			#if tool_aktif == "select" and objek_terpilih:
+				#if _event.button_index == MOUSE_BUTTON_WHEEL_UP:
+					#mode_transformasi = _mode_berikutnya(mode_transformasi)
+				#else:
+					#mode_transformasi = _mode_sebelumnya(mode_transformasi)
+				#_perbarui_handles()
 
 	# Handle drag untuk transformasi
-	if _event is InputEventMouseButton and not _event.pressed:
-		if _event.button_index == MOUSE_BUTTON_LEFT and sedang_meni_transformasi:
+	if event is InputEventMouseButton and not event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and sedang_meni_transformasi:
 			sedang_meni_transformasi = false
 			handle_yang_digunakan = null
 			axis_yang_digunakan = Vector3.ZERO
-	
-	_ketika_viewport_ditransformasi()
 
-	if _event is InputEventMouseMotion and sedang_meni_transformasi and handle_yang_digunakan:
-		_lakukan_transformasi(_event.relative)
+	if event is InputEventMouseMotion and sedang_meni_transformasi and handle_yang_digunakan:
+		_lakukan_transformasi(event.relative)
 
 func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 	# Periksa setiap viewport untuk melihat klik terjadi di mana
@@ -203,6 +217,15 @@ func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 			# Konversi posisi layar global ke posisi relatif viewport
 			var posisi_relatif = posisi_layar - container.get_global_position()
 			var objek_ = _pilih_objek_dari_viewport(kamera, posisi_relatif, viewport["is_3d"])
+			if viewport_aktif != null:
+				if viewport_aktif.name == "tampilan_3d":
+					viewport_aktif.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_DISABLED
+				elif viewport_aktif.get_node("SubViewport/titik_fokus/pengamat").get("fungsikan") != null:
+					viewport_aktif.get_node("SubViewport/titik_fokus/pengamat").set("fungsikan", false)
+			if not viewport["is_3d"] and container.get_node("SubViewport/titik_fokus/pengamat").get("fungsikan") != null:
+				container.get_node("SubViewport/titik_fokus/pengamat").set("fungsikan", true)
+			elif viewport["is_3d"]:
+				container.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_ALWAYS
 			viewport_aktif = container
 			if objek_:
 				return objek_
