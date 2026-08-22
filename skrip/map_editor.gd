@@ -129,6 +129,7 @@ func _ketika_ukuran_tampilan_diubah() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.x / 2
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.y / 2
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.y / 2
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.size)
 	_cek_ukuran_kanvas = $tata_letak_vertikal/tata_letak/kanvas.size
 
 func _input(_event: InputEvent) -> void:
@@ -137,6 +138,8 @@ func _input(_event: InputEvent) -> void:
 		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
 		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
 		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
+		
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("transform", Vector2($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position.x / 2, $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position.z / 2))
 
 	# Handle pemilihan objek dan transformasi
 	if _event is InputEventMouseButton and _event.pressed:
