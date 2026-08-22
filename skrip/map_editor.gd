@@ -180,6 +180,8 @@ func _input(event: InputEvent) -> void:
 			elif tool_aktif == "knife":
 				# TODO: Logika untuk knife tool (misalnya memulai gambar garis)
 				print("Knife tool diklik.")
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			_cek_viewport_dari_klik(event.position)
 		#elif event.button_index == MOUSE_BUTTON_WHEEL_UP or _event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			## Scroll mouse untuk mengganti mode transformasi hanya jika tool_aktif adalah "select"
 			#if tool_aktif == "select" and objek_terpilih:
@@ -230,6 +232,30 @@ func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 			if objek_:
 				return objek_
 	return null
+
+func _cek_viewport_dari_klik(posisi_layar: Vector2) -> void:
+	# Periksa setiap viewport untuk melihat klik terjadi di mana
+	var viewports = [
+		{ "nama": "tampilan_3d", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat, "is_3d": true },
+		{ "nama": "tampilan_depan", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat, "is_3d": false },
+		{ "nama": "tampilan_atas", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat, "is_3d": false },
+		{ "nama": "tampilan_kanan", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat, "is_3d": false }
+	]
+	
+	for viewport in viewports:
+		var container = viewport["node"]
+		var rect = container.get_global_rect()
+		if rect.has_point(posisi_layar):
+			if viewport_aktif != null:
+				if viewport_aktif.name == "tampilan_3d":
+					viewport_aktif.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_DISABLED
+				elif viewport_aktif.get_node("SubViewport/titik_fokus/pengamat").get("fungsikan") != null:
+					viewport_aktif.get_node("SubViewport/titik_fokus/pengamat").set("fungsikan", false)
+			if not viewport["is_3d"] and container.get_node("SubViewport/titik_fokus/pengamat").get("fungsikan") != null:
+				container.get_node("SubViewport/titik_fokus/pengamat").set("fungsikan", true)
+			elif viewport["is_3d"]:
+				container.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_ALWAYS
+			viewport_aktif = container
 
 func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2, is_3d: bool) -> Node3D:
 	# Gunakan world dari kamera (SubViewport), bukan world dari viewport utama
