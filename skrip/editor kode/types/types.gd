@@ -156,6 +156,7 @@ class PriorityQueue:
 		_sort()
 
 	func _sort():
+		@warning_ignore("standalone_expression")
 		data.sort_custom(func(a, b): a[1] < b[1])
 
 	func pop():

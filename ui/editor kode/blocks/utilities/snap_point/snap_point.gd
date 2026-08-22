@@ -20,6 +20,7 @@ const Types = preload("res://skrip/editor kode/types/types.gd")
 ## When block_type is [enum Types.BlockType.VALUE], the type of the value that can be used at this snap point.
 @export var variant_type: Variant.Type
 
+@warning_ignore("unused_signal")
 signal drag_started(block: Block)
 signal snapped_block_changed(block: Block)
 signal snapped_block_removed(block: Block)

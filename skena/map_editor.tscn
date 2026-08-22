@@ -101,7 +101,8 @@ script/source = "extends ColorRect
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and map_editor.sedang_meni_transformasi and map_editor.handle_yang_digunakan:
-		map_editor._lakukan_transformasi(event.relative, event.position)
+		map_editor.posisi_kursor_di_viewport = event.position
+		map_editor.nilai_transformasi = event.relative
 "
 
 [sub_resource type="GDScript" id="GDScript_ih230"]
@@ -371,7 +372,7 @@ size = 2.0
 script = SubResource("GDScript_b3t84")
 
 [node name="grid_depan" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus" unique_id=817124790]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, -10000)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, -9000)
 layers = 32768
 mesh = SubResource("PlaneMesh_nef38")
 skeleton = NodePath("../../../../../../../../lingkungan")
@@ -431,7 +432,7 @@ size = 2.0
 script = SubResource("GDScript_ih230")
 
 [node name="grid_atas" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus" unique_id=1893160649]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10000, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9000, 0)
 layers = 32768
 mesh = SubResource("PlaneMesh_nef38")
 skeleton = NodePath("../../../../../../../../lingkungan")
@@ -484,7 +485,7 @@ size = 2.0
 script = SubResource("GDScript_1hfoe")
 
 [node name="grid_kanan" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus" unique_id=1897681925]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -10000, 0, 0)
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -9000, 0, 0)
 layers = 32768
 mesh = SubResource("PlaneMesh_nef38")
 skeleton = NodePath("../../../../../../../../lingkungan")

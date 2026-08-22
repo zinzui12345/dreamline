@@ -11,6 +11,9 @@ var jumlah_kisi_kisi : int = 4
 var sedang_meni_transformasi : bool = false
 var handle_yang_digunakan : Node3D = null
 var axis_yang_digunakan : Vector3 = Vector3.ZERO
+var posisi_kursor_di_dunia : Vector3 = Vector3.ZERO
+var posisi_kursor_di_viewport : Vector2 = Vector2.ZERO
+var nilai_transformasi : Vector2 = Vector2.ZERO
 var indeks_face_terpilih : int = -1  # Indeks face yang dipilih (untuk mesh)
 
 # Handles
@@ -125,6 +128,11 @@ func _ready() -> void:
 	
 	# Hubungkan tombol tambah kubus
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_cube_button.connect("pressed", self._ketika_menambah_kubus)
+	
+	# Sesuaikan posisi batas raycast
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan.position.z = -9000.0
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/grid_atas.position.y = -9000.0
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/grid_kanan.position.x = -9000.0
 
 func _ketika_ukuran_tampilan_diubah() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.x / 2
@@ -196,7 +204,10 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and sedang_meni_transformasi:
 			sedang_meni_transformasi = false
 			handle_yang_digunakan = null
+			nilai_transformasi = Vector2.ZERO
 			axis_yang_digunakan = Vector3.ZERO
+			posisi_kursor_di_dunia = Vector3.ZERO
+			posisi_kursor_di_viewport = Vector2.ZERO
 
 func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 	# Periksa setiap viewport untuk melihat klik terjadi di mana
@@ -298,7 +309,7 @@ func _pilih_posisi_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> Vecto
 	else:
 		return Vector3.ZERO
 
-func _dapatkan_indeks_face(objek_: Node3D, hasil: Dictionary) -> int:
+func _dapatkan_indeks_face(objek_: Node3D, _hasil: Dictionary) -> int:
 	# Mencoba mendapatkan indeks face dari hasil raycast
 	# Ini hanya bekerja jika objek adalah MeshInstance3D dan kita mengakses meshnya
 	if objek_ is MeshInstance3D:
@@ -344,46 +355,6 @@ func _mode_sebelumnya(mode: String) -> String:
 		return "gerak"
 	else:
 		return "putar"
-
-func _lakukan_transformasi(gerak_mouse: Vector2, posisi_layar: Vector2) -> void:
-	if not objek_terpilih or not handle_yang_digunakan:
-		return
-	
-	var kamera = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat
-	
-	# Dapatkan kamera dari viewport aktif jika berbeda
-	if viewport_aktif != kamera.get_parent().get_parent():
-		kamera = viewport_aktif.get_node("SubViewport/titik_fokus/pengamat")
-	
-	# Hitung arah kamera di dunia
-	var kanan = kamera.global_transform.basis.x  # Arah kanan kamera
-	var atas = -kamera.global_transform.basis.y  # Arah atas kamera
-	var posisi_viewport : Vector3 = _pilih_posisi_viewport(kamera, posisi_layar)
-	if posisi_viewport == Vector3.ZERO:
-		Panku.notify("aa")
-	
-	# Terapkan gerak ke objek (hanya translasi untuk saat ini)
-	if mode_transformasi == "gerak" and posisi_viewport != Vector3.ZERO:
-		var gerak_dunia = objek_terpilih.global_position
-		var posisi_baru : Vector3
-		var interval_snap : float = 1.0 / jumlah_kisi_kisi
-		
-		if axis_yang_digunakan == Vector3(1, 0, 0):  # Sumbu X
-			if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan:
-				gerak_dunia = kanan * (posisi_viewport.x - handle_x.position.x)
-				posisi_baru.x = snappedf(gerak_dunia.x, interval_snap)
-				objek_terpilih.global_position.x = posisi_baru.x
-		#elif axis_yang_digunakan == Vector3(0, 1, 0):  # Sumbu Y
-			#if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
-				#gerak_dunia = atas * gerak_mouse.y
-		#elif axis_yang_digunakan == Vector3(0, 0, 1):  # Sumbu Z
-			#if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas:
-				#gerak_dunia = atas * (posisi_viewport.z - handle_z.position.z)
-				#posisi_baru.z = snappedf(gerak_dunia.z, interval_snap)
-			#elif viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
-				#gerak_dunia = kanan * posisi_viewport.z
-				#posisi_baru.z = snappedf(gerak_dunia.z, interval_snap)
-			#objek_terpilih.global_position.z = posisi_baru.z
 
 func _ketika_memilih_material() -> void:
 	var file_dialog = FileDialog.new()
@@ -435,6 +406,51 @@ func _process(_delta: float) -> void:
 	# Update posisi handles jika objek bergerak
 	if objek_terpilih and handles.visible:
 		handles.global_transform.origin = objek_terpilih.global_transform.origin
+
+func _physics_process(_delta: float) -> void:
+	if not objek_terpilih:
+		return
+	
+	var kamera = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat
+	
+	# Dapatkan kamera dari viewport aktif jika berbeda
+	if viewport_aktif != null and viewport_aktif != kamera.get_parent().get_parent():
+		kamera = viewport_aktif.get_node("SubViewport/titik_fokus/pengamat")
+	
+	# Hitung arah kamera di dunia
+	var kanan = kamera.global_transform.basis.x  # Arah kanan kamera
+	var atas = kamera.global_transform.basis.y  # Arah atas kamera
+	posisi_kursor_di_dunia = _pilih_posisi_viewport(kamera, posisi_kursor_di_viewport)
+	
+	# Terapkan gerak ke objek (hanya translasi untuk saat ini)
+	if mode_transformasi == "gerak" and sedang_meni_transformasi:
+		if posisi_kursor_di_viewport != Vector2.ZERO and posisi_kursor_di_dunia != Vector3.ZERO:
+			var gerak_dunia = objek_terpilih.global_position
+			var posisi_baru : Vector3
+			var interval_snap : float = 1.0 / jumlah_kisi_kisi
+			
+			if axis_yang_digunakan == Vector3(1, 0, 0):  # Sumbu X
+				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan:
+					gerak_dunia = kanan * (posisi_kursor_di_dunia.x - handle_x.position.x)
+					posisi_baru.x = snappedf(gerak_dunia.x, interval_snap)
+					objek_terpilih.global_position.x = posisi_baru.x
+			elif axis_yang_digunakan == Vector3(0, 1, 0):  # Sumbu Y
+				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
+					gerak_dunia = atas * (posisi_kursor_di_dunia.y - handle_y.position.y)
+					posisi_baru.y = snappedf(gerak_dunia.y, interval_snap)
+					objek_terpilih.global_position.y = posisi_baru.y
+			elif axis_yang_digunakan == Vector3(0, 0, 1):  # Sumbu Z
+				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas:
+					gerak_dunia = atas * -(posisi_kursor_di_dunia.z - handle_z.position.z)
+					posisi_baru.z = snappedf(gerak_dunia.z, interval_snap)
+				elif viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
+					gerak_dunia = kanan * -(posisi_kursor_di_dunia.z - handle_z.position.z)
+					posisi_baru.z = snappedf(gerak_dunia.z, interval_snap)
+				objek_terpilih.global_position.z = posisi_baru.z
+			
+			posisi_kursor_di_viewport = Vector2.ZERO
+			posisi_kursor_di_dunia = Vector3.ZERO
+		
 
 func _on_select_tool_pressed() -> void:
 	tool_aktif = "select"
