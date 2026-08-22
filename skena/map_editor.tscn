@@ -73,6 +73,17 @@ func _process(delta):
 		emit_signal(\"bergerak\")
 "
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_nef38"]
+size = Vector2(200, 200)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ajpf8"]
+shading_mode = 0
+albedo_texture = ExtResource("3_n1bd0")
+uv1_scale = Vector3(7, 7, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_b3t84"]
+points = PackedVector3Array(-7, 0, -7, -7, 0, 7, 7, 0, -7, 7, 0, 7)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b3t84"]
 shader = ExtResource("3_b3t84")
 shader_parameter/resolution = Vector2(396, 267)
@@ -81,6 +92,17 @@ shader_parameter/transform = Vector2(0, 0)
 shader_parameter/zoom = 8.0000001043084
 shader_parameter/thickness = 1.0000000149012
 shader_parameter/brightness = 1.0000000149012
+
+[sub_resource type="GDScript" id="GDScript_ua5yk"]
+resource_name = "input_grid"
+script/source = "extends ColorRect
+
+@export var map_editor : Control
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and map_editor.sedang_meni_transformasi and map_editor.handle_yang_digunakan:
+		map_editor._lakukan_transformasi(event.relative, event.position)
+"
 
 [sub_resource type="GDScript" id="GDScript_ih230"]
 resource_name = "pengamat_viewport_atas"
@@ -209,14 +231,6 @@ shader_parameter/transform = Vector2(0, 0)
 shader_parameter/zoom = 8.0000001043084
 shader_parameter/thickness = 1.0000000149012
 shader_parameter/brightness = 1.0000000149012
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_nef38"]
-size = Vector2(14, 14)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ajpf8"]
-shading_mode = 0
-albedo_texture = ExtResource("3_n1bd0")
-uv1_scale = Vector3(7, 7, 1)
 
 [node name="map_editor" type="Control" unique_id=296226763]
 layout_mode = 3
@@ -356,15 +370,29 @@ current = true
 size = 2.0
 script = SubResource("GDScript_b3t84")
 
+[node name="grid_depan" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus" unique_id=817124790]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, -10000)
+layers = 32768
+mesh = SubResource("PlaneMesh_nef38")
+skeleton = NodePath("../../../../../../../../lingkungan")
+surface_material_override/0 = SubResource("StandardMaterial3D_ajpf8")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan" unique_id=1565587616]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan/StaticBody3D" unique_id=1577686208]
+shape = SubResource("ConvexPolygonShape3D_b3t84")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" unique_id=917675598]
 
-[node name="grid_depan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=2007714187]
+[node name="grid_depan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=2007714187 node_paths=PackedStringArray("map_editor")]
 material = SubResource("ShaderMaterial_b3t84")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = SubResource("GDScript_ua5yk")
+map_editor = NodePath("../../../../../../../..")
 
 [node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=1480737718]
 offset_left = 5.0
@@ -402,15 +430,29 @@ current = true
 size = 2.0
 script = SubResource("GDScript_ih230")
 
+[node name="grid_atas" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus" unique_id=1893160649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10000, 0)
+layers = 32768
+mesh = SubResource("PlaneMesh_nef38")
+skeleton = NodePath("../../../../../../../../lingkungan")
+surface_material_override/0 = SubResource("StandardMaterial3D_ajpf8")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/grid_atas" unique_id=1920672463]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/grid_atas/StaticBody3D" unique_id=1454819086]
+shape = SubResource("ConvexPolygonShape3D_b3t84")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" unique_id=659118640]
 
-[node name="grid_atas" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=1925744411]
+[node name="grid_atas" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=1925744411 node_paths=PackedStringArray("map_editor")]
 material = SubResource("ShaderMaterial_uvcr3")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = SubResource("GDScript_ua5yk")
+map_editor = NodePath("../../../../../../../..")
 
 [node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=398405366]
 offset_left = 5.0
@@ -441,15 +483,29 @@ current = true
 size = 2.0
 script = SubResource("GDScript_1hfoe")
 
+[node name="grid_kanan" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus" unique_id=1897681925]
+transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -10000, 0, 0)
+layers = 32768
+mesh = SubResource("PlaneMesh_nef38")
+skeleton = NodePath("../../../../../../../../lingkungan")
+surface_material_override/0 = SubResource("StandardMaterial3D_ajpf8")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/grid_kanan" unique_id=711348815]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/grid_kanan/StaticBody3D" unique_id=968916022]
+shape = SubResource("ConvexPolygonShape3D_b3t84")
+
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" unique_id=1745255811]
 
-[node name="grid_kanan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1355657627]
+[node name="grid_kanan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1355657627 node_paths=PackedStringArray("map_editor")]
 material = SubResource("ShaderMaterial_ih230")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = SubResource("GDScript_ua5yk")
+map_editor = NodePath("../../../../../../../..")
 
 [node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1117194176]
 offset_left = 5.0
@@ -487,12 +543,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="lingkungan" type="Node3D" parent="." unique_id=1639728583]
-
-[node name="grid_atas" type="MeshInstance3D" parent="lingkungan" unique_id=1893160649]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4, 0)
-layers = 32768
-mesh = SubResource("PlaneMesh_nef38")
-surface_material_override/0 = SubResource("StandardMaterial3D_ajpf8")
 
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
