@@ -545,6 +545,11 @@ grow_vertical = 2
 
 [node name="lingkungan" type="Node3D" parent="." unique_id=1639728583]
 
+[node name="dialog_buka_file" type="FileDialog" parent="." unique_id=1947471395]
+title = "Open a File"
+initial_position = 1
+file_mode = 0
+
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]

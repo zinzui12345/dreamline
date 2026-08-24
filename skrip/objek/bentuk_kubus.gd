@@ -84,3 +84,6 @@ func _ready() -> void:
 	$wajah/kanan.add_to_group("wajah")
 	$wajah/depan.add_to_group("wajah")
 	$wajah/belakang.add_to_group("wajah")
+
+func dapatkan_wajah(indeks : int) -> MeshInstance3D:
+	return get_node("wajah/" + wajah[indeks])

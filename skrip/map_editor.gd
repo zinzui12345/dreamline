@@ -4,6 +4,7 @@ var _cek_ukuran_kanvas : Vector2
 
 # Seleksi dan transformasi
 var objek_terpilih : Node3D = null
+var objek_terpilih_sementara : Node3D = null
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
 var viewport_aktif : SubViewportContainer
@@ -15,6 +16,7 @@ var posisi_kursor_di_dunia : Vector3 = Vector3.ZERO
 var posisi_kursor_di_viewport : Vector2 = Vector2.ZERO
 var nilai_transformasi : Vector2 = Vector2.ZERO
 var indeks_face_terpilih : int = -1  # Indeks face yang dipilih (untuk mesh)
+var indeks_face_terpilih_sementara : int = -1
 
 # Handles
 var handles : Node3D
@@ -101,8 +103,8 @@ func _ready() -> void:
 	# Buat marker highlight face
 	face_highlight_marker = MeshInstance3D.new()
 	face_highlight_marker.name = "face_highlight_marker"
-	var highlight_box = BoxMesh.new()
-	highlight_box.size = Vector3(0.2, 0.2, 0.2)
+	var highlight_box = PlaneMesh.new()
+	highlight_box.size = Vector2(1, 1)
 	face_highlight_marker.mesh = highlight_box
 	var highlight_material = StandardMaterial3D.new()
 	highlight_material.albedo_color = Color(1, 1, 0, 0.7)
@@ -282,7 +284,7 @@ func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> N
 				return objek_
 			if objek_.is_in_group("wajah") and tool_aktif == "face_select" and objek_.get("indeks_wajah") != null:
 				indeks_face_terpilih = _dapatkan_indeks_face(objek_, hasil)
-				Panku.notify(objek_.objek_bentuk.name + " : " + objek_.name + " -> " + str(indeks_face_terpilih))
+				#Panku.notify(objek_.objek_bentuk.name + " : " + objek_.name + " -> " + str(indeks_face_terpilih))
 				return objek_.objek_bentuk
 			elif objek_.is_in_group("handle_transformasi"):
 				if objek_ == handle_x:
@@ -353,38 +355,43 @@ func _mode_sebelumnya(mode: String) -> String:
 		return "putar"
 
 func _ketika_memilih_material() -> void:
-	var file_dialog = FileDialog.new()
-	file_dialog.title = "Pilih Material"
-	file_dialog.mode = FileDialog.FILE_MODE_OPEN_FILE
-	file_dialog.filters = ["*.tres"]
-	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	file_dialog.connect("file_selected", self._on_file_selected)
-	add_child(file_dialog)
+	objek_terpilih_sementara = objek_terpilih
+	indeks_face_terpilih_sementara = indeks_face_terpilih
+	$dialog_buka_file.title = "Pilih Material"
+	$dialog_buka_file.filters = ["*.material", "*.tres"]
+	$dialog_buka_file.access = FileDialog.ACCESS_FILESYSTEM
+	$dialog_buka_file.connect("file_selected", self._on_file_selected)
+	$dialog_buka_file.show()
 
 func _on_file_selected(file_path: String) -> void:
 	var material_ = load(file_path) as Material
+	if material_ == null:
+		material_ = load(file_path) as StandardMaterial3D
+	if material_ == null:
+		material_ = load(file_path) as ShaderMaterial
 	if material_:
 		material_terpilih = material_
-		if objek_terpilih:
-			# Jika ada face terpilih, kita ingin mengubah material hanya untuk face tersebut
-			# Namun, untuk saat ini, kita akan mengubah seluruh objek
-			# TODO: Implementasi perubahan material per face
-			if objek_terpilih is MeshInstance3D:
-				objek_terpilih.material_override = material_terpilih
-			# Jika bukan MeshInstance3H, kita bisa coba mengubah material melalui surface tool
-			# Namun, untuk kesederhanaan, kita hanya handle MeshInstance3D
+		print_debug(objek_terpilih_sementara)
+		print_debug(indeks_face_terpilih_sementara)
+		if indeks_face_terpilih_sementara > -1:
+			print_debug("Apa bisaaa?")
+			#if objek_terpilih is MeshInstance3D:
+				#objek_terpilih.material_override = material_terpilih
+			objek_terpilih_sementara = null
+			indeks_face_terpilih_sementara = -1
 		else:
-			push_warning("Tidak ada objek yang dipilih")
+			push_warning("Tidak ada wajah yang dipilih")
 
 func _highlight_face_seleksi() -> void:
 	# Tampilkan marker highlight ketika face terpilih
 	if indeks_face_terpilih >= 0 and objek_terpilih:
-		# Tampilkan marker highlight
 		face_highlight_marker.visible = true
-		# Gunakan posisi kamera saat ini sebagai placeholder; nantinya bisa disesuaikan dengan hasil raycast
-		face_highlight_marker.global_transform.origin = objek_terpilih.global_transform.origin + Vector3(0.5, 0, 0) # Offset pada sumbu X
-		# Orientasi marker sesuai dengan normal face
-		# Untuk skimming, biarkan hanya posisi, nanti bisa diorientasikan
+		var wajah_yang_dipilih = objek_terpilih.dapatkan_wajah(indeks_face_terpilih)
+		if wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
+			face_highlight_marker.global_transform.origin = wajah_yang_dipilih.global_transform.origin
+			face_highlight_marker.mesh.size = wajah_yang_dipilih.mesh.size
+			face_highlight_marker.mesh.orientation = wajah_yang_dipilih.mesh.orientation
+			face_highlight_marker.mesh.flip_faces = wajah_yang_dipilih.mesh.flip_faces
 		#print("Face terpilih: ", indeks_face_terpilih)
 	else:
 		# Sembunyikan marker jika tidak ada face yang dipilih
@@ -392,7 +399,6 @@ func _highlight_face_seleksi() -> void:
 		_clear_face_highlight()
 
 func _clear_face_highlight() -> void:
-	# TODO: Hapus highlight face
 	indeks_face_terpilih = -1
 
 func _process(_delta: float) -> void:
