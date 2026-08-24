@@ -280,9 +280,10 @@ func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> N
 		if objek_:
 			if objek_.is_in_group("seleksi_aktif"):
 				return objek_
-			if objek_.is_in_group("wajah") and tool_aktif == "face_select":
+			if objek_.is_in_group("wajah") and tool_aktif == "face_select" and objek_.get("indeks_wajah") != null:
 				indeks_face_terpilih = _dapatkan_indeks_face(objek_, hasil)
-				Panku.notify(objek_.name + " -> " + str(indeks_face_terpilih))
+				Panku.notify(objek_.objek_bentuk.name + " : " + objek_.name + " -> " + str(indeks_face_terpilih))
+				return objek_.objek_bentuk
 			elif objek_.is_in_group("handle_transformasi"):
 				if objek_ == handle_x:
 					axis_yang_digunakan = Vector3(1, 0, 0)
@@ -312,15 +313,8 @@ func _pilih_posisi_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> Vecto
 		return Vector3.ZERO
 
 func _dapatkan_indeks_face(objek_: Node3D, _hasil: Dictionary) -> int:
-	# Mencoba mendapatkan indeks face dari hasil raycast
-	# Ini hanya bekerja jika objek adalah MeshInstance3D dan kita mengakses meshnya
-	if objek_ is MeshInstance3D:
-		var mesh = objek_.mesh
-		if mesh and mesh is ArrayMesh:
-			# Untuk ArrayMesh, kita bisa mendapatkan indeks face dari hasil
-			# Namun, Godot tidak langsung menyediakan indeks face dalam hasil raycast
-			# Kita akan kembali -1 sebagai placeholder (perlu implementasi lebih lanjut)
-			return -1
+	if objek_.get("indeks_wajah") != null:
+		return objek_.indeks_wajah
 	return -1
 
 func _perbarui_handles() -> void:

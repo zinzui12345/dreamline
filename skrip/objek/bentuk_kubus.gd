@@ -74,6 +74,7 @@ enum JENIS_BENTUK {
 		$wajah/depan/fisik/fisik_wajah_depan.disabled = !aktifkan_pemilihan_wajah
 		$wajah/belakang/fisik/fisik_wajah_belakang.disabled = !aktifkan_pemilihan_wajah
 		pilih_wajah = aktifkan_pemilihan_wajah
+@export var wajah : Array
 
 func _ready() -> void:
 	add_to_group("seleksi_aktif")

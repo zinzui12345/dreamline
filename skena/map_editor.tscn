@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://grid.gdshader" id="3_b3t84"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]
-[ext_resource type="PackedScene" uid="uid://csm6dl0q33it5" path="res://model/kubus.scn" id="5_ih230"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
 bg_color = Color(1, 1, 1, 1)
@@ -545,8 +544,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="lingkungan" type="Node3D" parent="." unique_id=1639728583]
-
-[node name="Kubus" parent="lingkungan" unique_id=787295607 instance=ExtResource("5_ih230")]
 
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
