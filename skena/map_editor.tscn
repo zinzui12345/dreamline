@@ -23,7 +23,9 @@ resource_name = "pengamat_viewport_depan"
 script/source = "extends Camera3D
 
 signal bergerak
+signal sedang_fokus(aktif : bool)
 
+#var fokus : bool = false
 var fungsikan : bool = false
 var drag_layar : bool = false
 
@@ -53,6 +55,10 @@ func _input(event):
 				size += 0.5
 				size = clampf(size, 1.0, 100.0)
 				emit_signal(\"bergerak\")
+	
+	#if Input.is_physical_key_pressed(KEY_TAB):
+		#fokus = !fokus
+		#emit_signal(\"sedang_fokus\", fokus)
 
 func _process(delta):
 	if not current or not fungsikan:
@@ -233,6 +239,14 @@ shader_parameter/zoom = 8.0000001043084
 shader_parameter/thickness = 1.0000000149012
 shader_parameter/brightness = 1.0000000149012
 
+[sub_resource type="Environment" id="Environment_b3t84"]
+
+[sub_resource type="World3D" id="World3D_ajpf8"]
+environment = SubResource("Environment_b3t84")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_uvcr3"]
+orientation = 2
+
 [node name="map_editor" type="Control" unique_id=296226763]
 layout_mode = 3
 anchors_preset = 15
@@ -297,7 +311,7 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-split_offsets = PackedInt32Array(0, 0, 0)
+split_offsets = PackedInt32Array(0, 0, 0, 0)
 
 [node name="select_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000001]
 layout_mode = 2
@@ -310,6 +324,10 @@ text = "Face"
 [node name="knife_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000003]
 layout_mode = 2
 text = "Knife"
+
+[node name="material_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1551245414]
+layout_mode = 2
+text = "Material"
 
 [node name="add_cube_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000010]
 layout_mode = 2
@@ -325,6 +343,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="pemisah_vertikal_a" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/kanvas" unique_id=270893130]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 6
 split_offsets = PackedInt32Array(267)
 dragging_enabled = false
@@ -392,6 +411,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = SubResource("GDScript_ua5yk")
 map_editor = NodePath("../../../../../../../..")
 
@@ -405,6 +425,7 @@ text = "1.0"
 
 [node name="pemisah_vertikal_b" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/kanvas" unique_id=1354430811]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 6
 split_offsets = PackedInt32Array(267)
 dragging_enabled = false
@@ -452,6 +473,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = SubResource("GDScript_ua5yk")
 map_editor = NodePath("../../../../../../../..")
 
@@ -505,6 +527,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = SubResource("GDScript_ua5yk")
 map_editor = NodePath("../../../../../../../..")
 
@@ -524,9 +547,32 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
 metadata/_edit_use_anchors_ = true
 
 [node name="VSplitContainer" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur" unique_id=64954687]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 8.0
+grow_horizontal = 2
+
+[node name="tampilan_material" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer" unique_id=1712345479]
+layout_mode = 2
+
+[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material" unique_id=673612122]
+own_world_3d = true
+world_3d = SubResource("World3D_ajpf8")
+handle_input_locally = false
+size = Vector2i(150, 150)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport" unique_id=2066212069]
+projection = 1
+
+[node name="placeholder_mesh" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport" unique_id=300415051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+mesh = SubResource("PlaneMesh_uvcr3")
+
+[node name="pilih_material" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer" unique_id=1475556715]
+layout_mode = 2
+text = "Pilih Material"
 
 [node name="status" type="Panel" parent="tata_letak_vertikal" unique_id=1701144140]
 custom_minimum_size = Vector2(0, 20)
@@ -556,3 +602,4 @@ file_mode = 0
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
+[connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/pilih_material" to="." method="_ketika_memilih_material"]

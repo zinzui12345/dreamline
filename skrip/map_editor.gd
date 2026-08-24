@@ -1,13 +1,19 @@
+# 21/08/26
 extends Control
 
 var _cek_ukuran_kanvas : Vector2
 
+# TODO :
+# Objek harus bisa dipilih face nya secara individual
+# Fungsikan tool Knife
+# Transformasi skala objek (tarik point pada salah satu sisi)
+
 # Seleksi dan transformasi
 var objek_terpilih : Node3D = null
-var objek_terpilih_sementara : Node3D = null
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
 var viewport_aktif : SubViewportContainer
+var viewport_fokus : bool = false
 var jumlah_kisi_kisi : int = 4
 var sedang_meni_transformasi : bool = false
 var handle_yang_digunakan : Node3D = null
@@ -16,7 +22,6 @@ var posisi_kursor_di_dunia : Vector3 = Vector3.ZERO
 var posisi_kursor_di_viewport : Vector2 = Vector2.ZERO
 var nilai_transformasi : Vector2 = Vector2.ZERO
 var indeks_face_terpilih : int = -1  # Indeks face yang dipilih (untuk mesh)
-var indeks_face_terpilih_sementara : int = -1
 
 # Handles
 var handles : Node3D
@@ -114,19 +119,11 @@ func _ready() -> void:
 	face_highlight_marker.visible = false
 	add_child(face_highlight_marker)
 	
-	# Tambahkan tombol material selector ke panel inspektor
-	var inspektor = $tata_letak_vertikal/tata_letak/inspektur
-	button_material = Button.new()
-	button_material.text = "Pilih Material"
-	button_material.size = Vector2(120, 30)
-	button_material.position = Vector2(10, 10)
-	button_material.connect("pressed", self._ketika_memilih_material)
-	inspektor.add_child(button_material)
-	
 	# Hubungkan tombol alat baru
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/select_tool_button.connect("pressed", self._on_select_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/face_select_tool_button.connect("pressed", self._on_face_select_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/knife_tool_button.connect("pressed", self._on_knife_tool_pressed)
+	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_tool_button.connect("pressed", self._terapkan_material_terpilih)
 	
 	# Hubungkan tombol tambah kubus
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_cube_button.connect("pressed", self._ketika_menambah_kubus)
@@ -185,13 +182,16 @@ func _input(event: InputEvent) -> void:
 					_perbarui_handles()
 					handles.visible = true
 					_highlight_face_seleksi()
-				else:
-					_clear_selection() # Bersihkan pemilihan
+				elif _cek_viewport_dari_klik(event.position):
+					_clear_face_highlight()
+					_clear_selection()
 			elif tool_aktif == "knife":
 				# TODO: Logika untuk knife tool (misalnya memulai gambar garis)
 				print("Knife tool diklik.")
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_cek_viewport_dari_klik(event.position)
+			if viewport_fokus:
+				Panku.notify("fokus : " + viewport_aktif.name) # FIXME : kenapa node masih bisa di klik walau tidak visible?
 		#elif event.button_index == MOUSE_BUTTON_WHEEL_UP or _event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			## Scroll mouse untuk mengganti mode transformasi hanya jika tool_aktif adalah "select"
 			#if tool_aktif == "select" and objek_terpilih:
@@ -210,6 +210,29 @@ func _input(event: InputEvent) -> void:
 			axis_yang_digunakan = Vector3.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
 			posisi_kursor_di_viewport = Vector2.ZERO
+	
+	# Handle tombol pintasan
+	if Input.is_action_just_pressed("daftar_pemain"):
+		if not viewport_fokus:
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = false
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = false
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = false
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = false
+			if viewport_aktif.name == "tampilan_3d" or viewport_aktif.name == "tampilan_depan":
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = false
+			elif viewport_aktif.name == "tampilan_atas" or viewport_aktif.name == "tampilan_kanan":
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = false
+			viewport_aktif.visible = true
+			viewport_fokus = true
+		else:
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = true
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = true
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = true
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = true
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = true
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = true
+			viewport_fokus = false
+		_ketika_ukuran_tampilan_diubah()
 
 func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 	# Periksa setiap viewport untuk melihat klik terjadi di mana
@@ -243,7 +266,7 @@ func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 				return objek_
 	return null
 
-func _cek_viewport_dari_klik(posisi_layar: Vector2) -> void:
+func _cek_viewport_dari_klik(posisi_layar: Vector2) -> bool:
 	# Periksa setiap viewport untuk melihat klik terjadi di mana
 	var viewports = [
 		{ "nama": "tampilan_3d", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat, "is_3d": true },
@@ -266,6 +289,8 @@ func _cek_viewport_dari_klik(posisi_layar: Vector2) -> void:
 			elif viewport["is_3d"]:
 				container.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_ALWAYS
 			viewport_aktif = container
+			return true
+	return false
 
 func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> Node3D:
 	# Gunakan world dari kamera (SubViewport), bukan world dari viewport utama
@@ -355,8 +380,6 @@ func _mode_sebelumnya(mode: String) -> String:
 		return "putar"
 
 func _ketika_memilih_material() -> void:
-	objek_terpilih_sementara = objek_terpilih
-	indeks_face_terpilih_sementara = indeks_face_terpilih
 	$dialog_buka_file.title = "Pilih Material"
 	$dialog_buka_file.filters = ["*.material", "*.tres"]
 	$dialog_buka_file.access = FileDialog.ACCESS_FILESYSTEM
@@ -371,16 +394,8 @@ func _on_file_selected(file_path: String) -> void:
 		material_ = load(file_path) as ShaderMaterial
 	if material_:
 		material_terpilih = material_
-		print_debug(objek_terpilih_sementara)
-		print_debug(indeks_face_terpilih_sementara)
-		if indeks_face_terpilih_sementara > -1:
-			print_debug("Apa bisaaa?")
-			#if objek_terpilih is MeshInstance3D:
-				#objek_terpilih.material_override = material_terpilih
-			objek_terpilih_sementara = null
-			indeks_face_terpilih_sementara = -1
-		else:
-			push_warning("Tidak ada wajah yang dipilih")
+		$tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
+		_terapkan_material_terpilih()
 
 func _highlight_face_seleksi() -> void:
 	# Tampilkan marker highlight ketika face terpilih
@@ -394,11 +409,10 @@ func _highlight_face_seleksi() -> void:
 			face_highlight_marker.mesh.flip_faces = wajah_yang_dipilih.mesh.flip_faces
 		#print("Face terpilih: ", indeks_face_terpilih)
 	else:
-		# Sembunyikan marker jika tidak ada face yang dipilih
-		face_highlight_marker.visible = false
 		_clear_face_highlight()
 
 func _clear_face_highlight() -> void:
+	face_highlight_marker.visible = false
 	indeks_face_terpilih = -1
 
 func _process(_delta: float) -> void:
@@ -452,7 +466,6 @@ func _physics_process(_delta: float) -> void:
 			
 			posisi_kursor_di_viewport = Vector2.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
-		
 
 func _on_select_tool_pressed() -> void:
 	tool_aktif = "select"
@@ -474,6 +487,15 @@ func _on_knife_tool_pressed() -> void:
 	_perbarui_tampilan_alat_aktif()
 	_clear_selection() # Bersihkan pemilihan saat ganti alat
 	print("Alat: Knife")
+
+func _terapkan_material_terpilih() -> void:
+	if indeks_face_terpilih > -1:
+		var wajah_yang_dipilih = objek_terpilih.dapatkan_wajah(indeks_face_terpilih)
+		if objek_terpilih is MeshInstance3D:
+			objek_terpilih.material_override = material_terpilih
+		elif wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
+			wajah_yang_dipilih.mesh.material = material_terpilih
+	print("Alat: Material Apply")
 
 func _perbarui_tampilan_alat_aktif() -> void:
 	# TODO: Implementasi visual feedback untuk tombol alat yang aktif
