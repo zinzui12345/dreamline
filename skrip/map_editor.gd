@@ -226,7 +226,7 @@ func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 		if rect.has_point(posisi_layar):
 			# Konversi posisi layar global ke posisi relatif viewport
 			var posisi_relatif = posisi_layar - container.get_global_position()
-			var objek_ = _pilih_objek_dari_viewport(kamera, posisi_relatif, viewport["is_3d"])
+			var objek_ = _pilih_objek_dari_viewport(kamera, posisi_relatif)
 			if viewport_aktif != null:
 				if viewport_aktif.name == "tampilan_3d":
 					viewport_aktif.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_DISABLED
@@ -265,7 +265,7 @@ func _cek_viewport_dari_klik(posisi_layar: Vector2) -> void:
 				container.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_ALWAYS
 			viewport_aktif = container
 
-func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2, is_3d: bool) -> Node3D:
+func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> Node3D:
 	# Gunakan world dari kamera (SubViewport), bukan world dari viewport utama
 	var physics_state = kamera.get_world_3d().direct_space_state
 	var dari = kamera.project_ray_origin(posisi_viewport)
@@ -279,12 +279,10 @@ func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2, is_3
 		# Periksa apakah objek dapat dipilih (ada grup "seleksi_aktif")
 		if objek_:
 			if objek_.is_in_group("seleksi_aktif"):
-				# Jika dalam viewport 3D DAN tool face select aktif, coba dapatkan informasi face
-				if is_3d and tool_aktif == "face_select":
-					indeks_face_terpilih = _dapatkan_indeks_face(objek_, hasil)
-				else:
-					indeks_face_terpilih = -1
 				return objek_
+			if objek_.is_in_group("wajah") and tool_aktif == "face_select":
+				indeks_face_terpilih = _dapatkan_indeks_face(objek_, hasil)
+				Panku.notify(objek_.name + " -> " + str(indeks_face_terpilih))
 			elif objek_.is_in_group("handle_transformasi"):
 				if objek_ == handle_x:
 					axis_yang_digunakan = Vector3(1, 0, 0)
@@ -295,6 +293,10 @@ func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2, is_3
 				sedang_meni_transformasi = true
 				handle_yang_digunakan = objek_
 				return objek_terpilih
+			else:
+				if tool_aktif == "face_select":
+					indeks_face_terpilih = -1
+				print_debug(objek_.name)
 	indeks_face_terpilih = -1
 	return null
 
@@ -324,8 +326,8 @@ func _dapatkan_indeks_face(objek_: Node3D, _hasil: Dictionary) -> int:
 func _perbarui_handles() -> void:
 	if objek_terpilih:
 		var offset : Vector3
-		if objek_terpilih.mesh is BoxMesh:
-			offset = (objek_terpilih.mesh.size / 2) + Vector3(0.10, 0.10, 0.10)
+		if objek_terpilih.tipe_bentuk == 0:
+			offset = (objek_terpilih.ukuran / 2) + Vector3(0.10, 0.10, 0.10)
 		handles.global_transform.origin = objek_terpilih.global_transform.origin
 		# Tampilkan hanya handles yang sesuai dengan mode
 		handle_x.visible = (mode_transformasi == "gerak")
@@ -457,12 +459,14 @@ func _on_select_tool_pressed() -> void:
 	mode_transformasi = "gerak" # Mode default untuk select tool (bisa translasi, rotasi, skala)
 	_perbarui_tampilan_alat_aktif()
 	_clear_selection() # Bersihkan pemilihan saat ganti alat
+	_terapkan_mode_pemilihan_objek()
 	print("Alat: Select")
 
 func _on_face_select_tool_pressed() -> void:
 	tool_aktif = "face_select"
 	_perbarui_tampilan_alat_aktif()
 	_clear_selection() # Bersihkan pemilihan saat ganti alat
+	_terapkan_mode_pemilihan_objek(true)
 	print("Alat: Face Select")
 
 func _on_knife_tool_pressed() -> void:
@@ -486,26 +490,7 @@ func _clear_selection() -> void:
 	_clear_face_highlight()
 
 func _ketika_menambah_kubus() -> void:
-	# Buat MeshInstance3D dengan CubeMesh
-	var kubus = MeshInstance3D.new()
-	kubus.mesh = BoxMesh.new()
-	kubus.name = "Kubus_" + str(randi() % 1000)
-	
-	# Tambahkan StaticBody3D + CollisionShape3D agar bisa dideteksi
-	var badan = StaticBody3D.new()
-	badan.name = "badan"
-	kubus.add_child(badan)
-	var bentuk_tabrakan = CollisionShape3D.new()
-	bentuk_tabrakan.name = "bentuk_tabrakan"
-	var kotak = BoxShape3D.new()
-	kotak.size = Vector3(1, 1, 1)
-	bentuk_tabrakan.shape = kotak
-	badan.add_child(bentuk_tabrakan)
-	
-	# Tambahkan body fisik ke grup seleksi (MeshInstance3D, bukan StaticBody3D)
-	kubus.add_to_group("seleksi_aktif")  # PERBAIKAN: Tambahkan MeshInstance3D bukan StaticBody3D
-	
-	# Tambahkan ke lingkungan
+	var kubus = load("res://model/kubus.scn").instantiate()
 	$lingkungan.add_child(kubus)
 	
 	# Pilih objek yang baru dibuat
@@ -514,3 +499,8 @@ func _ketika_menambah_kubus() -> void:
 	_perbarui_handles()
 	handles.visible = true
 	print("Kubus ditambahkan dan dipilih: ", kubus.name)
+
+func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
+	for objek_objek in $lingkungan.get_children():
+		if objek_objek.get("pilih_wajah") != null:
+			objek_objek.pilih_wajah = mode_face
