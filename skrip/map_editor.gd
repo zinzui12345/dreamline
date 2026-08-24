@@ -4,7 +4,6 @@ extends Control
 var _cek_ukuran_kanvas : Vector2
 
 # TODO :
-# Objek harus bisa dipilih face nya secara individual
 # Fungsikan tool Knife
 # Transformasi skala objek (tarik point pada salah satu sisi)
 
@@ -190,8 +189,6 @@ func _input(event: InputEvent) -> void:
 				print("Knife tool diklik.")
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_cek_viewport_dari_klik(event.position)
-			if viewport_fokus:
-				Panku.notify("fokus : " + viewport_aktif.name) # FIXME : kenapa node masih bisa di klik walau tidak visible?
 		#elif event.button_index == MOUSE_BUTTON_WHEEL_UP or _event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			## Scroll mouse untuk mengganti mode transformasi hanya jika tool_aktif adalah "select"
 			#if tool_aktif == "select" and objek_terpilih:
@@ -248,7 +245,7 @@ func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 		var kamera = viewport["kamera"]
 		# Periksa apakah klik berada dalam area viewport
 		var rect = container.get_global_rect()
-		if rect.has_point(posisi_layar):
+		if rect.has_point(posisi_layar) and container.visible:
 			# Konversi posisi layar global ke posisi relatif viewport
 			var posisi_relatif = posisi_layar - container.get_global_position()
 			var objek_ = _pilih_objek_dari_viewport(kamera, posisi_relatif)
@@ -278,7 +275,7 @@ func _cek_viewport_dari_klik(posisi_layar: Vector2) -> bool:
 	for viewport in viewports:
 		var container = viewport["node"]
 		var rect = container.get_global_rect()
-		if rect.has_point(posisi_layar):
+		if rect.has_point(posisi_layar) and container.visible:
 			if viewport_aktif != null:
 				if viewport_aktif.name == "tampilan_3d":
 					viewport_aktif.get_node("SubViewport/pengamat").process_mode = Node.PROCESS_MODE_DISABLED
@@ -514,8 +511,7 @@ func _clear_selection() -> void:
 func _ketika_menambah_kubus() -> void:
 	var kubus = load("res://model/kubus.scn").instantiate()
 	$lingkungan.add_child(kubus)
-	
-	# Pilih objek yang baru dibuat
+	kubus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
 	objek_terpilih = kubus
 	indeks_face_terpilih = -1
 	_perbarui_handles()
