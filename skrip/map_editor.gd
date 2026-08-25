@@ -118,13 +118,12 @@ func _ready() -> void:
 	face_highlight_marker.visible = false
 	add_child(face_highlight_marker)
 	
-	# Hubungkan tombol alat baru
+	# Hubungkan tombol alat
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/select_tool_button.connect("pressed", self._on_select_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/face_select_tool_button.connect("pressed", self._on_face_select_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/knife_tool_button.connect("pressed", self._on_knife_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_tool_button.connect("pressed", self._terapkan_material_terpilih)
-	
-	# Hubungkan tombol tambah kubus
+	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_picker_button.connect("pressed", self._ambil_material_terpilih)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_cube_button.connect("pressed", self._ketika_menambah_kubus)
 	
 	# Sesuaikan posisi batas raycast
@@ -493,6 +492,18 @@ func _terapkan_material_terpilih() -> void:
 		elif wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
 			wajah_yang_dipilih.mesh.material = material_terpilih
 	print("Alat: Material Apply")
+
+func _ambil_material_terpilih() -> void:
+	if indeks_face_terpilih > -1 and objek_terpilih != null:
+		var wajah_yang_dipilih = objek_terpilih.dapatkan_wajah(indeks_face_terpilih)
+		var material_
+		if objek_terpilih is MeshInstance3D:
+			material_ = objek_terpilih.material_override
+		elif wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
+			material_ = wajah_yang_dipilih.mesh.material
+		material_terpilih = material_
+		$tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
+	print("Alat: Material Picker")
 
 func _perbarui_tampilan_alat_aktif() -> void:
 	# TODO: Implementasi visual feedback untuk tombol alat yang aktif

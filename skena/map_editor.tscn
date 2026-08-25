@@ -2,8 +2,13 @@
 
 [ext_resource type="Script" uid="uid://chh3wlcedihey" path="res://skrip/map_editor.gd" id="1_6o263"]
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
+[ext_resource type="Texture2D" uid="uid://cdokqbc5vdo0f" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://grid.gdshader" id="3_b3t84"]
+[ext_resource type="Texture2D" uid="uid://yf2iokdv2mhq" path="res://ui/ikon/ikon_pilih_wajah_bentuk.svg" id="3_m7gfd"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]
+[ext_resource type="Texture2D" uid="uid://bhj2bxvekvpl3" path="res://ui/ikon/ikon_terapkan_material_wajah_bentuk.svg" id="4_wmcly"]
+[ext_resource type="Texture2D" uid="uid://ct0wqjhouv0bi" path="res://ui/ikon/ikon_ambil_material_wajah_bentuk.svg" id="5_e465q"]
+[ext_resource type="Texture2D" uid="uid://botvoe71gvtw8" path="res://ui/ikon/ikon_tambah_objek_bentuk.svg" id="6_f1y01"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
 bg_color = Color(1, 1, 1, 1)
@@ -240,6 +245,9 @@ shader_parameter/thickness = 1.0000000149012
 shader_parameter/brightness = 1.0000000149012
 
 [sub_resource type="Environment" id="Environment_b3t84"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+ambient_light_color = Color(1, 1, 1, 1)
 
 [sub_resource type="World3D" id="World3D_ajpf8"]
 environment = SubResource("Environment_b3t84")
@@ -296,42 +304,63 @@ grow_vertical = 2
 [node name="tata_letak" type="HSplitContainer" parent="tata_letak_vertikal" unique_id=670929322]
 layout_mode = 2
 theme_override_constants/separation = 6
-split_offsets = PackedInt32Array(736, 756)
+split_offsets = PackedInt32Array(0, 842, 858, 1016)
 dragging_enabled = false
-split_offset = 736
+
+[node name="margin_kiri" type="Control" parent="tata_letak_vertikal/tata_letak" unique_id=1275826745]
+custom_maximum_size = Vector2(0, -1)
+layout_mode = 2
 
 [node name="alat" type="Panel" parent="tata_letak_vertikal/tata_letak" unique_id=1233083544]
 custom_minimum_size = Vector2(50, 0)
-custom_maximum_size = Vector2(50, -1)
+custom_maximum_size = Vector2(58, -1)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
 metadata/_edit_use_anchors_ = true
 
 [node name="VSplitContainer" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/alat" unique_id=152349326]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-split_offsets = PackedInt32Array(0, 0, 0, 0)
+propagate_maximum_size = false
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 338.0
+grow_horizontal = 2
+split_offsets = PackedInt32Array(58, 128, 198, 268)
+dragging_enabled = false
+split_offset = 58
 
 [node name="select_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000001]
 layout_mode = 2
-text = "Select"
+icon = ExtResource("2_681b2")
+autowrap_trim_flags = 0
+clip_text = true
+icon_alignment = 1
 
 [node name="face_select_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000002]
 layout_mode = 2
-text = "Face"
+icon = ExtResource("3_m7gfd")
+icon_alignment = 1
 
 [node name="knife_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000003]
+visible = false
 layout_mode = 2
 text = "Knife"
+icon_alignment = 1
 
 [node name="material_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1551245414]
 layout_mode = 2
-text = "Material"
+icon = ExtResource("4_wmcly")
+icon_alignment = 1
+
+[node name="material_picker_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=699728253]
+layout_mode = 2
+icon = ExtResource("5_e465q")
+icon_alignment = 1
 
 [node name="add_cube_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000010]
 layout_mode = 2
-text = "Add Cube"
+icon = ExtResource("6_f1y01")
+icon_alignment = 1
 
 [node name="kanvas" type="HSplitContainer" parent="tata_letak_vertikal/tata_letak" unique_id=1866058727]
 layout_mode = 2
@@ -438,7 +467,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas" unique_id=428214386]
 handle_input_locally = false
-size = Vector2i(396, 267)
+size = Vector2i(372, 267)
 render_target_update_mode = 4
 
 [node name="titik_fokus" type="Node3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" unique_id=699491924]
@@ -492,7 +521,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan" unique_id=207460045]
 handle_input_locally = false
-size = Vector2i(396, 259)
+size = Vector2i(372, 259)
 render_target_update_mode = 4
 
 [node name="titik_fokus" type="Node3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" unique_id=826734246]
@@ -568,11 +597,16 @@ projection = 1
 
 [node name="placeholder_mesh" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport" unique_id=300415051]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+cast_shadow = 0
 mesh = SubResource("PlaneMesh_uvcr3")
 
 [node name="pilih_material" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer" unique_id=1475556715]
 layout_mode = 2
 text = "Pilih Material"
+
+[node name="margin_kanan" type="Control" parent="tata_letak_vertikal/tata_letak" unique_id=1039494916]
+custom_maximum_size = Vector2(0, -1)
+layout_mode = 2
 
 [node name="status" type="Panel" parent="tata_letak_vertikal" unique_id=1701144140]
 custom_minimum_size = Vector2(0, 20)
