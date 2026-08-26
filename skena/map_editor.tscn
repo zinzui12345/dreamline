@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://chh3wlcedihey" path="res://skrip/map_editor.gd" id="1_6o263"]
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
-[ext_resource type="Texture2D" uid="uid://cdokqbc5vdo0f" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
+[ext_resource type="Texture2D" uid="uid://bl4ogqmf5h7ip" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://grid.gdshader" id="3_b3t84"]
 [ext_resource type="Texture2D" uid="uid://yf2iokdv2mhq" path="res://ui/ikon/ikon_pilih_wajah_bentuk.svg" id="3_m7gfd"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]

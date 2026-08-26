@@ -551,7 +551,8 @@ func _terapkan_material_terpilih() -> void:
 		if objek_terpilih is MeshInstance3D:
 			objek_terpilih.material_override = material_terpilih
 		elif wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
-			wajah_yang_dipilih.mesh.material = material_terpilih
+			wajah_yang_dipilih.atur_material(material_terpilih)
+			wajah_yang_dipilih.objek_bentuk.ukuran = wajah_yang_dipilih.objek_bentuk.ukuran
 	print("Alat: Material Apply")
 
 func _ambil_material_terpilih() -> void:
@@ -561,7 +562,7 @@ func _ambil_material_terpilih() -> void:
 		if objek_terpilih is MeshInstance3D:
 			material_ = objek_terpilih.material_override
 		elif wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
-			material_ = wajah_yang_dipilih.mesh.material
+			material_ = wajah_yang_dipilih.dapatkan_material()
 		material_terpilih = material_
 		$tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
 	print("Alat: Material Picker")
