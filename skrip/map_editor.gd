@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 
 # TODO :
 # Fungsikan tool Knife
-# Transformasi skala objek (tarik point pada salah satu sisi)
 
 # Seleksi dan transformasi
 var objek_terpilih : Node3D = null
@@ -356,7 +355,7 @@ func _perbarui_handles() -> void:
 		handle_x.position.x = offset.x
 		handle_y.position.y = offset.y
 		handle_z.position.z = offset.z
-		# Untuk mode putar dan skala, kita akan menambahkan handles khusus nanti
+		# Untuk mode putar, kita akan menambahkan handles khusus nanti
 		# Untuk saat ini, kita tampilkan semua handles dalam mode gerak
 	else:
 		handles.visible = false

@@ -44,6 +44,11 @@ enum JENIS_BENTUK {
 		$wajah/kanan.mesh.size.x = ukuran_baru.z
 		$wajah/kanan/fisik/fisik_wajah_kanan.scale.z = ukuran_baru.z
 		
+		# FIXME : ukuran material pada wajah
+		# loop dapatkan_wajah(indeks : int)
+		# set mesh.material.uv1_scale pada MeshInstance3D
+		# ketika apply material harus duplicate! 
+		
 		ukuran = ukuran_baru
 @export var dapat_dipilih : bool = true :
 	set(aktifkan_seleksi):
