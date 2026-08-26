@@ -120,6 +120,8 @@ func _ready() -> void:
 	
 	# Hubungkan tombol alat
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/select_tool_button.connect("pressed", self._on_select_tool_pressed)
+	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/move_selected_button.connect("pressed", self._pilih_mode_transformasi_gerak)
+	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.connect("pressed", self._pilih_mode_transformasi_skala)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/face_select_tool_button.connect("pressed", self._on_face_select_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/knife_tool_button.connect("pressed", self._on_knife_tool_pressed)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_tool_button.connect("pressed", self._terapkan_material_terpilih)
@@ -347,9 +349,9 @@ func _perbarui_handles() -> void:
 			offset = (objek_terpilih.ukuran / 2) + Vector3(0.10, 0.10, 0.10)
 		handles.global_transform.origin = objek_terpilih.global_transform.origin
 		# Tampilkan hanya handles yang sesuai dengan mode
-		handle_x.visible = (mode_transformasi == "gerak")
-		handle_y.visible = (mode_transformasi == "gerak")
-		handle_z.visible = (mode_transformasi == "gerak")
+		handle_x.visible = (mode_transformasi == "gerak" or mode_transformasi == "skala")
+		handle_y.visible = (mode_transformasi == "gerak" or mode_transformasi == "skala")
+		handle_z.visible = (mode_transformasi == "gerak" or mode_transformasi == "skala")
 		# Sesuaikan posisi handle
 		handle_x.position.x = offset.x
 		handle_y.position.y = offset.y
@@ -374,6 +376,18 @@ func _mode_sebelumnya(mode: String) -> String:
 		return "gerak"
 	else:
 		return "putar"
+
+func _pilih_mode_transformasi_gerak() -> void:
+	tool_aktif = "select"
+	mode_transformasi = "gerak"
+	_perbarui_tampilan_alat_aktif()
+	print("Mode Transformasi: Posisi")
+	
+func _pilih_mode_transformasi_skala() -> void:
+	tool_aktif = "select"
+	mode_transformasi = "skala"
+	_perbarui_tampilan_alat_aktif()
+	print("Mode Transformasi: Skala")
 
 func _ketika_memilih_material() -> void:
 	$dialog_buka_file.title = "Pilih Material"
@@ -434,8 +448,8 @@ func _physics_process(_delta: float) -> void:
 	var atas = kamera.global_transform.basis.y  # Arah atas kamera
 	posisi_kursor_di_dunia = _pilih_posisi_viewport(kamera, posisi_kursor_di_viewport)
 	
-	# Terapkan gerak ke objek (hanya translasi untuk saat ini)
-	if mode_transformasi == "gerak" and sedang_meni_transformasi:
+	# Terapkan gerak ke objek
+	if (mode_transformasi == "gerak" or mode_transformasi == "skala") and sedang_meni_transformasi:
 		if posisi_kursor_di_viewport != Vector2.ZERO and posisi_kursor_di_dunia != Vector3.ZERO:
 			var gerak_dunia = objek_terpilih.global_position
 			var posisi_baru : Vector3
@@ -445,12 +459,44 @@ func _physics_process(_delta: float) -> void:
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan:
 					gerak_dunia = kanan * (posisi_kursor_di_dunia.x - handle_x.position.x)
 					posisi_baru.x = snappedf(gerak_dunia.x, interval_snap)
-					objek_terpilih.global_position.x = posisi_baru.x
+					if mode_transformasi == "gerak":
+						if fmod(objek_terpilih.ukuran.x / interval_snap, 2.0) == 0.0:
+							objek_terpilih.global_position.x = posisi_baru.x
+						else:
+							var pos_target : float = snappedf(posisi_baru.x - (objek_terpilih.ukuran.x / 2), interval_snap)
+							objek_terpilih.global_position.x = pos_target + (objek_terpilih.ukuran.x / 2)
+					elif mode_transformasi == "skala":
+						var start_point  : float = objek_terpilih.global_position.x - (objek_terpilih.ukuran.x / 2)
+						var end_point  : float = objek_terpilih.global_position.x + (objek_terpilih.ukuran.x / 2)
+						var offset  : float = snappedf(posisi_baru.x - objek_terpilih.global_position.x, interval_snap)
+						var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
+						var pos_target  : float = objek_terpilih.global_position.x + (offset / 2)
+						if skala_target > (interval_snap / 2):
+							await RenderingServer.frame_post_draw
+							objek_terpilih.ukuran.x = skala_target
+							objek_terpilih.global_position.x = pos_target
+							_perbarui_handles()
 			elif axis_yang_digunakan == Vector3(0, 1, 0):  # Sumbu Y
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
 					gerak_dunia = atas * (posisi_kursor_di_dunia.y - handle_y.position.y)
 					posisi_baru.y = snappedf(gerak_dunia.y, interval_snap)
-					objek_terpilih.global_position.y = posisi_baru.y
+					if mode_transformasi == "gerak":
+						if fmod(objek_terpilih.ukuran.y / interval_snap, 2.0) == 0.0:
+							objek_terpilih.global_position.y = posisi_baru.y
+						else:
+							var pos_target : float = snappedf(posisi_baru.y - (objek_terpilih.ukuran.y / 2), interval_snap)
+							objek_terpilih.global_position.y = pos_target + (objek_terpilih.ukuran.y / 2)
+					elif mode_transformasi == "skala":
+						var start_point  : float = objek_terpilih.global_position.y - (objek_terpilih.ukuran.y / 2)
+						var end_point  : float = objek_terpilih.global_position.y + (objek_terpilih.ukuran.y / 2)
+						var offset  : float = snappedf(posisi_baru.y - objek_terpilih.global_position.y, interval_snap)
+						var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
+						var pos_target  : float = objek_terpilih.global_position.y + (offset / 2)
+						if skala_target > (interval_snap / 2):
+							await RenderingServer.frame_post_draw
+							objek_terpilih.ukuran.y = skala_target
+							objek_terpilih.global_position.y = pos_target
+							_perbarui_handles()
 			elif axis_yang_digunakan == Vector3(0, 0, 1):  # Sumbu Z
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas:
 					gerak_dunia = atas * -(posisi_kursor_di_dunia.z - handle_z.position.z)
@@ -458,7 +504,23 @@ func _physics_process(_delta: float) -> void:
 				elif viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
 					gerak_dunia = kanan * -(posisi_kursor_di_dunia.z - handle_z.position.z)
 					posisi_baru.z = snappedf(gerak_dunia.z, interval_snap)
-				objek_terpilih.global_position.z = posisi_baru.z
+				if mode_transformasi == "gerak":
+					if fmod(objek_terpilih.ukuran.z / interval_snap, 2.0) == 0.0:
+						objek_terpilih.global_position.z = posisi_baru.z
+					else:
+						var pos_target : float = snappedf(posisi_baru.z - (objek_terpilih.ukuran.z / 2), interval_snap)
+						objek_terpilih.global_position.z = pos_target + (objek_terpilih.ukuran.z / 2)
+				elif mode_transformasi == "skala":
+					var start_point  : float = objek_terpilih.global_position.z - (objek_terpilih.ukuran.z / 2)
+					var end_point  : float = objek_terpilih.global_position.z + (objek_terpilih.ukuran.z / 2)
+					var offset  : float = snappedf(posisi_baru.z - objek_terpilih.global_position.z, interval_snap)
+					var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
+					var pos_target  : float = objek_terpilih.global_position.z + (offset / 2)
+					if skala_target > (interval_snap / 2):
+						await RenderingServer.frame_post_draw
+						objek_terpilih.ukuran.z = skala_target
+						objek_terpilih.global_position.z = pos_target
+						_perbarui_handles()
 			
 			posisi_kursor_di_viewport = Vector2.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
@@ -506,11 +568,16 @@ func _ambil_material_terpilih() -> void:
 	print("Alat: Material Picker")
 
 func _perbarui_tampilan_alat_aktif() -> void:
-	# TODO: Implementasi visual feedback untuk tombol alat yang aktif
-	# Misalnya, mengubah gaya tombol yang sedang aktif
-	# Kita bisa iterasi melalui semua tombol alat dan mengatur gaya mereka.
-	# Untuk saat ini, kita biarkan kosong.
-	pass
+	if tool_aktif == "select":
+		$tata_letak_vertikal/tata_letak/alat/VSplitContainer/move_selected_button.visible = true
+		$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.visible = true
+		if mode_transformasi == "gerak":
+			$tata_letak_vertikal/tata_letak/alat/VSplitContainer/move_selected_button.button_pressed = true
+		elif mode_transformasi == "skala":
+			$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.button_pressed = true
+	else:
+		$tata_letak_vertikal/tata_letak/alat/VSplitContainer/move_selected_button.visible = false
+		$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.visible = false
 
 func _clear_selection() -> void:
 	objek_terpilih = null
@@ -525,6 +592,7 @@ func _ketika_menambah_kubus() -> void:
 	kubus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
 	objek_terpilih = kubus
 	indeks_face_terpilih = -1
+	_perbarui_tampilan_alat_aktif()
 	_perbarui_handles()
 	handles.visible = true
 	print("Kubus ditambahkan dan dipilih: ", kubus.name)

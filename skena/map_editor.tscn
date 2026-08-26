@@ -6,6 +6,8 @@
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://grid.gdshader" id="3_b3t84"]
 [ext_resource type="Texture2D" uid="uid://yf2iokdv2mhq" path="res://ui/ikon/ikon_pilih_wajah_bentuk.svg" id="3_m7gfd"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]
+[ext_resource type="Texture2D" uid="uid://dusqgks23uffe" path="res://ui/ikon/ikon_pindahkan_objek_bentuk.svg" id="3_wmcly"]
+[ext_resource type="Texture2D" uid="uid://cp78bio8kif7m" path="res://ui/ikon/ikon_skala_objek_bentuk.svg" id="4_e465q"]
 [ext_resource type="Texture2D" uid="uid://bhj2bxvekvpl3" path="res://ui/ikon/ikon_terapkan_material_wajah_bentuk.svg" id="4_wmcly"]
 [ext_resource type="Texture2D" uid="uid://ct0wqjhouv0bi" path="res://ui/ikon/ikon_ambil_material_wajah_bentuk.svg" id="5_e465q"]
 [ext_resource type="Texture2D" uid="uid://botvoe71gvtw8" path="res://ui/ikon/ikon_tambah_objek_bentuk.svg" id="6_f1y01"]
@@ -15,6 +17,8 @@ bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odwir"]
 bg_color = Color(0.721569, 0.721569, 0.721569, 1)
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_mmbqk"]
 
 [sub_resource type="Environment" id="Environment_n1bd0"]
 background_mode = 1
@@ -334,6 +338,23 @@ layout_mode = 2
 icon = ExtResource("2_681b2")
 autowrap_trim_flags = 0
 clip_text = true
+icon_alignment = 1
+
+[node name="move_selected_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1696318087]
+visible = false
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_mmbqk")
+icon = ExtResource("3_wmcly")
+icon_alignment = 1
+
+[node name="scale_selected_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1919628493]
+visible = false
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_mmbqk")
+icon = ExtResource("4_e465q")
 icon_alignment = 1
 
 [node name="face_select_tool_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000002]
