@@ -92,6 +92,8 @@ func _ready() -> void:
 	$wajah/depan.add_to_group("wajah")
 	$wajah/belakang.add_to_group("wajah")
 	
+	# FIXME : buat tiap mesh pada wajah menjadi unik, agar materialnya tidak duplikat satu sama lain
+	
 	$wajah/kiri.mesh.center_offset.x = 0.0001
 	$wajah/kanan.mesh.center_offset.x = -0.0001
 	$wajah/depan.mesh.center_offset.z = 0.0001
