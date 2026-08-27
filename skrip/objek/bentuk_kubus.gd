@@ -10,6 +10,7 @@ enum JENIS_BENTUK {
 @export var ukuran : Vector3 = Vector3(1.0, 1.0, 1.0) :
 	set(ukuran_baru):
 		$fisik/bentuk_fisik.shape.size = ukuran_baru
+		$bentuk_kerangka.mesh.size = ukuran_baru
 		
 		$wajah/kiri.position.x = -(ukuran_baru.x / 2)
 		$wajah/kanan.position.x = ukuran_baru.x / 2
@@ -105,5 +106,17 @@ func _ready() -> void:
 	$wajah/depan.mesh.center_offset.z = 0.0001
 	$wajah/belakang.mesh.center_offset.z = -0.0001
 
+	var warna_random = Color.from_hsv(randf(), 0.8, randf_range(0.59, 1.0))
+	$bentuk_kerangka.mesh = $bentuk_kerangka.mesh.duplicate()
+	$bentuk_kerangka.mesh.material = $bentuk_kerangka.mesh.material.duplicate()
+	$bentuk_kerangka.mesh.material.set_shader_parameter("wire_color", warna_random)
+
 func dapatkan_wajah(indeks : int) -> MeshInstance3D:
 	return get_node("wajah/" + wajah[indeks])
+
+func tampilkan_di_viewport(tampil : bool) -> void:
+	for bentuk_wajah in $wajah.get_children():
+		bentuk_wajah.set_layer_mask_value(16, tampil)
+		bentuk_wajah.set_layer_mask_value(17, tampil)
+		bentuk_wajah.set_layer_mask_value(18, tampil)
+	$bentuk_kerangka.visible = !tampil

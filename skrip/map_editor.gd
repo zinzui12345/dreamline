@@ -141,7 +141,7 @@ func _ketika_ukuran_tampilan_diubah() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.y / 2
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.y / 2
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer/grid_atas.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.size)
-	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/grid_depan.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.size)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2/CanvasLayer/grid_depan.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.size)
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer/grid_kanan.material.set_shader_parameter("resolution", $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.size)
 	_cek_ukuran_kanvas = $tata_letak_vertikal/tata_letak/kanvas.size
 
@@ -154,9 +154,9 @@ func _ketika_viewport_ditransformasi() -> void:
 	
 	var zoom_depan : float = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.size
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.position.z = zoom_depan
-	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/grid_depan.material.set_shader_parameter("transform", Vector2($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position.x / zoom_depan, -($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position.y / zoom_depan)))
-	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/grid_depan.material.set_shader_parameter("zoom", jumlah_kisi_kisi * $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.position.z)
-	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer/nilai_zoom.text = str(zoom_depan / 2)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2/CanvasLayer/grid_depan.material.set_shader_parameter("transform", Vector2($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position.x / zoom_depan, -($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position.y / zoom_depan)))
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2/CanvasLayer/grid_depan.material.set_shader_parameter("zoom", jumlah_kisi_kisi * $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat.position.z)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2/CanvasLayer/nilai_zoom.text = str(zoom_depan / 2)
 	
 	var zoom_kanan : float = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat.size
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat.position.x = zoom_kanan
@@ -178,7 +178,10 @@ func _input(event: InputEvent) -> void:
 			if tool_aktif == "select" or tool_aktif == "face_select":
 				var objek_yang_diketahui = _deteksi_objek_dari_klik(event.position)
 				if objek_yang_diketahui:
+					if objek_terpilih != null:
+						objek_terpilih.tampilkan_di_viewport(false)
 					objek_terpilih = objek_yang_diketahui
+					objek_terpilih.tampilkan_di_viewport(true)
 					if tool_aktif == "select":
 						indeks_face_terpilih = -1 # Reset face selection saat tool select
 					# Indeks face sudah diatur di _pilih_objek_dari_viewport jika tool_aktif == "face_select"
@@ -586,6 +589,8 @@ func _perbarui_tampilan_alat_aktif() -> void:
 		$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.visible = false
 
 func _clear_selection() -> void:
+	if objek_terpilih != null:
+		objek_terpilih.tampilkan_di_viewport(false)
 	objek_terpilih = null
 	indeks_face_terpilih = -1
 	handles.visible = false
@@ -594,9 +599,16 @@ func _clear_selection() -> void:
 
 func _ketika_menambah_kubus() -> void:
 	var kubus = load("res://model/kubus.scn").instantiate()
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(kubus)
 	kubus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
+	kubus.global_position.x = snappedf(kubus.global_position.x, interval_snap)
+	kubus.global_position.y = snappedf(kubus.global_position.y, interval_snap)
+	kubus.global_position.z = snappedf(kubus.global_position.z, interval_snap)
+	if objek_terpilih != null:
+		objek_terpilih.tampilkan_di_viewport(false)
 	objek_terpilih = kubus
+	objek_terpilih.tampilkan_di_viewport(true)
 	indeks_face_terpilih = -1
 	_perbarui_tampilan_alat_aktif()
 	_perbarui_handles()
