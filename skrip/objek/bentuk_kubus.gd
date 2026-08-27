@@ -91,6 +91,11 @@ func _ready() -> void:
 	$wajah/kanan.add_to_group("wajah")
 	$wajah/depan.add_to_group("wajah")
 	$wajah/belakang.add_to_group("wajah")
+	
+	$wajah/kiri.mesh.center_offset.x = 0.0001
+	$wajah/kanan.mesh.center_offset.x = -0.0001
+	$wajah/depan.mesh.center_offset.z = 0.0001
+	$wajah/belakang.mesh.center_offset.z = -0.0001
 
 func dapatkan_wajah(indeks : int) -> MeshInstance3D:
 	return get_node("wajah/" + wajah[indeks])

@@ -4,6 +4,7 @@ extends Control
 var _cek_ukuran_kanvas : Vector2
 
 # TODO :
+# Save & Load Design
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
 
