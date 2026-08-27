@@ -4,6 +4,7 @@ extends Control
 var _cek_ukuran_kanvas : Vector2
 
 # TODO :
+# Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
 
 # Seleksi dan transformasi
@@ -111,8 +112,10 @@ func _ready() -> void:
 	face_highlight_marker.mesh = highlight_box
 	var highlight_material = StandardMaterial3D.new()
 	highlight_material.albedo_color = Color(1, 1, 0, 0.7)
+	highlight_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	highlight_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	highlight_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	highlight_material.disable_receive_shadows = true
 	face_highlight_marker.material_override = highlight_material
 	face_highlight_marker.visible = false
 	add_child(face_highlight_marker)
@@ -392,6 +395,7 @@ func _ketika_memilih_material() -> void:
 	$dialog_buka_file.title = "Pilih Material"
 	$dialog_buka_file.filters = ["*.material", "*.tres"]
 	$dialog_buka_file.access = FileDialog.ACCESS_FILESYSTEM
+	$dialog_buka_file.current_dir = "material"
 	$dialog_buka_file.connect("file_selected", self._on_file_selected)
 	$dialog_buka_file.show()
 
@@ -413,6 +417,7 @@ func _highlight_face_seleksi() -> void:
 		var wajah_yang_dipilih = objek_terpilih.dapatkan_wajah(indeks_face_terpilih)
 		if wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
 			face_highlight_marker.global_transform.origin = wajah_yang_dipilih.global_transform.origin
+			face_highlight_marker.global_rotation = wajah_yang_dipilih.global_rotation
 			face_highlight_marker.mesh.size = wajah_yang_dipilih.mesh.size
 			face_highlight_marker.mesh.orientation = wajah_yang_dipilih.mesh.orientation
 			face_highlight_marker.mesh.flip_faces = wajah_yang_dipilih.mesh.flip_faces

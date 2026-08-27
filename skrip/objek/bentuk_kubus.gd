@@ -48,8 +48,8 @@ enum JENIS_BENTUK {
 		$wajah/bawah.atur_skala_material(Vector2(ukuran_baru.x, ukuran_baru.z))
 		$wajah/depan.atur_skala_material(Vector2(ukuran_baru.x, ukuran_baru.y))
 		$wajah/belakang.atur_skala_material(Vector2(ukuran_baru.x, ukuran_baru.y))
-		# FIXME : balik posisi wajah depan & belakang secara vertikal
-		# FIXME : tambah pengaturan skala wajah kiri & kanan
+		$wajah/kiri.atur_skala_material(Vector2(ukuran_baru.z, ukuran_baru.y))
+		$wajah/kanan.atur_skala_material(Vector2(ukuran_baru.z, ukuran_baru.y))
 		
 		ukuran = ukuran_baru
 @export var dapat_dipilih : bool = true :
