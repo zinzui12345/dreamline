@@ -123,6 +123,15 @@ uv1_scale = Vector3(7, 7, 1)
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_b3t84"]
 points = PackedVector3Array(-7, 0, -7, -7, 0, 7, 7, 0, -7, 7, 0, 7)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uvcr3"]
+shader = ExtResource("3_b3t84")
+shader_parameter/resolution = Vector2(396, 267)
+shader_parameter/line_color = Color(0.28494456, 0.41041827, 0.65504736, 1)
+shader_parameter/transform = Vector2(0, 0)
+shader_parameter/zoom = 8.0000001043084
+shader_parameter/thickness = 1.0000000149012
+shader_parameter/brightness = 1.0000000149012
+
 [sub_resource type="GDScript" id="GDScript_ih230"]
 resource_name = "pengamat_viewport_atas"
 script/source = "extends Camera3D
@@ -178,10 +187,10 @@ func _process(delta):
 		emit_signal(\"bergerak\")
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_uvcr3"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ih230"]
 shader = ExtResource("3_b3t84")
 shader_parameter/resolution = Vector2(396, 267)
-shader_parameter/line_color = Color(0.28494456, 0.41041827, 0.65504736, 1)
+shader_parameter/line_color = Color(0, 0.54901963, 0, 1)
 shader_parameter/transform = Vector2(0, 0)
 shader_parameter/zoom = 8.0000001043084
 shader_parameter/thickness = 1.0000000149012
@@ -241,15 +250,6 @@ func _process(delta):
 		
 		emit_signal(\"bergerak\")
 "
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ih230"]
-shader = ExtResource("3_b3t84")
-shader_parameter/resolution = Vector2(396, 267)
-shader_parameter/line_color = Color(0, 0.54901963, 0, 1)
-shader_parameter/transform = Vector2(0, 0)
-shader_parameter/zoom = 8.0000001043084
-shader_parameter/thickness = 1.0000000149012
-shader_parameter/brightness = 1.0000000149012
 
 [sub_resource type="Environment" id="Environment_b3t84"]
 background_mode = 1
@@ -429,7 +429,9 @@ stretch = true
 
 [node name="SubViewport2" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan" unique_id=601202789]
 transparent_bg = true
+handle_input_locally = false
 size = Vector2i(404, 259)
+render_target_update_mode = 4
 
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2" unique_id=917675598]
 
@@ -451,27 +453,6 @@ grow_vertical = 2
 mouse_filter = 2
 script = SubResource("GDScript_ua5yk")
 map_editor = NodePath("../../../../../../../..")
-
-[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2/CanvasLayer" unique_id=1480737718]
-offset_left = 5.0
-offset_right = 45.0
-offset_bottom = 23.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-text = "1.0"
-
-[node name="sudut_pandang" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport2/CanvasLayer" unique_id=1111334485]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -45.0
-offset_right = -5.0
-offset_bottom = 23.0
-grow_horizontal = 0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-text = "depan"
-horizontal_alignment = 2
 
 [node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan" unique_id=1319299226]
 transparent_bg = true
@@ -502,6 +483,29 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ajpf8")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan/StaticBody3D" unique_id=1577686208]
 shape = SubResource("ConvexPolygonShape3D_b3t84")
 
+[node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" unique_id=1911278901]
+
+[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=1480737718]
+offset_left = 5.0
+offset_right = 45.0
+offset_bottom = 23.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "1.0"
+
+[node name="sudut_pandang" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/CanvasLayer" unique_id=1111334485]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -54.0
+offset_right = -5.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "depan"
+horizontal_alignment = 2
+
 [node name="pemisah_vertikal_b" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/kanvas" unique_id=1354430811]
 layout_mode = 2
 mouse_filter = 2
@@ -515,7 +519,32 @@ clip_contents = true
 layout_mode = 2
 stretch = true
 
+[node name="SubViewport2" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas" unique_id=2145226543]
+size = Vector2i(372, 267)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport2" unique_id=1823567659]
+
+[node name="latar" type="Panel" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport2/CanvasLayer" unique_id=817500745]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uvcr3")
+
+[node name="grid_atas" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport2/CanvasLayer" unique_id=1925744411 node_paths=PackedStringArray("map_editor")]
+material = SubResource("ShaderMaterial_uvcr3")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("GDScript_ua5yk")
+map_editor = NodePath("../../../../../../../..")
+
 [node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas" unique_id=428214386]
+transparent_bg = true
 handle_input_locally = false
 size = Vector2i(372, 267)
 render_target_update_mode = 4
@@ -545,8 +574,47 @@ shape = SubResource("ConvexPolygonShape3D_b3t84")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" unique_id=659118640]
 
-[node name="grid_atas" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=1925744411 node_paths=PackedStringArray("map_editor")]
-material = SubResource("ShaderMaterial_uvcr3")
+[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=398405366]
+offset_left = 5.0
+offset_right = 45.0
+offset_bottom = 23.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "1.0"
+
+[node name="sudut_pandang" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=1108776622]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -54.0
+offset_right = -5.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "atas"
+horizontal_alignment = 2
+
+[node name="tampilan_kanan" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b" unique_id=1537192371]
+clip_contents = true
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport2" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan" unique_id=767569039]
+size = Vector2i(372, 259)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport2" unique_id=1691267940]
+
+[node name="latar" type="Panel" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport2/CanvasLayer" unique_id=1557059121]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uvcr3")
+
+[node name="grid_kanan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport2/CanvasLayer" unique_id=1355657627 node_paths=PackedStringArray("map_editor")]
+material = SubResource("ShaderMaterial_ih230")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -556,20 +624,8 @@ mouse_filter = 2
 script = SubResource("GDScript_ua5yk")
 map_editor = NodePath("../../../../../../../..")
 
-[node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/CanvasLayer" unique_id=398405366]
-offset_left = 5.0
-offset_right = 45.0
-offset_bottom = 23.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-text = "1.0"
-
-[node name="tampilan_kanan" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b" unique_id=1537192371]
-clip_contents = true
-layout_mode = 2
-stretch = true
-
 [node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan" unique_id=207460045]
+transparent_bg = true
 handle_input_locally = false
 size = Vector2i(372, 259)
 render_target_update_mode = 4
@@ -599,17 +655,6 @@ shape = SubResource("ConvexPolygonShape3D_b3t84")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" unique_id=1745255811]
 
-[node name="grid_kanan" type="ColorRect" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1355657627 node_paths=PackedStringArray("map_editor")]
-material = SubResource("ShaderMaterial_ih230")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = SubResource("GDScript_ua5yk")
-map_editor = NodePath("../../../../../../../..")
-
 [node name="nilai_zoom" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=1117194176]
 offset_left = 5.0
 offset_right = 45.0
@@ -617,6 +662,19 @@ offset_bottom = 23.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 text = "1.0"
+
+[node name="sudut_pandang" type="Label" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer" unique_id=614963172]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -54.0
+offset_right = -5.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "kanan"
+horizontal_alignment = 2
 
 [node name="inspektur" type="Panel" parent="tata_letak_vertikal/tata_letak" unique_id=21641502]
 custom_minimum_size = Vector2(150, 0)
