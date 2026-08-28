@@ -110,6 +110,9 @@ func _ready() -> void:
 	$bentuk_kerangka.mesh = $bentuk_kerangka.mesh.duplicate()
 	$bentuk_kerangka.mesh.material = $bentuk_kerangka.mesh.material.duplicate()
 	$bentuk_kerangka.mesh.material.set_shader_parameter("wire_color", warna_random)
+	
+	# buat tiap bentuk fisik menjadi unik, agar materialnya tidak duplikat satu sama lain
+	$fisik/bentuk_fisik.shape = $fisik/bentuk_fisik.shape.duplicate()
 
 func dapatkan_wajah(indeks : int) -> MeshInstance3D:
 	return get_node("wajah/" + wajah[indeks])

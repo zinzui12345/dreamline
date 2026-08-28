@@ -300,13 +300,29 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
 metadata/_edit_use_anchors_ = true
 
-[node name="VSplitContainer" type="HSplitContainer" parent="tata_letak_vertikal/menu" unique_id=1027606660]
+[node name="HBoxContainer" type="HBoxContainer" parent="tata_letak_vertikal/menu" unique_id=250790860]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="margin_kiri" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1476244293]
+custom_maximum_size = Vector2(0, -1)
+layout_mode = 2
+
+[node name="buka_desain" type="Button" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1421363148]
+custom_minimum_size = Vector2(96, 0)
+custom_maximum_size = Vector2(96, 30)
+layout_mode = 2
+text = "Buka"
+
+[node name="simpan_desain" type="Button" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=175059829]
+custom_minimum_size = Vector2(96, 0)
+custom_maximum_size = Vector2(96, 30)
+layout_mode = 2
+text = "Simpan"
 
 [node name="tata_letak" type="HSplitContainer" parent="tata_letak_vertikal" unique_id=670929322]
 layout_mode = 2
@@ -520,7 +536,9 @@ layout_mode = 2
 stretch = true
 
 [node name="SubViewport2" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas" unique_id=2145226543]
+handle_input_locally = false
 size = Vector2i(372, 267)
+render_target_update_mode = 4
 
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport2" unique_id=1823567659]
 
@@ -601,7 +619,9 @@ layout_mode = 2
 stretch = true
 
 [node name="SubViewport2" type="SubViewport" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan" unique_id=767569039]
+handle_input_locally = false
 size = Vector2i(372, 259)
+render_target_update_mode = 4
 
 [node name="CanvasLayer" type="CanvasLayer" parent="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport2" unique_id=1691267940]
 
@@ -734,9 +754,19 @@ grow_vertical = 2
 [node name="lingkungan" type="Node3D" parent="." unique_id=1639728583]
 
 [node name="dialog_buka_file" type="FileDialog" parent="." unique_id=1947471395]
+oversampling_override = 1.0
 title = "Open a File"
 initial_position = 1
 file_mode = 0
+
+[node name="dialog_buka_desain" type="FileDialog" parent="." unique_id=1595407216]
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 1
+file_mode = 0
+display_mode = 1
+access = 1
+filters = PackedStringArray("*.dmf")
 
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
@@ -745,3 +775,4 @@ file_mode = 0
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/pilih_material" to="." method="_ketika_memilih_material"]
+[connection signal="file_selected" from="dialog_buka_desain" to="." method="_ketika_buka_file_desain"]

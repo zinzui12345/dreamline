@@ -2,9 +2,12 @@
 extends Control
 
 var _cek_ukuran_kanvas : Vector2
+var jalur_file_desain : String
 
 # TODO :
-# Save & Load Design
+# simpan & muat material setiap wajah pada bentuk
+# direktori khusus user://, mapsrc/
+# non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d)
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
 
@@ -120,6 +123,10 @@ func _ready() -> void:
 	face_highlight_marker.material_override = highlight_material
 	face_highlight_marker.visible = false
 	add_child(face_highlight_marker)
+	
+	# Hubungkan tombol menu
+	$tata_letak_vertikal/menu/HBoxContainer/buka_desain.connect("pressed", buka_desain)
+	$tata_letak_vertikal/menu/HBoxContainer/simpan_desain.connect("pressed", simpan_desain)
 	
 	# Hubungkan tombol alat
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/select_tool_button.connect("pressed", self._on_select_tool_pressed)
@@ -398,10 +405,10 @@ func _ketika_memilih_material() -> void:
 	$dialog_buka_file.filters = ["*.material", "*.tres"]
 	$dialog_buka_file.access = FileDialog.ACCESS_FILESYSTEM
 	$dialog_buka_file.current_dir = "material"
-	$dialog_buka_file.connect("file_selected", self._on_file_selected)
+	$dialog_buka_file.connect("file_selected", self._ketika_memilih_file_material)
 	$dialog_buka_file.show()
 
-func _on_file_selected(file_path: String) -> void:
+func _ketika_memilih_file_material(file_path: String) -> void:
 	var material_ = load(file_path) as Material
 	if material_ == null:
 		material_ = load(file_path) as StandardMaterial3D
@@ -599,14 +606,7 @@ func _clear_selection() -> void:
 	_clear_face_highlight()
 
 func _ketika_menambah_kubus() -> void:
-	var kubus = load("res://model/kubus.scn").instantiate()
-	var interval_snap : float = 1.0 / jumlah_kisi_kisi
-	$lingkungan.add_child(kubus)
-	kubus.global_position = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position
-	kubus.global_position.x = snappedf(kubus.global_position.x, interval_snap)
-	kubus.global_position.y = snappedf(kubus.global_position.y, interval_snap)
-	kubus.global_position.z = snappedf(kubus.global_position.z, interval_snap)
-	atur_posisi_fokus_viewport(kubus.global_position)
+	var kubus : Node3D = tambah_kubus($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position)
 	if objek_terpilih != null:
 		objek_terpilih.tampilkan_di_viewport(false)
 	objek_terpilih = kubus
@@ -622,7 +622,98 @@ func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 		if objek_objek.get("pilih_wajah") != null:
 			objek_objek.pilih_wajah = mode_face
 
+func _ketika_buka_file_desain(jalur_file : String) -> void:
+	if $dialog_buka_desain.file_mode == FileDialog.FILE_MODE_SAVE_FILE:
+		if not jalur_file.ends_with(".dmf"):
+			jalur_file += ".dmf"
+		jalur_file_desain = jalur_file
+		simpan_desain()
+	elif $dialog_buka_desain.file_mode == FileDialog.FILE_MODE_OPEN_FILE:
+		if not FileAccess.file_exists(jalur_file):
+			print("File tidak valid!")
+			return
+		var file = FileAccess.open(jalur_file, FileAccess.READ)
+		if file:
+			var data = file.get_var()
+			for objek_desain_saat_ini in $lingkungan.get_children():
+				objek_desain_saat_ini.queue_free()
+			for index_objek_desain in data:
+				var data_objek_desain : Dictionary = data[index_objek_desain]
+				match data_objek_desain.tipe:
+					"bentuk":
+						match data_objek_desain.jenis:
+							"kubus":
+								tambah_kubus(
+									data_objek_desain.posisi,
+									data_objek_desain.rotasi,
+									data_objek_desain.ukuran
+								)
+							_:
+								push_error("Jenis tidak diketahui : " + data_objek_desain.jenis)
+					_:
+						push_error("Tipe tidak diketahui : " + data_objek_desain.tipe)
+			jalur_file_desain = jalur_file
+			file.close()
+			Panku.notify("Membuka : " + jalur_file_desain)
+
+
 func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = posisi
+
+func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0)) -> Node3D:
+	var kubus : Node3D = load("res://model/kubus.scn").instantiate()
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
+	$lingkungan.add_child(kubus)
+	kubus.global_position = posisi
+	kubus.global_rotation = rotasi
+	kubus.global_position.x = snappedf(kubus.global_position.x, interval_snap)
+	kubus.global_position.y = snappedf(kubus.global_position.y, interval_snap)
+	kubus.global_position.z = snappedf(kubus.global_position.z, interval_snap)
+	kubus.ukuran = ukuran
+	kubus.tampilkan_di_viewport(false)
+	return kubus
+
+func simpan_desain() -> void:
+	if $lingkungan.get_child_count() > 0:
+		if jalur_file_desain == "":
+			$dialog_buka_desain.title = "Simpan Desain Sebagai"
+			$dialog_buka_desain.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+			$dialog_buka_desain.filters = ["*.dmf"]
+			$dialog_buka_desain.show()
+		else:
+			var file = FileAccess.open(jalur_file_desain, FileAccess.WRITE)
+			var data_desain : Dictionary
+			var jumlah_objek_desain : int = 0
+			for objek_desain in $lingkungan.get_children():
+				if objek_desain.get("tipe_bentuk") != null:
+					jumlah_objek_desain += 1
+					match objek_desain.tipe_bentuk:
+						0:
+							# Kubus
+							data_desain[jumlah_objek_desain] = {
+								"tipe"		: "bentuk",
+								"jenis"		: "kubus",
+								"posisi"	: objek_desain.global_position,
+								"rotasi"	: objek_desain.global_rotation,
+								"ukuran"	: objek_desain.ukuran
+							}
+						1:
+							# Segitiga
+							pass
+						2:
+							# Silinder
+							pass
+			if file:
+				file.store_var(data_desain)
+				file.close()
+			Panku.notify(jalur_file_desain + " disimpan.")
+	else:
+		Panku.notify("Tidak ada perubahan yang perlu disimpan")
+
+func buka_desain() -> void:
+	$dialog_buka_desain.title = "Buka Desain"
+	$dialog_buka_desain.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	$dialog_buka_desain.filters = ["*.dmf"]
+	$dialog_buka_desain.show()
