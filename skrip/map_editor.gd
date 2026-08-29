@@ -5,13 +5,22 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# highlight objek terpilih pada viewport 3d
 # non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d)
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
 
 # Seleksi dan transformasi
-var objek_terpilih : Node3D = null
+var objek_terpilih : Node3D = null :
+	set(pilih_objek):
+		if select_boundary != null:
+			if pilih_objek != null:
+				select_boundary.global_position = pilih_objek.global_position
+				if pilih_objek.get("ukuran") != null:
+					select_boundary.mesh.size = pilih_objek.ukuran + Vector3(0.001, 0.001, 0.001)
+				select_boundary.visible = true
+			elif pilih_objek == null:
+				select_boundary.visible = false
+		objek_terpilih = pilih_objek
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
 var viewport_aktif : SubViewportContainer
@@ -30,6 +39,7 @@ var handles : Node3D
 var handle_x : MeshInstance3D
 var handle_y : MeshInstance3D
 var handle_z : MeshInstance3D
+var select_boundary : MeshInstance3D
 
 # Warna handles
 var warna_x = Color(1, 0, 0)
@@ -165,6 +175,14 @@ func _ready() -> void:
 	face_highlight_marker.visible = false
 	add_child(face_highlight_marker)
 	
+	# buat marker highlight objek
+	select_boundary = MeshInstance3D.new()
+	select_boundary.name = "object_highlight_marker"
+	select_boundary.mesh = BoxMesh.new()
+	select_boundary.material_override = highlight_material
+	select_boundary.visible = false
+	add_child(select_boundary)
+	
 	# Hubungkan tombol menu
 	$tata_letak_vertikal/menu/HBoxContainer/buka_desain.connect("pressed", buka_desain)
 	$tata_letak_vertikal/menu/HBoxContainer/simpan_desain.connect("pressed", simpan_desain)
@@ -226,6 +244,8 @@ func _input(event: InputEvent) -> void:
 				if objek_yang_diketahui:
 					if objek_terpilih != null:
 						objek_terpilih.tampilkan_di_viewport(false)
+					if tool_aktif == "select" and objek_terpilih != objek_yang_diketahui:
+						atur_posisi_fokus_viewport(objek_yang_diketahui.global_position)
 					objek_terpilih = objek_yang_diketahui
 					objek_terpilih.tampilkan_di_viewport(true)
 					if tool_aktif == "select":
@@ -260,6 +280,11 @@ func _input(event: InputEvent) -> void:
 			axis_yang_digunakan = Vector3.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
 			posisi_kursor_di_viewport = Vector2.ZERO
+	
+	# auto-fokus viewport
+	if event is InputEventMouseMotion and not viewport_fokus and not sedang_meni_transformasi:
+		if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+			_cek_viewport_dari_klik(event.position)
 	
 	# Handle tombol pintasan
 	if Input.is_action_just_pressed("daftar_pemain"):
@@ -472,12 +497,15 @@ func _highlight_face_seleksi() -> void:
 			face_highlight_marker.mesh.orientation = wajah_yang_dipilih.mesh.orientation
 			face_highlight_marker.mesh.flip_faces = wajah_yang_dipilih.mesh.flip_faces
 		#print("Face terpilih: ", indeks_face_terpilih)
+		select_boundary.visible = false
 	else:
 		_clear_face_highlight()
 
 func _clear_face_highlight() -> void:
 	face_highlight_marker.visible = false
 	indeks_face_terpilih = -1
+	if objek_terpilih != null:
+		select_boundary.visible = true
 
 func _process(_delta: float) -> void:
 	if _cek_ukuran_kanvas != $tata_letak_vertikal/tata_letak/kanvas.size:
@@ -578,6 +606,11 @@ func _physics_process(_delta: float) -> void:
 						objek_terpilih.ukuran.z = skala_target
 						objek_terpilih.global_position.z = pos_target
 						_perbarui_handles()
+			
+			if select_boundary != null:
+				select_boundary.global_position = objek_terpilih.global_position
+				if objek_terpilih.get("ukuran") != null:
+					select_boundary.mesh.size = objek_terpilih.ukuran + Vector3(0.001, 0.001, 0.001)
 			
 			posisi_kursor_di_viewport = Vector2.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
@@ -899,6 +932,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 			jalur_file_desain = jalur_file
 			file.close()
 			Panku.notify("Membuka : " + jalur_file_desain)
+			_on_select_tool_pressed()
 
 
 func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
