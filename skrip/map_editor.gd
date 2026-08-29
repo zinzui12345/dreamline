@@ -5,7 +5,7 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# direktori khusus user://, mapsrc/
+# highlight objek terpilih pada viewport 3d
 # non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d)
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
@@ -889,7 +889,8 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 									data_objek_desain.posisi,
 									data_objek_desain.rotasi,
 									data_objek_desain.ukuran,
-									data_objek_desain.material
+									data_objek_desain.material,
+									false
 								)
 							_:
 								push_error("Jenis tidak diketahui : " + data_objek_desain.jenis)
@@ -905,7 +906,7 @@ func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = posisi
 
-func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0), daftar_material : Dictionary = {}) -> Node3D:
+func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0), daftar_material : Dictionary = {}, snap_posisi : bool = true) -> Node3D:
 	var kubus : Node3D = load("res://model/kubus.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(kubus)
@@ -918,18 +919,22 @@ func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 			)
 	kubus.global_position = posisi
 	kubus.global_rotation = rotasi
-	kubus.global_position.x = snappedf(kubus.global_position.x, interval_snap)
-	kubus.global_position.y = snappedf(kubus.global_position.y, interval_snap)
-	kubus.global_position.z = snappedf(kubus.global_position.z, interval_snap)
+	if snap_posisi:
+		kubus.global_position.x = snappedf(kubus.global_position.x, interval_snap)
+		kubus.global_position.y = snappedf(kubus.global_position.y, interval_snap)
+		kubus.global_position.z = snappedf(kubus.global_position.z, interval_snap)
 	kubus.ukuran = ukuran
 	kubus.tampilkan_di_viewport(false)
 	return kubus
 
 func simpan_desain() -> void:
+	if !DirAccess.dir_exists_absolute("user://mapsrc"):
+		DirAccess.make_dir_absolute("user://mapsrc")
 	if $lingkungan.get_child_count() > 0:
 		if jalur_file_desain == "":
 			$dialog_buka_desain.title = "Simpan Desain Sebagai"
 			$dialog_buka_desain.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+			$dialog_buka_desain.root_subfolder = "mapsrc"
 			$dialog_buka_desain.filters = ["*.dmf"]
 			$dialog_buka_desain.show()
 		else:
@@ -972,7 +977,10 @@ func simpan_desain() -> void:
 		Panku.notify("Tidak ada perubahan yang perlu disimpan")
 
 func buka_desain() -> void:
+	if !DirAccess.dir_exists_absolute("user://mapsrc"):
+		DirAccess.make_dir_absolute("user://mapsrc")
 	$dialog_buka_desain.title = "Buka Desain"
 	$dialog_buka_desain.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	$dialog_buka_desain.root_subfolder = "mapsrc"
 	$dialog_buka_desain.filters = ["*.dmf"]
 	$dialog_buka_desain.show()
