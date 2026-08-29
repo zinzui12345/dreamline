@@ -5,7 +5,7 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d)
+# non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d, supaya tetap bisa select objek lain/ganti seleksi)
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
 
@@ -241,35 +241,29 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if tool_aktif == "select" or tool_aktif == "face_select":
 				var objek_yang_diketahui = _deteksi_objek_dari_klik(event.position)
-				if objek_yang_diketahui:
-					if objek_terpilih != null:
-						objek_terpilih.tampilkan_di_viewport(false)
-					if tool_aktif == "select" and objek_terpilih != objek_yang_diketahui:
-						atur_posisi_fokus_viewport(objek_yang_diketahui.global_position)
-					objek_terpilih = objek_yang_diketahui
-					objek_terpilih.tampilkan_di_viewport(true)
-					if tool_aktif == "select":
-						indeks_face_terpilih = -1 # Reset face selection saat tool select
-					# Indeks face sudah diatur di _pilih_objek_dari_viewport jika tool_aktif == "face_select"
-					_perbarui_handles()
-					handles.visible = true
-					_highlight_face_seleksi()
-				elif _cek_viewport_dari_klik(event.position):
-					_clear_face_highlight()
-					_clear_selection()
+				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d:
+					if objek_yang_diketahui:
+						if objek_terpilih != null:
+							objek_terpilih.tampilkan_di_viewport(false)
+						if tool_aktif == "select" and objek_terpilih != objek_yang_diketahui:
+							atur_posisi_fokus_viewport(objek_yang_diketahui.global_position)
+							_ketika_viewport_ditransformasi()
+						objek_terpilih = objek_yang_diketahui
+						objek_terpilih.tampilkan_di_viewport(true)
+						if tool_aktif == "select":
+							# Indeks face sudah diatur di _pilih_objek_dari_viewport jika tool_aktif == "face_select"
+							indeks_face_terpilih = -1 # Reset face selection saat tool select
+						_perbarui_handles()
+						handles.visible = true
+						_highlight_face_seleksi()
+					elif _cek_viewport_dari_klik(event.position):
+						_clear_face_highlight()
+						_clear_selection()
 			elif tool_aktif == "knife":
 				# TODO: Logika untuk knife tool (misalnya memulai gambar garis)
 				print("Knife tool diklik.")
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_cek_viewport_dari_klik(event.position)
-		#elif event.button_index == MOUSE_BUTTON_WHEEL_UP or _event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			## Scroll mouse untuk mengganti mode transformasi hanya jika tool_aktif adalah "select"
-			#if tool_aktif == "select" and objek_terpilih:
-				#if _event.button_index == MOUSE_BUTTON_WHEEL_UP:
-					#mode_transformasi = _mode_berikutnya(mode_transformasi)
-				#else:
-					#mode_transformasi = _mode_sebelumnya(mode_transformasi)
-				#_perbarui_handles()
 
 	# Handle drag untuk transformasi
 	if event is InputEventMouseButton and not event.pressed:
