@@ -117,6 +117,9 @@ func _ready() -> void:
 func dapatkan_wajah(indeks : int) -> MeshInstance3D:
 	return get_node("wajah/" + wajah[indeks])
 
+func dapatkan_node_wajah(nama : String) -> MeshInstance3D:
+	return get_node("wajah/" + nama)
+
 func tampilkan_di_viewport(tampil : bool) -> void:
 	for bentuk_wajah in $wajah.get_children():
 		bentuk_wajah.set_layer_mask_value(16, tampil)

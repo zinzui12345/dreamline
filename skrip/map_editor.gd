@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# simpan & muat material setiap wajah pada bentuk
 # direktori khusus user://, mapsrc/
 # non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d)
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
@@ -42,6 +41,48 @@ var material_terpilih : Material = null
 var button_material : Button = null
 var face_highlight_marker : MeshInstance3D = null
 var posisi_face_terpilih : Vector3 = Vector3.ZERO
+
+# Properti Bawaan Resource Material
+const PROP_WARNA_MATERIAL = [
+	"albedo_color", "backlight", "emission", "subsurf_scatter_transmittance_color"
+]
+const PROP_VEKTOR_MATERIAL = [
+	"uv1_offset", "uv1_scale", "uv2_offset", "uv2_scale"
+]
+const PROP_TEKSTUR_MATERIAL = [
+	"albedo_texture", "anisotropy_flowmap", "ao_texture", "backlight_texture", 
+	"bent_normal_texture", "clearcoat_texture", "detail_albedo", "detail_mask", 
+	"detail_normal", "emission_texture", "heightmap_texture", "metallic_texture", 
+	"normal_texture", "orm_texture", "refraction_texture", "rim_texture", 
+	"roughness_texture", "subsurf_scatter_texture", "subsurf_scatter_transmittance_texture"
+]
+const PROP_STANDAR_MATERIAL = [
+	"albedo_texture_force_srgb", "albedo_texture_msdf", "alpha_antialiasing_edge", 
+	"alpha_antialiasing_mode", "alpha_hash_scale", "alpha_scissor_threshold", "anisotropy", 
+	"anisotropy_enabled", "ao_enabled", "ao_light_affect", "ao_on_uv2", "ao_texture_channel", 
+	"backlight_enabled", "bent_normal_enabled", "billboard_keep_scale", "billboard_mode", 
+	"blend_mode", "clearcoat", "clearcoat_enabled", "clearcoat_roughness", "cull_mode", 
+	"depth_draw_mode", "detail_blend_mode", "detail_enabled", "detail_uv_layer", "diffuse_mode", 
+	"disable_ambient_light", "disable_fog", "disable_receive_shadows", "disable_specular_occlusion", 
+	"distance_fade_max_distance", "distance_fade_min_distance", "distance_fade_mode", 
+	"emission_enabled", "emission_energy_multiplier", "emission_intensity", "emission_on_uv2", 
+	"emission_operator", "fixed_size", "fov_override", "grow", "grow_amount", 
+	"heightmap_deep_parallax", "heightmap_enabled", "heightmap_flip_binormal", "heightmap_flip_tangent", 
+	"heightmap_flip_texture", "heightmap_max_layers", "heightmap_min_layers", "heightmap_scale", 
+	"metallic", "metallic_specular", "metallic_texture_channel", "msdf_outline_size", 
+	"msdf_pixel_range", "no_depth_test", "normal_enabled", "normal_scale", 
+	"particles_anim_h_frames", "particles_anim_loop", "particles_anim_v_frames", "point_size", 
+	"proximity_fade_distance", "proximity_fade_enabled", "refraction_enabled", "refraction_scale", 
+	"refraction_texture_channel", "rim", "rim_enabled", "rim_tint", "roughness", 
+	"roughness_texture_channel", "shading_mode", "shadow_to_opacity", "specular_mode", 
+	"subsurf_scatter_enabled", "subsurf_scatter_skin_mode", "subsurf_scatter_strength", 
+	"subsurf_scatter_transmittance_boost", "subsurf_scatter_transmittance_depth", 
+	"subsurf_scatter_transmittance_enabled", "texture_filter", "texture_repeat", "transparency", 
+	"use_fov_override", "use_particle_trails", "use_point_size", "use_z_clip_scale", 
+	"uv1_triplanar", "uv1_triplanar_sharpness", "uv1_world_triplanar", "uv2_triplanar", 
+	"uv2_triplanar_sharpness", "uv2_world_triplanar", "vertex_color_is_srgb", 
+	"vertex_color_use_as_albedo", "z_clip_scale"
+]
 
 func _ready() -> void:
 	# Buat node untuk handles
@@ -609,10 +650,10 @@ func _ketika_menambah_kubus() -> void:
 	var kubus : Node3D = tambah_kubus($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position)
 	if objek_terpilih != null:
 		objek_terpilih.tampilkan_di_viewport(false)
+	_on_select_tool_pressed()
 	objek_terpilih = kubus
 	objek_terpilih.tampilkan_di_viewport(true)
 	indeks_face_terpilih = -1
-	_perbarui_tampilan_alat_aktif()
 	_perbarui_handles()
 	handles.visible = true
 	print("Kubus ditambahkan dan dipilih: ", kubus.name)
@@ -621,6 +662,207 @@ func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 	for objek_objek in $lingkungan.get_children():
 		if objek_objek.get("pilih_wajah") != null:
 			objek_objek.pilih_wajah = mode_face
+
+func _konversi_material_menjadi_data(objek_material : StandardMaterial3D) -> Dictionary:
+	"""
+		Perlu Konversi Manual:
+			Texture2D	: cukup gunakan path
+			Color
+			Vector3		: ubah menjadi array
+		
+		* Hanya tambahkan parameter jika nilainya berbeda dengan nilai baku
+		* Abaikan parameter eksperimental
+		* Untuk Tipe Data Texture2D, gunakan path file tekturnya
+		* Untuk Tipe Data Color, gunakan string hex-nya, misal: "#FFBBAADD"
+		
+		Daftar Parameter:
+			Tipe Data		|	Nama Variabel			|	Nilai Baku						| Status
+			Color				albedo_color				[baku: Color(1, 1, 1, 1)]
+			Texture2D			albedo_texture
+			bool				albedo_texture_force_srgb	[baku: false]
+			bool				albedo_texture_msdf			[baku: false]
+			float				alpha_antialiasing_edge
+			AlphaAntiAliasing	alpha_antialiasing_mode
+			float				alpha_hash_scale
+			float				alpha_scissor_threshold
+			float				anisotropy					[baku: 0.0]
+			bool				anisotropy_enabled			[baku: false]
+			Texture2D			anisotropy_flowmap
+			bool				ao_enabled					[baku: false]
+			float				ao_light_affect				[baku: 0.0]
+			bool				ao_on_uv2					[baku: false]
+			Texture2D			ao_texture
+			TextureChannel		ao_texture_channel			[baku: 0]
+			Color				backlight					[baku: Color(0, 0, 0, 1)]
+			bool				backlight_enabled			[baku: false]
+			Texture2D			backlight_texture
+			bool				bent_normal_enabled			[baku: false]
+			Texture2D			bent_normal_texture
+			bool				billboard_keep_scale		[baku: false]
+			BillboardMode		billboard_mode				[baku: 0]
+			BlendMode			blend_mode					[baku: 0]
+			float				clearcoat					[baku: 1.0]
+			bool				clearcoat_enabled			[baku: false]
+			float				clearcoat_roughness			[baku: 0.5]
+			Texture2D			clearcoat_texture
+			CullMode			cull_mode					[baku: 0]
+			DepthDrawMode		depth_draw_mode				[baku: 0]
+			DepthTest			depth_test					[baku: 0]  						Eksperimental
+			Texture2D			detail_albedo
+			BlendMode			detail_blend_mode			[baku: 0]
+			bool				detail_enabled				[baku: false]
+			Texture2D			detail_mask
+			Texture2D			detail_normal
+			DetailUV			detail_uv_layer				[baku: 0]
+			DiffuseMode			diffuse_mode				[baku: 0]
+			bool				disable_ambient_light		[baku: false]
+			bool				disable_fog					[baku: false]
+			bool				disable_receive_shadows		[baku: false]
+			bool				disable_specular_occlusion	[baku: false]
+			float				distance_fade_max_distance	[baku: 10.0]
+			float				distance_fade_min_distance	[baku: 0.0]
+			DistanceFadeMode	distance_fade_mode			[baku: 0]
+			Color				emission					[baku: Color(0, 0, 0, 1)]
+			bool				emission_enabled			[baku: false]
+			float				emission_energy_multiplier	[baku: 1.0]
+			float				emission_intensity
+			bool				emission_on_uv2				[baku: false]
+			EmissionOperator	emission_operator			[baku: 0]
+			Texture2D			emission_texture
+			bool				fixed_size					[baku: false]
+			float				fov_override				[baku: 75.0]
+			bool				grow						[baku: false]
+			float				grow_amount					[baku: 0.0]
+			bool				heightmap_deep_parallax		[baku: false]
+			bool				heightmap_enabled			[baku: false]
+			bool				heightmap_flip_binormal		[baku: false]
+			bool				heightmap_flip_tangent		[baku: false]
+			bool				heightmap_flip_texture		[baku: false]
+			int					heightmap_max_layers
+			int					heightmap_min_layers
+			float				heightmap_scale				[baku: 5.0]
+			Texture2D			heightmap_texture
+			float				metallic					[baku: 0.0]
+			float				metallic_specular			[baku: 0.5]
+			Texture2D			metallic_texture
+			TextureChannel		metallic_texture_channel	[baku: 0]
+			float				msdf_outline_size			[baku: 0.0]
+			float				msdf_pixel_range			[baku: 4.0]
+			bool				no_depth_test				[baku: false]
+			bool				normal_enabled				[baku: false]
+			float				normal_scale				[baku: 1.0]
+			Texture2D			normal_texture
+			Texture2D			orm_texture
+			int					particles_anim_h_frames
+			bool				particles_anim_loop
+			int					particles_anim_v_frames
+			float				point_size					[baku: 1.0]
+			float				proximity_fade_distance		[baku: 1.0]
+			bool				proximity_fade_enabled		[baku: false]
+			bool				refraction_enabled			[baku: false]
+			float				refraction_scale			[baku: 0.05]
+			Texture2D			refraction_texture
+			TextureChannel		refraction_texture_channel	[baku: 0]
+			float				rim							[baku: 1.0]
+			bool				rim_enabled					[baku: false]
+			Texture2D			rim_texture
+			float				rim_tint					[baku: 0.5]
+			float				roughness					[baku: 1.0]
+			Texture2D			roughness_texture
+			TextureChannel		roughness_texture_channel	[baku: 0]
+			ShadingMode			shading_mode				[baku: 1]
+			bool				shadow_to_opacity			[baku: false]
+			SpecularMode		specular_mode				[baku: 0]
+			Color				stencil_color				[baku: Color(0, 0, 0, 1)]		Eksperimental
+			StencilCompare		stencil_compare				[baku: 0]						Eksperimental
+			int					stencil_flags				[baku: 0]						Eksperimental
+			StencilMode			stencil_mode				[baku: 0]						Eksperimental
+			float				stencil_outline_thickness	[baku: 0.01]					Eksperimental
+			int					stencil_reference			[baku: 1]						Eksperimental
+			bool				subsurf_scatter_enabled		[baku: false]
+			bool				subsurf_scatter_skin_mode	[baku: false]
+			float				subsurf_scatter_strength	[baku: 0.0]
+			Texture2D			subsurf_scatter_texture
+			float		subsurf_scatter_transmittance_boost	[baku: 0.0]
+			Color		subsurf_scatter_transmittance_color	[baku: Color(1, 1, 1, 1)]
+			float		subsurf_scatter_transmittance_depth	[baku: 0.1]
+			bool	subsurf_scatter_transmittance_enabled	[baku: false]
+			Texture2D	subsurf_scatter_transmittance_texture
+			TextureFilter		texture_filter				[baku: 3]
+			bool				texture_repeat				[baku: true]
+			Transparency		transparency				[baku: 0]
+			bool				use_fov_override			[baku: false]
+			bool				use_particle_trails			[baku: false]
+			bool				use_point_size				[baku: false]
+			bool				use_z_clip_scale			[baku: false]
+			Vector3				uv1_offset					[baku: Vector3(0, 0, 0)]
+			Vector3				uv1_scale					[baku: Vector3(1, 1, 1)]
+			bool				uv1_triplanar				[baku: false]
+			float				uv1_triplanar_sharpness		[baku: 1.0]
+			bool				uv1_world_triplanar			[baku: false]
+			Vector3				uv2_offset					[baku: Vector3(0, 0, 0)]
+			Vector3				uv2_scale					[baku: Vector3(1, 1, 1)]
+			bool				uv2_triplanar				[baku: false]
+			float				uv2_triplanar_sharpness		[baku: 1.0]
+			bool				uv2_world_triplanar			[baku: false]
+			bool				vertex_color_is_srgb		[baku: false]
+			bool				vertex_color_use_as_albedo	[baku: false]
+			float				z_clip_scale				[baku: 1.0]
+	"""
+	var data: Dictionary = {}
+	
+	# Membuat material kosong sekadar untuk melihat nilai baku aslinya
+	var baku = StandardMaterial3D.new()
+
+	# 1. Konversi Parameter Standar
+	for prop in PROP_STANDAR_MATERIAL:
+		var nilai = objek_material.get(prop)
+		if nilai != baku.get(prop):
+			data[prop] = nilai
+			
+	# 2. Konversi Warna (Color -> String Hex)
+	for prop in PROP_WARNA_MATERIAL:
+		var nilai = objek_material.get(prop)
+		if nilai != baku.get(prop):
+			# to_html(true) mengembalikan format RRGGBBAA (opsi true agar Alpha ikut)
+			data[prop] = "#" + nilai.to_html(true)
+			
+	# 3. Konversi Vektor (Vector3 -> Array)
+	for prop in PROP_VEKTOR_MATERIAL:
+		var nilai = objek_material.get(prop)
+		if nilai != baku.get(prop):
+			data[prop] = [nilai.x, nilai.y, nilai.z]
+			
+	# 4. Konversi Tekstur (Texture2D -> Path String)
+	for prop in PROP_TEKSTUR_MATERIAL:
+		var nilai = objek_material.get(prop)
+		# Pastikan tekstur tidak null dan memiliki path file lokal
+		if nilai != null and nilai is Texture2D and nilai.resource_path != "":
+			data[prop] = nilai.resource_path
+	
+	return data
+func _konversi_data_material_menjadi_material(data_material: Dictionary) -> StandardMaterial3D:
+	var hasil_material = StandardMaterial3D.new()
+	
+	for prop in data_material.keys():
+		var nilai = data_material[prop]
+		
+		if prop in PROP_STANDAR_MATERIAL:
+			hasil_material.set(prop, nilai)
+			
+		elif prop in PROP_WARNA_MATERIAL:
+			# Godot otomatis mengubah "#RRGGBBAA" kembali menjadi objek Color
+			hasil_material.set(prop, Color(nilai))
+			
+		elif prop in PROP_VEKTOR_MATERIAL:
+			hasil_material.set(prop, Vector3(nilai[0], nilai[1], nilai[2]))
+			
+		elif prop in PROP_TEKSTUR_MATERIAL:
+			# Pastikan file tekstur benar-benar ada di komputer klien/penerima sebelum di-load
+			if ResourceLoader.exists(nilai):
+				hasil_material.set(prop, load(nilai))
+	
+	return hasil_material
 
 func _ketika_buka_file_desain(jalur_file : String) -> void:
 	if $dialog_buka_desain.file_mode == FileDialog.FILE_MODE_SAVE_FILE:
@@ -646,7 +888,8 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 								tambah_kubus(
 									data_objek_desain.posisi,
 									data_objek_desain.rotasi,
-									data_objek_desain.ukuran
+									data_objek_desain.ukuran,
+									data_objek_desain.material
 								)
 							_:
 								push_error("Jenis tidak diketahui : " + data_objek_desain.jenis)
@@ -662,10 +905,17 @@ func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = posisi
 
-func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0)) -> Node3D:
+func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0), daftar_material : Dictionary = {}) -> Node3D:
 	var kubus : Node3D = load("res://model/kubus.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(kubus)
+	for indeks_data_material in daftar_material.keys():
+		var data_material = daftar_material[indeks_data_material]
+		if data_material != null:
+			var wajah_kubus = kubus.dapatkan_node_wajah(indeks_data_material)
+			wajah_kubus.atur_material(
+				_konversi_data_material_menjadi_material(data_material)
+			)
 	kubus.global_position = posisi
 	kubus.global_rotation = rotasi
 	kubus.global_position.x = snappedf(kubus.global_position.x, interval_snap)
@@ -692,12 +942,21 @@ func simpan_desain() -> void:
 					match objek_desain.tipe_bentuk:
 						0:
 							# Kubus
+							var data_material_objek_desain : Dictionary
+							for id_wajah in objek_desain.wajah.size():
+								var wajah_objek_desain = objek_desain.dapatkan_wajah(id_wajah)
+								if wajah_objek_desain.get("indeks_wajah") != null:
+									var resource_material : Material = wajah_objek_desain.dapatkan_material()
+									var nama_material : String = objek_desain.wajah[id_wajah]
+									if resource_material != null:
+										data_material_objek_desain[nama_material] = _konversi_material_menjadi_data(resource_material)
 							data_desain[jumlah_objek_desain] = {
 								"tipe"		: "bentuk",
 								"jenis"		: "kubus",
 								"posisi"	: objek_desain.global_position,
 								"rotasi"	: objek_desain.global_rotation,
-								"ukuran"	: objek_desain.ukuran
+								"ukuran"	: objek_desain.ukuran,
+								"material"	: data_material_objek_desain
 							}
 						1:
 							# Segitiga
