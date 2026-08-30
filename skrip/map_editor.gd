@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# non-aktifkan fisik objek lain yang tidak dipilih (hanya pada viewport 2d, supaya tetap bisa select objek lain/ganti seleksi)
 # Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
 # Fungsikan tool Knife
 
@@ -116,6 +115,8 @@ func _ready() -> void:
 	bulat.radius = 0.15
 	bentuk_tabrakan.shape = bulat
 	badan_handle.add_child(bentuk_tabrakan)
+	badan_handle.set_collision_layer_value(1, false)
+	badan_handle.set_collision_layer_value(6, true)
 	
 	handle_x = MeshInstance3D.new()
 	handle_x.mesh = sphere_mesh
@@ -366,7 +367,14 @@ func _pilih_objek_dari_viewport(kamera: Camera3D, posisi_viewport: Vector2) -> N
 	var physics_state = kamera.get_world_3d().direct_space_state
 	var dari = kamera.project_ray_origin(posisi_viewport)
 	var arah = kamera.project_ray_normal(posisi_viewport)
-	var hasil = physics_state.intersect_ray(PhysicsRayQueryParameters3D.create(dari, dari + arah * 10000))
+	var deteksi : PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(dari, dari + arah * 10000)
+	if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d:
+		# benda_statis(1)
+		deteksi.set_collision_mask(0b00000000_00000000_00000000_00000001)
+	else:
+		# hanya_raycast(6)
+		deteksi.set_collision_mask(0b00000000_00000000_00000000_00100000)
+	var hasil = physics_state.intersect_ray(deteksi)
 	if hasil:
 		var objek_ = hasil["collider"] as Node3D
 		# Jika collider adalah StaticBody3D, ambil parentnya (MeshInstance3D)
