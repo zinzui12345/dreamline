@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128]
 # fix skala desimal objek ketika mengatur skala setelah memperbesar ukuran grid
 # Fungsikan tool Knife
 
@@ -306,6 +305,10 @@ func _input(event: InputEvent) -> void:
 			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = true
 			viewport_fokus = false
 		_ketika_ukuran_tampilan_diubah()
+	if Input.is_action_just_pressed("perbesar_kisi"):
+		_ketika_perbesar_ukuran_kisi()
+	if Input.is_action_just_pressed("perkecil_kisi"):
+		_ketika_perkecil_ukuran_kisi()
 
 func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 	# Periksa setiap viewport untuk melihat klik terjadi di mana
