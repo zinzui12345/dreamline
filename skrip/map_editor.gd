@@ -5,7 +5,8 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# Opsi & Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128] 
+# Shortcut ubah ukuran grid (x^2) : [1, 2, 4, 8, 16, 32, 64, 128]
+# fix skala desimal objek ketika mengatur skala setelah memperbesar ukuran grid
 # Fungsikan tool Knife
 
 # Seleksi dan transformasi
@@ -187,6 +188,8 @@ func _ready() -> void:
 	# Hubungkan tombol menu
 	$tata_letak_vertikal/menu/HBoxContainer/buka_desain.connect("pressed", buka_desain)
 	$tata_letak_vertikal/menu/HBoxContainer/simpan_desain.connect("pressed", simpan_desain)
+	$tata_letak_vertikal/menu/HBoxContainer/perbesar_kisi.connect("pressed", _ketika_perbesar_ukuran_kisi)
+	$tata_letak_vertikal/menu/HBoxContainer/perkecil_kisi.connect("pressed", _ketika_perkecil_ukuran_kisi)
 	
 	# Hubungkan tombol alat
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/select_tool_button.connect("pressed", self._on_select_tool_pressed)
@@ -616,6 +619,19 @@ func _physics_process(_delta: float) -> void:
 			
 			posisi_kursor_di_viewport = Vector2.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
+
+func _ketika_perbesar_ukuran_kisi() -> void:
+	"""
+		2 : 50 cm
+		4 : 25 cm
+	"""
+	if jumlah_kisi_kisi > 2:
+		jumlah_kisi_kisi = jumlah_kisi_kisi * 0.5
+	$tata_letak_vertikal/menu/HBoxContainer/nilai_ukuran_kisi.text = str((1.0 / float(jumlah_kisi_kisi) * 100)) + " cm"
+func _ketika_perkecil_ukuran_kisi() -> void:
+	if jumlah_kisi_kisi < 32:
+		jumlah_kisi_kisi = jumlah_kisi_kisi * 2
+	$tata_letak_vertikal/menu/HBoxContainer/nilai_ukuran_kisi.text = str((1.0 / float(jumlah_kisi_kisi) * 100)) + " cm"
 
 func _on_select_tool_pressed() -> void:
 	tool_aktif = "select"

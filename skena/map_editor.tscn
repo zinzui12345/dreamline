@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://chh3wlcedihey" path="res://skrip/map_editor.gd" id="1_6o263"]
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
-[ext_resource type="Texture2D" uid="uid://bl4ogqmf5h7ip" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
+[ext_resource type="Texture2D" uid="uid://cdokqbc5vdo0f" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
+[ext_resource type="Texture2D" uid="uid://c8ew44whhdd05" path="res://ui/ikon/ikon_kisi_kisi_besar.svg" id="2_e465q"]
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://material/grid.gdshader" id="3_b3t84"]
+[ext_resource type="Texture2D" uid="uid://ck3pytwlmxgiu" path="res://ui/ikon/ikon_kisi_kisi_kecil.svg" id="3_f1y01"]
 [ext_resource type="Texture2D" uid="uid://yf2iokdv2mhq" path="res://ui/ikon/ikon_pilih_wajah_bentuk.svg" id="3_m7gfd"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]
 [ext_resource type="Texture2D" uid="uid://dusqgks23uffe" path="res://ui/ikon/ikon_pindahkan_objek_bentuk.svg" id="3_wmcly"]
@@ -323,6 +325,45 @@ custom_minimum_size = Vector2(96, 0)
 custom_maximum_size = Vector2(96, 30)
 layout_mode = 2
 text = "Simpan"
+
+[node name="margin_1" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=299163070]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="label_kisi" type="Label" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1727506128]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Kisi-kisi:"
+
+[node name="nilai_ukuran_kisi" type="LineEdit" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1825994532]
+custom_minimum_size = Vector2(80, 30)
+custom_maximum_size = Vector2(80, 30)
+layout_mode = 2
+theme_override_colors/font_uneditable_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "25.0 cm"
+alignment = 1
+editable = false
+virtual_keyboard_enabled = false
+
+[node name="perbesar_kisi" type="Button" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=90655644]
+layout_mode = 2
+icon = ExtResource("2_e465q")
+icon_alignment = 1
+
+[node name="perkecil_kisi" type="Button" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=471640699]
+layout_mode = 2
+icon = ExtResource("3_f1y01")
+icon_alignment = 1
+
+[node name="margin_2" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=959721286]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="margin_kanan" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=786828713]
+custom_maximum_size = Vector2(0, -1)
+layout_mode = 2
 
 [node name="tata_letak" type="HSplitContainer" parent="tata_letak_vertikal" unique_id=670929322]
 layout_mode = 2
