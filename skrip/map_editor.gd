@@ -241,6 +241,7 @@ func _ready() -> void:
 	# Hubungkan tombol menu
 	$tata_letak_vertikal/menu/HBoxContainer/buka_desain.connect("pressed", buka_desain)
 	$tata_letak_vertikal/menu/HBoxContainer/simpan_desain.connect("pressed", simpan_desain)
+	$tata_letak_vertikal/menu/HBoxContainer/render_desain.connect("pressed", render_desain)
 	$tata_letak_vertikal/menu/HBoxContainer/perbesar_kisi.connect("pressed", _ketika_perbesar_ukuran_kisi)
 	$tata_letak_vertikal/menu/HBoxContainer/perkecil_kisi.connect("pressed", _ketika_perkecil_ukuran_kisi)
 	
@@ -1054,6 +1055,50 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 			Panku.notify("Membuka : " + jalur_file_desain)
 			_on_select_tool_pressed()
 
+func _ketika_render_map_desain(jalur_file : String) -> void:
+	if not jalur_file.ends_with(".scn"):
+		jalur_file += ".scn"
+	var node_map : Node3D = Node3D.new()
+	var data_map : PackedScene = PackedScene.new()
+	var data_bentuk : Node3D = Node3D.new()
+	var data_fisik : StaticBody3D = StaticBody3D.new()
+	node_map.name = jalur_file.get_file().get_basename()
+	data_bentuk.name = "bentuk"
+	data_fisik.name = "fisik"
+	add_child(node_map)
+	node_map.add_child(data_bentuk)
+	node_map.add_child(data_fisik)
+	data_bentuk.set_owner(node_map)
+	data_fisik.set_owner(node_map)
+	for objek_desain in $lingkungan.get_children():
+		if objek_desain.has_method("_compile"):
+			"""
+				{
+					"posisi":	Vector3
+					"rotasi":	Vector3
+					"bentuk":	MeshInstance3D
+					"fisik":	CollisionShape3D
+				}
+			"""
+			var data_objek : Dictionary = objek_desain._compile()
+			var node_bentuk_objek : MeshInstance3D = data_objek["bentuk"]
+			var node_fisik_objek : CollisionShape3D = data_objek["fisik"]
+			data_bentuk.add_child(node_bentuk_objek)
+			data_fisik.add_child(node_fisik_objek)
+			node_bentuk_objek.name = "bentuk_" + str(data_bentuk.get_child_count())
+			node_fisik_objek.name = "fisik_" + str(data_fisik.get_child_count())
+			node_bentuk_objek.set_owner(node_map)
+			node_fisik_objek.set_owner(node_map)
+			node_bentuk_objek.global_position = data_objek["posisi"]
+			node_fisik_objek.global_position = data_objek["posisi"]
+			node_bentuk_objek.global_rotation_degrees = data_objek["rotasi"]
+			node_fisik_objek.global_rotation_degrees = data_objek["rotasi"]
+	var hasil_kumpulan_node = data_map.pack(node_map)
+	if hasil_kumpulan_node == OK:
+		var hasil_map = ResourceSaver.save(data_map, jalur_file)
+		if hasil_map == OK:
+			Panku.notify(jalur_file + " disimpan.")
+	node_map.queue_free()
 
 func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = posisi
@@ -1138,3 +1183,13 @@ func buka_desain() -> void:
 	$dialog_buka_desain.root_subfolder = "mapsrc"
 	$dialog_buka_desain.filters = ["*.dmf"]
 	$dialog_buka_desain.show()
+
+func render_desain() -> void:
+	if $lingkungan.get_child_count() > 0:
+		$dialog_render_desain.title = "Simpan Map Sebagai"
+		$dialog_render_desain.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+		$dialog_render_desain.root_subfolder = "map"
+		$dialog_render_desain.filters = ["*.scn"]
+		$dialog_render_desain.show()
+	else:
+		server.permainan._tampilkan_popup_informasi("Tidak ada objek yang dapat dirender!", $tata_letak_vertikal/menu/HBoxContainer/render_desain)

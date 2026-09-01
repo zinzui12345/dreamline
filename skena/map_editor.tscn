@@ -361,6 +361,12 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="render_desain" type="Button" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1662801646]
+custom_minimum_size = Vector2(96, 0)
+custom_maximum_size = Vector2(96, 30)
+layout_mode = 2
+text = "Render"
+
 [node name="margin_kanan" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=786828713]
 custom_maximum_size = Vector2(0, -1)
 layout_mode = 2
@@ -798,16 +804,26 @@ grow_vertical = 2
 oversampling_override = 1.0
 title = "Open a File"
 initial_position = 1
+cancel_button_text = "%batal"
 file_mode = 0
 
 [node name="dialog_buka_desain" type="FileDialog" parent="." unique_id=1595407216]
 oversampling_override = 1.0
 title = "Open a File"
 initial_position = 1
+cancel_button_text = "%batal"
 file_mode = 0
 display_mode = 1
 access = 1
 filters = PackedStringArray("*.dmf")
+
+[node name="dialog_render_desain" type="FileDialog" parent="." unique_id=1882672763]
+oversampling_override = 1.0
+initial_position = 1
+cancel_button_text = "%batal"
+display_mode = 1
+access = 1
+filters = PackedStringArray("*.scn")
 
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
@@ -817,3 +833,4 @@ filters = PackedStringArray("*.dmf")
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/pilih_material" to="." method="_ketika_memilih_material"]
 [connection signal="file_selected" from="dialog_buka_desain" to="." method="_ketika_buka_file_desain"]
+[connection signal="file_selected" from="dialog_render_desain" to="." method="_ketika_render_map_desain"]

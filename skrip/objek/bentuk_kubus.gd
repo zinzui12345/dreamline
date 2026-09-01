@@ -126,3 +126,47 @@ func tampilkan_di_viewport(tampil : bool) -> void:
 		bentuk_wajah.set_layer_mask_value(17, tampil)
 		bentuk_wajah.set_layer_mask_value(18, tampil)
 	$bentuk_kerangka.visible = !tampil
+
+func _compile() -> Dictionary:
+	"""
+		{
+			"posisi":	Vector3
+			"rotasi":	Vector3
+			"bentuk":	MeshInstance3D
+			"fisik":	CollisionShape3D
+		}
+	"""
+	var kumpulan_st = {}
+	var daftar_mesh : Array = $wajah.get_children()
+	var mesh_baru = ArrayMesh.new()
+	
+	for mi in daftar_mesh:
+		if mi is MeshInstance3D and mi.mesh != null:
+			for i in range(mi.mesh.get_surface_count()):
+				var material = mi.get_surface_override_material(i)
+				if material == null:
+					material = mi.mesh.surface_get_material(i)
+				
+				if not kumpulan_st.has(material):
+					var st = SurfaceTool.new()
+					st.begin(Mesh.PRIMITIVE_TRIANGLES)
+					# Terapkan material ke surface ini
+					if material != null:
+						st.set_material(material)
+					kumpulan_st[material] = st
+					
+				kumpulan_st[material].append_from(mi.mesh, i, mi.transform)
+	
+	for material in kumpulan_st:
+		var st = kumpulan_st[material]
+		st.commit(mesh_baru) 
+	
+	var mesh_gabungan_instance = MeshInstance3D.new()
+	mesh_gabungan_instance.mesh = mesh_baru
+	
+	return {
+		"posisi":	global_position,
+		"rotasi":	global_rotation_degrees,
+		"bentuk":	mesh_gabungan_instance,
+		"fisik":	$fisik/bentuk_fisik.duplicate()
+	}
