@@ -139,7 +139,7 @@ func _compile() -> Dictionary:
 	var kumpulan_st = {}
 	var daftar_mesh : Array = $wajah.get_children()
 	var mesh_baru = ArrayMesh.new()
-	
+
 	for mi in daftar_mesh:
 		if mi is MeshInstance3D and mi.mesh != null:
 			for i in range(mi.mesh.get_surface_count()):
@@ -150,19 +150,30 @@ func _compile() -> Dictionary:
 				if not kumpulan_st.has(material):
 					var st = SurfaceTool.new()
 					st.begin(Mesh.PRIMITIVE_TRIANGLES)
-					# Terapkan material ke surface ini
 					if material != null:
 						st.set_material(material)
 					kumpulan_st[material] = st
 					
 				kumpulan_st[material].append_from(mi.mesh, i, mi.transform)
-	
+
 	for material in kumpulan_st:
 		var st = kumpulan_st[material]
 		st.commit(mesh_baru) 
-	
+
+	var mesh_final = ArrayMesh.new()
+
+	for i in range(mesh_baru.get_surface_count()):
+		var data_arrays = mesh_baru.surface_get_arrays(i)
+		var material = mesh_baru.surface_get_material(i)
+		
+		if data_arrays[Mesh.ARRAY_TEX_UV] != null:
+			data_arrays[Mesh.ARRAY_TEX_UV2] = data_arrays[Mesh.ARRAY_TEX_UV].duplicate()
+		
+		mesh_final.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, data_arrays)
+		mesh_final.surface_set_material(i, material)
+
 	var mesh_gabungan_instance = MeshInstance3D.new()
-	mesh_gabungan_instance.mesh = mesh_baru
+	mesh_gabungan_instance.mesh = mesh_final
 	
 	return {
 		"posisi":	global_position,

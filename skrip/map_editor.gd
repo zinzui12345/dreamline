@@ -1062,14 +1062,18 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	var data_map : PackedScene = PackedScene.new()
 	var data_bentuk : Node3D = Node3D.new()
 	var data_fisik : StaticBody3D = StaticBody3D.new()
+	var data_pencahayaan : LightmapGI = LightmapGI.new()
 	node_map.name = jalur_file.get_file().get_basename()
 	data_bentuk.name = "bentuk"
 	data_fisik.name = "fisik"
+	data_pencahayaan.name = "pencahayaan"
 	add_child(node_map)
 	node_map.add_child(data_bentuk)
 	node_map.add_child(data_fisik)
+	node_map.add_child(data_pencahayaan)
 	data_bentuk.set_owner(node_map)
 	data_fisik.set_owner(node_map)
+	data_pencahayaan.set_owner(node_map)
 	for objek_desain in $lingkungan.get_children():
 		if objek_desain.has_method("_compile"):
 			"""
@@ -1093,6 +1097,7 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 			node_fisik_objek.global_position = data_objek["posisi"]
 			node_bentuk_objek.global_rotation_degrees = data_objek["rotasi"]
 			node_fisik_objek.global_rotation_degrees = data_objek["rotasi"]
+	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
 	var hasil_kumpulan_node = data_map.pack(node_map)
 	if hasil_kumpulan_node == OK:
 		var hasil_map = ResourceSaver.save(data_map, jalur_file)
