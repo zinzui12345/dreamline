@@ -44,6 +44,15 @@ var warna_x = Color(1, 0, 0)
 var warna_y = Color(0, 1, 0)
 var warna_z = Color(0, 0, 1)
 
+# Label ukuran
+var label_ukuran : Node3D
+var ukuran_x_depan : Label3D
+var ukuran_y_depan : Label3D
+var ukuran_z_kanan : Label3D
+var ukuran_y_kanan : Label3D
+var ukuran_x_atas : Label3D
+var ukuran_z_atas : Label3D
+
 # Material selector
 var material_terpilih : Material = null
 var button_material : Button = null
@@ -156,8 +165,54 @@ func _ready() -> void:
 	handle_z.set_layer_mask_value(18, true)
 	handles.add_child(handle_z)
 	
-	# Sembunyikan handles awalnya
+	# label ukuran
+	label_ukuran = Node3D.new()
+	label_ukuran.name = "ukuran"
+	add_child(label_ukuran)
+	
+	ukuran_x_depan = Label3D.new()
+	ukuran_x_depan.name = "ukuran x - depan"
+	ukuran_x_depan.rotation_degrees.z = 90
+	ukuran_x_depan.set_layer_mask_value(1, false)
+	ukuran_x_depan.set_layer_mask_value(16, true)
+	label_ukuran.add_child(ukuran_x_depan)
+	ukuran_y_depan = Label3D.new()
+	ukuran_y_depan.name = "ukuran y - depan"
+	ukuran_y_depan.set_layer_mask_value(1, false)
+	ukuran_y_depan.set_layer_mask_value(16, true)
+	label_ukuran.add_child(ukuran_y_depan)
+	
+	ukuran_z_kanan = Label3D.new()
+	ukuran_z_kanan.name = "ukuran z - kanan"
+	ukuran_z_kanan.rotation_degrees.y = 90
+	ukuran_z_kanan.rotation_degrees.z = -90
+	ukuran_z_kanan.set_layer_mask_value(1, false)
+	ukuran_z_kanan.set_layer_mask_value(17, true)
+	label_ukuran.add_child(ukuran_z_kanan)
+	ukuran_y_kanan = Label3D.new()
+	ukuran_y_kanan.name = "ukuran y - kanan"
+	ukuran_y_kanan.rotation_degrees.y = 90
+	ukuran_y_kanan.set_layer_mask_value(1, false)
+	ukuran_y_kanan.set_layer_mask_value(17, true)
+	label_ukuran.add_child(ukuran_y_kanan)
+	
+	ukuran_x_atas = Label3D.new()
+	ukuran_x_atas.name = "ukuran x - atas"
+	ukuran_x_atas.rotation_degrees.x = -90
+	ukuran_x_atas.rotation_degrees.y = 90
+	ukuran_x_atas.set_layer_mask_value(1, false)
+	ukuran_x_atas.set_layer_mask_value(18, true)
+	label_ukuran.add_child(ukuran_x_atas)
+	ukuran_z_atas = Label3D.new()
+	ukuran_z_atas.name = "ukuran z - atas"
+	ukuran_z_atas.rotation_degrees.x = -90
+	ukuran_z_atas.set_layer_mask_value(1, false)
+	ukuran_z_atas.set_layer_mask_value(18, true)
+	label_ukuran.add_child(ukuran_z_atas)
+	
+	# Sembunyikan handles & label ukuran
 	handles.visible = false
+	label_ukuran.visible = false
 	
 	# Buat marker highlight face
 	face_highlight_marker = MeshInstance3D.new()
@@ -257,6 +312,7 @@ func _input(event: InputEvent) -> void:
 							indeks_face_terpilih = -1 # Reset face selection saat tool select
 						_perbarui_handles()
 						handles.visible = true
+						label_ukuran.visible = true
 						_highlight_face_seleksi()
 					elif _cek_viewport_dari_klik(event.position):
 						_clear_face_highlight()
@@ -440,10 +496,25 @@ func _perbarui_handles() -> void:
 		handle_x.position.x = offset.x
 		handle_y.position.y = offset.y
 		handle_z.position.z = offset.z
+		# Sesuaikan posisi label ukuran
+		label_ukuran.global_transform.origin = objek_terpilih.global_transform.origin
+		ukuran_x_depan.position.x = -offset.x
+		ukuran_x_depan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.y)
+		ukuran_y_depan.position.y = -offset.y
+		ukuran_y_depan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.x)
+		ukuran_z_kanan.position.z = -offset.z
+		ukuran_z_kanan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.y)
+		ukuran_y_kanan.position.y = -offset.y
+		ukuran_y_kanan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.z)
+		ukuran_x_atas.position.x = -offset.x
+		ukuran_x_atas.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.z)
+		ukuran_z_atas.position.z = -offset.z
+		ukuran_z_atas.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.x)
 		# Untuk mode putar, kita akan menambahkan handles khusus nanti
 		# Untuk saat ini, kita tampilkan semua handles dalam mode gerak
 	else:
 		handles.visible = false
+		label_ukuran.visible = false
 
 func _mode_berikutnya(mode: String) -> String:
 	if mode == "gerak":
@@ -521,6 +592,7 @@ func _process(_delta: float) -> void:
 	# Update posisi handles jika objek bergerak
 	if objek_terpilih and handles.visible:
 		handles.global_transform.origin = objek_terpilih.global_transform.origin
+		label_ukuran.global_transform.origin = objek_terpilih.global_transform.origin
 
 func _physics_process(_delta: float) -> void:
 	if not objek_terpilih:
@@ -714,6 +786,7 @@ func _clear_selection() -> void:
 	objek_terpilih = null
 	indeks_face_terpilih = -1
 	handles.visible = false
+	label_ukuran.visible = false
 	sedang_meni_transformasi = false
 	_clear_face_highlight()
 
@@ -727,6 +800,7 @@ func _ketika_menambah_kubus() -> void:
 	indeks_face_terpilih = -1
 	_perbarui_handles()
 	handles.visible = true
+	label_ukuran.visible = true
 	print("Kubus ditambahkan dan dipilih: ", kubus.name)
 
 func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
@@ -934,6 +1008,14 @@ func _konversi_data_material_menjadi_material(data_material: Dictionary) -> Stan
 				hasil_material.set(prop, load(nilai))
 	
 	return hasil_material
+
+func _konversi_nilai_ukuran_menjadi_teks(nilai : float) -> String:
+	if nilai >= 1.0:
+		if nilai == floor(nilai):	return str(int(nilai)) + "m"
+		else:            			return str(nilai) + "m"	
+	else:
+		if (nilai * 100) == floor(nilai * 100):	return str(int(nilai * 100)) + "cm"
+		else:            						return str(nilai * 100) + "cm"
 
 func _ketika_buka_file_desain(jalur_file : String) -> void:
 	if $dialog_buka_desain.file_mode == FileDialog.FILE_MODE_SAVE_FILE:
