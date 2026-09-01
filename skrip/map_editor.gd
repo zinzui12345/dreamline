@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# fix skala desimal objek ketika mengatur skala setelah memperbesar ukuran grid
 # Fungsikan tool Knife
 
 # Seleksi dan transformasi
@@ -550,15 +549,10 @@ func _physics_process(_delta: float) -> void:
 					gerak_dunia = kanan * (posisi_kursor_di_dunia.x - handle_x.position.x)
 					posisi_baru.x = snappedf(gerak_dunia.x, interval_snap)
 					if mode_transformasi == "gerak":
-						if fmod(objek_terpilih.ukuran.x / interval_snap, 2.0) == 0.0:
-							objek_terpilih.global_position.x = posisi_baru.x
-						else:
-							var pos_target : float = snappedf(posisi_baru.x - (objek_terpilih.ukuran.x / 2), interval_snap)
-							objek_terpilih.global_position.x = pos_target + (objek_terpilih.ukuran.x / 2)
-						$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = objek_terpilih.global_position
+						_snap_posisi_x_objek(posisi_baru.x)
 					elif mode_transformasi == "skala":
-						var start_point  : float = objek_terpilih.global_position.x - (objek_terpilih.ukuran.x / 2)
-						var end_point  : float = objek_terpilih.global_position.x + (objek_terpilih.ukuran.x / 2)
+						var start_point  : float = snappedf(objek_terpilih.global_position.x - (objek_terpilih.ukuran.x / 2), interval_snap)
+						var end_point  : float = snappedf(objek_terpilih.global_position.x + (objek_terpilih.ukuran.x / 2), interval_snap)
 						var offset  : float = snappedf(posisi_baru.x - objek_terpilih.global_position.x, interval_snap)
 						var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
 						var pos_target  : float = objek_terpilih.global_position.x + (offset / 2)
@@ -567,20 +561,17 @@ func _physics_process(_delta: float) -> void:
 							objek_terpilih.ukuran.x = skala_target
 							objek_terpilih.global_position.x = pos_target
 							_perbarui_handles()
+							if objek_terpilih.global_position.x - (objek_terpilih.ukuran.x / 2) != start_point:
+								_snap_posisi_x_objek(posisi_baru.x)
 			elif axis_yang_digunakan == Vector3(0, 1, 0):  # Sumbu Y
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan or viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan:
 					gerak_dunia = atas * (posisi_kursor_di_dunia.y - handle_y.position.y)
 					posisi_baru.y = snappedf(gerak_dunia.y, interval_snap)
 					if mode_transformasi == "gerak":
-						if fmod(objek_terpilih.ukuran.y / interval_snap, 2.0) == 0.0:
-							objek_terpilih.global_position.y = posisi_baru.y
-						else:
-							var pos_target : float = snappedf(posisi_baru.y - (objek_terpilih.ukuran.y / 2), interval_snap)
-							objek_terpilih.global_position.y = pos_target + (objek_terpilih.ukuran.y / 2)
-						$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = objek_terpilih.global_position
+						_snap_posisi_y_objek(posisi_baru.y)
 					elif mode_transformasi == "skala":
-						var start_point  : float = objek_terpilih.global_position.y - (objek_terpilih.ukuran.y / 2)
-						var end_point  : float = objek_terpilih.global_position.y + (objek_terpilih.ukuran.y / 2)
+						var start_point  : float = snappedf(objek_terpilih.global_position.y - (objek_terpilih.ukuran.y / 2), interval_snap)
+						var end_point  : float = snappedf(objek_terpilih.global_position.y + (objek_terpilih.ukuran.y / 2), interval_snap)
 						var offset  : float = snappedf(posisi_baru.y - objek_terpilih.global_position.y, interval_snap)
 						var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
 						var pos_target  : float = objek_terpilih.global_position.y + (offset / 2)
@@ -589,6 +580,8 @@ func _physics_process(_delta: float) -> void:
 							objek_terpilih.ukuran.y = skala_target
 							objek_terpilih.global_position.y = pos_target
 							_perbarui_handles()
+							if objek_terpilih.global_position.y - (objek_terpilih.ukuran.y / 2) != start_point:
+								_snap_posisi_y_objek(posisi_baru.y)
 			elif axis_yang_digunakan == Vector3(0, 0, 1):  # Sumbu Z
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas:
 					gerak_dunia = atas * -(posisi_kursor_di_dunia.z - handle_z.position.z)
@@ -597,15 +590,10 @@ func _physics_process(_delta: float) -> void:
 					gerak_dunia = kanan * -(posisi_kursor_di_dunia.z - handle_z.position.z)
 					posisi_baru.z = snappedf(gerak_dunia.z, interval_snap)
 				if mode_transformasi == "gerak":
-					if fmod(objek_terpilih.ukuran.z / interval_snap, 2.0) == 0.0:
-						objek_terpilih.global_position.z = posisi_baru.z
-					else:
-						var pos_target : float = snappedf(posisi_baru.z - (objek_terpilih.ukuran.z / 2), interval_snap)
-						objek_terpilih.global_position.z = pos_target + (objek_terpilih.ukuran.z / 2)
-					$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = objek_terpilih.global_position
+					_snap_posisi_z_objek(posisi_baru.z)
 				elif mode_transformasi == "skala":
-					var start_point  : float = objek_terpilih.global_position.z - (objek_terpilih.ukuran.z / 2)
-					var end_point  : float = objek_terpilih.global_position.z + (objek_terpilih.ukuran.z / 2)
+					var start_point  : float = snappedf(objek_terpilih.global_position.z - (objek_terpilih.ukuran.z / 2), interval_snap)
+					var end_point  : float = snappedf(objek_terpilih.global_position.z + (objek_terpilih.ukuran.z / 2), interval_snap)
 					var offset  : float = snappedf(posisi_baru.z - objek_terpilih.global_position.z, interval_snap)
 					var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
 					var pos_target  : float = objek_terpilih.global_position.z + (offset / 2)
@@ -614,6 +602,8 @@ func _physics_process(_delta: float) -> void:
 						objek_terpilih.ukuran.z = skala_target
 						objek_terpilih.global_position.z = pos_target
 						_perbarui_handles()
+						if objek_terpilih.global_position.z - (objek_terpilih.ukuran.z / 2) != start_point:
+							_snap_posisi_z_objek(posisi_baru.z)
 			
 			if select_boundary != null:
 				select_boundary.global_position = objek_terpilih.global_position
@@ -635,6 +625,33 @@ func _ketika_perkecil_ukuran_kisi() -> void:
 	if jumlah_kisi_kisi < 32:
 		jumlah_kisi_kisi = jumlah_kisi_kisi * 2
 	$tata_letak_vertikal/menu/HBoxContainer/nilai_ukuran_kisi.text = str((1.0 / float(jumlah_kisi_kisi) * 100)) + " cm"
+
+func _snap_posisi_x_objek(posisi_baru : float) -> void:
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
+	if fmod(objek_terpilih.ukuran.x / interval_snap, 2.0) == 0.0:
+		objek_terpilih.global_position.x = posisi_baru
+	else:
+		var pos_target : float = snappedf(posisi_baru - (objek_terpilih.ukuran.x / 2), interval_snap)
+		objek_terpilih.global_position.x = pos_target + (objek_terpilih.ukuran.x / 2)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = objek_terpilih.global_position
+
+func _snap_posisi_y_objek(posisi_baru : float) -> void:
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
+	if fmod(objek_terpilih.ukuran.y / interval_snap, 2.0) == 0.0:
+		objek_terpilih.global_position.y = posisi_baru
+	else:
+		var pos_target : float = snappedf(posisi_baru - (objek_terpilih.ukuran.y / 2), interval_snap)
+		objek_terpilih.global_position.y = pos_target + (objek_terpilih.ukuran.y / 2)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = objek_terpilih.global_position
+
+func _snap_posisi_z_objek(posisi_baru : float) -> void:
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
+	if fmod(objek_terpilih.ukuran.z / interval_snap, 2.0) == 0.0:
+		objek_terpilih.global_position.z = posisi_baru
+	else:
+		var pos_target : float = snappedf(posisi_baru - (objek_terpilih.ukuran.z / 2), interval_snap)
+		objek_terpilih.global_position.z = pos_target + (objek_terpilih.ukuran.z / 2)
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = objek_terpilih.global_position
 
 func _on_select_tool_pressed() -> void:
 	tool_aktif = "select"
