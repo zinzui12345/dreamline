@@ -5,6 +5,8 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
+# tool tambah objek
+# tool tambah entitas
 # Fungsikan tool Knife
 
 # Seleksi dan transformasi
@@ -254,6 +256,7 @@ func _ready() -> void:
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_tool_button.connect("pressed", self._terapkan_material_terpilih)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_picker_button.connect("pressed", self._ambil_material_terpilih)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_cube_button.connect("pressed", self._ketika_menambah_kubus)
+	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_object_button.connect("pressed", self._ketika_menambah_objek)
 	
 	# Sesuaikan posisi batas raycast
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan.position.z = -9000.0
@@ -287,6 +290,16 @@ func _ketika_viewport_ditransformasi() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport2/CanvasLayer/grid_kanan.material.set_shader_parameter("transform", Vector2(-($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position.z / zoom_kanan), -($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position.y / zoom_kanan)))
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport2/CanvasLayer/grid_kanan.material.set_shader_parameter("zoom", jumlah_kisi_kisi * $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat.position.x)
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/CanvasLayer/nilai_zoom.text = str(zoom_kanan / 2)
+
+func _ketika_ukuran_tampilan_parameter_objek_diubah() -> void:
+	var lebar_label : float = %label_jarak_render_objek.size.x
+	%label_instance_objek.custom_minimum_size.x = lebar_label
+	%label_posisi_objek.custom_minimum_size.x = lebar_label
+	%label_rotasi_objek.custom_minimum_size.x = lebar_label
+	$properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer.split_offsets = [
+		$properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer.size.x * 0.3,
+		$properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer.size.x * 0.6
+	]
 
 func _input(event: InputEvent) -> void:
 	# Sinkronisasi kamera
@@ -486,8 +499,10 @@ func _dapatkan_indeks_face(objek_: Node3D, _hasil: Dictionary) -> int:
 func _perbarui_handles() -> void:
 	if objek_terpilih:
 		var offset : Vector3
-		if objek_terpilih.tipe_bentuk == 0:
+		if objek_terpilih.get("tipe_bentuk") != null and objek_terpilih.tipe_bentuk == 0:
 			offset = (objek_terpilih.ukuran / 2) + Vector3(0.10, 0.10, 0.10)
+		else:
+			offset = (objek_terpilih.ukuran / 2)
 		handles.global_transform.origin = objek_terpilih.global_transform.origin
 		# Tampilkan hanya handles yang sesuai dengan mode
 		handle_x.visible = (mode_transformasi == "gerak" or mode_transformasi == "skala")
@@ -804,10 +819,30 @@ func _ketika_menambah_kubus() -> void:
 	label_ukuran.visible = true
 	print("Kubus ditambahkan dan dipilih: ", kubus.name)
 
+func _ketika_menambah_objek() -> void:
+	var _objek_ : Node3D = tambah_objek($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position)
+	if objek_terpilih != null:
+		objek_terpilih.tampilkan_di_viewport(false)
+	_on_select_tool_pressed()
+	objek_terpilih = _objek_
+	objek_terpilih.tampilkan_di_viewport(true)
+	indeks_face_terpilih = -1
+	_perbarui_handles()
+	handles.visible = true
+	label_ukuran.visible = true
+	print("Objek ditambahkan dan dipilih: ", _objek_.name)
+
 func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 	for objek_objek in $lingkungan.get_children():
 		if objek_objek.get("pilih_wajah") != null:
 			objek_objek.pilih_wajah = mode_face
+
+func _tampilkan_parameter_objek() -> void:
+	_ketika_ukuran_tampilan_parameter_objek_diubah()
+	$properti_objek.show()
+
+func _sembunyikan_parameter_objek() -> void:
+	$properti_objek.hide()
 
 func _konversi_material_menjadi_data(objek_material : StandardMaterial3D) -> Dictionary:
 	"""
@@ -1105,6 +1140,7 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 			Panku.notify(jalur_file + " disimpan.")
 	node_map.queue_free()
 
+
 func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = posisi
@@ -1130,6 +1166,21 @@ func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	kubus.ukuran = ukuran
 	kubus.tampilkan_di_viewport(false)
 	return kubus
+
+func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Dictionary = {}, snap_posisi : bool = true) -> Node3D:
+	var _objek_ : Node3D = load("res://model/objek.scn").instantiate()
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
+	$lingkungan.add_child(_objek_)
+	if snap_posisi:
+		_objek_.global_position.x = snappedf(_objek_.global_position.x, interval_snap)
+		_objek_.global_position.y = snappedf(_objek_.global_position.y, interval_snap)
+		_objek_.global_position.z = snappedf(_objek_.global_position.z, interval_snap)
+	_objek_.global_position = posisi
+	_objek_.global_rotation = rotasi
+	_objek_.jalur_instance = jalur_instance
+	_objek_.daftar_properti = daftar_properti
+	_objek_.tampilkan_di_viewport(false)
+	return _objek_
 
 func simpan_desain() -> void:
 	if !DirAccess.dir_exists_absolute("user://mapsrc"):

@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://chh3wlcedihey" path="res://skrip/map_editor.gd" id="1_6o263"]
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
-[ext_resource type="Texture2D" uid="uid://bl4ogqmf5h7ip" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
-[ext_resource type="Texture2D" uid="uid://xk5w6lhhd25j" path="res://ui/ikon/ikon_kisi_kisi_besar.svg" id="2_e465q"]
+[ext_resource type="Texture2D" uid="uid://cdokqbc5vdo0f" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
+[ext_resource type="Texture2D" uid="uid://c8ew44whhdd05" path="res://ui/ikon/ikon_kisi_kisi_besar.svg" id="2_e465q"]
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://material/grid.gdshader" id="3_b3t84"]
-[ext_resource type="Texture2D" uid="uid://browvq27g4meo" path="res://ui/ikon/ikon_kisi_kisi_kecil.svg" id="3_f1y01"]
+[ext_resource type="Texture2D" uid="uid://ck3pytwlmxgiu" path="res://ui/ikon/ikon_kisi_kisi_kecil.svg" id="3_f1y01"]
 [ext_resource type="Texture2D" uid="uid://yf2iokdv2mhq" path="res://ui/ikon/ikon_pilih_wajah_bentuk.svg" id="3_m7gfd"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]
 [ext_resource type="Texture2D" uid="uid://dusqgks23uffe" path="res://ui/ikon/ikon_pindahkan_objek_bentuk.svg" id="3_wmcly"]
@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://bhj2bxvekvpl3" path="res://ui/ikon/ikon_terapkan_material_wajah_bentuk.svg" id="4_wmcly"]
 [ext_resource type="Texture2D" uid="uid://ct0wqjhouv0bi" path="res://ui/ikon/ikon_ambil_material_wajah_bentuk.svg" id="5_e465q"]
 [ext_resource type="Texture2D" uid="uid://botvoe71gvtw8" path="res://ui/ikon/ikon_tambah_objek_bentuk.svg" id="6_f1y01"]
+[ext_resource type="PackedScene" uid="uid://bwdt16766j55u" path="res://ui/properti_id.tscn" id="14_y3ovf"]
+[ext_resource type="PackedScene" uid="uid://c6w1ecsxnrmni" path="res://ui/properti_warna.tscn" id="15_fpkry"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
 bg_color = Color(1, 1, 1, 1)
@@ -264,6 +266,23 @@ environment = SubResource("Environment_b3t84")
 [sub_resource type="PlaneMesh" id="PlaneMesh_uvcr3"]
 orientation = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y3ovf"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hw00"]
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
 [node name="map_editor" type="Control" unique_id=296226763]
 layout_mode = 3
 anchors_preset = 15
@@ -291,7 +310,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 6
-split_offsets = PackedInt32Array(30, 562)
+split_offsets = PackedInt32Array(30, 572)
 dragging_enabled = false
 split_offset = 30
 
@@ -395,7 +414,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 338.0
 grow_horizontal = 2
-split_offsets = PackedInt32Array(58, 128, 198, 268)
+split_offsets = PackedInt32Array(58, 128, 198, 268, 0)
 dragging_enabled = false
 split_offset = 58
 
@@ -445,6 +464,11 @@ icon = ExtResource("5_e465q")
 icon_alignment = 1
 
 [node name="add_cube_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1000000010]
+layout_mode = 2
+icon = ExtResource("6_f1y01")
+icon_alignment = 1
+
+[node name="add_object_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1323584577]
 layout_mode = 2
 icon = ExtResource("6_f1y01")
 icon_alignment = 1
@@ -825,6 +849,172 @@ display_mode = 1
 access = 1
 filters = PackedStringArray("*.scn")
 
+[node name="properti_objek" type="Window" parent="." unique_id=1013947380]
+oversampling_override = 1.0
+title = "nama_objek"
+initial_position = 1
+size = Vector2i(500, 400)
+visible = false
+min_size = Vector2i(500, 400)
+
+[node name="MarginContainer" type="MarginContainer" parent="properti_objek" unique_id=38791589]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 12.0
+offset_right = -10.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="properti_objek/MarginContainer" unique_id=1496515283]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=1042727910]
+layout_mode = 2
+text = "Parameter"
+horizontal_alignment = 1
+
+[node name="HSplitContainer" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=1129899694]
+layout_mode = 2
+
+[node name="label_instance_objek" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer" unique_id=624264722]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Instance"
+
+[node name="Control" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer" unique_id=36708636]
+layout_mode = 2
+
+[node name="nilai_jalur_instance_objek" type="LineEdit" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer/Control" unique_id=663339082]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_uneditable_color = Color(0, 0, 0, 1)
+theme_override_styles/read_only = SubResource("StyleBoxFlat_y3ovf")
+editable = false
+
+[node name="tombol_pilih_jalur_instance_objek" type="Button" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer/Control" unique_id=1809536474]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Pilih"
+
+[node name="HSplitContainer2" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=2008375161]
+layout_mode = 2
+
+[node name="label_posisi_objek" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2" unique_id=1219620087]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Posisi"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2" unique_id=1039566297]
+layout_mode = 2
+split_offsets = PackedInt32Array(110, 220)
+split_offset = 110
+
+[node name="Control" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer" unique_id=1863444692]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control" unique_id=1653393794]
+layout_mode = 2
+text = "x"
+
+[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control" unique_id=1558078024]
+layout_mode = 2
+
+[node name="Control2" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer" unique_id=609598361]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control2" unique_id=1898888036]
+layout_mode = 2
+text = "y"
+
+[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control2" unique_id=1868752638]
+layout_mode = 2
+
+[node name="Control3" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer" unique_id=365215943]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control3" unique_id=888058929]
+layout_mode = 2
+text = "z"
+
+[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control3" unique_id=207591736]
+layout_mode = 2
+
+[node name="HSplitContainer3" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=1757167335]
+layout_mode = 2
+
+[node name="label_rotasi_objek" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer3" unique_id=1099408057]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Rotasi"
+
+[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer3" unique_id=129531159]
+layout_mode = 2
+
+[node name="HSplitContainer4" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=897313106]
+layout_mode = 2
+split_offsets = PackedInt32Array(100, 329)
+split_offset = 100
+
+[node name="label_jarak_render_objek" type="Label" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4" unique_id=849233230]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Jarak Render"
+
+[node name="HSlider" type="HSlider" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4" unique_id=491425955]
+layout_mode = 2
+size_flags_vertical = 1
+
+[node name="nilai_jarak_render_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4" unique_id=912559137]
+custom_maximum_size = Vector2(90, -1)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=2136296722]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=1075429335]
+layout_mode = 2
+text = "Properti"
+horizontal_alignment = 1
+
+[node name="properti_kustom" type="ScrollContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=1416647554]
+custom_minimum_size = Vector2(0, 128)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_1hw00")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="baris" type="VBoxContainer" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom" unique_id=1953106761]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="id" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1768700116 instance=ExtResource("14_y3ovf")]
+layout_mode = 2
+
+[node name="warna_1" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1182495718 instance=ExtResource("15_fpkry")]
+layout_mode = 2
+
+[node name="warna_2" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=405698567 instance=ExtResource("15_fpkry")]
+layout_mode = 2
+
+[node name="warna_3" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=593563849 instance=ExtResource("15_fpkry")]
+layout_mode = 2
+
+[node name="warna_4" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1518984263 instance=ExtResource("15_fpkry")]
+layout_mode = 2
+
+[node name="warna_5" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1815711762 instance=ExtResource("15_fpkry")]
+layout_mode = 2
+
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
@@ -834,3 +1024,5 @@ filters = PackedStringArray("*.scn")
 [connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/pilih_material" to="." method="_ketika_memilih_material"]
 [connection signal="file_selected" from="dialog_buka_desain" to="." method="_ketika_buka_file_desain"]
 [connection signal="file_selected" from="dialog_render_desain" to="." method="_ketika_render_map_desain"]
+[connection signal="close_requested" from="properti_objek" to="." method="_sembunyikan_parameter_objek"]
+[connection signal="size_changed" from="properti_objek" to="." method="_ketika_ukuran_tampilan_parameter_objek_diubah"]
