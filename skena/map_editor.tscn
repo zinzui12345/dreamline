@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://chh3wlcedihey" path="res://skrip/map_editor.gd" id="1_6o263"]
 [ext_resource type="Script" uid="uid://dri1864pfcteh" path="res://skrip/objek/free_look_camera.gd" id="2_466n8"]
-[ext_resource type="Texture2D" uid="uid://cdokqbc5vdo0f" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
-[ext_resource type="Texture2D" uid="uid://c8ew44whhdd05" path="res://ui/ikon/ikon_kisi_kisi_besar.svg" id="2_e465q"]
+[ext_resource type="Texture2D" uid="uid://bl4ogqmf5h7ip" path="res://ui/ikon/ikon_pilih_objek_bentuk.svg" id="2_681b2"]
+[ext_resource type="Texture2D" uid="uid://xk5w6lhhd25j" path="res://ui/ikon/ikon_kisi_kisi_besar.svg" id="2_e465q"]
 [ext_resource type="Shader" uid="uid://cg0btrywvtbxf" path="res://material/grid.gdshader" id="3_b3t84"]
-[ext_resource type="Texture2D" uid="uid://ck3pytwlmxgiu" path="res://ui/ikon/ikon_kisi_kisi_kecil.svg" id="3_f1y01"]
+[ext_resource type="Texture2D" uid="uid://browvq27g4meo" path="res://ui/ikon/ikon_kisi_kisi_kecil.svg" id="3_f1y01"]
 [ext_resource type="Texture2D" uid="uid://yf2iokdv2mhq" path="res://ui/ikon/ikon_pilih_wajah_bentuk.svg" id="3_m7gfd"]
 [ext_resource type="Texture2D" uid="uid://8445g8tcy0q3" path="res://material/dev/Dark/texture_01.png" id="3_n1bd0"]
 [ext_resource type="Texture2D" uid="uid://dusqgks23uffe" path="res://ui/ikon/ikon_pindahkan_objek_bentuk.svg" id="3_wmcly"]
@@ -774,34 +774,48 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_odwir")
 metadata/_edit_use_anchors_ = true
 
-[node name="VSplitContainer" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur" unique_id=64954687]
+[node name="daftar_properti" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur" unique_id=64954687]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 8.0
 grow_horizontal = 2
 
-[node name="tampilan_material" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer" unique_id=1712345479]
+[node name="properti_bentuk" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti" unique_id=1126703994]
+layout_mode = 2
+split_offsets = PackedInt32Array(150)
+split_offset = 150
+
+[node name="tampilan_material" type="SubViewportContainer" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk" unique_id=1712345479]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material" unique_id=673612122]
+[node name="SubViewport" type="SubViewport" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk/tampilan_material" unique_id=673612122]
 own_world_3d = true
 world_3d = SubResource("World3D_ajpf8")
 handle_input_locally = false
 size = Vector2i(150, 150)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport" unique_id=2066212069]
+[node name="Camera3D" type="Camera3D" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk/tampilan_material/SubViewport" unique_id=2066212069]
 projection = 1
 
-[node name="placeholder_mesh" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport" unique_id=300415051]
+[node name="placeholder_mesh" type="MeshInstance3D" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk/tampilan_material/SubViewport" unique_id=300415051]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 cast_shadow = 0
 mesh = SubResource("PlaneMesh_uvcr3")
 
-[node name="pilih_material" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer" unique_id=1475556715]
+[node name="pilih_material" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk" unique_id=1475556715]
 layout_mode = 2
 text = "Pilih Material"
+
+[node name="properti_objek" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti" unique_id=1198511667]
+visible = false
+layout_mode = 2
+
+[node name="edit_atribut_objek" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek" unique_id=1336170859]
+layout_mode = 2
+text = "Edit Objek"
 
 [node name="margin_kanan" type="Control" parent="tata_letak_vertikal/tata_letak" unique_id=1039494916]
 custom_maximum_size = Vector2(0, -1)
@@ -922,8 +936,14 @@ layout_mode = 2
 layout_mode = 2
 text = "x"
 
-[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control" unique_id=1558078024]
+[node name="nilai_posisi_x_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control" unique_id=1558078024]
+unique_name_in_owner = true
 layout_mode = 2
+min_value = -32568.0
+max_value = 32568.0
+step = 0.001
+allow_greater = true
+allow_lesser = true
 
 [node name="Control2" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer" unique_id=609598361]
 layout_mode = 2
@@ -932,8 +952,14 @@ layout_mode = 2
 layout_mode = 2
 text = "y"
 
-[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control2" unique_id=1868752638]
+[node name="nilai_posisi_y_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control2" unique_id=1868752638]
+unique_name_in_owner = true
 layout_mode = 2
+min_value = -32568.0
+max_value = 32568.0
+step = 0.001
+allow_greater = true
+allow_lesser = true
 
 [node name="Control3" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer" unique_id=365215943]
 layout_mode = 2
@@ -942,8 +968,14 @@ layout_mode = 2
 layout_mode = 2
 text = "z"
 
-[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control3" unique_id=207591736]
+[node name="nilai_posisi_z_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control3" unique_id=207591736]
+unique_name_in_owner = true
 layout_mode = 2
+min_value = -32568.0
+max_value = 32568.0
+step = 0.001
+allow_greater = true
+allow_lesser = true
 
 [node name="HSplitContainer3" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=1757167335]
 layout_mode = 2
@@ -954,7 +986,8 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Rotasi"
 
-[node name="SpinBox" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer3" unique_id=129531159]
+[node name="nilai_rotasi_y_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer3" unique_id=129531159]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSplitContainer4" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=897313106]
@@ -967,13 +1000,27 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Jarak Render"
 
-[node name="HSlider" type="HSlider" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4" unique_id=491425955]
+[node name="slider_jarak_render_objek" type="HSlider" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4" unique_id=491425955]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
+min_value = 10.0
+max_value = 1000.0
+value = 10.0
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="nilai_jarak_render_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4" unique_id=912559137]
+unique_name_in_owner = true
 custom_maximum_size = Vector2(90, -1)
 layout_mode = 2
+min_value = 10.0
+max_value = 1000.0
+value = 10.0
+rounded = true
+allow_greater = true
+allow_lesser = true
 
 [node name="Control" type="Control" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=2136296722]
 custom_minimum_size = Vector2(0, 5)
@@ -1015,14 +1062,34 @@ layout_mode = 2
 [node name="warna_5" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1815711762 instance=ExtResource("15_fpkry")]
 layout_mode = 2
 
+[node name="dialog_buka_objek" type="FileDialog" parent="." unique_id=1355451708]
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 1
+cancel_button_text = "%batal"
+file_mode = 0
+display_mode = 1
+root_subfolder = "skena/objek/"
+filters = PackedStringArray("*.scn", "*.tscn")
+
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]
 [connection signal="bergerak" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat" to="." method="_ketika_viewport_ditransformasi"]
-[connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/pilih_material" to="." method="_ketika_memilih_material"]
+[connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk/pilih_material" to="." method="_ketika_memilih_material"]
+[connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek/edit_atribut_objek" to="." method="_tampilkan_parameter_objek"]
 [connection signal="file_selected" from="dialog_buka_desain" to="." method="_ketika_buka_file_desain"]
 [connection signal="file_selected" from="dialog_render_desain" to="." method="_ketika_render_map_desain"]
 [connection signal="close_requested" from="properti_objek" to="." method="_sembunyikan_parameter_objek"]
 [connection signal="size_changed" from="properti_objek" to="." method="_ketika_ukuran_tampilan_parameter_objek_diubah"]
+[connection signal="text_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer/Control/nilai_jalur_instance_objek" to="." method="_ketika_jalur_instance_objek_diubah"]
+[connection signal="pressed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer/Control/tombol_pilih_jalur_instance_objek" to="." method="_ketika_pilih_file_objek"]
+[connection signal="value_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control/nilai_posisi_x_objek" to="." method="_ketika_nilai_posisi_x_objek_diubah"]
+[connection signal="value_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control2/nilai_posisi_y_objek" to="." method="_ketika_nilai_posisi_y_objek_diubah"]
+[connection signal="value_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer/Control3/nilai_posisi_z_objek" to="." method="_ketika_nilai_posisi_z_objek_diubah"]
+[connection signal="value_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer3/nilai_rotasi_y_objek" to="." method="_ketika_nilai_rotasi_y_objek_diubah"]
+[connection signal="value_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4/slider_jarak_render_objek" to="." method="_ketika_slider_jarak_render_objek_digeser"]
+[connection signal="value_changed" from="properti_objek/MarginContainer/VBoxContainer/HSplitContainer4/nilai_jarak_render_objek" to="." method="_ketika_nilai_jarak_render_objek_diubah"]
+[connection signal="file_selected" from="dialog_buka_objek" to="." method="_ketika_buka_file_objek"]

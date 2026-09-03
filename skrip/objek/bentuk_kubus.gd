@@ -1,4 +1,5 @@
 extends Node3D
+class_name representasi_bentuk
 
 enum JENIS_BENTUK {
 	Kubus,

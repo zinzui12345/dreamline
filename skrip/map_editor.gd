@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# tool tambah objek
 # tool tambah entitas
 # Fungsikan tool Knife
 
@@ -18,8 +17,16 @@ var objek_terpilih : Node3D = null :
 				if pilih_objek.get("ukuran") != null:
 					select_boundary.mesh.size = pilih_objek.ukuran + Vector3(0.001, 0.001, 0.001)
 				select_boundary.visible = true
+				if pilih_objek is representasi_objek:
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = false
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = true
+				else:
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = true
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
 			elif pilih_objek == null:
 				select_boundary.visible = false
+				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = true
+				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
 		objek_terpilih = pilih_objek
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
@@ -346,6 +353,11 @@ func _input(event: InputEvent) -> void:
 			axis_yang_digunakan = Vector3.ZERO
 			posisi_kursor_di_dunia = Vector3.ZERO
 			posisi_kursor_di_viewport = Vector2.ZERO
+			
+			if $properti_objek.visible and objek_terpilih is representasi_objek:
+				%nilai_posisi_x_objek.value = objek_terpilih.global_position.x
+				%nilai_posisi_y_objek.value = objek_terpilih.global_position.y
+				%nilai_posisi_z_objek.value = objek_terpilih.global_position.z
 	
 	# auto-fokus viewport
 	if event is InputEventMouseMotion and not viewport_fokus and not sedang_meni_transformasi:
@@ -499,10 +511,11 @@ func _dapatkan_indeks_face(objek_: Node3D, _hasil: Dictionary) -> int:
 func _perbarui_handles() -> void:
 	if objek_terpilih:
 		var offset : Vector3
-		if objek_terpilih.get("tipe_bentuk") != null and objek_terpilih.tipe_bentuk == 0:
-			offset = (objek_terpilih.ukuran / 2) + Vector3(0.10, 0.10, 0.10)
-		else:
-			offset = (objek_terpilih.ukuran / 2)
+		#if objek_terpilih.get("tipe_bentuk") != null and objek_terpilih.tipe_bentuk == 0:
+			#offset = (objek_terpilih.ukuran / 2) + Vector3(0.10, 0.10, 0.10)
+		#else:
+			#offset = (objek_terpilih.ukuran / 2)
+		offset = (objek_terpilih.ukuran / 2) + Vector3(0.10, 0.10, 0.10)
 		handles.global_transform.origin = objek_terpilih.global_transform.origin
 		# Tampilkan hanya handles yang sesuai dengan mode
 		handle_x.visible = (mode_transformasi == "gerak" or mode_transformasi == "skala")
@@ -576,7 +589,7 @@ func _ketika_memilih_file_material(file_path: String) -> void:
 		material_ = load(file_path) as ShaderMaterial
 	if material_:
 		material_terpilih = material_
-		$tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
+		%tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
 		_terapkan_material_terpilih()
 
 func _highlight_face_seleksi() -> void:
@@ -781,7 +794,7 @@ func _ambil_material_terpilih() -> void:
 		elif wajah_yang_dipilih != null and wajah_yang_dipilih.get("indeks_wajah") != null:
 			material_ = wajah_yang_dipilih.dapatkan_material()
 		material_terpilih = material_
-		$tata_letak_vertikal/tata_letak/inspektur/VSplitContainer/tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
+		%tampilan_material/SubViewport/placeholder_mesh.material_override = material_terpilih
 	print("Alat: Material Picker")
 
 func _perbarui_tampilan_alat_aktif() -> void:
@@ -799,6 +812,8 @@ func _perbarui_tampilan_alat_aktif() -> void:
 func _clear_selection() -> void:
 	if objek_terpilih != null:
 		objek_terpilih.tampilkan_di_viewport(false)
+		if $properti_objek.visible:
+			$properti_objek.hide()
 	objek_terpilih = null
 	indeks_face_terpilih = -1
 	handles.visible = false
@@ -838,11 +853,70 @@ func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 			objek_objek.pilih_wajah = mode_face
 
 func _tampilkan_parameter_objek() -> void:
+	if objek_terpilih == null or !(objek_terpilih is representasi_objek):
+		server.permainan._tampilkan_popup_informasi("Tidak ada objek yang dipilih!", $tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek/edit_atribut_objek)
+		return
 	_ketika_ukuran_tampilan_parameter_objek_diubah()
+	%nilai_jalur_instance_objek.text = objek_terpilih.jalur_instance
+	%nilai_posisi_x_objek.value = objek_terpilih.global_position.x
+	%nilai_posisi_y_objek.value = objek_terpilih.global_position.y
+	%nilai_posisi_z_objek.value = objek_terpilih.global_position.z
+	%nilai_rotasi_y_objek.value = objek_terpilih.global_rotation_degrees.y
+	%nilai_jarak_render_objek.value = objek_terpilih.jarak_render
 	$properti_objek.show()
 
 func _sembunyikan_parameter_objek() -> void:
 	$properti_objek.hide()
+
+func _ketika_jalur_instance_objek_diubah(jalur_objek : String) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		objek_terpilih.jalur_instance = jalur_objek
+		_tampilkan_parameter_objek()
+func _ketika_nilai_posisi_x_objek_diubah(posisi_baru : float) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		objek_terpilih.global_position.x = posisi_baru
+		select_boundary.global_position = objek_terpilih.global_position
+		atur_posisi_fokus_viewport(objek_terpilih.global_position)
+		_ketika_viewport_ditransformasi()
+		_perbarui_handles()
+func _ketika_nilai_posisi_y_objek_diubah(posisi_baru : float) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		objek_terpilih.global_position.y = posisi_baru
+		select_boundary.global_position = objek_terpilih.global_position
+		atur_posisi_fokus_viewport(objek_terpilih.global_position)
+		_ketika_viewport_ditransformasi()
+		_perbarui_handles()
+func _ketika_nilai_posisi_z_objek_diubah(posisi_baru : float) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		objek_terpilih.global_position.z = posisi_baru
+		select_boundary.global_position = objek_terpilih.global_position
+		atur_posisi_fokus_viewport(objek_terpilih.global_position)
+		_ketika_viewport_ditransformasi()
+		_perbarui_handles()
+func _ketika_nilai_rotasi_y_objek_diubah(rotasi_baru : float) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		pass
+func _ketika_slider_jarak_render_objek_digeser(jarak_render : float) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		if %slider_jarak_render_objek.editable:
+			objek_terpilih.jarak_render = jarak_render
+			%nilai_jarak_render_objek.editable = false
+			%nilai_jarak_render_objek.value = jarak_render
+			%nilai_jarak_render_objek.editable = true
+func _ketika_nilai_jarak_render_objek_diubah(jarak_render : float) -> void:
+	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+		if %nilai_jarak_render_objek.editable:
+			objek_terpilih.jarak_render = jarak_render
+			%slider_jarak_render_objek.editable = false
+			%slider_jarak_render_objek.value = jarak_render
+			%slider_jarak_render_objek.editable = true
+
+func _ketika_pilih_file_objek() -> void:
+	$dialog_buka_objek.title = "Pilih Objek"
+	$dialog_buka_objek.show()
+func _ketika_buka_file_objek(jalur_file : String) -> void:
+	%nilai_jalur_instance_objek.text = jalur_file
+	_ketika_jalur_instance_objek_diubah(jalur_file)
 
 func _konversi_material_menjadi_data(objek_material : StandardMaterial3D) -> Dictionary:
 	"""
@@ -1167,7 +1241,7 @@ func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	kubus.tampilkan_di_viewport(false)
 	return kubus
 
-func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Dictionary = {}, snap_posisi : bool = true) -> Node3D:
+func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], snap_posisi : bool = true) -> Node3D:
 	var _objek_ : Node3D = load("res://model/objek.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(_objek_)
