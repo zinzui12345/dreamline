@@ -66,6 +66,11 @@ func tampilkan_di_viewport(tampil : bool) -> void:
 		$tampilan_representasi.set_layer_mask_value(17, tampil)
 		$tampilan_representasi.set_layer_mask_value(18, tampil)
 
+func atur_properti(nama : String, nilai : Variant) -> void:
+	for tmp_node in $instance_objek.get_children():
+		if tmp_node.get(nama) != null:
+			tmp_node.set(nama, nilai)
+
 func _compile() -> Dictionary:
 	return {
 		"posisi":			global_position,

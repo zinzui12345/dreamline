@@ -13,8 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://bhj2bxvekvpl3" path="res://ui/ikon/ikon_terapkan_material_wajah_bentuk.svg" id="4_wmcly"]
 [ext_resource type="Texture2D" uid="uid://ct0wqjhouv0bi" path="res://ui/ikon/ikon_ambil_material_wajah_bentuk.svg" id="5_e465q"]
 [ext_resource type="Texture2D" uid="uid://botvoe71gvtw8" path="res://ui/ikon/ikon_tambah_objek_bentuk.svg" id="6_f1y01"]
-[ext_resource type="PackedScene" uid="uid://bwdt16766j55u" path="res://ui/properti_id.tscn" id="14_y3ovf"]
-[ext_resource type="PackedScene" uid="uid://c6w1ecsxnrmni" path="res://ui/properti_warna.tscn" id="15_fpkry"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
 bg_color = Color(1, 1, 1, 1)
@@ -277,7 +275,7 @@ corner_radius_bottom_left = 5
 content_margin_top = 5.0
 content_margin_right = 5.0
 content_margin_bottom = 5.0
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.19607843, 0.19607843, 0.19607843, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -1039,28 +1037,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_1hw00")
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="baris" type="VBoxContainer" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom" unique_id=1953106761]
+[node name="daftar_properti_kustom" type="VBoxContainer" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom" unique_id=1953106761]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_edit_use_anchors_ = true
-
-[node name="id" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1768700116 instance=ExtResource("14_y3ovf")]
-layout_mode = 2
-
-[node name="warna_1" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1182495718 instance=ExtResource("15_fpkry")]
-layout_mode = 2
-
-[node name="warna_2" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=405698567 instance=ExtResource("15_fpkry")]
-layout_mode = 2
-
-[node name="warna_3" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=593563849 instance=ExtResource("15_fpkry")]
-layout_mode = 2
-
-[node name="warna_4" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1518984263 instance=ExtResource("15_fpkry")]
-layout_mode = 2
-
-[node name="warna_5" parent="properti_objek/MarginContainer/VBoxContainer/properti_kustom/baris" unique_id=1815711762 instance=ExtResource("15_fpkry")]
-layout_mode = 2
 
 [node name="dialog_buka_objek" type="FileDialog" parent="." unique_id=1355451708]
 oversampling_override = 1.0

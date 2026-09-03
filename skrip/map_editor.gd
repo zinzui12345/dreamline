@@ -5,6 +5,7 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
+# fix wireframe tidak terlihat saat viewport max zoom, coba sesuaikan posisi kamera berdasarkan jarak dengan plane terdekat!
 # tool tambah entitas
 # Fungsikan tool Knife
 
@@ -863,6 +864,20 @@ func _tampilkan_parameter_objek() -> void:
 	%nilai_posisi_z_objek.value = objek_terpilih.global_position.z
 	%nilai_rotasi_y_objek.value = objek_terpilih.global_rotation_degrees.y
 	%nilai_jarak_render_objek.value = objek_terpilih.jarak_render
+	for sisa_properti_objek in %daftar_properti_kustom.get_children():
+		sisa_properti_objek.queue_free()
+	for id_properti_objek in objek_terpilih.daftar_properti.size():
+		var properti_objek = objek_terpilih.daftar_properti[id_properti_objek]
+		var node_nilai_properti : HBoxContainer = null
+		if properti_objek[1] is bool:
+			node_nilai_properti = load("res://ui/editor map/properti_boolean.scn").instantiate()
+		elif properti_objek[1] is Color:
+			node_nilai_properti = load("res://ui/editor map/properti_warna.scn").instantiate()
+		if node_nilai_properti != null:
+			%daftar_properti_kustom.add_child(node_nilai_properti)
+			node_nilai_properti.id_properti = id_properti_objek
+			node_nilai_properti.objek_pemilik = objek_terpilih
+			node_nilai_properti.atur(properti_objek[0], properti_objek[1])
 	$properti_objek.show()
 
 func _sembunyikan_parameter_objek() -> void:
