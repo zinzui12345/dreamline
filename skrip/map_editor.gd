@@ -6,6 +6,8 @@ var jalur_file_desain : String
 
 # TODO :
 # fix wireframe tidak terlihat saat viewport max zoom, coba sesuaikan posisi kamera berdasarkan jarak dengan plane terdekat!
+# non-aktifkan collision semua objek saat tool_aktif == "face_select"
+# cegah mengatur skala objek
 # tool tambah entitas
 # Fungsikan tool Knife
 
@@ -322,6 +324,8 @@ func _input(event: InputEvent) -> void:
 				var objek_yang_diketahui = _deteksi_objek_dari_klik(event.position)
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d:
 					if objek_yang_diketahui:
+						if tool_aktif == "face_select" and !(objek_yang_diketahui is representasi_bentuk):
+							return
 						if objek_terpilih != null:
 							objek_terpilih.tampilkan_di_viewport(false)
 						if tool_aktif == "select" and objek_terpilih != objek_yang_diketahui:
@@ -335,7 +339,8 @@ func _input(event: InputEvent) -> void:
 						_perbarui_handles()
 						handles.visible = true
 						label_ukuran.visible = true
-						_highlight_face_seleksi()
+						if objek_terpilih is representasi_bentuk:
+							_highlight_face_seleksi()
 					elif _cek_viewport_dari_klik(event.position):
 						_clear_face_highlight()
 						_clear_selection()
@@ -910,7 +915,7 @@ func _ketika_nilai_posisi_z_objek_diubah(posisi_baru : float) -> void:
 		_perbarui_handles()
 func _ketika_nilai_rotasi_y_objek_diubah(rotasi_baru : float) -> void:
 	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
-		pass
+		objek_terpilih.rotation_degrees.y = rotasi_baru
 func _ketika_slider_jarak_render_objek_digeser(jarak_render : float) -> void:
 	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
 		if %slider_jarak_render_objek.editable:
@@ -1172,6 +1177,14 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 								)
 							_:
 								push_error("Jenis tidak diketahui : " + data_objek_desain.jenis)
+					"objek":
+						tambah_objek(
+							data_objek_desain.posisi,
+							data_objek_desain.rotasi,
+							data_objek_desain.jalur_instance,
+							data_objek_desain.daftar_properti,
+							false
+						)
 					_:
 						push_error("Tipe tidak diketahui : " + data_objek_desain.tipe)
 			jalur_file_desain = jalur_file
@@ -1268,6 +1281,8 @@ func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	_objek_.global_rotation = rotasi
 	_objek_.jalur_instance = jalur_instance
 	_objek_.daftar_properti = daftar_properti
+	for _properti_objek_ in _objek_.daftar_properti:
+		_objek_.atur_properti(_properti_objek_[0], _properti_objek_[1])
 	_objek_.tampilkan_di_viewport(false)
 	return _objek_
 
@@ -1286,7 +1301,7 @@ func simpan_desain() -> void:
 			var data_desain : Dictionary
 			var jumlah_objek_desain : int = 0
 			for objek_desain in $lingkungan.get_children():
-				if objek_desain.get("tipe_bentuk") != null:
+				if objek_desain is representasi_bentuk:
 					jumlah_objek_desain += 1
 					match objek_desain.tipe_bentuk:
 						0:
@@ -1313,6 +1328,16 @@ func simpan_desain() -> void:
 						2:
 							# Silinder
 							pass
+				elif objek_desain is representasi_objek:
+					jumlah_objek_desain += 1
+					data_desain[jumlah_objek_desain] = {
+						"tipe"				: "objek",
+						"jalur_instance"	: objek_desain.jalur_instance,
+						"jarak_render"		: objek_desain.jarak_render,
+						"posisi"			: objek_desain.global_position,
+						"rotasi"			: objek_desain.global_rotation,
+						"daftar_properti"	: objek_desain.daftar_properti
+					}
 			if file:
 				file.store_var(data_desain)
 				file.close()

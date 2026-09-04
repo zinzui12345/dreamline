@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://bhj2bxvekvpl3" path="res://ui/ikon/ikon_terapkan_material_wajah_bentuk.svg" id="4_wmcly"]
 [ext_resource type="Texture2D" uid="uid://ct0wqjhouv0bi" path="res://ui/ikon/ikon_ambil_material_wajah_bentuk.svg" id="5_e465q"]
 [ext_resource type="Texture2D" uid="uid://botvoe71gvtw8" path="res://ui/ikon/ikon_tambah_objek_bentuk.svg" id="6_f1y01"]
+[ext_resource type="Texture2D" uid="uid://bra5hge2hv0h6" path="res://ui/ikon/ikon_tambah_objek.svg" id="11_04tgp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
 bg_color = Color(1, 1, 1, 1)
@@ -468,7 +469,7 @@ icon_alignment = 1
 
 [node name="add_object_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1323584577]
 layout_mode = 2
-icon = ExtResource("6_f1y01")
+icon = ExtResource("11_04tgp")
 icon_alignment = 1
 
 [node name="kanvas" type="HSplitContainer" parent="tata_letak_vertikal/tata_letak" unique_id=1866058727]
@@ -989,6 +990,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="HSplitContainer4" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=897313106]
+visible = false
 layout_mode = 2
 split_offsets = PackedInt32Array(100, 329)
 split_offset = 100
