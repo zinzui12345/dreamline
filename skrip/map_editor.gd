@@ -1201,6 +1201,7 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	var data_fisik : StaticBody3D = StaticBody3D.new()
 	var data_pencahayaan : LightmapGI = LightmapGI.new()
 	node_map.name = jalur_file.get_file().get_basename()
+	node_map.set_script(load("res://skrip/map.gd"))
 	data_bentuk.name = "bentuk"
 	data_fisik.name = "fisik"
 	data_pencahayaan.name = "pencahayaan"
@@ -1213,27 +1214,29 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	data_pencahayaan.set_owner(node_map)
 	for objek_desain in $lingkungan.get_children():
 		if objek_desain.has_method("_compile"):
-			"""
-				{
-					"posisi":	Vector3
-					"rotasi":	Vector3
-					"bentuk":	MeshInstance3D
-					"fisik":	CollisionShape3D
-				}
-			"""
 			var data_objek : Dictionary = objek_desain._compile()
-			var node_bentuk_objek : MeshInstance3D = data_objek["bentuk"]
-			var node_fisik_objek : CollisionShape3D = data_objek["fisik"]
-			data_bentuk.add_child(node_bentuk_objek)
-			data_fisik.add_child(node_fisik_objek)
-			node_bentuk_objek.name = "bentuk_" + str(data_bentuk.get_child_count())
-			node_fisik_objek.name = "fisik_" + str(data_fisik.get_child_count())
-			node_bentuk_objek.set_owner(node_map)
-			node_fisik_objek.set_owner(node_map)
-			node_bentuk_objek.global_position = data_objek["posisi"]
-			node_fisik_objek.global_position = data_objek["posisi"]
-			node_bentuk_objek.global_rotation_degrees = data_objek["rotasi"]
-			node_fisik_objek.global_rotation_degrees = data_objek["rotasi"]
+			if objek_desain is representasi_bentuk:
+				var node_bentuk_objek : MeshInstance3D = data_objek["bentuk"]
+				var node_fisik_objek : CollisionShape3D = data_objek["fisik"]
+				data_bentuk.add_child(node_bentuk_objek)
+				data_fisik.add_child(node_fisik_objek)
+				node_bentuk_objek.name = "bentuk_" + str(data_bentuk.get_child_count())
+				node_fisik_objek.name = "fisik_" + str(data_fisik.get_child_count())
+				node_bentuk_objek.set_owner(node_map)
+				node_fisik_objek.set_owner(node_map)
+				node_bentuk_objek.global_position = data_objek["posisi"]
+				node_fisik_objek.global_position = data_objek["posisi"]
+				node_bentuk_objek.global_rotation_degrees = data_objek["rotasi"]
+				node_fisik_objek.global_rotation_degrees = data_objek["rotasi"]
+			elif objek_desain is representasi_objek:
+				node_map.objek_["objek_" + str(node_map.objek_.size() + 1)] = {
+					"id_aset":		node_map.name + "@objek_" + str(node_map.objek_.size() + 1),
+					"sumber": 		data_objek.jalur_instance,
+					"posisi": 		data_objek.posisi,
+					"rotasi": 		data_objek.rotasi,
+					"jarak_render": data_objek.jarak_render,
+					"kondisi":		data_objek.daftar_properti
+				}
 	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
 	var hasil_kumpulan_node = data_map.pack(node_map)
 	if hasil_kumpulan_node == OK:

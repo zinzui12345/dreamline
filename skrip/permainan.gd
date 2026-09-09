@@ -548,7 +548,9 @@ func editor_entitas() -> void:
 	get_tree().change_scene_to_file("res://skena/editor_entitas_pemain.tscn")
 func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();											return "memulai uji performa"
+	elif ResourceLoader.exists("%s/%s.scn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
 	elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
+	elif ResourceLoader.exists("res://map/%s.scn" % [nama_map]): server.map = nama_map;								return "mengatur map menjadi : "+nama_map
 	elif ResourceLoader.exists("res://map/%s.tscn" % [nama_map]): server.map = nama_map;							return "mengatur map menjadi : "+nama_map
 	else: print("file [res://map/%s.tscn] tidak ditemukan" % [nama_map]);											return "map ["+nama_map+"] tidak ditemukan"
 func atur_alat() -> void:
@@ -680,7 +682,9 @@ func _mulai_permainan(nama_server : String = "localhost", nama_map : StringName 
 func _muat_map(file_map : StringName) -> void:
 	# INFO : (4) muat map
 	if file_map.substr(0,1) == "@":
-		if ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]):
+		if ResourceLoader.exists("%s/%s.scn" % [Konfigurasi.direktori_map, file_map.substr(1)]):
+			map = await load("%s/%s.scn" % [Konfigurasi.direktori_map, file_map.substr(1)]).instantiate()
+		elif ResourceLoader.exists("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]):
 			map = await load("%s/%s.tscn" % [Konfigurasi.direktori_map, file_map.substr(1)]).instantiate()
 		else:
 			# server belum mengirim map atau proses unduhan map belum selesai
@@ -744,7 +748,7 @@ func _muat_map(file_map : StringName) -> void:
 		# 10/11/24 :: tambahkan objek
 		if map.get("objek_") != null:
 			for muat_objek in map.objek_:
-				if daftar_aset[map.objek_[muat_objek].id_aset].tipe == "objek":
+				if daftar_aset.has(map.objek_[muat_objek].id_aset) and daftar_aset[map.objek_[muat_objek].id_aset].tipe == "objek":
 					server._tambahkan_objek(
 						daftar_aset[map.objek_[muat_objek].id_aset].sumber,
 						map.objek_[muat_objek].posisi,
@@ -752,6 +756,16 @@ func _muat_map(file_map : StringName) -> void:
 						daftar_aset[map.objek_[muat_objek].id_aset].setelan.jarak_render,
 						map.objek_[muat_objek].kondisi
 					)
+				else:
+					for id_instance_objek in map.objek_:
+						if id_instance_objek.begins_with("objek_"):
+							server._tambahkan_objek(
+								map.objek_[id_instance_objek].sumber,
+								map.objek_[id_instance_objek].posisi,
+								map.objek_[id_instance_objek].rotasi,
+								map.objek_[id_instance_objek].jarak_render,
+								map.objek_[id_instance_objek].kondisi
+							)
 				# Panku.notify(map.objek_[muat_objek])
 	elif koneksi == MODE_KONEKSI.CLIENT:
 		if server.mode_replay:
