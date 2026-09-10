@@ -10,7 +10,7 @@ class_name representasi_objek
 		for tmp_node in $instance_objek.get_children():
 			tmp_node.queue_free()
 		if jalur_baru != "" and ResourceLoader.exists(jalur_baru):
-			var node_tampilan = load(jalur_baru).instantiate()
+			node_tampilan = load(jalur_baru).instantiate()
 			node_tampilan.process_mode = PROCESS_MODE_DISABLED
 			node_tampilan.mulai()
 			$instance_objek.add_child(node_tampilan)
@@ -21,6 +21,8 @@ class_name representasi_objek
 			else:
 				node_tampilan.position = -(node_tampilan.wilayah_render.size / 2) - node_tampilan.wilayah_render.position
 				ukuran = node_tampilan.wilayah_render.size
+			if ukuran == Vector3.ZERO:
+				push_error("[Galat] Objek @" + jalur_baru + " tidak memiliki ukuran yang valid!")
 			if node_tampilan.get("properti") != null:
 				daftar_properti = node_tampilan.properti
 			elif has_meta("setelan"):
@@ -40,6 +42,7 @@ class_name representasi_objek
 			$bentuk_kerangka.visible = false
 			$tampilan_representasi.visible = true
 		jalur_instance = jalur_baru
+@export var node_tampilan : objek
 @export var jarak_render : int = 10
 @export var daftar_properti : Array
 @export var ukuran : Vector3 = Vector3(1.0, 1.0, 1.0) :
@@ -72,6 +75,14 @@ func atur_properti(nama : String, nilai : Variant) -> void:
 			tmp_node.set(nama, nilai)
 
 func _compile() -> Dictionary:
+	if node_tampilan != null:
+		return {
+			"posisi":			node_tampilan.global_position,
+			"rotasi":			global_rotation_degrees,
+			"jalur_instance":	jalur_instance,
+			"jarak_render":		jarak_render,
+			"daftar_properti":	daftar_properti
+		}
 	return {
 		"posisi":			global_position,
 		"rotasi":			global_rotation_degrees,
