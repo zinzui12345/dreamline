@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# representasi pemain dapat diputar
 # fix wireframe tidak terlihat saat viewport max zoom, coba sesuaikan posisi kamera berdasarkan jarak dengan plane terdekat!
 # helper & node batas_bawah
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
@@ -24,13 +23,21 @@ var objek_terpilih : Node3D = null :
 				if pilih_objek is representasi_objek:
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = false
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = true
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
+				elif pilih_objek is representasi_pemain:
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = false
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = true
+					%nilai_rotasi_y_model.value = pilih_objek.dapatkan_rotasi()
 				else:
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = true
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
 			elif pilih_objek == null:
 				select_boundary.visible = false
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = true
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
+				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
 		objek_terpilih = pilih_objek
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
@@ -923,8 +930,11 @@ func _ketika_nilai_posisi_z_objek_diubah(posisi_baru : float) -> void:
 		_ketika_viewport_ditransformasi()
 		_perbarui_handles()
 func _ketika_nilai_rotasi_y_objek_diubah(rotasi_baru : float) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
-		objek_terpilih.rotation_degrees.y = rotasi_baru
+	if objek_terpilih != null:
+		if $properti_objek.visible and objek_terpilih is representasi_objek:
+			objek_terpilih.rotation_degrees.y = rotasi_baru
+		elif objek_terpilih is representasi_pemain:
+			objek_terpilih.atur_rotasi(rotasi_baru)
 func _ketika_slider_jarak_render_objek_digeser(jarak_render : float) -> void:
 	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
 		if %slider_jarak_render_objek.editable:
@@ -1199,7 +1209,10 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 						var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
 						$lingkungan.add_child(posisi_pemain)
 						posisi_pemain.global_position = data_objek_desain.posisi
-						posisi_pemain.global_rotation = data_objek_desain.rotasi
+						if data_objek_desain.rotasi is Vector3:
+							posisi_pemain.atur_rotasi(data_objek_desain.rotasi.y)
+						else:
+							posisi_pemain.atur_rotasi(data_objek_desain.rotasi)
 						memiliki_posisi_pemain = true
 					_:
 						push_error("Tipe tidak diketahui : " + data_objek_desain.tipe)
@@ -1373,7 +1386,7 @@ func simpan_desain() -> void:
 					data_desain[jumlah_objek_desain] = {
 						"tipe"				: "posisi_pemain",
 						"posisi"			: objek_desain.global_position,
-						"rotasi"			: objek_desain.global_rotation
+						"rotasi"			: objek_desain.dapatkan_rotasi()
 					}
 			if file:
 				file.store_var(data_desain)

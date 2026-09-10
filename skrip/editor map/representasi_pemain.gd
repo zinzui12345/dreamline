@@ -22,8 +22,11 @@ func _ready() -> void:
 func tampilkan_di_viewport(tampil : bool) -> void:
 	$bentuk_kerangka.visible = tampil
 
+func atur_rotasi(arah : float) -> void: $model_pemain.global_rotation_degrees.y = arah
+func dapatkan_rotasi() -> float: return $model_pemain.global_rotation_degrees.y
+
 func _compile() -> Dictionary:
 	return {
-		"posisi":	$model_pemain/reno.global_position,
-		"rotasi":	$model_pemain/reno.global_rotation
+		"posisi":	$model_pemain.global_position,
+		"rotasi":	$model_pemain.global_rotation
 	}
