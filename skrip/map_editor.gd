@@ -5,9 +5,10 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
+# representasi pemain dapat diputar
 # fix wireframe tidak terlihat saat viewport max zoom, coba sesuaikan posisi kamera berdasarkan jarak dengan plane terdekat!
+# helper & node batas_bawah
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
-# cegah mengatur skala objek
 # tool tambah entitas
 # Fungsikan tool Knife
 
@@ -250,6 +251,10 @@ func _ready() -> void:
 	select_boundary.visible = false
 	add_child(select_boundary)
 	
+	# tambahkan posisi spawn pemain
+	var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
+	$lingkungan.add_child(posisi_pemain)
+	
 	# Hubungkan tombol menu
 	$tata_letak_vertikal/menu/HBoxContainer/buka_desain.connect("pressed", buka_desain)
 	$tata_letak_vertikal/menu/HBoxContainer/simpan_desain.connect("pressed", simpan_desain)
@@ -334,8 +339,12 @@ func _input(event: InputEvent) -> void:
 						objek_terpilih = objek_yang_diketahui
 						objek_terpilih.tampilkan_di_viewport(true)
 						if tool_aktif == "select":
-							# Indeks face sudah diatur di _pilih_objek_dari_viewport jika tool_aktif == "face_select"
-							indeks_face_terpilih = -1 # Reset face selection saat tool select
+							if objek_terpilih is representasi_bentuk:
+								$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = false
+							else:
+								$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = true
+								_pilih_mode_transformasi_gerak()
+							indeks_face_terpilih = -1
 						_perbarui_handles()
 						handles.visible = true
 						label_ukuran.visible = true
@@ -344,6 +353,7 @@ func _input(event: InputEvent) -> void:
 					elif _cek_viewport_dari_klik(event.position):
 						_clear_face_highlight()
 						_clear_selection()
+						$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = false
 			elif tool_aktif == "knife":
 				# TODO: Logika untuk knife tool (misalnya memulai gambar garis)
 				print("Knife tool diklik.")
@@ -534,19 +544,17 @@ func _perbarui_handles() -> void:
 		# Sesuaikan posisi label ukuran
 		label_ukuran.global_transform.origin = objek_terpilih.global_transform.origin
 		ukuran_x_depan.position.x = -offset.x
-		ukuran_x_depan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.y)
+		ukuran_x_depan.text = _konversi_nilai_ukuran_menjadi_teks(snapped(objek_terpilih.ukuran.y, 0.01))
 		ukuran_y_depan.position.y = -offset.y
-		ukuran_y_depan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.x)
+		ukuran_y_depan.text = _konversi_nilai_ukuran_menjadi_teks(snapped(objek_terpilih.ukuran.x, 0.01))
 		ukuran_z_kanan.position.z = -offset.z
-		ukuran_z_kanan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.y)
+		ukuran_z_kanan.text = _konversi_nilai_ukuran_menjadi_teks(snapped(objek_terpilih.ukuran.y, 0.01))
 		ukuran_y_kanan.position.y = -offset.y
-		ukuran_y_kanan.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.z)
+		ukuran_y_kanan.text = _konversi_nilai_ukuran_menjadi_teks(snapped(objek_terpilih.ukuran.z, 0.01))
 		ukuran_x_atas.position.x = -offset.x
-		ukuran_x_atas.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.z)
+		ukuran_x_atas.text = _konversi_nilai_ukuran_menjadi_teks(snapped(objek_terpilih.ukuran.z, 0.01))
 		ukuran_z_atas.position.z = -offset.z
-		ukuran_z_atas.text = _konversi_nilai_ukuran_menjadi_teks(objek_terpilih.ukuran.x)
-		# Untuk mode putar, kita akan menambahkan handles khusus nanti
-		# Untuk saat ini, kita tampilkan semua handles dalam mode gerak
+		ukuran_z_atas.text = _konversi_nilai_ukuran_menjadi_teks(snapped(objek_terpilih.ukuran.x, 0.01))
 	else:
 		handles.visible = false
 		label_ukuran.visible = false
@@ -663,7 +671,7 @@ func _physics_process(_delta: float) -> void:
 						var offset  : float = snappedf(posisi_baru.x - objek_terpilih.global_position.x, interval_snap)
 						var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
 						var pos_target  : float = objek_terpilih.global_position.x + (offset / 2)
-						if skala_target > (interval_snap / 2):
+						if objek_terpilih is representasi_bentuk and skala_target > (interval_snap / 2):
 							await RenderingServer.frame_post_draw
 							objek_terpilih.ukuran.x = skala_target
 							objek_terpilih.global_position.x = pos_target
@@ -682,7 +690,7 @@ func _physics_process(_delta: float) -> void:
 						var offset  : float = snappedf(posisi_baru.y - objek_terpilih.global_position.y, interval_snap)
 						var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
 						var pos_target  : float = objek_terpilih.global_position.y + (offset / 2)
-						if skala_target > (interval_snap / 2):
+						if objek_terpilih is representasi_bentuk and skala_target > (interval_snap / 2):
 							await RenderingServer.frame_post_draw
 							objek_terpilih.ukuran.y = skala_target
 							objek_terpilih.global_position.y = pos_target
@@ -704,7 +712,7 @@ func _physics_process(_delta: float) -> void:
 					var offset  : float = snappedf(posisi_baru.z - objek_terpilih.global_position.z, interval_snap)
 					var skala_target  : float = snappedf((end_point + offset) - start_point, interval_snap)
 					var pos_target  : float = objek_terpilih.global_position.z + (offset / 2)
-					if skala_target > (interval_snap / 2):
+					if objek_terpilih is representasi_bentuk and skala_target > (interval_snap / 2):
 						await RenderingServer.frame_post_draw
 						objek_terpilih.ukuran.z = skala_target
 						objek_terpilih.global_position.z = pos_target
@@ -883,6 +891,7 @@ func _tampilkan_parameter_objek() -> void:
 			node_nilai_properti.id_properti = id_properti_objek
 			node_nilai_properti.objek_pemilik = objek_terpilih
 			node_nilai_properti.atur(properti_objek[0], properti_objek[1])
+	$properti_objek.title = objek_terpilih.name
 	$properti_objek.show()
 
 func _sembunyikan_parameter_objek() -> void:
@@ -1160,6 +1169,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 		var file = FileAccess.open(jalur_file, FileAccess.READ)
 		if file:
 			var data = file.get_var()
+			var memiliki_posisi_pemain : bool = false
 			for objek_desain_saat_ini in $lingkungan.get_children():
 				objek_desain_saat_ini.queue_free()
 			for index_objek_desain in data:
@@ -1185,8 +1195,18 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 							data_objek_desain.daftar_properti,
 							false
 						)
+					"posisi_pemain":
+						var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
+						$lingkungan.add_child(posisi_pemain)
+						posisi_pemain.global_position = data_objek_desain.posisi
+						posisi_pemain.global_rotation = data_objek_desain.rotasi
+						memiliki_posisi_pemain = true
 					_:
 						push_error("Tipe tidak diketahui : " + data_objek_desain.tipe)
+			# tambahkan posisi spawn pemain
+			if not memiliki_posisi_pemain:
+				var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
+				$lingkungan.add_child(posisi_pemain)
 			jalur_file_desain = jalur_file
 			file.close()
 			Panku.notify("Membuka : " + jalur_file_desain)
@@ -1237,6 +1257,13 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 					"jarak_render": data_objek.jarak_render,
 					"kondisi":		data_objek.daftar_properti
 				}
+			elif objek_desain is representasi_pemain:
+				var node_posisi_pemain : Marker3D = Marker3D.new()
+				node_posisi_pemain.name = "posisi_spawn"
+				node_map.add_child(node_posisi_pemain)
+				node_posisi_pemain.global_position = data_objek.posisi
+				node_posisi_pemain.global_rotation = data_objek.rotasi
+				node_posisi_pemain.set_owner(node_map)
 	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
 	var hasil_kumpulan_node = data_map.pack(node_map)
 	if hasil_kumpulan_node == OK:
@@ -1252,7 +1279,7 @@ func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = posisi
 
 func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0), daftar_material : Dictionary = {}, snap_posisi : bool = true) -> Node3D:
-	var kubus : Node3D = load("res://model/kubus.scn").instantiate()
+	var kubus : Node3D = load("res://model/editor map/kubus.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(kubus)
 	for indeks_data_material in daftar_material.keys():
@@ -1273,7 +1300,7 @@ func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	return kubus
 
 func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], snap_posisi : bool = true) -> Node3D:
-	var _objek_ : Node3D = load("res://model/objek.scn").instantiate()
+	var _objek_ : Node3D = load("res://model/editor map/objek.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(_objek_)
 	if snap_posisi:
@@ -1340,6 +1367,13 @@ func simpan_desain() -> void:
 						"posisi"			: objek_desain.global_position,
 						"rotasi"			: objek_desain.global_rotation,
 						"daftar_properti"	: objek_desain.daftar_properti
+					}
+				elif objek_desain is representasi_pemain:
+					jumlah_objek_desain += 1
+					data_desain[jumlah_objek_desain] = {
+						"tipe"				: "posisi_pemain",
+						"posisi"			: objek_desain.global_position,
+						"rotasi"			: objek_desain.global_rotation
 					}
 			if file:
 				file.store_var(data_desain)
