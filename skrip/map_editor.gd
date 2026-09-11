@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# fix wireframe tidak terlihat saat viewport max zoom, coba sesuaikan posisi kamera berdasarkan jarak dengan plane terdekat!
 # helper & node batas_bawah
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
@@ -548,6 +547,13 @@ func _perbarui_handles() -> void:
 		handle_x.position.x = offset.x
 		handle_y.position.y = offset.y
 		handle_z.position.z = offset.z
+		# sesuaikan jarak pengamat viewport
+		if	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position == objek_terpilih.global_position and \
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position == objek_terpilih.global_position and \
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position == objek_terpilih.global_position:
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.position.x += handle_x.position.x
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.position.y += handle_y.position.y
+			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.position.z += handle_z.position.z
 		# Sesuaikan posisi label ukuran
 		label_ukuran.global_transform.origin = objek_terpilih.global_transform.origin
 		ukuran_x_depan.position.x = -offset.x
