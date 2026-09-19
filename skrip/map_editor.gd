@@ -6,6 +6,9 @@ var jalur_file_desain : String
 
 # TODO :
 # helper & node batas_bawah
+# - [selesai] hanya tampil pada viewport depan dan kanan
+# - UI untuk menampilkan dan mengubah posisi batas_bawah map
+# - ketika compile, cek posisi y apakah lebih dari posisi y representasi_pemain
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
 # Fungsikan tool Knife
@@ -56,6 +59,7 @@ var handles : Node3D
 var handle_x : MeshInstance3D
 var handle_y : MeshInstance3D
 var handle_z : MeshInstance3D
+var handle_batas_bawah : Marker3D
 var select_boundary : MeshInstance3D
 
 # Warna handles
@@ -183,6 +187,19 @@ func _ready() -> void:
 	handle_z.set_layer_mask_value(1, false)
 	handle_z.set_layer_mask_value(18, true)
 	handles.add_child(handle_z)
+	
+	# tambahkan posisi batas bawah dunia
+	handle_batas_bawah = Marker3D.new()
+	var tampilan_batas_bawah : MeshInstance3D = MeshInstance3D.new()
+	tampilan_batas_bawah.mesh = BoxMesh.new()
+	tampilan_batas_bawah.mesh.size = Vector3(500, 0.1, 500)
+	tampilan_batas_bawah.mesh.flip_faces = true
+	tampilan_batas_bawah.set_layer_mask_value(1, false)
+	tampilan_batas_bawah.set_layer_mask_value(17, true)
+	handle_batas_bawah.add_child(tampilan_batas_bawah)
+	handle_batas_bawah.name = "batas_bawah"
+	add_child(handle_batas_bawah)
+	handle_batas_bawah.global_position.y = -4000 #server.permainan.batas_bawah
 	
 	# label ukuran
 	label_ukuran = Node3D.new()
@@ -1186,6 +1203,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 		if file:
 			var data = file.get_var()
 			var memiliki_posisi_pemain : bool = false
+			var memiliki_batas_bawah : bool = false
 			for objek_desain_saat_ini in $lingkungan.get_children():
 				objek_desain_saat_ini.queue_free()
 			for index_objek_desain in data:
@@ -1220,12 +1238,18 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 						else:
 							posisi_pemain.atur_rotasi(data_objek_desain.rotasi)
 						memiliki_posisi_pemain = true
+					"batas_bawah":
+						handle_batas_bawah.global_position.y = data_objek_desain.posisi
+						memiliki_batas_bawah = true
 					_:
 						push_error("Tipe tidak diketahui : " + data_objek_desain.tipe)
 			# tambahkan posisi spawn pemain
 			if not memiliki_posisi_pemain:
 				var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
 				$lingkungan.add_child(posisi_pemain)
+			# atur ulang posisi batas bawah dunia
+			if not memiliki_batas_bawah:
+				handle_batas_bawah.global_position.y = -4000 #server.permainan.batas_bawah
 			jalur_file_desain = jalur_file
 			file.close()
 			Panku.notify("Membuka : " + jalur_file_desain)
@@ -1284,6 +1308,11 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 				node_posisi_pemain.global_rotation = data_objek.rotasi
 				node_posisi_pemain.set_owner(node_map)
 	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
+	var node_batas_bawah : Marker3D = Marker3D.new()
+	node_batas_bawah.name = "batas_bawah"
+	node_map.add_child(node_batas_bawah)
+	node_batas_bawah.global_position.y = handle_batas_bawah.global_position.y
+	node_batas_bawah.set_owner(node_map)
 	var hasil_kumpulan_node = data_map.pack(node_map)
 	if hasil_kumpulan_node == OK:
 		var hasil_map = ResourceSaver.save(data_map, jalur_file)
@@ -1296,6 +1325,8 @@ func atur_posisi_fokus_viewport(posisi : Vector3) -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus.global_position = posisi
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus.global_position = posisi
+	handle_batas_bawah.global_position.x = posisi.x
+	handle_batas_bawah.global_position.z = posisi.z
 
 func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, ukuran : Vector3 = Vector3(1.0, 1.0, 1.0), daftar_material : Dictionary = {}, snap_posisi : bool = true) -> Node3D:
 	var kubus : Node3D = load("res://model/editor map/kubus.scn").instantiate()
@@ -1377,7 +1408,7 @@ func simpan_desain() -> void:
 						2:
 							# Silinder
 							pass
-				elif objek_desain is representasi_objek:
+				elif objek_desain is representasi_objek and objek_desain.jalur_instance != "":
 					jumlah_objek_desain += 1
 					data_desain[jumlah_objek_desain] = {
 						"tipe"				: "objek",
@@ -1394,6 +1425,12 @@ func simpan_desain() -> void:
 						"posisi"			: objek_desain.global_position,
 						"rotasi"			: objek_desain.dapatkan_rotasi()
 					}
+			# simpan posisi batas bawah dunia
+			jumlah_objek_desain += 1
+			data_desain[jumlah_objek_desain] = {
+				"tipe"				: "batas_bawah",
+				"posisi"			: handle_batas_bawah.global_position.y,
+			}
 			if file:
 				file.store_var(data_desain)
 				file.close()
