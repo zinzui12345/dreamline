@@ -5,10 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# helper & node batas_bawah
-# - [selesai] hanya tampil pada viewport depan dan kanan
-# - UI untuk menampilkan dan mengubah posisi batas_bawah map
-# - ketika compile, cek posisi y apakah lebih dari posisi y representasi_pemain
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
 # Fungsikan tool Knife
@@ -200,6 +196,7 @@ func _ready() -> void:
 	handle_batas_bawah.name = "batas_bawah"
 	add_child(handle_batas_bawah)
 	handle_batas_bawah.global_position.y = -4000 #server.permainan.batas_bawah
+	$tata_letak_vertikal/menu/HBoxContainer/nilai_batas_bawah.value = handle_batas_bawah.global_position.y
 	
 	# label ukuran
 	label_ukuran = Node3D.new()
@@ -284,6 +281,7 @@ func _ready() -> void:
 	$tata_letak_vertikal/menu/HBoxContainer/render_desain.connect("pressed", render_desain)
 	$tata_letak_vertikal/menu/HBoxContainer/perbesar_kisi.connect("pressed", _ketika_perbesar_ukuran_kisi)
 	$tata_letak_vertikal/menu/HBoxContainer/perkecil_kisi.connect("pressed", _ketika_perkecil_ukuran_kisi)
+	$tata_letak_vertikal/menu/HBoxContainer/nilai_batas_bawah.connect("value_changed", _ketika_mengubah_posisi_batas_bawah)
 	
 	# Hubungkan tombol alat
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/select_tool_button.connect("pressed", self._on_select_tool_pressed)
@@ -771,6 +769,9 @@ func _ketika_perkecil_ukuran_kisi() -> void:
 		jumlah_kisi_kisi = jumlah_kisi_kisi * 2
 	$tata_letak_vertikal/menu/HBoxContainer/nilai_ukuran_kisi.text = str((1.0 / float(jumlah_kisi_kisi) * 100)) + " cm"
 
+func _ketika_mengubah_posisi_batas_bawah(posisi_baru : float) -> void:
+	handle_batas_bawah.global_position.y = posisi_baru
+
 func _snap_posisi_x_objek(posisi_baru : float) -> void:
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	if fmod(objek_terpilih.ukuran.x / interval_snap, 2.0) == 0.0:
@@ -1250,6 +1251,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 			# atur ulang posisi batas bawah dunia
 			if not memiliki_batas_bawah:
 				handle_batas_bawah.global_position.y = -4000 #server.permainan.batas_bawah
+			$tata_letak_vertikal/menu/HBoxContainer/nilai_batas_bawah.value = handle_batas_bawah.global_position.y
 			jalur_file_desain = jalur_file
 			file.close()
 			Panku.notify("Membuka : " + jalur_file_desain)
@@ -1263,18 +1265,23 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	var data_bentuk : Node3D = Node3D.new()
 	var data_fisik : StaticBody3D = StaticBody3D.new()
 	var data_pencahayaan : LightmapGI = LightmapGI.new()
+	var node_batas_bawah : Marker3D = Marker3D.new()
 	node_map.name = jalur_file.get_file().get_basename()
 	node_map.set_script(load("res://skrip/map.gd"))
 	data_bentuk.name = "bentuk"
 	data_fisik.name = "fisik"
 	data_pencahayaan.name = "pencahayaan"
+	node_batas_bawah.name = "batas_bawah"
 	add_child(node_map)
 	node_map.add_child(data_bentuk)
 	node_map.add_child(data_fisik)
 	node_map.add_child(data_pencahayaan)
+	node_map.add_child(node_batas_bawah)
 	data_bentuk.set_owner(node_map)
 	data_fisik.set_owner(node_map)
 	data_pencahayaan.set_owner(node_map)
+	node_batas_bawah.set_owner(node_map)
+	node_batas_bawah.global_position.y = handle_batas_bawah.global_position.y
 	for objek_desain in $lingkungan.get_children():
 		if objek_desain.has_method("_compile"):
 			var data_objek : Dictionary = objek_desain._compile()
@@ -1307,12 +1314,10 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 				node_posisi_pemain.global_position = data_objek.posisi
 				node_posisi_pemain.global_rotation = data_objek.rotasi
 				node_posisi_pemain.set_owner(node_map)
+				# cek posisi y node_batas_bawah apakah lebih dari posisi y representasi_pemain
+				if node_batas_bawah.global_position.y >= node_posisi_pemain.global_position.y:
+					node_posisi_pemain.global_position.y = node_batas_bawah.global_position.y + 10
 	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
-	var node_batas_bawah : Marker3D = Marker3D.new()
-	node_batas_bawah.name = "batas_bawah"
-	node_map.add_child(node_batas_bawah)
-	node_batas_bawah.global_position.y = handle_batas_bawah.global_position.y
-	node_batas_bawah.set_owner(node_map)
 	var hasil_kumpulan_node = data_map.pack(node_map)
 	if hasil_kumpulan_node == OK:
 		var hasil_map = ResourceSaver.save(data_map, jalur_file)

@@ -374,6 +374,27 @@ layout_mode = 2
 icon = ExtResource("3_f1y01")
 icon_alignment = 1
 
+[node name="margin_tengah" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=872542522]
+custom_minimum_size = Vector2(10, 0)
+custom_maximum_size = Vector2(10, -1)
+layout_mode = 2
+
+[node name="label_batas_bawah" type="Label" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1079195553]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Batas Bawah: "
+
+[node name="nilai_batas_bawah" type="SpinBox" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=1214888372]
+custom_minimum_size = Vector2(0, 30)
+custom_maximum_size = Vector2(-1, 30)
+clip_contents = true
+layout_mode = 2
+min_value = -4000.0
+max_value = -1.0
+value = -1000.0
+rounded = true
+alignment = 1
+
 [node name="margin_2" type="Control" parent="tata_letak_vertikal/menu/HBoxContainer" unique_id=959721286]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
