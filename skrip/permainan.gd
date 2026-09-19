@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 15/08/26 Early Access"
+const versi = "Dreamline v0.4.4 19/09/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -757,16 +757,14 @@ func _muat_map(file_map : StringName) -> void:
 						map.objek_[muat_objek].kondisi
 					)
 				else:
-					for id_instance_objek in map.objek_:
-						if id_instance_objek.begins_with("objek_"):
-							server._tambahkan_objek(
-								map.objek_[id_instance_objek].sumber,
-								map.objek_[id_instance_objek].posisi,
-								map.objek_[id_instance_objek].rotasi,
-								map.objek_[id_instance_objek].jarak_render,
-								map.objek_[id_instance_objek].kondisi
-							)
-				# Panku.notify(map.objek_[muat_objek])
+					if muat_objek.begins_with("objek_"):
+						server._tambahkan_objek(
+							map.objek_[muat_objek].sumber,
+							map.objek_[muat_objek].posisi,
+							map.objek_[muat_objek].rotasi,
+							map.objek_[muat_objek].jarak_render,
+							map.objek_[muat_objek].kondisi
+						)
 	elif koneksi == MODE_KONEKSI.CLIENT:
 		if server.mode_replay:
 			# 13/09/24 :: buat koneksi virtual untuk mencegah kesalahan proses entitas

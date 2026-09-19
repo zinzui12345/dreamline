@@ -1315,7 +1315,7 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 				node_posisi_pemain.global_rotation = data_objek.rotasi
 				node_posisi_pemain.set_owner(node_map)
 				# cek posisi y node_batas_bawah apakah lebih dari posisi y representasi_pemain
-				if node_batas_bawah.global_position.y >= node_posisi_pemain.global_position.y:
+				if node_batas_bawah.global_position.y >= node_posisi_pemain.global_position.y: # FIXME : margin batas sejauh 600 meter setelahnya
 					node_posisi_pemain.global_position.y = node_batas_bawah.global_position.y + 10
 	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
 	var hasil_kumpulan_node = data_map.pack(node_map)
