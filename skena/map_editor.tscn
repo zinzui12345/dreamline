@@ -434,7 +434,7 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 338.0
 grow_horizontal = 2
-split_offsets = PackedInt32Array(58, 128, 198, 268, 0, 0, 0)
+split_offsets = PackedInt32Array(58, 128, 198, 268, 0, 0, 0, 0)
 dragging_enabled = false
 split_offset = 58
 
@@ -487,6 +487,11 @@ icon = ExtResource("6_f1y01")
 icon_alignment = 1
 
 [node name="add_object_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1323584577]
+layout_mode = 2
+icon = ExtResource("11_04tgp")
+icon_alignment = 1
+
+[node name="add_entity_button" type="Button" parent="tata_letak_vertikal/tata_letak/alat/VSplitContainer" unique_id=1337428064]
 layout_mode = 2
 icon = ExtResource("11_04tgp")
 icon_alignment = 1
@@ -852,6 +857,14 @@ layout_mode = 2
 layout_mode = 2
 text = "Edit Objek"
 
+[node name="properti_pilihan" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti" unique_id=439654860]
+visible = false
+layout_mode = 2
+
+[node name="hapus_objek_dipilih" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_pilihan" unique_id=1892671762]
+layout_mode = 2
+text = "Hapus"
+
 [node name="margin_kanan" type="Control" parent="tata_letak_vertikal/tata_letak" unique_id=1039494916]
 custom_maximum_size = Vector2(0, -1)
 layout_mode = 2
@@ -1100,6 +1113,7 @@ filters = PackedStringArray("*.scn", "*.tscn")
 [connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk/pilih_material" to="." method="_ketika_memilih_material"]
 [connection signal="value_changed" from="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model/nilai_rotasi_y_model" to="." method="_ketika_nilai_rotasi_y_objek_diubah"]
 [connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek/edit_atribut_objek" to="." method="_tampilkan_parameter_objek"]
+[connection signal="pressed" from="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_pilihan/hapus_objek_dipilih" to="." method="hapus_node_yang_dipilih"]
 [connection signal="file_selected" from="dialog_buka_desain" to="." method="_ketika_buka_file_desain"]
 [connection signal="file_selected" from="dialog_render_desain" to="." method="_ketika_render_map_desain"]
 [connection signal="close_requested" from="properti_objek" to="." method="_sembunyikan_parameter_objek"]

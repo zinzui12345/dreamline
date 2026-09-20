@@ -31,11 +31,14 @@ var objek_terpilih : Node3D = null :
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = true
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
+				if pilih_objek is not representasi_pemain:
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_pilihan.show()
 			elif pilih_objek == null:
 				select_boundary.visible = false
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = true
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
+				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_pilihan.hide()
 		objek_terpilih = pilih_objek
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
@@ -427,6 +430,10 @@ func _input(event: InputEvent) -> void:
 		_ketika_perbesar_ukuran_kisi()
 	if Input.is_action_just_pressed("perkecil_kisi"):
 		_ketika_perkecil_ukuran_kisi()
+	if Input.is_action_just_pressed("simpan_perubahan"):
+		simpan_desain()
+	if Input.is_action_just_pressed("hapus_pilihan"):
+		hapus_node_yang_dipilih()
 
 func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 	# Periksa setiap viewport untuk melihat klik terjadi di mana
@@ -1370,6 +1377,13 @@ func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 		_objek_.atur_properti(_properti_objek_[0], _properti_objek_[1])
 	_objek_.tampilkan_di_viewport(false)
 	return _objek_
+
+func hapus_node_yang_dipilih() -> void:
+	if objek_terpilih is not representasi_pemain:
+		if objek_terpilih != null:
+			objek_terpilih.queue_free()
+		objek_terpilih = null
+		_clear_selection()
 
 func simpan_desain() -> void:
 	if !DirAccess.dir_exists_absolute("user://mapsrc"):
