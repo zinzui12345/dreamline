@@ -5,6 +5,9 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
+# muat & simpan representasi_entitas
+# ekspor representasi_entitas
+# relasi antara objek dan entitas | harus ada tipe relasi (input, output)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
 # Fungsikan tool Knife
@@ -18,10 +21,14 @@ var objek_terpilih : Node3D = null :
 				if pilih_objek.get("ukuran") != null:
 					select_boundary.mesh.size = pilih_objek.ukuran + Vector3(0.001, 0.001, 0.001)
 				select_boundary.visible = true
-				if pilih_objek is representasi_objek:
+				if pilih_objek is representasi_objek or pilih_objek is representasi_entitas:
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = false
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = true
-					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
+					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = true
+					if pilih_objek.node_tampilan != null:
+						%nilai_rotasi_y_model.value = pilih_objek.node_tampilan.rotation_degrees.y
+					else:
+						%nilai_rotasi_y_model.value = pilih_objek.rotation_degrees.y
 				elif pilih_objek is representasi_pemain:
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_bentuk.visible = false
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = false
@@ -296,6 +303,7 @@ func _ready() -> void:
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/material_picker_button.connect("pressed", self._ambil_material_terpilih)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_cube_button.connect("pressed", self._ketika_menambah_kubus)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_object_button.connect("pressed", self._ketika_menambah_objek)
+	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_entity_button.connect("pressed", self._ketika_menambah_entitas)
 	
 	# Sesuaikan posisi batas raycast
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan.position.z = -9000.0
@@ -899,13 +907,26 @@ func _ketika_menambah_objek() -> void:
 	label_ukuran.visible = true
 	print("Objek ditambahkan dan dipilih: ", _objek_.name)
 
+func _ketika_menambah_entitas() -> void:
+	var _entitas_ : Node3D = tambah_entitas($tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d/SubViewport/pengamat/titik_fokus.global_position)
+	if objek_terpilih != null:
+		objek_terpilih.tampilkan_di_viewport(false)
+	_on_select_tool_pressed()
+	objek_terpilih = _entitas_
+	objek_terpilih.tampilkan_di_viewport(true)
+	indeks_face_terpilih = -1
+	_perbarui_handles()
+	handles.visible = true
+	label_ukuran.visible = true
+	print("Entitas ditambahkan dan dipilih: ", _entitas_.name)
+
 func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 	for objek_objek in $lingkungan.get_children():
 		if objek_objek.get("pilih_wajah") != null:
 			objek_objek.pilih_wajah = mode_face
 
 func _tampilkan_parameter_objek() -> void:
-	if objek_terpilih == null or !(objek_terpilih is representasi_objek):
+	if objek_terpilih == null or (!(objek_terpilih is representasi_objek) and !(objek_terpilih is representasi_entitas)):
 		server.permainan._tampilkan_popup_informasi("Tidak ada objek yang dipilih!", $tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek/edit_atribut_objek)
 		return
 	_ketika_ukuran_tampilan_parameter_objek_diubah()
@@ -913,8 +934,12 @@ func _tampilkan_parameter_objek() -> void:
 	%nilai_posisi_x_objek.value = objek_terpilih.global_position.x
 	%nilai_posisi_y_objek.value = objek_terpilih.global_position.y
 	%nilai_posisi_z_objek.value = objek_terpilih.global_position.z
-	%nilai_rotasi_y_objek.value = objek_terpilih.global_rotation_degrees.y
-	%nilai_jarak_render_objek.value = objek_terpilih.jarak_render
+	if objek_terpilih.node_tampilan != null:
+		%nilai_rotasi_y_objek.value = objek_terpilih.node_tampilan.rotation_degrees.y
+	else:
+		%nilai_rotasi_y_objek.value = objek_terpilih.rotation_degrees.y
+	if objek_terpilih is representasi_objek:
+		%nilai_jarak_render_objek.value = objek_terpilih.jarak_render
 	for sisa_properti_objek in %daftar_properti_kustom.get_children():
 		sisa_properti_objek.queue_free()
 	for id_properti_objek in objek_terpilih.daftar_properti.size():
@@ -929,6 +954,12 @@ func _tampilkan_parameter_objek() -> void:
 			node_nilai_properti.id_properti = id_properti_objek
 			node_nilai_properti.objek_pemilik = objek_terpilih
 			node_nilai_properti.atur(properti_objek[0], properti_objek[1])
+	if objek_terpilih is representasi_objek:
+		$dialog_buka_objek.title = "Pilih Objek"
+		$dialog_buka_objek.root_subfolder = "skena/objek/"
+	if objek_terpilih is representasi_entitas:
+		$dialog_buka_objek.title = "Pilih Entitas"
+		$dialog_buka_objek.root_subfolder = "skena/entitas/"
 	$properti_objek.title = objek_terpilih.name
 	$properti_objek.show()
 
@@ -936,25 +967,25 @@ func _sembunyikan_parameter_objek() -> void:
 	$properti_objek.hide()
 
 func _ketika_jalur_instance_objek_diubah(jalur_objek : String) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+	if $properti_objek.visible and objek_terpilih != null and (objek_terpilih is representasi_objek or objek_terpilih is representasi_entitas):
 		objek_terpilih.jalur_instance = jalur_objek
 		_tampilkan_parameter_objek()
 func _ketika_nilai_posisi_x_objek_diubah(posisi_baru : float) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+	if $properti_objek.visible and objek_terpilih != null and (objek_terpilih is representasi_objek or objek_terpilih is representasi_entitas):
 		objek_terpilih.global_position.x = posisi_baru
 		select_boundary.global_position = objek_terpilih.global_position
 		atur_posisi_fokus_viewport(objek_terpilih.global_position)
 		_ketika_viewport_ditransformasi()
 		_perbarui_handles()
 func _ketika_nilai_posisi_y_objek_diubah(posisi_baru : float) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+	if $properti_objek.visible and objek_terpilih != null and (objek_terpilih is representasi_objek or objek_terpilih is representasi_entitas):
 		objek_terpilih.global_position.y = posisi_baru
 		select_boundary.global_position = objek_terpilih.global_position
 		atur_posisi_fokus_viewport(objek_terpilih.global_position)
 		_ketika_viewport_ditransformasi()
 		_perbarui_handles()
 func _ketika_nilai_posisi_z_objek_diubah(posisi_baru : float) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+	if $properti_objek.visible and objek_terpilih != null and (objek_terpilih is representasi_objek or objek_terpilih is representasi_entitas):
 		objek_terpilih.global_position.z = posisi_baru
 		select_boundary.global_position = objek_terpilih.global_position
 		atur_posisi_fokus_viewport(objek_terpilih.global_position)
@@ -962,19 +993,24 @@ func _ketika_nilai_posisi_z_objek_diubah(posisi_baru : float) -> void:
 		_perbarui_handles()
 func _ketika_nilai_rotasi_y_objek_diubah(rotasi_baru : float) -> void:
 	if objek_terpilih != null:
-		if $properti_objek.visible and objek_terpilih is representasi_objek:
-			objek_terpilih.rotation_degrees.y = rotasi_baru
+		if objek_terpilih != null and (objek_terpilih is representasi_objek or objek_terpilih is representasi_entitas):
+			if objek_terpilih.node_tampilan != null:
+				objek_terpilih.node_tampilan.rotation_degrees.y = rotasi_baru
+			else:
+				objek_terpilih.rotation_degrees.y = rotasi_baru
+			if $properti_objek.visible:
+				%nilai_rotasi_y_model.value = rotasi_baru
 		elif objek_terpilih is representasi_pemain:
 			objek_terpilih.atur_rotasi(rotasi_baru)
 func _ketika_slider_jarak_render_objek_digeser(jarak_render : float) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+	if $properti_objek.visible and objek_terpilih is representasi_objek:
 		if %slider_jarak_render_objek.editable:
 			objek_terpilih.jarak_render = jarak_render
 			%nilai_jarak_render_objek.editable = false
 			%nilai_jarak_render_objek.value = jarak_render
 			%nilai_jarak_render_objek.editable = true
 func _ketika_nilai_jarak_render_objek_diubah(jarak_render : float) -> void:
-	if $properti_objek.visible and objek_terpilih != null and objek_terpilih is representasi_objek:
+	if $properti_objek.visible and objek_terpilih is representasi_objek:
 		if %nilai_jarak_render_objek.editable:
 			objek_terpilih.jarak_render = jarak_render
 			%slider_jarak_render_objek.editable = false
@@ -982,7 +1018,6 @@ func _ketika_nilai_jarak_render_objek_diubah(jarak_render : float) -> void:
 			%slider_jarak_render_objek.editable = true
 
 func _ketika_pilih_file_objek() -> void:
-	$dialog_buka_objek.title = "Pilih Objek"
 	$dialog_buka_objek.show()
 func _ketika_buka_file_objek(jalur_file : String) -> void:
 	%nilai_jalur_instance_objek.text = jalur_file
@@ -1237,6 +1272,14 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 							data_objek_desain.daftar_properti,
 							false
 						)
+					"entitas":
+						tambah_entitas(
+							data_objek_desain.posisi,
+							data_objek_desain.rotasi,
+							data_objek_desain.jalur_instance,
+							data_objek_desain.daftar_properti,
+							false
+						)
 					"posisi_pemain":
 						var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
 						$lingkungan.add_child(posisi_pemain)
@@ -1378,6 +1421,23 @@ func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	_objek_.tampilkan_di_viewport(false)
 	return _objek_
 
+func tambah_entitas(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], snap_posisi : bool = true) -> Node3D:
+	var _entitas_ : Node3D = load("res://model/editor map/entitas.scn").instantiate()
+	var interval_snap : float = 1.0 / jumlah_kisi_kisi
+	$lingkungan.add_child(_entitas_)
+	if snap_posisi:
+		_entitas_.global_position.x = snappedf(_entitas_.global_position.x, interval_snap)
+		_entitas_.global_position.y = snappedf(_entitas_.global_position.y, interval_snap)
+		_entitas_.global_position.z = snappedf(_entitas_.global_position.z, interval_snap)
+	_entitas_.global_position = posisi
+	_entitas_.global_rotation = rotasi
+	_entitas_.jalur_instance = jalur_instance
+	_entitas_.daftar_properti = daftar_properti
+	for _properti_entitas_ in _entitas_.daftar_properti:
+		_entitas_.atur_properti(_properti_entitas_[0], _properti_entitas_[1])
+	_entitas_.tampilkan_di_viewport(false)
+	return _entitas_
+
 func hapus_node_yang_dipilih() -> void:
 	if objek_terpilih is not representasi_pemain:
 		if objek_terpilih != null:
@@ -1434,7 +1494,16 @@ func simpan_desain() -> void:
 						"jalur_instance"	: objek_desain.jalur_instance,
 						"jarak_render"		: objek_desain.jarak_render,
 						"posisi"			: objek_desain.global_position,
-						"rotasi"			: objek_desain.global_rotation,
+						"rotasi"			: objek_desain.node_tampilan.global_rotation,
+						"daftar_properti"	: objek_desain.daftar_properti
+					}
+				elif objek_desain is representasi_entitas and objek_desain.jalur_instance != "":
+					jumlah_objek_desain += 1
+					data_desain[jumlah_objek_desain] = {
+						"tipe"				: "entitas",
+						"jalur_instance"	: objek_desain.jalur_instance,
+						"posisi"			: objek_desain.global_position,
+						"rotasi"			: objek_desain.node_tampilan.global_rotation,
 						"daftar_properti"	: objek_desain.daftar_properti
 					}
 				elif objek_desain is representasi_pemain:

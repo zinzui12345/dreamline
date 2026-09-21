@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-@export var objek_pemilik : representasi_objek
+@export var objek_pemilik : Node3D
 @export var id_properti : int = -1
 @export var properti_tampilan : String		# nama variabel pada $nilai_properti yang dijadikan sebagai nilai
 @export var sinyal_tampilan : String		# nama sinyal pada $nilai_properti yang dipanggil saat nilai diubah. sinyal harus memiliki parameter berupa nilai ubahan

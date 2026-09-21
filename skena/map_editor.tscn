@@ -855,7 +855,7 @@ layout_mode = 2
 
 [node name="edit_atribut_objek" type="Button" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek" unique_id=1336170859]
 layout_mode = 2
-text = "Edit Objek"
+text = "Edit Properti"
 
 [node name="properti_pilihan" type="VSplitContainer" parent="tata_letak_vertikal/tata_letak/inspektur/daftar_properti" unique_id=439654860]
 visible = false
@@ -1037,6 +1037,8 @@ text = "Rotasi"
 [node name="nilai_rotasi_y_objek" type="SpinBox" parent="properti_objek/MarginContainer/VBoxContainer/HSplitContainer3" unique_id=129531159]
 unique_name_in_owner = true
 layout_mode = 2
+min_value = -359.0
+max_value = 359.0
 
 [node name="HSplitContainer4" type="HSplitContainer" parent="properti_objek/MarginContainer/VBoxContainer" unique_id=897313106]
 visible = false
@@ -1101,7 +1103,6 @@ initial_position = 1
 cancel_button_text = "%batal"
 file_mode = 0
 display_mode = 1
-root_subfolder = "skena/objek/"
 filters = PackedStringArray("*.scn", "*.tscn")
 
 [connection signal="size_changed" from="tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport" to="." method="_ketika_ukuran_tampilan_diubah"]

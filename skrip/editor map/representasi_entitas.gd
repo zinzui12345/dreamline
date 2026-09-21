@@ -1,5 +1,5 @@
 extends Node3D
-class_name representasi_objek
+class_name representasi_entitas
 
 @export var dapat_dipilih : bool = true :
 	set(aktifkan_seleksi):
@@ -7,26 +7,29 @@ class_name representasi_objek
 		dapat_dipilih = aktifkan_seleksi
 @export var jalur_instance : String :
 	set(jalur_baru):
-		for tmp_node in $instance_objek.get_children():
+		for tmp_node in $instance_entitas.get_children():
 			tmp_node.queue_free()
 		if jalur_baru != "" and ResourceLoader.exists(jalur_baru):
 			node_tampilan = load(jalur_baru).instantiate()
 			node_tampilan.process_mode = PROCESS_MODE_DISABLED
+			for sub_node_tampilan in node_tampilan.get_children():
+				if sub_node_tampilan is objek or sub_node_tampilan is entitas:
+					sub_node_tampilan.process_mode = PROCESS_MODE_DISABLED
 			node_tampilan.mulai()
-			$instance_objek.add_child(node_tampilan)
-			if node_tampilan.get_node_or_null("bentuk") != null and node_tampilan.get_node("bentuk") is MeshInstance3D:
-				var aabb_bentuk : AABB = node_tampilan.get_node("bentuk").get_aabb()
-				node_tampilan.position = -(aabb_bentuk.size / 2) - aabb_bentuk.position
-				ukuran = aabb_bentuk.size
-			else:
-				node_tampilan.position = -(node_tampilan.wilayah_render.size / 2) - node_tampilan.wilayah_render.position
-				ukuran = node_tampilan.wilayah_render.size
+			$instance_entitas.add_child(node_tampilan)
+			#if node_tampilan.get_node_or_null("bentuk") != null and node_tampilan.get_node("bentuk") is MeshInstance3D:
+				#var aabb_bentuk : AABB = node_tampilan.get_node("bentuk").get_aabb()
+				#node_tampilan.position = -(aabb_bentuk.size / 2) - aabb_bentuk.position
+				#ukuran = aabb_bentuk.size
+			#else:
+				#node_tampilan.position = -(node_tampilan.wilayah_render.size / 2) - node_tampilan.wilayah_render.position
+				#ukuran = node_tampilan.wilayah_render.size
 			if ukuran == Vector3.ZERO:
-				push_error("[Galat] Objek @" + jalur_baru + " tidak memiliki ukuran yang valid!")
+				push_error("[Galat] Entitas @" + jalur_baru + " tidak memiliki ukuran yang valid!")
 			node_tampilan.rotation = rotation
 			rotation = Vector3.ZERO
-			if node_tampilan.get("properti") != null:
-				daftar_properti = node_tampilan.properti
+			if node_tampilan.get("sinkron_kondisi") != null:
+				daftar_properti = node_tampilan.sinkron_kondisi
 			elif has_meta("setelan"):
 				var _sp_properti : Array
 				var dictionary_setelan : Dictionary = get_meta("setelan")
@@ -37,15 +40,13 @@ class_name representasi_objek
 						dictionary_setelan[setelan]
 					])
 				daftar_properti = _sp_properti
-			jarak_render = node_tampilan.jarak_render
 			$bentuk_kerangka.visible = true
 			$tampilan_representasi.visible = false
 		else:
 			$bentuk_kerangka.visible = false
 			$tampilan_representasi.visible = true
 		jalur_instance = jalur_baru
-@export var node_tampilan : objek
-@export var jarak_render : int = 10
+@export var node_tampilan : entitas
 @export var daftar_properti : Array
 @export var ukuran : Vector3 = Vector3(1.0, 1.0, 1.0) :
 	set(ukuran_baru):
@@ -72,7 +73,7 @@ func tampilkan_di_viewport(tampil : bool) -> void:
 		$tampilan_representasi.set_layer_mask_value(18, tampil)
 
 func atur_properti(nama : String, nilai : Variant) -> void:
-	for tmp_node in $instance_objek.get_children():
+	for tmp_node in $instance_entitas.get_children():
 		if tmp_node.get(nama) != null:
 			tmp_node.set(nama, nilai)
 
@@ -82,13 +83,11 @@ func _compile() -> Dictionary:
 			"posisi":			node_tampilan.global_position,
 			"rotasi":			node_tampilan.global_rotation,
 			"jalur_instance":	jalur_instance,
-			"jarak_render":		jarak_render,
 			"daftar_properti":	daftar_properti
 		}
 	return {
 		"posisi":			global_position,
 		"rotasi":			global_rotation,
 		"jalur_instance":	jalur_instance,
-		"jarak_render":		jarak_render,
 		"daftar_properti":	daftar_properti
 	}
