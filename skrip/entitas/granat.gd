@@ -26,7 +26,9 @@ var id_pengangkat : int = -1:
 var id_pelempar : int = -1
 var timer_ledakan : Timer
 
-func _ready(): call_deferred("_setup")
+func _ready() -> void:
+	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED: return
+	else: call_deferred("_setup")
 func _setup():
 	if get_parent().get_path() != dunia.get_node("entitas").get_path():
 		if server.permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and not server.mode_replay:
