@@ -24,6 +24,7 @@ var objek_terpilih : Node3D = null :
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = true
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = true
 					if pilih_objek.node_tampilan != null:
+						objek_terpilih = null
 						%nilai_rotasi_y_model.value = pilih_objek.node_tampilan.rotation_degrees.y
 					else:
 						%nilai_rotasi_y_model.value = pilih_objek.rotation_degrees.y
@@ -954,10 +955,10 @@ func _tampilkan_parameter_objek() -> void:
 			node_nilai_properti.atur(properti_objek[0], properti_objek[1])
 	if objek_terpilih is representasi_objek:
 		$dialog_buka_objek.title = "Pilih Objek"
-		$dialog_buka_objek.root_subfolder = "skena/objek/"
+		$dialog_buka_objek.root_subfolder = "res://skena/objek"
 	if objek_terpilih is representasi_entitas:
 		$dialog_buka_objek.title = "Pilih Entitas"
-		$dialog_buka_objek.root_subfolder = "skena/entitas/"
+		$dialog_buka_objek.root_subfolder = "res://skena/entitas"
 	$properti_objek.title = objek_terpilih.name
 	$properti_objek.show()
 

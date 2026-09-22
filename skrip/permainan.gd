@@ -546,6 +546,9 @@ func mainkan_replay() -> void:
 	$dialog_buka_rekaman.show()
 func editor_entitas() -> void:
 	get_tree().change_scene_to_file("res://skena/editor_entitas_pemain.tscn")
+func editor_map() -> void:
+	# FIXME : harus bisa balik!
+	get_tree().change_scene_to_file("res://skena/map_editor.tscn")
 func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();											return "memulai uji performa"
 	elif ResourceLoader.exists("%s/%s.scn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
