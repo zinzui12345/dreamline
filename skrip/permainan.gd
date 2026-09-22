@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 19/09/26 Early Access"
+const versi = "Dreamline v0.4.4 22/09/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -765,6 +765,30 @@ func _muat_map(file_map : StringName) -> void:
 							map.objek_[muat_objek].jarak_render,
 							map.objek_[muat_objek].kondisi
 						)
+		# 22/09/26 :: tambahkan entitas
+		if map.get("entitas_") != null:
+			for muat_entitas in map.entitas_:
+				if daftar_aset.has(map.entitas_[muat_entitas].id_aset) and daftar_aset[map.entitas_[muat_entitas].id_aset].tipe == "entitas":
+					server._tambahkan_entitas(
+						daftar_aset[map.entitas_[muat_entitas].id_aset].sumber,
+						map.entitas_[muat_entitas].posisi,
+						map.entitas_[muat_entitas].rotasi,
+						map.entitas_[muat_entitas].kondisi
+					)
+				else:
+					if muat_entitas.begins_with("entitas_"):
+						server._tambahkan_entitas(
+							map.entitas_[muat_entitas].sumber,
+							map.entitas_[muat_entitas].posisi,
+							map.entitas_[muat_entitas].rotasi,
+							map.entitas_[muat_entitas].kondisi
+						)
+		# 22/09/26 :: cek apakah ada node "entitas" : jika ada, cek children-nya, jika entitas maka atur .process_mode = PROCESS_MODE_INHERIT
+		if file_map.substr(0,1) == "@" and map.get_node_or_null("entitas") != null and map.get_node("entitas").get_child_count() > 0:
+			for node_entitas in map.get_node("entitas").get_children():
+				if node_entitas is entitas:
+					node_entitas.process_mode = PROCESS_MODE_INHERIT
+			map.get_node("entitas").process_mode = PROCESS_MODE_INHERIT
 	elif koneksi == MODE_KONEKSI.CLIENT:
 		if server.mode_replay:
 			# 13/09/24 :: buat koneksi virtual untuk mencegah kesalahan proses entitas

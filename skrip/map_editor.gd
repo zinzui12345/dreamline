@@ -5,8 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# muat & simpan representasi_entitas
-# ekspor representasi_entitas
 # relasi antara objek dan entitas | harus ada tipe relasi (input, output)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
@@ -1314,6 +1312,7 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	var data_map : PackedScene = PackedScene.new()
 	var data_bentuk : Node3D = Node3D.new()
 	var data_fisik : StaticBody3D = StaticBody3D.new()
+	var data_entitas : Node3D = Node3D.new()
 	var data_pencahayaan : LightmapGI = LightmapGI.new()
 	var node_batas_bawah : Marker3D = Marker3D.new()
 	node_map.name = jalur_file.get_file().get_basename()
@@ -1357,6 +1356,31 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 					"jarak_render": data_objek.jarak_render,
 					"kondisi":		data_objek.daftar_properti
 				}
+			elif objek_desain is representasi_entitas:
+				if objek_desain.memiliki_sub_objek:
+					if data_entitas.get_parent() == null:
+						data_entitas.name = "entitas"
+						node_map.add_child(data_entitas)
+						data_entitas.set_owner(node_map)
+						data_entitas.process_mode = PROCESS_MODE_DISABLED
+					var tmp_entitas : entitas
+					if objek_desain.node_tampilan != null:
+						tmp_entitas = objek_desain.node_tampilan.duplicate()
+						tmp_entitas.name = "entitas_" + str(data_entitas.get_child_count() + 1)
+						tmp_entitas.process_mode = PROCESS_MODE_DISABLED
+						data_entitas.add_child(tmp_entitas)
+						tmp_entitas.set_owner(node_map)
+						tmp_entitas.global_position = objek_desain.node_tampilan.global_position
+					else:
+						push_error("[Galat] Tidak dapat menambahkan entitas '" + str(data_objek.jalur_instance) + "' ke map!")
+				else:
+					node_map.entitas_["entitas_" + str(node_map.entitas_.size() + 1)] = {
+						"id_aset":		node_map.name + "@entitas_" + str(node_map.entitas_.size() + 1),
+						"sumber": 		data_objek.jalur_instance,
+						"posisi": 		data_objek.posisi,
+						"rotasi": 		data_objek.rotasi,
+						"kondisi":		data_objek.daftar_properti
+					}
 			elif objek_desain is representasi_pemain:
 				var node_posisi_pemain : Marker3D = Marker3D.new()
 				node_posisi_pemain.name = "posisi_spawn"

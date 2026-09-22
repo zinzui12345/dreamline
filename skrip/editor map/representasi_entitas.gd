@@ -15,6 +15,7 @@ class_name representasi_entitas
 			for sub_node_tampilan in node_tampilan.get_children():
 				if sub_node_tampilan is objek or sub_node_tampilan is entitas:
 					sub_node_tampilan.process_mode = PROCESS_MODE_DISABLED
+					memiliki_sub_objek = true
 			node_tampilan.mulai()
 			$instance_entitas.add_child(node_tampilan)
 			#if node_tampilan.get_node_or_null("bentuk") != null and node_tampilan.get_node("bentuk") is MeshInstance3D:
@@ -53,6 +54,7 @@ class_name representasi_entitas
 		$fisik_representasi/bentuk_fisik.shape.size = ukuran_baru
 		$bentuk_kerangka.mesh.size = ukuran_baru
 		ukuran = ukuran_baru
+@export var memiliki_sub_objek : bool = false
 
 func _ready() -> void:
 	add_to_group("seleksi_aktif")
