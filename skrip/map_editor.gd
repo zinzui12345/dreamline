@@ -5,6 +5,7 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
+# perbaiki area render representasi_entitas
 # relasi antara objek dan entitas | harus ada tipe relasi (input, output)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
@@ -944,6 +945,7 @@ func _tampilkan_parameter_objek() -> void:
 	for id_properti_objek in objek_terpilih.daftar_properti.size():
 		var properti_objek = objek_terpilih.daftar_properti[id_properti_objek]
 		var node_nilai_properti : HBoxContainer = null
+		if properti_objek[0] == "abaikan_transformasi": continue
 		if properti_objek[1] is bool:
 			node_nilai_properti = load("res://ui/editor map/properti_boolean.scn").instantiate()
 		elif properti_objek[1] is Color:
@@ -963,6 +965,8 @@ func _tampilkan_parameter_objek() -> void:
 	$properti_objek.show()
 
 func _sembunyikan_parameter_objek() -> void:
+	for properti_kustom in %daftar_properti_kustom.get_children():
+		properti_kustom.queue_free()
 	$properti_objek.hide()
 
 func _ketika_jalur_instance_objek_diubah(jalur_objek : String) -> void:
@@ -1440,9 +1444,8 @@ func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	_objek_.global_position = posisi
 	_objek_.global_rotation = rotasi
 	_objek_.jalur_instance = jalur_instance
-	_objek_.daftar_properti = daftar_properti
-	for _properti_objek_ in _objek_.daftar_properti:
-		_objek_.atur_properti(_properti_objek_[0], _properti_objek_[1])
+	if daftar_properti != []:
+		_objek_.daftar_properti = daftar_properti
 	_objek_.tampilkan_di_viewport(false)
 	return _objek_
 

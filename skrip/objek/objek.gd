@@ -61,7 +61,11 @@ var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 			kode = kode_baru
 
 func _ready() -> void:
-	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED: return
+	if process_mode == PROCESS_MODE_DISABLED and get_parent().process_mode == PROCESS_MODE_DISABLED:
+		for anak_node in get_children():
+			if anak_node is AnimationPlayer:
+				anak_node.process_mode = Node.PROCESS_MODE_PAUSABLE
+		return
 	else: call_deferred("_setup")
 func _setup() -> void:
 	if get_parent().get_path() != dunia.get_node("objek").get_path():

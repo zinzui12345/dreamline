@@ -27,11 +27,12 @@ class_name representasi_objek
 			rotation = Vector3.ZERO
 			if node_tampilan.get("properti") != null:
 				daftar_properti = node_tampilan.properti
-			elif has_meta("setelan"):
+			elif node_tampilan.has_meta("setelan"):
 				var _sp_properti : Array
-				var dictionary_setelan : Dictionary = get_meta("setelan")
+				var dictionary_setelan : Dictionary = node_tampilan.get_meta("setelan")
 				for setelan in dictionary_setelan:
-					if setelan == "ikon": continue
+					if setelan == "ikon":					continue
+					if setelan == "abaikan_transformasi":	continue
 					_sp_properti.append([
 						setelan,
 						dictionary_setelan[setelan]
@@ -46,7 +47,11 @@ class_name representasi_objek
 		jalur_instance = jalur_baru
 @export var node_tampilan : objek
 @export var jarak_render : int = 10
-@export var daftar_properti : Array
+@export var daftar_properti : Array :
+	set(daftar_baru):
+		for setelan in daftar_baru:
+			atur_properti(setelan[0], setelan[1])
+		daftar_properti = daftar_baru
 @export var ukuran : Vector3 = Vector3(1.0, 1.0, 1.0) :
 	set(ukuran_baru):
 		$fisik_representasi/bentuk_fisik.shape.size = ukuran_baru
@@ -73,7 +78,9 @@ func tampilkan_di_viewport(tampil : bool) -> void:
 
 func atur_properti(nama : String, nilai : Variant) -> void:
 	for tmp_node in $instance_objek.get_children():
-		if tmp_node.get(nama) != null:
+		if tmp_node.get(nama) != null and tmp_node.get(nama) != nilai:
+			# 23/09/26 :: gatau kenapa, tapi harus di-set dua kali dengan nilai yang sama baru efeknya berpengaruh | jangan diubah, if it's work then don't touch it!
+			tmp_node.set(nama, nilai)
 			tmp_node.set(nama, nilai)
 
 func _compile() -> Dictionary:

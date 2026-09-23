@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Dreamline"
-run/main_scene="res://skena/dreamline.tscn"
+run/main_scene="uid://ppsgdaff1jxu"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "Mobile")
 run/delta_smoothing=false
