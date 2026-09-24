@@ -5,7 +5,6 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# perbaiki area render representasi_entitas
 # relasi antara objek dan entitas | harus ada tipe relasi (input, output)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
@@ -16,6 +15,7 @@ var objek_terpilih : Node3D = null :
 	set(pilih_objek):
 		if select_boundary != null:
 			if pilih_objek != null:
+				objek_terpilih = null
 				select_boundary.global_position = pilih_objek.global_position
 				if pilih_objek.get("ukuran") != null:
 					select_boundary.mesh.size = pilih_objek.ukuran + Vector3(0.001, 0.001, 0.001)
@@ -25,7 +25,7 @@ var objek_terpilih : Node3D = null :
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_objek.visible = true
 					$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = true
 					if pilih_objek.node_tampilan != null:
-						objek_terpilih = null
+						select_boundary.global_position = pilih_objek.node_tampilan.global_position - pilih_objek.node_tampilan.position.rotated(Vector3.UP, pilih_objek.node_tampilan.rotation.y)
 						%nilai_rotasi_y_model.value = pilih_objek.node_tampilan.rotation_degrees.y
 					else:
 						%nilai_rotasi_y_model.value = pilih_objek.rotation_degrees.y
@@ -765,6 +765,8 @@ func _physics_process(_delta: float) -> void:
 			
 			if select_boundary != null:
 				select_boundary.global_position = objek_terpilih.global_position
+				if objek_terpilih.node_tampilan != null:
+					select_boundary.global_position = objek_terpilih.node_tampilan.global_position - objek_terpilih.node_tampilan.position.rotated(Vector3.UP, objek_terpilih.node_tampilan.rotation.y)
 				if objek_terpilih.get("ukuran") != null:
 					select_boundary.mesh.size = objek_terpilih.ukuran + Vector3(0.001, 0.001, 0.001)
 			
