@@ -5,7 +5,10 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# relasi antara objek dan entitas | harus ada tipe relasi (input, output)
+# relasi antara objek dan entitas | harus ada tipe relasi (input, output)*
+# - ui tab sinyal (buat menjadi responsif)
+# - simpan semua sinyal dari semua entitas dan objek saat merender map
+# - terapkan daftar sinyal ke server (objek:fungsikan, entitas:gunakan)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
 # Fungsikan tool Knife
@@ -47,13 +50,17 @@ var objek_terpilih : Node3D = null :
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_model.visible = false
 				$tata_letak_vertikal/tata_letak/inspektur/daftar_properti/properti_pilihan.hide()
 		objek_terpilih = pilih_objek
+var sinyal_terpilih : int = -1
 var mode_transformasi : String = "gerak"  # gerak, putar, skala
 var tool_aktif : String = "select" # select, face_select, knife
 var viewport_aktif : SubViewportContainer
 var viewport_fokus : bool = false
 var jumlah_kisi_kisi : int = 4
 var sedang_meni_transformasi : bool = false
+var sedang_memilih_objek_target : bool = false
+var sedang_fokus_panel_pilih_objek_target : bool = false
 var handle_yang_digunakan : Node3D = null
+var objek_target_yang_dipilih : Node3D = null
 var axis_yang_digunakan : Vector3 = Vector3.ZERO
 var posisi_kursor_di_dunia : Vector3 = Vector3.ZERO
 var posisi_kursor_di_viewport : Vector2 = Vector2.ZERO
@@ -305,6 +312,18 @@ func _ready() -> void:
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_object_button.connect("pressed", self._ketika_menambah_objek)
 	$tata_letak_vertikal/tata_letak/alat/VSplitContainer/add_entity_button.connect("pressed", self._ketika_menambah_entitas)
 	
+	# hubungkan antarmuka
+	%panel_pilih_objek_target.connect("mouse_entered", self._ketika_fokus_panel_objek_target)
+	%panel_pilih_objek_target.connect("mouse_exited", self._ketika_berhenti_fokus_panel_objek_target)
+	%tombol_terapkan_objek_target_pilihan.connect("mouse_entered", self._ketika_fokus_panel_objek_target)
+	%tombol_terapkan_objek_target_pilihan.connect("mouse_exited", self._ketika_berhenti_fokus_panel_objek_target)
+	%tombol_pilih_node_tujuan_sinyal.connect("pressed", self._ketika_memilih_objek_target)
+	%tombol_terapkan_objek_target_pilihan.connect("pressed", self._ketika_konfirmasi_memilih_objek_target)
+	%tombol_batalkan_objek_target_pilihan.connect("pressed", self._ketika_batal_memilih_objek_target)
+	%tombol_tambah_sinyal.connect("pressed", self._ketika_menambah_sinyal_objek)
+	%tombol_ubah_sinyal.connect("pressed", self._ketika_mengedit_sinyal_objek)
+	%tombol_hapus_sinyal.connect("pressed", self._ketika_menghapus_sinyal_objek)
+	
 	# Sesuaikan posisi batas raycast
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan.position.z = -9000.0
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/grid_atas.position.y = -9000.0
@@ -343,9 +362,9 @@ func _ketika_ukuran_tampilan_parameter_objek_diubah() -> void:
 	%label_instance_objek.custom_minimum_size.x = lebar_label
 	%label_posisi_objek.custom_minimum_size.x = lebar_label
 	%label_rotasi_objek.custom_minimum_size.x = lebar_label
-	$properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer.split_offsets = [
-		$properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer.size.x * 0.3,
-		$properti_objek/MarginContainer/VBoxContainer/HSplitContainer2/HSplitContainer.size.x * 0.6
+	$properti_objek/MarginContainer/Inspektur/HSplitContainer2/HSplitContainer.split_offsets = [
+		$properti_objek/MarginContainer/Inspektur/HSplitContainer2/HSplitContainer.size.x * 0.3,
+		$properti_objek/MarginContainer/Inspektur/HSplitContainer2/HSplitContainer.size.x * 0.6
 	]
 
 func _input(event: InputEvent) -> void:
@@ -360,32 +379,40 @@ func _input(event: InputEvent) -> void:
 			if tool_aktif == "select" or tool_aktif == "face_select":
 				var objek_yang_diketahui = _deteksi_objek_dari_klik(event.position)
 				if viewport_aktif == $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d:
-					if objek_yang_diketahui:
-						if tool_aktif == "face_select" and !(objek_yang_diketahui is representasi_bentuk):
-							return
-						if objek_terpilih != null:
-							objek_terpilih.tampilkan_di_viewport(false)
-						if tool_aktif == "select" and objek_terpilih != objek_yang_diketahui:
-							atur_posisi_fokus_viewport(objek_yang_diketahui.global_position)
-							_ketika_viewport_ditransformasi()
-						objek_terpilih = objek_yang_diketahui
-						objek_terpilih.tampilkan_di_viewport(true)
-						if tool_aktif == "select":
+					if sedang_memilih_objek_target:
+						objek_target_yang_dipilih = objek_yang_diketahui
+						# TODO : tambah tampilan kotak seleksi (warna ungu)
+						if objek_yang_diketahui != null:
+							%nama_objek_target_pilihan.text = objek_target_yang_dipilih.name
+						else:
+							%nama_objek_target_pilihan.text = "<null>"
+					else:
+						if objek_yang_diketahui:
+							if tool_aktif == "face_select" and !(objek_yang_diketahui is representasi_bentuk):
+								return
+							if objek_terpilih != null:
+								objek_terpilih.tampilkan_di_viewport(false)
+							if tool_aktif == "select" and objek_terpilih != objek_yang_diketahui:
+								atur_posisi_fokus_viewport(objek_yang_diketahui.global_position)
+								_ketika_viewport_ditransformasi()
+							objek_terpilih = objek_yang_diketahui
+							objek_terpilih.tampilkan_di_viewport(true)
+							if tool_aktif == "select":
+								if objek_terpilih is representasi_bentuk:
+									$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = false
+								else:
+									$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = true
+									_pilih_mode_transformasi_gerak()
+								indeks_face_terpilih = -1
+							_perbarui_handles()
+							handles.visible = true
+							label_ukuran.visible = true
 							if objek_terpilih is representasi_bentuk:
-								$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = false
-							else:
-								$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = true
-								_pilih_mode_transformasi_gerak()
-							indeks_face_terpilih = -1
-						_perbarui_handles()
-						handles.visible = true
-						label_ukuran.visible = true
-						if objek_terpilih is representasi_bentuk:
-							_highlight_face_seleksi()
-					elif _cek_viewport_dari_klik(event.position):
-						_clear_face_highlight()
-						_clear_selection()
-						$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = false
+								_highlight_face_seleksi()
+						elif _cek_viewport_dari_klik(event.position):
+							_clear_face_highlight()
+							_clear_selection()
+							$tata_letak_vertikal/tata_letak/alat/VSplitContainer/scale_selected_button.disabled = false
 			elif tool_aktif == "knife":
 				# TODO: Logika untuk knife tool (misalnya memulai gambar garis)
 				print("Knife tool diklik.")
@@ -414,26 +441,27 @@ func _input(event: InputEvent) -> void:
 	
 	# Handle tombol pintasan
 	if Input.is_action_just_pressed("daftar_pemain"):
-		if not viewport_fokus:
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = false
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = false
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = false
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = false
-			if viewport_aktif.name == "tampilan_3d" or viewport_aktif.name == "tampilan_depan":
-				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = false
-			elif viewport_aktif.name == "tampilan_atas" or viewport_aktif.name == "tampilan_kanan":
-				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = false
-			viewport_aktif.visible = true
-			viewport_fokus = true
-		else:
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = true
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = true
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = true
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = true
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = true
-			$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = true
-			viewport_fokus = false
-		_ketika_ukuran_tampilan_diubah()
+		if not sedang_memilih_objek_target:
+			if not viewport_fokus:
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = false
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = false
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = false
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = false
+				if viewport_aktif.name == "tampilan_3d" or viewport_aktif.name == "tampilan_depan":
+					$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = false
+				elif viewport_aktif.name == "tampilan_atas" or viewport_aktif.name == "tampilan_kanan":
+					$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = false
+				viewport_aktif.visible = true
+				viewport_fokus = true
+			else:
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = true
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = true
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = true
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = true
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = true
+				$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = true
+				viewport_fokus = false
+			_ketika_ukuran_tampilan_diubah()
 	if Input.is_action_just_pressed("perbesar_kisi"):
 		_ketika_perbesar_ukuran_kisi()
 	if Input.is_action_just_pressed("perkecil_kisi"):
@@ -451,6 +479,10 @@ func _deteksi_objek_dari_klik(posisi_layar: Vector2) -> Node3D:
 		{ "nama": "tampilan_atas", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/pengamat, "is_3d": false },
 		{ "nama": "tampilan_kanan", "node": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan, "kamera": $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/pengamat, "is_3d": false }
 	]
+	
+	# 25/09/26 :: abaikan klik jika berada pada panel pilih objek
+	if %panel_pilih_objek_target.visible and sedang_memilih_objek_target and sedang_fokus_panel_pilih_objek_target:
+		return objek_target_yang_dipilih
 	
 	for viewport in viewports:
 		var container = viewport["node"]
@@ -922,6 +954,167 @@ func _ketika_menambah_entitas() -> void:
 	label_ukuran.visible = true
 	print("Entitas ditambahkan dan dipilih: ", _entitas_.name)
 
+func _ketika_menambah_sinyal_objek() -> void:
+	if %pilih_pemicu_sinyal.selected == -1 or %pilih_metode_sinyal.selected == -1:
+		return
+	var pemicu : String = %pilih_pemicu_sinyal.get_item_text(%pilih_pemicu_sinyal.selected)
+	var tujuan : String = %nama_node_tujuan_sinyal.text
+	var metode : String = %pilih_metode_sinyal.get_item_text(%pilih_metode_sinyal.selected)
+	var parameter : String = %nilai_parameter_sinyal.text
+	objek_terpilih.daftar_sinyal.append(
+		[
+			pemicu,
+			tujuan,
+			metode,
+			parameter
+		]
+	)
+	var node_tampilan_sinyal : Button = load("res://ui/editor map/sinyal.scn").instantiate()
+	var id_sinyal : int = objek_terpilih.daftar_sinyal.size() - 1
+	node_tampilan_sinyal.atur(
+		pemicu,
+		tujuan,
+		metode,
+		parameter,
+		self
+	)
+	node_tampilan_sinyal.name = "sinyal_" + str(objek_terpilih.daftar_sinyal.size())
+	node_tampilan_sinyal.id = id_sinyal
+	%daftar_sinyal.add_child(node_tampilan_sinyal)
+	%nama_node_tujuan_sinyal.text = ""
+	%pilih_metode_sinyal.clear()
+	%nilai_parameter_sinyal.text = ""
+func _ketika_memilih_sinyal_objek(id_sinyal : int) -> void:
+	for tampilan_sinyal in %daftar_sinyal.get_children():
+		if tampilan_sinyal.id != id_sinyal:
+			tampilan_sinyal.button_pressed = false
+			tampilan_sinyal.sesuaikan_tampilan_pilihan()
+		else:
+			var nilai_sinyal : Array = tampilan_sinyal.dapatkan_nilai() # ["tekan", "objek_5", "tutup()", ""]
+			var objek_target_sinyal : Node3D = $lingkungan.get_node(nilai_sinyal[1])
+			var indeks_pilih_pemicu_sinyal : int = -1
+			var indeks_pilih_metode_sinyal : int = -1
+			for indeks_pemicu_sinyal in %pilih_pemicu_sinyal.item_count:
+				if %pilih_pemicu_sinyal.get_item_text(indeks_pemicu_sinyal) == nilai_sinyal[0]:
+					indeks_pilih_pemicu_sinyal = indeks_pemicu_sinyal
+			%pilih_pemicu_sinyal.select(indeks_pilih_pemicu_sinyal)
+			%nama_node_tujuan_sinyal.text = nilai_sinyal[1]
+			%pilih_metode_sinyal.clear()
+			if objek_target_sinyal.node_tampilan != null and objek_target_sinyal.node_tampilan.get("daftar_sinyal") != null:
+				for metode in objek_target_sinyal.node_tampilan.daftar_sinyal["metode"]:
+					%pilih_metode_sinyal.add_item(metode)
+					if metode == nilai_sinyal[2].substr(0, nilai_sinyal[2].length() -  2):
+						indeks_pilih_metode_sinyal = %pilih_metode_sinyal.item_count - 1
+			%pilih_metode_sinyal.select(indeks_pilih_metode_sinyal)
+			%nilai_parameter_sinyal.text = nilai_sinyal[3]
+			%tombol_tambah_sinyal.visible = false
+			%tombol_ubah_sinyal.visible = true
+			%tombol_hapus_sinyal.visible = true
+			sinyal_terpilih = id_sinyal
+func _ketika_berhenti_memilih_sinyal_objek() -> void:
+	%pilih_pemicu_sinyal.select(0)
+	%nama_node_tujuan_sinyal.text = ""
+	%pilih_metode_sinyal.clear()
+	%nilai_parameter_sinyal.text = ""
+	%tombol_tambah_sinyal.visible = true
+	%tombol_ubah_sinyal.visible = false
+	%tombol_hapus_sinyal.visible = false
+	sinyal_terpilih = -1
+func _ketika_mengedit_sinyal_objek() -> void:
+	if %pilih_pemicu_sinyal.selected == -1 or %pilih_metode_sinyal.selected == -1:
+		return
+	for tampilan_sinyal in %daftar_sinyal.get_children():
+		if tampilan_sinyal.id == sinyal_terpilih:
+			var pemicu : String = %pilih_pemicu_sinyal.get_item_text(%pilih_pemicu_sinyal.selected)
+			var tujuan : String = %nama_node_tujuan_sinyal.text
+			var metode : String = %pilih_metode_sinyal.get_item_text(%pilih_metode_sinyal.selected)
+			var parameter : String = %nilai_parameter_sinyal.text
+			objek_terpilih.daftar_sinyal[sinyal_terpilih] = [
+				pemicu,
+				tujuan,
+				metode,
+				parameter
+			]
+			tampilan_sinyal.atur(
+				pemicu,
+				tujuan,
+				metode,
+				parameter,
+				self
+			)
+func _ketika_menghapus_sinyal_objek() -> void:
+	for tampilan_sinyal in %daftar_sinyal.get_children():
+		if tampilan_sinyal.id == sinyal_terpilih:
+			objek_terpilih.daftar_sinyal.remove_at(sinyal_terpilih)
+			%daftar_sinyal.remove_child(tampilan_sinyal)
+			tampilan_sinyal.queue_free()
+			_ketika_berhenti_memilih_sinyal_objek()
+
+func _ketika_fokus_panel_objek_target() -> void:
+	sedang_fokus_panel_pilih_objek_target = true
+func _ketika_berhenti_fokus_panel_objek_target() -> void:
+	sedang_fokus_panel_pilih_objek_target = false
+func _ketika_memilih_objek_target() -> void:
+	viewport_aktif = $tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = false
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = false
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = false
+	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = false
+	if viewport_aktif.name == "tampilan_3d" or viewport_aktif.name == "tampilan_depan":
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = false
+	elif viewport_aktif.name == "tampilan_atas" or viewport_aktif.name == "tampilan_kanan":
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = false
+	viewport_aktif.visible = true
+	$tata_letak_vertikal/tata_letak/alat.visible = false
+	$tata_letak_vertikal/tata_letak/inspektur.visible = false
+	$properti_objek.visible = false
+	%nama_objek_target_pilihan.text = "<null>"
+	%panel_pilih_objek_target.visible = true
+	sedang_memilih_objek_target = true
+	objek_target_yang_dipilih = null
+func _ketika_konfirmasi_memilih_objek_target() -> void:
+	# pastikan objek_target_yang_dipilih bukan objek pengirim sinyal
+	if objek_target_yang_dipilih == objek_terpilih:
+		# FIXME : ganti dengan popup_informasi!
+		Panku.notify("Tidak bisa memilih diri sendiri!")
+	elif objek_target_yang_dipilih != null:
+		%nama_node_tujuan_sinyal.text = objek_target_yang_dipilih.name
+		%pilih_metode_sinyal.clear()
+		if objek_target_yang_dipilih.node_tampilan != null and objek_target_yang_dipilih.node_tampilan.get("daftar_sinyal") != null:
+			for metode in objek_target_yang_dipilih.node_tampilan.daftar_sinyal["metode"]:
+				%pilih_metode_sinyal.add_item(metode)
+	if not viewport_fokus:
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = true
+	$tata_letak_vertikal/tata_letak/alat.visible = true
+	$tata_letak_vertikal/tata_letak/inspektur.visible = true
+	$properti_objek.visible = true
+	%nama_objek_target_pilihan.text = "<null>"
+	%panel_pilih_objek_target.visible = false
+	sedang_memilih_objek_target = false
+	sedang_fokus_panel_pilih_objek_target = false
+	objek_target_yang_dipilih = null
+func _ketika_batal_memilih_objek_target() -> void:
+	if not viewport_fokus:
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_3d.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas.visible = true
+		$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan.visible = true
+	$tata_letak_vertikal/tata_letak/alat.visible = true
+	$tata_letak_vertikal/tata_letak/inspektur.visible = true
+	$properti_objek.visible = true
+	%nama_objek_target_pilihan.text = "<null>"
+	%panel_pilih_objek_target.visible = false
+	sedang_memilih_objek_target = false
+	sedang_fokus_panel_pilih_objek_target = false
+	objek_target_yang_dipilih = null
+
 func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 	for objek_objek in $lingkungan.get_children():
 		if objek_objek.get("pilih_wajah") != null:
@@ -938,6 +1131,28 @@ func _tampilkan_parameter_objek() -> void:
 	%nilai_posisi_z_objek.value = objek_terpilih.global_position.z
 	if objek_terpilih.node_tampilan != null:
 		%nilai_rotasi_y_objek.value = objek_terpilih.node_tampilan.rotation_degrees.y
+		if objek_terpilih.node_tampilan.get("daftar_sinyal") != null and objek_terpilih.node_tampilan.daftar_sinyal["sinyal"].size() > 0:
+			_ketika_berhenti_memilih_sinyal_objek()
+			%pilih_pemicu_sinyal.clear()
+			for sinyal in objek_terpilih.node_tampilan.daftar_sinyal["sinyal"]:
+				%pilih_pemicu_sinyal.add_item(sinyal)
+			$properti_objek/MarginContainer.set_indexed("tab_1/disabled", false)
+			$properti_objek/MarginContainer.tabs_visible = true
+		else:
+			$properti_objek/MarginContainer.set_indexed("tab_1/disabled", true)
+			$properti_objek/MarginContainer.tabs_visible = false
+		for id_sinyal in objek_terpilih.daftar_sinyal.size():
+			var node_tampilan_sinyal : Button = load("res://ui/editor map/sinyal.scn").instantiate()
+			node_tampilan_sinyal.atur(
+				objek_terpilih.daftar_sinyal[id_sinyal][0],
+				objek_terpilih.daftar_sinyal[id_sinyal][1],
+				objek_terpilih.daftar_sinyal[id_sinyal][2],
+				objek_terpilih.daftar_sinyal[id_sinyal][3],
+				self
+			)
+			node_tampilan_sinyal.name = "sinyal_" + str(id_sinyal)
+			node_tampilan_sinyal.id = id_sinyal
+			%daftar_sinyal.add_child(node_tampilan_sinyal)
 	else:
 		%nilai_rotasi_y_objek.value = objek_terpilih.rotation_degrees.y
 	if objek_terpilih is representasi_objek:
@@ -960,9 +1175,14 @@ func _tampilkan_parameter_objek() -> void:
 	if objek_terpilih is representasi_objek:
 		$dialog_buka_objek.title = "Pilih Objek"
 		$dialog_buka_objek.root_subfolder = "res://skena/objek"
+		if not objek_terpilih.name.begins_with("objek_"):
+			sesuaikan_nama_semua_node()
 	if objek_terpilih is representasi_entitas:
 		$dialog_buka_objek.title = "Pilih Entitas"
 		$dialog_buka_objek.root_subfolder = "res://skena/entitas"
+		if not objek_terpilih.name.begins_with("entitas_"):
+			sesuaikan_nama_semua_node()
+	$properti_objek/MarginContainer.current_tab = 0
 	$properti_objek.title = objek_terpilih.name
 	$properti_objek.show()
 
@@ -970,6 +1190,10 @@ func _sembunyikan_parameter_objek() -> void:
 	for properti_kustom in %daftar_properti_kustom.get_children():
 		properti_kustom.queue_free()
 	$properti_objek.hide()
+	sinyal_terpilih = -1
+	for tampilan_sinyal in %daftar_sinyal.get_children():
+		%daftar_sinyal.remove_child(tampilan_sinyal)
+		tampilan_sinyal.queue_free()
 
 func _ketika_jalur_instance_objek_diubah(jalur_objek : String) -> void:
 	if $properti_objek.visible and objek_terpilih != null and (objek_terpilih is representasi_objek or objek_terpilih is representasi_entitas):
@@ -1253,6 +1477,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 			var memiliki_posisi_pemain : bool = false
 			var memiliki_batas_bawah : bool = false
 			for objek_desain_saat_ini in $lingkungan.get_children():
+				$lingkungan.remove_child(objek_desain_saat_ini)
 				objek_desain_saat_ini.queue_free()
 			for index_objek_desain in data:
 				var data_objek_desain : Dictionary = data[index_objek_desain]
@@ -1275,6 +1500,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 							data_objek_desain.rotasi,
 							data_objek_desain.jalur_instance,
 							data_objek_desain.daftar_properti,
+							data_objek_desain.daftar_sinyal,
 							false
 						)
 					"entitas":
@@ -1283,6 +1509,7 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 							data_objek_desain.rotasi,
 							data_objek_desain.jalur_instance,
 							data_objek_desain.daftar_properti,
+							data_objek_desain.daftar_sinyal,
 							false
 						)
 					"posisi_pemain":
@@ -1299,6 +1526,8 @@ func _ketika_buka_file_desain(jalur_file : String) -> void:
 						memiliki_batas_bawah = true
 					_:
 						push_error("Tipe tidak diketahui : " + data_objek_desain.tipe)
+			# sesuaikan nama node
+			sesuaikan_nama_semua_node()
 			# tambahkan posisi spawn pemain
 			if not memiliki_posisi_pemain:
 				var posisi_pemain : representasi_pemain = load("res://model/editor map/pemain.scn").instantiate()
@@ -1435,7 +1664,7 @@ func tambah_kubus(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	kubus.tampilkan_di_viewport(false)
 	return kubus
 
-func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], snap_posisi : bool = true) -> Node3D:
+func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], daftar_sinyal : Array = [], snap_posisi : bool = true) -> Node3D:
 	var _objek_ : Node3D = load("res://model/editor map/objek.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(_objek_)
@@ -1448,10 +1677,11 @@ func tambah_objek(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZE
 	_objek_.jalur_instance = jalur_instance
 	if daftar_properti != []:
 		_objek_.daftar_properti = daftar_properti
+	_objek_.daftar_sinyal = daftar_sinyal
 	_objek_.tampilkan_di_viewport(false)
 	return _objek_
 
-func tambah_entitas(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], snap_posisi : bool = true) -> Node3D:
+func tambah_entitas(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.ZERO, jalur_instance : String = "", daftar_properti : Array = [], daftar_sinyal : Array = [], snap_posisi : bool = true) -> Node3D:
 	var _entitas_ : Node3D = load("res://model/editor map/entitas.scn").instantiate()
 	var interval_snap : float = 1.0 / jumlah_kisi_kisi
 	$lingkungan.add_child(_entitas_)
@@ -1465,11 +1695,30 @@ func tambah_entitas(posisi : Vector3 = Vector3.ZERO, rotasi : Vector3 = Vector3.
 	_entitas_.daftar_properti = daftar_properti
 	for _properti_entitas_ in _entitas_.daftar_properti:
 		_entitas_.atur_properti(_properti_entitas_[0], _properti_entitas_[1])
+	_entitas_.daftar_sinyal = daftar_sinyal
 	_entitas_.tampilkan_di_viewport(false)
 	return _entitas_
 
+func sesuaikan_nama_semua_node() -> void:
+	var tmp_jumlah_bentuk : int = 0
+	var tmp_jumlah_objek : int = 0
+	var tmp_jumlah_entitas : int = 0
+	for objek_desain_saat_ini in $lingkungan.get_children():
+		if objek_desain_saat_ini is representasi_bentuk:
+			tmp_jumlah_bentuk += 1
+			objek_desain_saat_ini.name = "bentuk_" + str(tmp_jumlah_bentuk)
+		elif objek_desain_saat_ini is representasi_objek:
+			tmp_jumlah_objek += 1
+			objek_desain_saat_ini.name = "objek_" + str(tmp_jumlah_objek)
+		elif objek_desain_saat_ini is representasi_entitas:
+			tmp_jumlah_entitas += 1
+			objek_desain_saat_ini.name = "entitas_" + str(tmp_jumlah_entitas)
+		elif objek_desain_saat_ini is representasi_pemain:
+			objek_desain_saat_ini.name = "posisi_pemain"
+
 func hapus_node_yang_dipilih() -> void:
 	if objek_terpilih is not representasi_pemain:
+		# FIXME : cari relasi dengan node, jika ada maka hapus pada node pengirim sinyal tersebut
 		if objek_terpilih != null:
 			objek_terpilih.queue_free()
 		objek_terpilih = null
@@ -1525,7 +1774,8 @@ func simpan_desain() -> void:
 						"jarak_render"		: objek_desain.jarak_render,
 						"posisi"			: objek_desain.global_position,
 						"rotasi"			: objek_desain.node_tampilan.global_rotation,
-						"daftar_properti"	: objek_desain.daftar_properti
+						"daftar_properti"	: objek_desain.daftar_properti,
+						"daftar_sinyal"		: objek_desain.daftar_sinyal
 					}
 				elif objek_desain is representasi_entitas and objek_desain.jalur_instance != "":
 					jumlah_objek_desain += 1
@@ -1534,7 +1784,8 @@ func simpan_desain() -> void:
 						"jalur_instance"	: objek_desain.jalur_instance,
 						"posisi"			: objek_desain.global_position,
 						"rotasi"			: objek_desain.node_tampilan.global_rotation,
-						"daftar_properti"	: objek_desain.daftar_properti
+						"daftar_properti"	: objek_desain.daftar_properti,
+						"daftar_sinyal"		: objek_desain.daftar_sinyal
 					}
 				elif objek_desain is representasi_pemain:
 					jumlah_objek_desain += 1

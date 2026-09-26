@@ -15,6 +15,10 @@ const properti = [
 	["nama_fungsi", ""],
 	["ditekan", false]
 ]
+const daftar_sinyal = {
+	"sinyal":	["tekan"],
+	"metode":	[]
+}
 
 func fungsikan():
 	server.fungsikan_objek(

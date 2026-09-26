@@ -13,6 +13,7 @@ var cek_properti : Dictionary = {}			# simpan beberapa properti di tiap frame un
 var cek_koneksi : Array[String]				# simpan nama objek yang terkoneksi secara sementara sebelum setup() objek
 var sinkron_kondisi : Array = []			# daftar properti yang disinkronkan ke server
 #const properti = []						# array berisi properti kustom yang akan di-sinkronkan ke server | format sama dengan kondisi pada server (Array[ Array[nama_properti, nilai] ]) | properti harus di @export!
+#const daftar_sinyal						# dictionary berisi array metode yang dapat berfungsi sebagai input dan output
 #const jalur_instance = ""					# jalur aset skena node objek ini misalnya: "res://skena/objek/tembok.scn"
 #const abaikan_transformasi = true			# hanya tambahkan jika objek tidak ingin diubah transformasinya dengan mode edit
 #const abaikan_occlusion_culling = true		# hanya tambahkan jika objek tidak ingin dikalkulasi pada occlusion culling

@@ -46,9 +46,11 @@ class_name representasi_entitas
 		else:
 			$bentuk_kerangka.visible = false
 			$tampilan_representasi.visible = true
+		daftar_sinyal = []
 		jalur_instance = jalur_baru
 @export var node_tampilan : entitas
 @export var daftar_properti : Array
+@export var daftar_sinyal : Array = []
 @export var ukuran : Vector3 = Vector3(1.0, 1.0, 1.0) :
 	set(ukuran_baru):
 		$fisik_representasi/bentuk_fisik.shape.size = ukuran_baru

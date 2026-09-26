@@ -1,0 +1,30 @@
+keys,id,en
+canvas_menu_save_button, Simpan, Save
+canvas_menu_group_button, Kelompok, Group
+canvas_menu_label_button, Label, Label
+canvas_menu_text_document_button, Kotak Teks, Textbox
+canvas_menu_bg_color_label, Warna Latar, Background Color
+canvas_menu_lock_button, Kunci, Lock
+canvas_menu_unlock_button, Buka Kunci, Unlock
+canvas_menu_connect_button, Hubungkan, Connect
+canvas_menu_sound_label,Audio,Sound
+tooltip_main_window_button,,
+tooltip_main_split_button,,
+tooltip_main_left_button,,
+tooltip_main_right_button,,
+tooltip_main_reload_button,,
+tooltip_main_add_button,,
+tooltip_main_duplicate_button,,
+tooltip_main_rename_button,,
+tooltip_main_remove_button,,
+tooltip_main_main_path_line_edit,,
+tooltip_main_main_path_line_edit,,
+Copy, Salin, Copy
+Paste, Tempel, Paste
+Delete, Hapus, Delete
+Copy Link, Salin Tautan, Copy Link
+Copy only this,,
+Lock, Kunci, Lock
+Edit, Sunting, Edit
+Group Lock, Kunci Kelompok, Group Lock
+Group Unlock, Buka Kunci Kelompok, Group Unlock

@@ -2,6 +2,10 @@ extends objek
 class_name pintu
 
 const abaikan_occlusion_culling = true
+const daftar_sinyal = {
+	"sinyal":	[],
+	"metode":	["buka", "tutup"]
+}
 
 @export var jalur_instance : String = ""
 @export var terbuka : bool = false :
