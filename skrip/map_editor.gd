@@ -6,7 +6,6 @@ var jalur_file_desain : String
 
 # TODO :
 # relasi antara objek dan entitas | harus ada tipe relasi (input, output)*
-# - ui tab sinyal (buat menjadi responsif)
 # - simpan semua sinyal dari semua entitas dan objek saat merender map
 # - terapkan daftar sinyal ke server (objek:fungsikan, entitas:gunakan)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
@@ -366,6 +365,18 @@ func _ketika_ukuran_tampilan_parameter_objek_diubah() -> void:
 		$properti_objek/MarginContainer/Inspektur/HSplitContainer2/HSplitContainer.size.x * 0.3,
 		$properti_objek/MarginContainer/Inspektur/HSplitContainer2/HSplitContainer.size.x * 0.6
 	]
+	
+	var posisi_pemisah_tabel_sinyal : PackedInt32Array = [
+		$properti_objek/MarginContainer.size.x * 0.01041666666666,
+		$properti_objek/MarginContainer.size.x * 0.0625,
+		$properti_objek/MarginContainer.size.x * 0.291666666666,
+		$properti_objek/MarginContainer.size.x * 0.510416666666,
+		$properti_objek/MarginContainer.size.x * 0.75,
+		$properti_objek/MarginContainer.size.x * 0.958333333333
+	]
+	%pemisah_header_sinyal.split_offsets = posisi_pemisah_tabel_sinyal
+	for tampilan_sinyal in %daftar_sinyal.get_children():
+		tampilan_sinyal.get_node("daftar_nilai").split_offsets = posisi_pemisah_tabel_sinyal
 
 func _input(event: InputEvent) -> void:
 	# Sinkronisasi kamera

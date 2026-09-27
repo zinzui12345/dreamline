@@ -20,8 +20,7 @@ func dapatkan_nilai() -> Array:
 	]
 
 func sesuaikan_tampilan_pilihan() -> void:
-	$daftar_nilai/pilih.visible = button_pressed
-	$daftar_nilai/pemisah_horizontal.visible = button_pressed
+	$daftar_nilai/area_pilih/pilih.visible = button_pressed
 
 func _ketika_pilih() -> void:
 	sesuaikan_tampilan_pilihan()

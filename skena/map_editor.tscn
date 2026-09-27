@@ -1185,43 +1185,54 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ajpf8")
 
-[node name="pemisah_header" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal" unique_id=412355160]
+[node name="pemisah_header_sinyal" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal" unique_id=412355160]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(480, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-split_offsets = PackedInt32Array(0, 0, 0, 0, 0)
+split_offsets = PackedInt32Array(5, 30, 140, 245, 360, 460)
 dragging_enabled = false
+split_offset = 5
 
-[node name="pemisah_horizontal" type="Control" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header" unique_id=1750268480]
+[node name="pemisah_horizontal" type="Control" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=1750268480]
 custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
-[node name="pemicu" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header" unique_id=893253]
+[node name="pilih" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=1681696994]
+layout_mode = 2
+text = "*"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="pemicu" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=893253]
 layout_mode = 2
 text = "Pemicu"
 
-[node name="node_tujuan" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header" unique_id=724531895]
+[node name="node_tujuan" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=724531895]
 layout_mode = 2
 text = "Tujuan"
 
-[node name="metode" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header" unique_id=151791536]
+[node name="metode" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=151791536]
 layout_mode = 2
 text = "Metode"
 
-[node name="parameter_metode" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header" unique_id=784727809]
+[node name="parameter_metode" type="Label" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=784727809]
 layout_mode = 2
 text = "Parameter"
 
-[node name="pemisah_horizontal_2" type="Control" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header" unique_id=364022533]
+[node name="pemisah_horizontal_2" type="Control" parent="properti_objek/MarginContainer/Sinyal/header_daftar_sinyal/pemisah_header_sinyal" unique_id=364022533]
 custom_minimum_size = Vector2(5, 0)
 layout_mode = 2
 
 [node name="area_daftar_sinyal" type="ScrollContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=1233886823]
-custom_minimum_size = Vector2(0, 137)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_04tgp")
 
 [node name="daftar_sinyal" type="VBoxContainer" parent="properti_objek/MarginContainer/Sinyal/area_daftar_sinyal" unique_id=1677437850]
@@ -1229,36 +1240,47 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HSplitContainer" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=410808971]
+[node name="area_kelola_sinyal" type="MarginContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=2061910582]
+custom_minimum_size = Vector2(480, 175)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal" unique_id=83117646]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer" unique_id=410808971]
 layout_mode = 2
 split_offsets = PackedInt32Array(100)
 split_offset = 100
 
-[node name="label_pemicu_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer" unique_id=747461183]
+[node name="label_pemicu_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer" unique_id=747461183]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Pemicu"
 
-[node name="pilih_pemicu_sinyal" type="OptionButton" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer" unique_id=1917730511]
+[node name="pilih_pemicu_sinyal" type="OptionButton" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer" unique_id=1917730511]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 30)
+custom_minimum_size = Vector2(100, 31)
 layout_mode = 2
 fit_to_longest_item = false
 
-[node name="HSplitContainer2" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=1611554458]
+[node name="HSplitContainer2" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer" unique_id=1611554458]
 layout_mode = 2
 split_offsets = PackedInt32Array(100)
 split_offset = 100
 
-[node name="label_node_tujuan_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer2" unique_id=171334170]
+[node name="label_node_tujuan_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer2" unique_id=171334170]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Tujuan"
 
-[node name="Control" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer2" unique_id=253839535]
+[node name="Control" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer2" unique_id=253839535]
 layout_mode = 2
 
-[node name="nama_node_tujuan_sinyal" type="LineEdit" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer2/Control" unique_id=1066506421]
+[node name="nama_node_tujuan_sinyal" type="LineEdit" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer2/Control" unique_id=1066506421]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1266,40 +1288,40 @@ theme_override_colors/font_uneditable_color = Color(0, 0, 0, 1)
 theme_override_styles/read_only = SubResource("StyleBoxFlat_y3ovf")
 editable = false
 
-[node name="tombol_pilih_node_tujuan_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer2/Control" unique_id=2120092932]
+[node name="tombol_pilih_node_tujuan_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer2/Control" unique_id=2120092932]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Pilih"
 
-[node name="HSplitContainer3" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=1256677805]
+[node name="HSplitContainer3" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer" unique_id=1256677805]
 layout_mode = 2
 split_offsets = PackedInt32Array(100)
 split_offset = 100
 
-[node name="label_metode_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer3" unique_id=1437739839]
+[node name="label_metode_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer3" unique_id=1437739839]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Metode"
 
-[node name="pilih_metode_sinyal" type="OptionButton" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer3" unique_id=2070072310]
+[node name="pilih_metode_sinyal" type="OptionButton" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer3" unique_id=2070072310]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 30)
+custom_minimum_size = Vector2(100, 31)
 layout_mode = 2
 fit_to_longest_item = false
 search_bar_enabled = true
 
-[node name="HSplitContainer4" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=1289973077]
+[node name="HSplitContainer4" type="HSplitContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer" unique_id=1289973077]
 layout_mode = 2
 split_offsets = PackedInt32Array(100)
 split_offset = 100
 
-[node name="label_parameter_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer4" unique_id=289596896]
+[node name="label_parameter_sinyal" type="Label" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer4" unique_id=289596896]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Parameter"
 
-[node name="nilai_parameter_sinyal" type="LineEdit" parent="properti_objek/MarginContainer/Sinyal/HSplitContainer4" unique_id=1567953281]
+[node name="nilai_parameter_sinyal" type="LineEdit" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer4" unique_id=1567953281]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -1307,23 +1329,23 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_y3ovf")
 editable = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="properti_objek/MarginContainer/Sinyal" unique_id=950881169]
+[node name="HBoxContainer" type="HBoxContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer" unique_id=950881169]
 layout_mode = 2
 
-[node name="tombol_tambah_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/HBoxContainer" unique_id=1243965910]
+[node name="tombol_tambah_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HBoxContainer" unique_id=1243965910]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "+ Tambah"
 
-[node name="tombol_ubah_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/HBoxContainer" unique_id=824008861]
+[node name="tombol_ubah_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HBoxContainer" unique_id=824008861]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Ubah"
 
-[node name="tombol_hapus_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/HBoxContainer" unique_id=1004519602]
+[node name="tombol_hapus_sinyal" type="Button" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HBoxContainer" unique_id=1004519602]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
