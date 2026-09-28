@@ -1603,6 +1603,8 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 					"jarak_render": data_objek.jarak_render,
 					"kondisi":		data_objek.daftar_properti
 				}
+				#node_map.daftar_sinyal
+				# loop : objek_desain.daftar_sinyal
 			elif objek_desain is representasi_entitas:
 				if objek_desain.memiliki_sub_objek:
 					if data_entitas.get_parent() == null:
@@ -1613,21 +1615,29 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 					var tmp_entitas : entitas
 					if objek_desain.node_tampilan != null:
 						tmp_entitas = objek_desain.node_tampilan.duplicate()
-						tmp_entitas.name = "entitas_" + str(data_entitas.get_child_count() + 1)
+						tmp_entitas.name = "entitas_" + str(data_entitas.get_child_count() + 1)						# FIXME : konsistensi?
 						tmp_entitas.process_mode = PROCESS_MODE_DISABLED
 						data_entitas.add_child(tmp_entitas)
 						tmp_entitas.set_owner(node_map)
 						tmp_entitas.global_position = objek_desain.node_tampilan.global_position
+						# ini paling terakhir setelah alat pemain utama
+						# gak boleh pake urutan entitas pada map, harus urutan entitas pada pool_entitas di server
+						# sinyal gak konsisten, karena map editor punya urutan entitas tersendiri
+						#node_map.daftar_sinyal
+						# loop : objek_desain.daftar_sinyal
 					else:
 						push_error("[Galat] Tidak dapat menambahkan entitas '" + str(data_objek.jalur_instance) + "' ke map!")
 				else:
+					# FIXME : yang mana diproses duluan secara urutan? pada daftar entitas atau node aktual?
 					node_map.entitas_["entitas_" + str(node_map.entitas_.size() + 1)] = {
-						"id_aset":		node_map.name + "@entitas_" + str(node_map.entitas_.size() + 1),
+						"id_aset":		node_map.name + "@entitas_" + str(node_map.entitas_.size() + 1),			#  FIXME : konsistensi?
 						"sumber": 		data_objek.jalur_instance,
 						"posisi": 		data_objek.posisi,
 						"rotasi": 		data_objek.rotasi,
 						"kondisi":		data_objek.daftar_properti
 					}
+					#node_map.daftar_sinyal
+					# loop : objek_desain.daftar_sinyal
 			elif objek_desain is representasi_pemain:
 				var node_posisi_pemain : Marker3D = Marker3D.new()
 				node_posisi_pemain.name = "posisi_spawn"

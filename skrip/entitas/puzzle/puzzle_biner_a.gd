@@ -12,6 +12,10 @@ const sinkron_kondisi = [
 	["input_biner_128", false],
 	["output_desimal", 0]
 ]
+const daftar_sinyal = {
+	"sinyal":	["nilai_benar", "nilai_salah"],
+	"metode":	["cek_nilai"]
+}
 
 @export var input_biner_1 : bool
 @export var input_biner_2 : bool
@@ -52,9 +56,15 @@ func cek_nilai(id_pengguna : int) -> void:
 			input_desimal = (input_desimal << 1) | bit
 		
 		if input_desimal == output_desimal:
-			Panku.notify("benar")
+			server.gunakan_entitas(
+				name,
+				"nilai_benar"
+			)
 		else:
-			Panku.notify("salahh!")
+			server.gunakan_entitas(
+				name,
+				"nilai_salah"
+			)
 		output_desimal = 0
 		
 		fungsikan_objek_relasi(
@@ -71,6 +81,11 @@ func cek_nilai(id_pengguna : int) -> void:
 			"atur_ditekan",
 			[false]
 		)
+
+func nilai_benar(id_pengguna : int) -> void:
+	Panku.notify("benar")
+func nilai_salah(id_pengguna : int) -> void:
+	Panku.notify("salahh!")
 
 func proses(_waktu_delta : float) -> void:
 	if output_desimal == 0:
