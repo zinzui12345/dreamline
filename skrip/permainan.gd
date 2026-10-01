@@ -168,6 +168,7 @@ var _konfigurasi_awal : Dictionary = {
 	"bahasa": 0,
 	"mode_layar_penuh": false
 }
+var _instance_editor_map : Control
 #endregion
 
 #region enumerasi
@@ -547,8 +548,31 @@ func mainkan_replay() -> void:
 func editor_entitas() -> void:
 	get_tree().change_scene_to_file("res://skena/editor_entitas_pemain.tscn")
 func editor_map() -> void:
-	# FIXME : harus bisa balik!
-	get_tree().change_scene_to_file("res://skena/map_editor.tscn")
+	if _instance_editor_map == null:
+		_instance_editor_map = load("res://skena/map_editor.tscn").instantiate()
+		if $pemutar_musik.visible:
+			$pemutar_musik/animasi.play("sembunyikan")
+		if $setelan.visible:
+			_sembunyikan_setelan_permainan()
+		if $buat_server.visible:
+			$buat_server/animasi.play("animasi_panel/tutup")
+		if $daftar_server.visible:
+			client.hentikan_pencarian_server()
+			$daftar_server/animasi.play("animasi_panel/tutup")
+			_reset_daftar_server_lan()
+		if $karakter.visible:
+			$karakter/animasi.play("animasi_panel/tutup")
+		if $proses_koneksi.visible:
+			_sembunyikan_proses_koneksi()
+		$menu_utama/animasi.play("sembunyikan")
+		$latar.sembunyikan()
+		get_parent().add_child(_instance_editor_map)
+		get_parent().move_child(_instance_editor_map, get_parent().get_child_count() - 2)
+	else:
+		$latar.tampilkan()
+		$menu_utama/animasi.play("tampilkan")
+		get_parent().remove_child(_instance_editor_map)
+		_instance_editor_map.queue_free()
 func atur_map(nama_map : StringName = "empty") -> String:
 	if nama_map == "benchmark": server.map = "benchmark"; uji_performa();											return "memulai uji performa"
 	elif ResourceLoader.exists("%s/%s.scn" % [Konfigurasi.direktori_map, nama_map]): server.map = &"@" + nama_map;	return "mengatur map menjadi "+server.map
@@ -2323,6 +2347,7 @@ func _ketika_berhenti_mengubah_posisi_objek() -> void:
 		edit_objek.global_transform.origin = edit_objek.global_transform.origin.snappedf(0.1)
 func _tampilkan_popup_informasi(teks_informasi : String, fokus_setelah : Control) -> void:
 	# 16/06/24 :: ketika dalam permainan
+	# FIXME : ini harus didepan popup native, misalnya dialog buka file atau properti objek pada editor map
 	if is_instance_valid(karakter) and !jeda: _jeda()
 	$popup_informasi.target_fokus_setelah = fokus_setelah
 	$popup_informasi/panel/teks.text = teks_informasi
@@ -2336,6 +2361,7 @@ func _tutup_popup_informasi() -> void:
 	$popup_informasi/panel/teks.text = ""+str(randf())
 	$popup_informasi.target_fokus_setelah.grab_focus()
 func _tampilkan_popup_konfirmasi(tombol_penampil : Button, fungsi : Callable, teks : String) -> void:
+	# FIXME : ini harus didepan popup native, misalnya dialog buka file atau properti objek pada editor map
 	$popup_konfirmasi.penampil = tombol_penampil
 	$popup_konfirmasi.fungsi = fungsi
 	$popup_konfirmasi/panel/teks.text = teks

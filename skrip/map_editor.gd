@@ -11,6 +11,7 @@ var jalur_file_desain : String
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
 # tool tambah entitas
 # Fungsikan tool Knife
+# terjemahkan teks UI, popup { server.permainan._tampilkan_popup_informasi, Panku.notify }
 
 # Seleksi dan transformasi
 var objek_terpilih : Node3D = null :
@@ -1086,8 +1087,7 @@ func _ketika_memilih_objek_target() -> void:
 func _ketika_konfirmasi_memilih_objek_target() -> void:
 	# pastikan objek_target_yang_dipilih bukan objek pengirim sinyal
 	if objek_target_yang_dipilih == objek_terpilih:
-		# FIXME : ganti dengan popup_informasi!
-		Panku.notify("Tidak bisa memilih diri sendiri!")
+		server.permainan._tampilkan_popup_informasi("Tidak bisa memilih diri sendiri!", %tombol_pilih_node_tujuan_sinyal)
 	elif objek_target_yang_dipilih != null:
 		%nama_node_tujuan_sinyal.text = objek_target_yang_dipilih.name
 		%pilih_metode_sinyal.clear()
@@ -1562,6 +1562,8 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	var data_entitas : Node3D = Node3D.new()
 	var data_pencahayaan : LightmapGI = LightmapGI.new()
 	var node_batas_bawah : Marker3D = Marker3D.new()
+	var daftar_id_sinyal : Array
+	var pointer_id_sinyal : Dictionary
 	node_map.name = jalur_file.get_file().get_basename()
 	node_map.set_script(load("res://skrip/map.gd"))
 	data_bentuk.name = "bentuk"
@@ -1580,6 +1582,19 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 	node_batas_bawah.global_position.y = handle_batas_bawah.global_position.y
 	for objek_desain in $lingkungan.get_children():
 		if objek_desain.has_method("_compile"):
+			var id_sinyal : String = server.permainan.hasilkanKarakterAcak(8)
+			while id_sinyal in daftar_id_sinyal:
+				id_sinyal = server.permainan.hasilkanKarakterAcak(8)
+			if objek_desain is representasi_objek:
+				if objek_desain.daftar_sinyal.size() > 0:
+					pointer_id_sinyal[id_sinyal] = objek_desain
+					daftar_id_sinyal.append(id_sinyal)
+			elif objek_desain is representasi_entitas:
+				if objek_desain.daftar_sinyal.size() > 0:
+					pointer_id_sinyal[id_sinyal] = objek_desain
+					daftar_id_sinyal.append(id_sinyal)
+	for objek_desain in $lingkungan.get_children():
+		if objek_desain.has_method("_compile"):
 			var data_objek : Dictionary = objek_desain._compile()
 			if objek_desain is representasi_bentuk:
 				var node_bentuk_objek : MeshInstance3D = data_objek["bentuk"]
@@ -1595,8 +1610,9 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 				node_bentuk_objek.global_rotation_degrees = data_objek["rotasi"]
 				node_fisik_objek.global_rotation_degrees = data_objek["rotasi"]
 			elif objek_desain is representasi_objek:
-				node_map.objek_["objek_" + str(node_map.objek_.size() + 1)] = {
-					"id_aset":		node_map.name + "@objek_" + str(node_map.objek_.size() + 1),
+				var id_objek : String = "objek_" + str(node_map.objek_.size() + 1)
+				node_map.objek_[id_objek] = {
+					"id_aset":		node_map.name + "@" + id_objek,
 					"sumber": 		data_objek.jalur_instance,
 					"posisi": 		data_objek.posisi,
 					"rotasi": 		data_objek.rotasi,
@@ -1604,7 +1620,11 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 					"kondisi":		data_objek.daftar_properti
 				}
 				#node_map.daftar_sinyal
-				# loop : objek_desain.daftar_sinyal
+				for cek_id_sinyal in pointer_id_sinyal:
+					if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
+						node_map.objek_[id_objek]["id_sinyal"] = cek_id_sinyal
+				for sinyal in objek_desain.daftar_sinyal: # TODO : ini dipisah ke langkah selanjutnya
+					print_debug(sinyal)
 			elif objek_desain is representasi_entitas:
 				if objek_desain.memiliki_sub_objek:
 					if data_entitas.get_parent() == null:
@@ -1613,30 +1633,36 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 						data_entitas.set_owner(node_map)
 						data_entitas.process_mode = PROCESS_MODE_DISABLED
 					var tmp_entitas : entitas
+					var id_entitas : String = "entitas_" + str(data_entitas.get_child_count() + 1)
 					if objek_desain.node_tampilan != null:
 						tmp_entitas = objek_desain.node_tampilan.duplicate()
-						tmp_entitas.name = "entitas_" + str(data_entitas.get_child_count() + 1)						# FIXME : konsistensi?
+						tmp_entitas.name = id_entitas
 						tmp_entitas.process_mode = PROCESS_MODE_DISABLED
 						data_entitas.add_child(tmp_entitas)
 						tmp_entitas.set_owner(node_map)
 						tmp_entitas.global_position = objek_desain.node_tampilan.global_position
-						# ini paling terakhir setelah alat pemain utama
-						# gak boleh pake urutan entitas pada map, harus urutan entitas pada pool_entitas di server
-						# sinyal gak konsisten, karena map editor punya urutan entitas tersendiri
+						
 						#node_map.daftar_sinyal
+						for cek_id_sinyal in pointer_id_sinyal:
+							if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
+								tmp_entitas.set_meta("id_sinyal", cek_id_sinyal)
 						# loop : objek_desain.daftar_sinyal
 					else:
 						push_error("[Galat] Tidak dapat menambahkan entitas '" + str(data_objek.jalur_instance) + "' ke map!")
 				else:
-					# FIXME : yang mana diproses duluan secara urutan? pada daftar entitas atau node aktual?
-					node_map.entitas_["entitas_" + str(node_map.entitas_.size() + 1)] = {
-						"id_aset":		node_map.name + "@entitas_" + str(node_map.entitas_.size() + 1),			#  FIXME : konsistensi?
+					var id_entitas : String = "entitas_" + str(node_map.entitas_.size() + 1)
+					node_map.entitas_[id_entitas] = {
+						"id_aset":		node_map.name + "@" + id_entitas,
 						"sumber": 		data_objek.jalur_instance,
 						"posisi": 		data_objek.posisi,
 						"rotasi": 		data_objek.rotasi,
 						"kondisi":		data_objek.daftar_properti
 					}
+					
 					#node_map.daftar_sinyal
+					for cek_id_sinyal in pointer_id_sinyal:
+						if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
+							node_map.entitas_[id_entitas]["id_sinyal"] = cek_id_sinyal
 					# loop : objek_desain.daftar_sinyal
 			elif objek_desain is representasi_pemain:
 				var node_posisi_pemain : Marker3D = Marker3D.new()
