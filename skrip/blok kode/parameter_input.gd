@@ -64,6 +64,10 @@ func tentukan_parameter(parameter : Dictionary) -> void:
 						"true":		$MarginContainer/default_value/bool.select(1)
 				$input_block.accept_type = "Boolean"
 				_sesuaikan_warna(Color("789bffff"))
+			"Color":
+				if parameter.has("value"):
+					$MarginContainer/default_value/Color.color = parameter["value"]
+				$input_block.accept_type = "Color"
 			"int":
 				if parameter.has("value"):
 					$MarginContainer/default_value/int.value = int(parameter["value"])
@@ -95,6 +99,8 @@ func hasilkan_kode() -> String:
 				match $MarginContainer/default_value/bool.selected:
 					0:	return "(false)"
 					1:	return "(true)"
+			"Color":
+				return str($MarginContainer/default_value/Color.color.to_html(true))
 			"int":
 				return str(int($MarginContainer/default_value/int.value))
 			"float":

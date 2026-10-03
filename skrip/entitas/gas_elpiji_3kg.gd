@@ -3,6 +3,11 @@ extends entitas
 const sinkron_kondisi = [ ["warna_1", Color("7be720")], [ "id_pengangkat", -1 ], [ "id_pelempar", -1 ] ]
 const jalur_instance = "res://skena/entitas/gas_elpiji_3kg.scn"
 const radius_ledakan : int = 10
+const daftar_sinyal = {
+	"sinyal":	[],
+	"metode":	[],
+	"properti":	["warna_1"]
+}
 
 var id_pengangkat : int = -1:
 	set(id):

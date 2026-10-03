@@ -31,6 +31,7 @@ var cek_visibilitas_pool_objek : Dictionary = {}	# [id_pemain][nama_objek] = "sp
 var cek_visibilitas_pool_karakter : Dictionary = {}	# [id_pemain][nama_karakter] = "spawn" ? "hapus"
 var pool_pemuat_objek : Array
 var relasi_objek_dan_entitas : Array				# id unik untuk menghubungkan objek dengan entitas >> objek memanggil suatu fungsi pada entitas
+var sinyal_objek_dan_entitas : Dictionary			# daftar sinyal objek ataupun entitas >> objek memanggil suatu fungsi pada entitas ataupun sebaliknya
 var b_cek_data_timeline : Dictionary
 var b_indeks_timeline : Array
 var b_nama_file_timeline : String
@@ -501,6 +502,7 @@ func putuskan() -> void:
 	cek_visibilitas_pemain.clear()
 	cek_visibilitas_pool_entitas.clear()
 	cek_visibilitas_pool_objek.clear()
+	sinyal_objek_dan_entitas.clear()
 	Panku.notify(TranslationServer.translate("%putuskanserver"))
 	Panku.gd_exprenv.remove_env("server")
 	
@@ -667,6 +669,33 @@ func fungsikan_objek(nama_objek : StringName, nama_fungsi : StringName, paramete
 		_fungsikan_objek(nama_objek, nama_fungsi, parameter)
 	else:
 		rpc_id(1, "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
+func proses_sinyal_objek_dan_entitas(daftar_sinyal : Array) -> void:
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
+		for sinyal in daftar_sinyal:
+			if sinyal.tipe_target == "objek":
+				for nama_objek_target in pool_objek.keys():
+					var objek_target = pool_objek[nama_objek_target]
+					if objek_target.id_sinyal == sinyal.target:
+						if sinyal.metode.match("atur *"):
+							var nama_properti_target : String = sinyal.metode.replace("atur ", "")
+							_sesuaikan_properti_objek(-1, nama_objek_target, [[nama_properti_target, sinyal.parameter]])
+						else:
+							# TODO : sinyal.parameter diubah menjadi array
+							# 03/10/26 :: gatau kenapa, tapi sama aja kayak di representasi_objek.gd:atur_properti() | jangan diubah, if it's work then don't touch it!
+							_fungsikan_objek(nama_objek_target, sinyal.metode, [])
+							_fungsikan_objek(nama_objek_target, sinyal.metode, [])
+			elif sinyal.tipe_target == "entitas":
+				for nama_entitas_target in pool_entitas.keys():
+					var entitas_target = pool_entitas[nama_entitas_target]
+					if entitas_target.id_sinyal == sinyal.target:
+						if sinyal.metode.match("atur *"):
+							var nama_properti_target : String = sinyal.metode.replace("atur ", "")
+							_sesuaikan_kondisi_entitas(entitas_target.id_proses, nama_entitas_target, [[nama_properti_target, sinyal.parameter]])
+							sinkronkan_kondisi_entitas(entitas_target.id_proses, nama_entitas_target, [[nama_properti_target, sinyal.parameter]])
+						else:
+							_gunakan_entitas(nama_entitas_target, entitas_target.id_proses, sinyal.metode)
+	else:
+		push_error("[Galat] metode ini hanya dapat dipanggil oleh server!")
 func hapus_objek(jalur_objek : String) -> void:
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		_hapus_objek(jalur_objek, multiplayer.get_unique_id())
@@ -930,10 +959,14 @@ func _pemain_terputus(id_pemain):
 			var nama_entitas : StringName = "entitas_"+str(jumlah_entitas)
 			var id_pemilik_entitas : int = -1
 			var id_pemroses_entitas : int = -1
+			var id_sinyal_entitas : String = ""
 			for p in properti.size():
 				if properti[p][0] == "id_pemilik":
 					id_pemilik_entitas = properti[p][1]
 					id_pemroses_entitas = properti[p][1]
+					properti.erase(properti[p])
+				elif properti[p][0] == "id_sinyal":
+					id_sinyal_entitas = properti[p][1]
 					properti.erase(properti[p])
 			# INFO : tambahkan entitas ke array pool_entitas
 			pool_entitas[nama_entitas] = {
@@ -941,6 +974,7 @@ func _pemain_terputus(id_pemain):
 				"id_pemilik" : id_pemilik_entitas,
 				"id_proses" : id_pemroses_entitas,
 				"id_pengubah": 0,
+				"id_sinyal"	: id_sinyal_entitas,
 				"posisi"	: posisi,
 				"rotasi"	: rotasi,
 				"kondisi"	: properti
@@ -964,15 +998,21 @@ func _pemain_terputus(id_pemain):
 		if load(jalur_skena) != null:
 			jumlah_objek += 1
 			var nama_objek : StringName = "objek_"+str(jumlah_objek)
+			var id_sinyal_objek : String = ""
+			for p in properti.size():
+				if properti[p][0] == "id_sinyal":
+					id_sinyal_objek = properti[p][1]
+					properti.erase(properti[p])
 			# INFO : tambahkan objek ke array pool_objek
 			pool_objek[nama_objek] = {
-				"jarak_render"	: jarak_render,
-				"jalur_instance": jalur_skena,
-				"id_pengubah": 0,
-				"id_relasi": id_relasi,
-				"posisi"	: posisi,
-				"rotasi"	: rotasi,
-				"properti"	: properti
+				"jarak_render"		: jarak_render,
+				"jalur_instance"	: jalur_skena,
+				"id_pengubah"		: 0,
+				"id_relasi"			: id_relasi,
+				"id_sinyal"			: id_sinyal_objek,
+				"posisi"			: posisi,
+				"rotasi"			: rotasi,
+				"properti"			: properti
 			}
 			# Timeline : spawn objek
 			if not mode_replay:
@@ -1033,6 +1073,11 @@ func _pemain_terputus(id_pemain):
 				#Panku.notify("posisi pemain : " + str(pemain[i_pool_pemain]["posisi"]))
 				#Panku.notify("posisi entitas : " + str(pool_entitas[nama_entitas]["posisi"]))
 				t_entitas = dunia.get_node_or_null("entitas/" + nama_entitas)
+	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and sinyal_objek_dan_entitas.get(pool_entitas[nama_entitas]["id_sinyal"]) != null:
+		if sinyal_objek_dan_entitas[pool_entitas[nama_entitas]["id_sinyal"]].get(fungsi) != null:
+			proses_sinyal_objek_dan_entitas(sinyal_objek_dan_entitas[pool_entitas[nama_entitas]["id_sinyal"]][fungsi])
+		#else:
+			#push_error("[Galat] sinyal dari entitas [%s] tidak memiliki target" % [pool_entitas[nama_entitas]["id_sinyal"]])
 	if t_entitas != null and t_entitas.has_method(fungsi):
 		t_entitas.call(fungsi, id_pengguna)
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER and pool_entitas.get(nama_entitas) != null:
@@ -1100,6 +1145,13 @@ func _pemain_terputus(id_pemain):
 						rpc_id(pemain[idx_pemain]["id_client"], "_fungsikan_objek", nama_objek, nama_fungsi, parameter)
 		else:
 			push_error("[Galat] tidak dapat memfungsikan objek, fungsi [%s] tidak ditangani" % [nama_fungsi])
+		
+		if sinyal_objek_dan_entitas.get(pool_objek[nama_objek]["id_sinyal"]) != null:
+			if sinyal_objek_dan_entitas[pool_objek[nama_objek]["id_sinyal"]].get(nama_fungsi) != null:
+				proses_sinyal_objek_dan_entitas(sinyal_objek_dan_entitas[pool_objek[nama_objek]["id_sinyal"]][nama_fungsi])
+			#else:
+				#push_error("[Galat] sinyal dari objek [%s] tidak memiliki target" % [pool_objek[nama_objek]["id_sinyal"]])
+		
 	if objek_difungsikan != null:
 		var panggil_fungsi : Callable
 		if objek_difungsikan.has_method(nama_fungsi):

@@ -45,6 +45,9 @@ func _setup() -> void:
 						["id_relasi", tmp_id_relasi]
 					])
 				
+				if has_meta("id_sinyal"):
+					tmp_kondisi.append(["id_sinyal", get_meta("id_sinyal")])
+				
 				server._tambahkan_entitas(
 					get("jalur_instance"),
 					global_transform.origin,

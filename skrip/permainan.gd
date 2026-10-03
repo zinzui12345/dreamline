@@ -42,7 +42,7 @@ class_name Permainan
 # 23 Apr 2025 | 0.4.3 - Penambahan Objek Perosotan
 # 23 Apr 2025 | 0.4.4 - Penambahan Objek Ayunan
 
-const versi = "Dreamline v0.4.4 22/09/26 Early Access"
+const versi = "Dreamline v0.4.4 03/10/26 Early Access"
 const karakter_cewek = preload("res://karakter/rulu/rulu.scn")
 const karakter_cowok = preload("res://karakter/reno/reno.scn")
 
@@ -810,6 +810,9 @@ func _muat_map(file_map : StringName) -> void:
 							map.entitas_[muat_entitas].rotasi,
 							map.entitas_[muat_entitas].kondisi
 						)
+		# 02/10/26 :: terapkan daftar sinyal ke server
+		if map.get("daftar_sinyal") != null and map.daftar_sinyal.size() > 0:
+			server.sinyal_objek_dan_entitas = map.daftar_sinyal
 		# 22/09/26 :: cek apakah ada node "entitas" : jika ada, cek children-nya, jika entitas maka atur .process_mode = PROCESS_MODE_INHERIT
 		if file_map.substr(0,1) == "@" and map.get_node_or_null("entitas") != null and map.get_node("entitas").get_child_count() > 0:
 			for node_entitas in map.get_node("entitas").get_children():
@@ -1367,6 +1370,7 @@ func _edit_objek(jalur : String) -> void:
 	# 10/05/25 :: cek apakah objek bisa dihapus
 	if !edit_objek.has_meta("id_objek") and !edit_objek.has_meta("id_entitas"):
 		# jangan sembarangan menghapus objek, cek apakah objek memiliki pemilik
+		# FIXME : cegah menghapus objek yang terhubung dengan sinyal (objek pemicu dan penerima sinyal)
 		if edit_objek.get("id_pemilik") != null and (edit_objek.id_pemilik != -1 and edit_objek.id_pemilik != client.id_koneksi):
 			$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", true)
 		else:

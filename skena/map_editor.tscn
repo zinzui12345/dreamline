@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://botvoe71gvtw8" path="res://ui/ikon/ikon_tambah_objek_bentuk.svg" id="6_f1y01"]
 [ext_resource type="Texture2D" uid="uid://bra5hge2hv0h6" path="res://ui/ikon/ikon_tambah_objek.svg" id="11_04tgp"]
 [ext_resource type="Texture2D" uid="uid://cpoanymg74u5" path="res://ui/ikon/ikon_tambah_entitas.svg" id="12_y3ovf"]
+[ext_resource type="PackedScene" uid="uid://cuwg1s457s3ig" path="res://ui/blok kode/parameter_input.tscn" id="16_fpkry"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nef38"]
 bg_color = Color(1, 1, 1, 1)
@@ -1321,13 +1322,12 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Parameter"
 
-[node name="nilai_parameter_sinyal" type="LineEdit" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer4" unique_id=1567953281]
+[node name="nilai_parameter_sinyal" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer/HSplitContainer4" unique_id=679656644 instance=ExtResource("16_fpkry")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_y3ovf")
-editable = false
+locked = true
+attached = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="properti_objek/MarginContainer/Sinyal/area_kelola_sinyal/VBoxContainer" unique_id=950881169]
 layout_mode = 2

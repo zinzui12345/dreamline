@@ -52,6 +52,10 @@ popup/item_0/id = 1
 popup/item_1/text = "true"
 popup/item_1/id = 0
 
+[node name="Color" type="ColorPickerButton" parent="MarginContainer/default_value" unique_id=410423509]
+visible = false
+layout_mode = 2
+
 [node name="int" type="SpinBox" parent="MarginContainer/default_value" unique_id=1349953501]
 visible = false
 custom_minimum_size = Vector2(90, 0)

@@ -5,13 +5,9 @@ var _cek_ukuran_kanvas : Vector2
 var jalur_file_desain : String
 
 # TODO :
-# relasi antara objek dan entitas | harus ada tipe relasi (input, output)*
-# - simpan semua sinyal dari semua entitas dan objek saat merender map
-# - terapkan daftar sinyal ke server (objek:fungsikan, entitas:gunakan)
 # non-aktifkan collision semua objek saat tool_aktif == "face_select"
-# tool tambah entitas
 # Fungsikan tool Knife
-# terjemahkan teks UI, popup { server.permainan._tampilkan_popup_informasi, Panku.notify }
+# terjemahkan teks UI, popup { server.permainan._tampilkan_popup_informasi, Panku.notify }, item seleksi { %pilih_metode_sinyal.add_item, "atur %s" % [properti] }
 
 # Seleksi dan transformasi
 var objek_terpilih : Node3D = null :
@@ -66,6 +62,7 @@ var posisi_kursor_di_dunia : Vector3 = Vector3.ZERO
 var posisi_kursor_di_viewport : Vector2 = Vector2.ZERO
 var nilai_transformasi : Vector2 = Vector2.ZERO
 var indeks_face_terpilih : int = -1  # Indeks face yang dipilih (untuk mesh)
+var indeks_properti_sinyal : Array
 
 # Handles
 var handles : Node3D
@@ -320,6 +317,7 @@ func _ready() -> void:
 	%tombol_pilih_node_tujuan_sinyal.connect("pressed", self._ketika_memilih_objek_target)
 	%tombol_terapkan_objek_target_pilihan.connect("pressed", self._ketika_konfirmasi_memilih_objek_target)
 	%tombol_batalkan_objek_target_pilihan.connect("pressed", self._ketika_batal_memilih_objek_target)
+	%pilih_metode_sinyal.connect("item_selected", self._ketika_memilih_metode_objek_target)
 	%tombol_tambah_sinyal.connect("pressed", self._ketika_menambah_sinyal_objek)
 	%tombol_ubah_sinyal.connect("pressed", self._ketika_mengedit_sinyal_objek)
 	%tombol_hapus_sinyal.connect("pressed", self._ketika_menghapus_sinyal_objek)
@@ -328,6 +326,11 @@ func _ready() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_a/tampilan_depan/SubViewport/titik_fokus/grid_depan.position.z = -9000.0
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_atas/SubViewport/titik_fokus/grid_atas.position.y = -9000.0
 	$tata_letak_vertikal/tata_letak/kanvas/pemisah_vertikal_b/tampilan_kanan/SubViewport/titik_fokus/grid_kanan.position.x = -9000.0
+	
+	if server.permainan != null and server.permainan.has_method("hasilkanKarakterAcak"):
+		pass
+	else:
+		$tata_letak_vertikal/menu/HBoxContainer/render_desain.disabled = true
 
 func _ketika_ukuran_tampilan_diubah() -> void:
 	$tata_letak_vertikal/tata_letak/kanvas.split_offset = $tata_letak_vertikal/tata_letak/kanvas.size.x / 2
@@ -972,7 +975,7 @@ func _ketika_menambah_sinyal_objek() -> void:
 	var pemicu : String = %pilih_pemicu_sinyal.get_item_text(%pilih_pemicu_sinyal.selected)
 	var tujuan : String = %nama_node_tujuan_sinyal.text
 	var metode : String = %pilih_metode_sinyal.get_item_text(%pilih_metode_sinyal.selected)
-	var parameter : String = %nilai_parameter_sinyal.text
+	var parameter : String = ("" if %nilai_parameter_sinyal.hasilkan_kode() == "null" else %nilai_parameter_sinyal.hasilkan_kode())
 	objek_terpilih.daftar_sinyal.append(
 		[
 			pemicu,
@@ -995,7 +998,12 @@ func _ketika_menambah_sinyal_objek() -> void:
 	%daftar_sinyal.add_child(node_tampilan_sinyal)
 	%nama_node_tujuan_sinyal.text = ""
 	%pilih_metode_sinyal.clear()
-	%nilai_parameter_sinyal.text = ""
+	%nilai_parameter_sinyal.tentukan_parameter({
+		"type":	"null",
+		"value": ""
+	})
+	%nilai_parameter_sinyal._setup()
+	_ketika_ukuran_tampilan_parameter_objek_diubah()
 func _ketika_memilih_sinyal_objek(id_sinyal : int) -> void:
 	for tampilan_sinyal in %daftar_sinyal.get_children():
 		if tampilan_sinyal.id != id_sinyal:
@@ -1012,13 +1020,32 @@ func _ketika_memilih_sinyal_objek(id_sinyal : int) -> void:
 			%pilih_pemicu_sinyal.select(indeks_pilih_pemicu_sinyal)
 			%nama_node_tujuan_sinyal.text = nilai_sinyal[1]
 			%pilih_metode_sinyal.clear()
+			indeks_properti_sinyal.clear()
+			%nilai_parameter_sinyal.locked = true
+			%nilai_parameter_sinyal.tentukan_parameter({
+				"type":	"null",
+				"value": ""
+			})
 			if objek_target_sinyal.node_tampilan != null and objek_target_sinyal.node_tampilan.get("daftar_sinyal") != null:
+				if objek_target_sinyal.node_tampilan.daftar_sinyal.get("properti") != null:
+					for properti in objek_target_sinyal.node_tampilan.daftar_sinyal["properti"]:
+						%pilih_metode_sinyal.add_item("atur %s" % [properti])
+						indeks_properti_sinyal.append(properti)
+						if "atur " + properti == nilai_sinyal[2].substr(0, nilai_sinyal[2].length() -  2):
+							indeks_pilih_metode_sinyal = %pilih_metode_sinyal.item_count - 1
 				for metode in objek_target_sinyal.node_tampilan.daftar_sinyal["metode"]:
 					%pilih_metode_sinyal.add_item(metode)
 					if metode == nilai_sinyal[2].substr(0, nilai_sinyal[2].length() -  2):
 						indeks_pilih_metode_sinyal = %pilih_metode_sinyal.item_count - 1
+				if objek_target_sinyal.node_tampilan.daftar_sinyal.get("properti") != null:
+					%pilih_metode_sinyal.select(indeks_pilih_metode_sinyal)
+					%nilai_parameter_sinyal.locked = false
+					%nilai_parameter_sinyal.tentukan_parameter({
+						"type":		type_string(typeof(objek_target_sinyal.node_tampilan.get(indeks_properti_sinyal[indeks_pilih_metode_sinyal]))),
+						"value":	nilai_sinyal[3]
+					})
 			%pilih_metode_sinyal.select(indeks_pilih_metode_sinyal)
-			%nilai_parameter_sinyal.text = nilai_sinyal[3]
+			%nilai_parameter_sinyal._setup()
 			%tombol_tambah_sinyal.visible = false
 			%tombol_ubah_sinyal.visible = true
 			%tombol_hapus_sinyal.visible = true
@@ -1027,7 +1054,11 @@ func _ketika_berhenti_memilih_sinyal_objek() -> void:
 	%pilih_pemicu_sinyal.select(0)
 	%nama_node_tujuan_sinyal.text = ""
 	%pilih_metode_sinyal.clear()
-	%nilai_parameter_sinyal.text = ""
+	%nilai_parameter_sinyal.tentukan_parameter({
+		"type":	"null",
+		"value": ""
+	})
+	%nilai_parameter_sinyal._setup()
 	%tombol_tambah_sinyal.visible = true
 	%tombol_ubah_sinyal.visible = false
 	%tombol_hapus_sinyal.visible = false
@@ -1040,7 +1071,7 @@ func _ketika_mengedit_sinyal_objek() -> void:
 			var pemicu : String = %pilih_pemicu_sinyal.get_item_text(%pilih_pemicu_sinyal.selected)
 			var tujuan : String = %nama_node_tujuan_sinyal.text
 			var metode : String = %pilih_metode_sinyal.get_item_text(%pilih_metode_sinyal.selected)
-			var parameter : String = %nilai_parameter_sinyal.text
+			var parameter : String = ("" if %nilai_parameter_sinyal.hasilkan_kode() == "null" else %nilai_parameter_sinyal.hasilkan_kode())
 			objek_terpilih.daftar_sinyal[sinyal_terpilih] = [
 				pemicu,
 				tujuan,
@@ -1091,7 +1122,13 @@ func _ketika_konfirmasi_memilih_objek_target() -> void:
 	elif objek_target_yang_dipilih != null:
 		%nama_node_tujuan_sinyal.text = objek_target_yang_dipilih.name
 		%pilih_metode_sinyal.clear()
+		indeks_properti_sinyal.clear()
 		if objek_target_yang_dipilih.node_tampilan != null and objek_target_yang_dipilih.node_tampilan.get("daftar_sinyal") != null:
+			if objek_target_yang_dipilih.node_tampilan.daftar_sinyal.get("properti") != null:
+				for properti in objek_target_yang_dipilih.node_tampilan.daftar_sinyal["properti"]:
+					%pilih_metode_sinyal.add_item("atur %s" % [properti])
+					indeks_properti_sinyal.append(properti)
+				_ketika_memilih_metode_objek_target(0)
 			for metode in objek_target_yang_dipilih.node_tampilan.daftar_sinyal["metode"]:
 				%pilih_metode_sinyal.add_item(metode)
 	if not viewport_fokus:
@@ -1125,6 +1162,15 @@ func _ketika_batal_memilih_objek_target() -> void:
 	sedang_memilih_objek_target = false
 	sedang_fokus_panel_pilih_objek_target = false
 	objek_target_yang_dipilih = null
+func _ketika_memilih_metode_objek_target(indeks_pilihan : int) -> void:
+	var objek_target_sinyal : Node3D = $lingkungan.get_node(%nama_node_tujuan_sinyal.text)
+	if indeks_properti_sinyal.size() > indeks_pilihan and indeks_properti_sinyal.get(indeks_pilihan) != null and objek_target_sinyal != null:
+		%nilai_parameter_sinyal.locked = false
+		%nilai_parameter_sinyal.tentukan_parameter({
+			"type":		type_string(typeof(objek_target_sinyal.node_tampilan.get(indeks_properti_sinyal[indeks_pilihan]))),
+			"value":	objek_target_sinyal.node_tampilan.get(indeks_properti_sinyal[indeks_pilihan])
+		})
+		%nilai_parameter_sinyal._setup()
 
 func _terapkan_mode_pemilihan_objek(mode_face : bool = false) -> void:
 	for objek_objek in $lingkungan.get_children():
@@ -1586,13 +1632,11 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 			while id_sinyal in daftar_id_sinyal:
 				id_sinyal = server.permainan.hasilkanKarakterAcak(8)
 			if objek_desain is representasi_objek:
-				if objek_desain.daftar_sinyal.size() > 0:
-					pointer_id_sinyal[id_sinyal] = objek_desain
-					daftar_id_sinyal.append(id_sinyal)
+				pointer_id_sinyal[id_sinyal] = objek_desain
+				daftar_id_sinyal.append(id_sinyal)
 			elif objek_desain is representasi_entitas:
-				if objek_desain.daftar_sinyal.size() > 0:
-					pointer_id_sinyal[id_sinyal] = objek_desain
-					daftar_id_sinyal.append(id_sinyal)
+				pointer_id_sinyal[id_sinyal] = objek_desain
+				daftar_id_sinyal.append(id_sinyal)
 	for objek_desain in $lingkungan.get_children():
 		if objek_desain.has_method("_compile"):
 			var data_objek : Dictionary = objek_desain._compile()
@@ -1619,12 +1663,9 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 					"jarak_render": data_objek.jarak_render,
 					"kondisi":		data_objek.daftar_properti
 				}
-				#node_map.daftar_sinyal
 				for cek_id_sinyal in pointer_id_sinyal:
 					if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
-						node_map.objek_[id_objek]["id_sinyal"] = cek_id_sinyal
-				for sinyal in objek_desain.daftar_sinyal: # TODO : ini dipisah ke langkah selanjutnya
-					print_debug(sinyal)
+						node_map.objek_[id_objek]["kondisi"].append(["id_sinyal", cek_id_sinyal])
 			elif objek_desain is representasi_entitas:
 				if objek_desain.memiliki_sub_objek:
 					if data_entitas.get_parent() == null:
@@ -1641,12 +1682,9 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 						data_entitas.add_child(tmp_entitas)
 						tmp_entitas.set_owner(node_map)
 						tmp_entitas.global_position = objek_desain.node_tampilan.global_position
-						
-						#node_map.daftar_sinyal
 						for cek_id_sinyal in pointer_id_sinyal:
 							if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
 								tmp_entitas.set_meta("id_sinyal", cek_id_sinyal)
-						# loop : objek_desain.daftar_sinyal
 					else:
 						push_error("[Galat] Tidak dapat menambahkan entitas '" + str(data_objek.jalur_instance) + "' ke map!")
 				else:
@@ -1658,12 +1696,9 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 						"rotasi": 		data_objek.rotasi,
 						"kondisi":		data_objek.daftar_properti
 					}
-					
-					#node_map.daftar_sinyal
 					for cek_id_sinyal in pointer_id_sinyal:
 						if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
-							node_map.entitas_[id_entitas]["id_sinyal"] = cek_id_sinyal
-					# loop : objek_desain.daftar_sinyal
+							node_map.entitas_[id_entitas]["kondisi"].append(["id_sinyal", cek_id_sinyal])
 			elif objek_desain is representasi_pemain:
 				var node_posisi_pemain : Marker3D = Marker3D.new()
 				node_posisi_pemain.name = "posisi_spawn"
@@ -1674,6 +1709,42 @@ func _ketika_render_map_desain(jalur_file : String) -> void:
 				# cek posisi y node_batas_bawah apakah lebih dari posisi y representasi_pemain
 				if node_batas_bawah.global_position.y >= node_posisi_pemain.global_position.y: # FIXME : margin batas sejauh 600 meter setelahnya
 					node_posisi_pemain.global_position.y = node_batas_bawah.global_position.y + 10
+	for objek_desain in $lingkungan.get_children():
+		if objek_desain is representasi_objek or objek_desain is representasi_entitas:
+			if objek_desain.daftar_sinyal.size() > 0:
+				var id_sinyal : String = ""
+				for cek_id_sinyal in pointer_id_sinyal:
+					if pointer_id_sinyal[cek_id_sinyal] == objek_desain:
+						id_sinyal = cek_id_sinyal
+				if id_sinyal != "":
+					for sinyal in objek_desain.daftar_sinyal:
+						var pemicu_sinyal : String = sinyal[0]
+						var target_sinyal : String
+						var tipe_target_sinyal : String = ""
+						var metode_sinyal : String = sinyal[2]
+						var parameter_sinyal : String = sinyal[3]
+						for objek_target_sinyal in $lingkungan.get_children():
+							if objek_target_sinyal.name == sinyal[1]:
+								for cek_id_target_sinyal in pointer_id_sinyal:
+									if pointer_id_sinyal[cek_id_target_sinyal] == objek_target_sinyal:
+										target_sinyal = cek_id_target_sinyal
+										if objek_target_sinyal is representasi_objek:
+											tipe_target_sinyal = "objek"
+										elif objek_target_sinyal is representasi_entitas:
+											tipe_target_sinyal = "entitas"
+								break
+						if node_map.daftar_sinyal.get(id_sinyal) == null:
+							node_map.daftar_sinyal[id_sinyal] = {}
+						if node_map.daftar_sinyal[id_sinyal].get(pemicu_sinyal) == null:
+							node_map.daftar_sinyal[id_sinyal][pemicu_sinyal] = []
+						node_map.daftar_sinyal[id_sinyal][pemicu_sinyal].append(
+							{
+								"target":		target_sinyal,
+								"tipe_target":	tipe_target_sinyal,
+								"metode":		metode_sinyal,
+								"parameter":	parameter_sinyal
+							}
+						)
 	#data_pencahayaan.bake(node_map, "user://map/" + node_map.name + ".lmbake")
 	var hasil_kumpulan_node = data_map.pack(node_map)
 	if hasil_kumpulan_node == OK:
