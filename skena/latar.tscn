@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cyxi85pr8q8yb"]
+[gd_scene format=3 uid="uid://cyxi85pr8q8yb"]
 
 [sub_resource type="GDScript" id="GDScript_vqr5r"]
 script/source = "extends Control
@@ -12,7 +12,8 @@ script/source = "extends Control
 		if apa == false:
 			visible = false
 			modulate = Color(0,0,0,0)
-			$latar_parallax/ParallaxLayer.modulate = Color(0,0,0,0)
+			if get_node_or_null(\"latar_parallax/ParallaxLayer\") != null:
+				$latar_parallax/ParallaxLayer.modulate = Color(0,0,0,0)
 		fungsikan = apa
 
 func _ready():
@@ -146,7 +147,7 @@ _data = {
 &"tampilkan": SubResource("Animation_j2wvp")
 }
 
-[node name="latar" type="Control"]
+[node name="latar" type="Control" unique_id=1878529002]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -155,19 +156,19 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = SubResource("GDScript_vqr5r")
-gambar = "res://material/wp/bg_1.png"
+fungsikan = false
 
-[node name="latar_parallax" type="ParallaxBackground" parent="."]
+[node name="latar_parallax" type="ParallaxBackground" parent="." unique_id=1341774226]
 scroll_limit_end = Vector2(0, -245)
 
-[node name="ParallaxLayer" type="ParallaxLayer" parent="latar_parallax"]
+[node name="ParallaxLayer" type="ParallaxLayer" parent="latar_parallax" unique_id=75341857]
 position = Vector2(512, 300)
 scale = Vector2(0.375, 0.375)
 skew = -0.0174533
 
-[node name="Cute4" type="Sprite2D" parent="latar_parallax/ParallaxLayer"]
+[node name="Cute4" type="Sprite2D" parent="latar_parallax/ParallaxLayer" unique_id=1146410558]
 
-[node name="dim" type="Panel" parent="."]
+[node name="dim" type="Panel" parent="." unique_id=769714392]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -177,7 +178,5 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_vx7d7")
 
-[node name="animasi" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_1bm3d")
-}
+[node name="animasi" type="AnimationPlayer" parent="." unique_id=964433135]
+libraries/ = SubResource("AnimationLibrary_1bm3d")

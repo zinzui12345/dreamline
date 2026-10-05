@@ -388,6 +388,9 @@ func _process(_delta : float) -> void:
 					elif muat_objek.properti.properti_objek[p][0] == "id_objek":
 						tmp_objek.set_meta("id_objek", muat_objek.properti.properti_objek[p][1])
 						#Panku.notify("Mengatur metadata ID Objek [%s] menjadi : %s" % [muat_objek.nama, muat_objek.properti.properti_objek[p][1]])
+					elif muat_objek.properti.properti_objek[p][0] == "id_sinyal":
+						if muat_objek.properti.properti_objek[p][1] == "":	pass
+						else:												tmp_objek.set_meta("tidak_dapat_dihapus", true)
 					else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+muat_objek.properti.properti_objek[p][0]+"]")
 				if muat_objek.get("render_melalui_portal") != null and muat_objek.render_melalui_portal:
 					tmp_objek.set_meta("render_melalui_portal", muat_objek.render_melalui_portal)
@@ -967,7 +970,7 @@ func _pemain_terputus(id_pemain):
 					properti.erase(properti[p])
 				elif properti[p][0] == "id_sinyal":
 					id_sinyal_entitas = properti[p][1]
-					properti.erase(properti[p])
+					# properti.erase(properti[p]) >> 05/10/26 :: properti "id_sinyal" jangan dihapus! bakalan dipake lagi pas spawn pool di client!
 			# INFO : tambahkan entitas ke array pool_entitas
 			pool_entitas[nama_entitas] = {
 				"jalur_instance": jalur_skena,
@@ -1002,7 +1005,7 @@ func _pemain_terputus(id_pemain):
 			for p in properti.size():
 				if properti[p][0] == "id_sinyal":
 					id_sinyal_objek = properti[p][1]
-					properti.erase(properti[p])
+					# properti.erase(properti[p]) >> 05/10/26 :: properti "id_sinyal" jangan dihapus! bakalan dipake lagi pas spawn pool di client!
 			# INFO : tambahkan objek ke array pool_objek
 			pool_objek[nama_objek] = {
 				"jarak_render"		: jarak_render,
@@ -1475,8 +1478,15 @@ func _pemain_terputus(id_pemain):
 	if permainan.koneksi == Permainan.MODE_KONEKSI.SERVER:
 		var jalur_objek_dihapus : PackedStringArray = jalur_objek.split("/", false)
 		var nama_objek_dihapus : String = jalur_objek_dihapus[jalur_objek_dihapus.size()-1]
+		var bisa_dihapus : bool = false
 		# jangan sembarangan menghapus objek, cek apakah objek memiliki pemilik
-		if pool_entitas[nama_objek_dihapus]["id_pemilik"] == id_pemain_yang_menghapus or pool_entitas[nama_objek_dihapus]["id_pemilik"] == -1:
+		if pool_objek.has(nama_objek_dihapus):
+			if pool_objek[nama_objek_dihapus]["id_sinyal"] == "":
+				bisa_dihapus = true
+		if pool_entitas.has(nama_objek_dihapus):
+			if (pool_entitas[nama_objek_dihapus]["id_pemilik"] == id_pemain_yang_menghapus or pool_entitas[nama_objek_dihapus]["id_pemilik"] == -1) and pool_entitas[nama_objek_dihapus]["id_sinyal"] == "":
+				bisa_dihapus = true
+		if bisa_dihapus:
 			if pool_objek.has(nama_objek_dihapus):	pool_objek.erase(nama_objek_dihapus)
 			if pool_entitas.has(nama_objek_dihapus):pool_entitas.erase(nama_objek_dihapus)
 			for p in cek_visibilitas_pool_objek:
@@ -1555,6 +1565,9 @@ func _pemain_terputus(id_pemain):
 				if tmp_entitas.get(kondisi_entitas[p][0]) != null:	tmp_entitas.set(kondisi_entitas[p][0], kondisi_entitas[p][1])
 				elif kondisi_entitas[p][0] == "id_entitas":			tmp_entitas.set_meta("id_entitas", kondisi_entitas[p][1])
 				elif kondisi_entitas[p][0] == "id_relasi":			pass
+				elif kondisi_entitas[p][0] == "id_sinyal":
+					if kondisi_entitas[p][1] == "":	pass
+					else:							tmp_entitas.set_meta("tidak_dapat_dihapus", true)
 				else: push_error("[Galat] "+tmp_nama+" tidak memiliki properti ["+kondisi_entitas[p][0]+"]")
 			dunia.get_node("entitas").add_child(tmp_entitas, true)
 			tmp_entitas.global_transform.origin = posisi_entitas

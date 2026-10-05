@@ -1373,6 +1373,8 @@ func _edit_objek(jalur : String) -> void:
 		# FIXME : cegah menghapus objek yang terhubung dengan sinyal (objek pemicu dan penerima sinyal)
 		if edit_objek.get("id_pemilik") != null and (edit_objek.id_pemilik != -1 and edit_objek.id_pemilik != client.id_koneksi):
 			$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", true)
+		elif edit_objek.has_meta("tidak_dapat_dihapus") and edit_objek.get_meta("tidak_dapat_dihapus"):
+			$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", true)
 		else:
 			$hud/daftar_properti_objek/panel/pembagi_kontainer/kontainer_d/menu.set("popup/item_4/disabled", false)
 	else:
